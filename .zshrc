@@ -142,6 +142,8 @@ if [[ `uname` == "Darwin" ]]; then
     export PATH="/usr/local/sbin:$PATH"
     export PATH="/usr/local/opt/icu4c/bin:$PATH"
     export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+else
+    export PATH=$PATH:/usr/local/go/bin
 fi
 
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
