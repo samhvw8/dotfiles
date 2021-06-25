@@ -20,7 +20,25 @@ zinit light-mode for \
     zinit-zsh/z-a-patch-dl \
     zinit-zsh/z-a-bin-gem-node
 
-zinit for annexes 
+
+if [[ `uname` == "Darwin" ]]; then
+    eval "$(zoxide init zsh)"
+    zinit snippet OMZP::fzf/fzf.plugin.zsh
+else
+    zinit ice wait"2" as"command" from"gh-r" lucid \
+        mv"zoxide*/zoxide -> zoxide" \
+        atclone"./zoxide init zsh > init.zsh" \
+        atpull"%atclone" src"init.zsh" nocompile'!'
+    zinit light ajeetdsouza/zoxide
+    zinit for console-tools
+    zinit lucid as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
+    atclone="cp shell/completion.zsh _fzf_completion; \
+      cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
+    make="PREFIX=$ZPFX install" for \
+        junegunn/fzf
+fi
+
+zinit for annexes  ext-git
 
 ### End of Zinit's installer chunk
 
@@ -31,6 +49,8 @@ then
     alias nvimo="nvim -u NORC  --noplugin"
     alias vimo="/usr/bin/vim"
 fi
+
+zinit light zdharma/zui
 
 zinit snippet OMZ::lib/theme-and-appearance.zsh
 
@@ -45,7 +65,6 @@ zinit snippet OMZL::termsupport.zsh
 zinit snippet OMZ::lib/key-bindings.zsh
 zinit snippet OMZ::lib/directories.zsh
 
-zinit snippet OMZP::fzf/fzf.plugin.zsh
 
 zinit ice as"completion"
 zinit snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
@@ -77,6 +96,9 @@ zinit snippet OMZP::nvm
 zinit ice wait lucid
 zinit light kazhala/dotbare
 
+zplugin ice as"program" pick"bin/git-dsf"
+zplugin light zdharma/zsh-diff-so-fancy
+
 
 zinit wait lucid for \
  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
@@ -97,16 +119,11 @@ zinit light "MichaelAquilina/zsh-you-should-use"
 zinit ice wait lucid
 zinit light Aloxaf/fzf-tab
 
-zinit ice as'command' pick"bin/fzf-tmux"
-zinit light junegunn/fzf
-
 #     # z.lua
 #     zsh-nvm
 #     zsh-better-npm-completion
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export PATH="/usr/local/opt/icu4c/bin:$PATH"
-export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 # . /usr/local/etc/profile.d/z.sh
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
@@ -123,6 +140,8 @@ if [[ `uname` == "Darwin" ]]; then
     export HOMEBREW_NO_INSTALL_CLEANUP=1
     eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
     export PATH="/usr/local/sbin:$PATH"
+    export PATH="/usr/local/opt/icu4c/bin:$PATH"
+    export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 fi
 
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
@@ -133,7 +152,8 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 export BAT_THEME="Dracula"
 export PATH="$PYENV_ROOT/bin:$PATH"
 
-eval "$(zoxide init zsh)"
+
+
 export FZF_DEFAULT_COMMAND='fd --type file'
 
 export PYENV_ROOT="$HOME/.pyenv"
@@ -141,3 +161,7 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init --path)"
 fi
+
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
