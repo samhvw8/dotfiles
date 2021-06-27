@@ -128,6 +128,7 @@ zinit light Aloxaf/fzf-tab
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # . $(brew --prefix asdf)/asdf.sh
 # export NVM_DIR="$HOME/.nvm"
