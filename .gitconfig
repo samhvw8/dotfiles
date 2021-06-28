@@ -1,8 +1,7 @@
 # This is Git's per-user configuration file.
-[user]
+[include]
 # Please adapt and uncomment the following lines:
-	name  = sam hoang
-	email = samhv.ict@gmail.com
+    path = ~/.gitconfig.local
 [core]
 	editor            = nvim
 	# pager = diff-so-fancy | less --tabs=4 -RFX
