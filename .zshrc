@@ -88,6 +88,12 @@ zinit ice wait lucid
 zinit snippet OMZP::urltools
 
 zinit ice wait lucid
+zinit light matthieusb/zsh-sdkman
+
+zinit ice wait lucid
+zinit snippet OMZP::jenv
+
+zinit ice wait lucid
 zinit snippet OMZP::pyenv
 
 zinit ice wait lucid
@@ -98,7 +104,6 @@ zinit light kazhala/dotbare
 
 zplugin ice as"program" pick"bin/git-dsf"
 zplugin light zdharma/zsh-diff-so-fancy
-
 
 zinit wait lucid for \
  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
