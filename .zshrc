@@ -36,6 +36,8 @@ else
       cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
     make="PREFIX=$ZPFX install" for \
         junegunn/fzf
+    zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+    zinit light dandavison/delta
 fi
 
 zinit for annexes  ext-git
@@ -86,6 +88,9 @@ zinit snippet OMZP::extract
 
 zinit ice wait lucid
 zinit snippet OMZP::urltools
+
+zinit ice wait lucid
+zinit light tom-auger/cmdtime
 
 zinit ice wait lucid
 zinit light matthieusb/zsh-sdkman
@@ -173,3 +178,16 @@ fi
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
+
+if command -v exa &> /dev/null
+then
+    alias ls=exa
+fi
+
+if command -v bat &> /dev/null
+then
+    alias cat=bat
+    alias less=bat
+    alias more=bat
+fi
+
