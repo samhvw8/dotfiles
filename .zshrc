@@ -56,7 +56,10 @@ zinit light zdharma/zui
 
 zinit snippet OMZ::lib/theme-and-appearance.zsh
 
-zinit light dracula/zsh
+zinit ice pick"async.zsh" src"pure.zsh"
+zinit light sindresorhus/pure
+
+# zinit light dracula/zsh
 
 zinit snippet OMZ::lib/history.zsh
 zinit snippet OMZL::grep.zsh
@@ -89,8 +92,8 @@ zinit snippet OMZP::extract
 zinit ice wait lucid
 zinit snippet OMZP::urltools
 
-zinit ice wait lucid
-zinit light tom-auger/cmdtime
+# zinit ice wait lucid
+# zinit light tom-auger/cmdtime
 
 zinit ice wait lucid
 zinit light matthieusb/zsh-sdkman
