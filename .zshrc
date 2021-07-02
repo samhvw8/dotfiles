@@ -92,11 +92,15 @@ zinit snippet OMZP::extract
 zinit ice wait lucid
 zinit snippet OMZP::urltools
 
+export SDKMAN_DIR="$HOME/.sdkman"
+zinit ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
+    atclone"wget https://get.sdkman.io/?rcupdate=false -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
+    atpull"sdk selfupdate" \
+    atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
+zinit light zdharma/null
+
 # zinit ice wait lucid
 # zinit light tom-auger/cmdtime
-
-zinit ice wait lucid
-zinit light matthieusb/zsh-sdkman
 
 zinit ice wait lucid
 zinit snippet OMZP::jenv
