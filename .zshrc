@@ -158,6 +158,7 @@ if [[ `uname` == "Darwin" ]]; then
     export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 else
     export PATH=$PATH:/usr/local/go/bin
+    alias open=xdg-open
 fi
 
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
