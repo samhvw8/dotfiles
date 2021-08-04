@@ -146,6 +146,7 @@ export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$PATH:$HOME/bin"
 
 # . $(brew --prefix asdf)/asdf.sh
 # export NVM_DIR="$HOME/.nvm"
@@ -194,8 +195,8 @@ fi
 
 if command -v bat &> /dev/null
 then
-    alias cat=bat
-    alias less=bat
-    alias more=bat
+    # alias cat=bat
+    # alias less=bat
+    # alias more=bat
 fi
 
