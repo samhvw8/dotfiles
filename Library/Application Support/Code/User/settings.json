@@ -25,5 +25,289 @@
     "vim.useSystemClipboard": true,
     "vim.changeWordIncludesWhitespace": false,
     "vim.visualstar": true,
+    "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "<leader>",
+                "1"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "todohighlight.listAnnotations",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "w"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "workbench.action.files.save",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "[",
+                " "
+            ],
+            "after": [
+                "O",
+                "<Esc>",
+                "j",
+                "0"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                " "
+            ],
+            "after": [
+                "o",
+                "<Esc>",
+                "k",
+                "0"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesDownAction"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesUpAction"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "h"
+            ],
+            "commands": [
+                "editor.action.dirtydiff.next"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "h"
+            ],
+            "commands": [
+                "editor.action.dirtydiff.previous"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "h"
+            ],
+            "commands": [
+                "workbench.action.compareEditor.nextChange"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "h"
+            ],
+            "commands": [
+                "workbench.action.compareEditor.previousChange"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "b"
+            ],
+            "commands": [
+                "workbench.action.previousEditor"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "b"
+            ],
+            "commands": [
+                "workbench.action.nextEditor"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "f"
+            ],
+            "commands": [
+                "workbench.view.explorer",
+                "list.focusUp",
+                "explorer.openAndPassFocus"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "f"
+            ],
+            "commands": [
+                "workbench.view.explorer",
+                "list.focusDown",
+                "explorer.openAndPassFocus"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "q"
+            ],
+            "commands": [
+                "search.action.focusPreviousSearchResult"
+            ],
+            "when": "hasSearchResult"
+        },
+        {
+            "before": [
+                "]",
+                "q"
+            ],
+            "commands": [
+                "search.action.focusNextSearchResult"
+            ],
+            "when": "hasSearchResult"
+        },
+        {
+            "before": [
+                "[",
+                "r"
+            ],
+            "commands": [
+                "references-view.prev"
+            ],
+            "when": "reference-list.hasResult"
+        },
+        {
+            "before": [
+                "]",
+                "r"
+            ],
+            "commands": [
+                "references-view.next"
+            ],
+            "when": "reference-list.hasResult"
+        },
+        {
+            "before": [
+                "[",
+                "l"
+            ],
+            "commands": [
+                "editor.action.marker.prevInFiles"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "]",
+                "l"
+            ],
+            "commands": [
+                "editor.action.marker.nextInFiles"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "[",
+                "g"
+            ],
+            "commands": [
+                "workbench.action.editor.previousChange"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "]",
+                "g"
+            ],
+            "commands": [
+                "workbench.action.editor.nextChange"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "[",
+                "w"
+            ],
+            "commands": [
+                "workbench.action.focusPreviousGroup"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "w"
+            ],
+            "commands": [
+                "workbench.action.focusNextGroup"
+            ]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                "<cr>"
+            ],
+            "commands": [
+                ":nohl"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "r"
+            ],
+            "commands": [
+                "editor.action.goToReferences"
+            ]
+        }
+    ],
+    "vim.visualModeKeyBindings": [
+        {
+            "before": [
+                "]",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesDownAction"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesUpAction"
+            ]
+        }
+    ],
     "files.autoSave": "afterDelay",
 }
