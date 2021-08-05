@@ -1,5 +1,8 @@
 {
+    "editor.formatOnSave": true,
     "editor.renderControlCharacters": true,
+    "editor.suggestSelection": "first",
+    "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
     "workbench.colorTheme": "Dracula",
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
@@ -9,7 +12,6 @@
         "default": "right",
         "jupyter-notebook": "left"
     },
-    "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "files.exclude": {
         "**/.classpath": true,
@@ -17,5 +19,11 @@
         "**/.settings": true,
         "**/.factorypath": true
     },
-    "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim"
+    "vim.highlightedyank.enable": true,
+    "vim.hlsearch": true,
+    "vim.leader": "<space>",
+    "vim.useSystemClipboard": true,
+    "vim.changeWordIncludesWhitespace": false,
+    "vim.visualstar": true,
+    "files.autoSave": "afterDelay",
 }
