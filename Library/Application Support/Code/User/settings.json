@@ -3,6 +3,7 @@
     "editor.renderControlCharacters": true,
     "editor.suggestSelection": "first",
     "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "editor.fontFamily": "FiraCode Nerd Font, monospace",
     "workbench.colorTheme": "Dracula",
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
@@ -28,6 +29,32 @@
     "vim.normalModeKeyBindings": [
         {
             "before": [
+                "K"
+            ],
+            "commands": [
+                "editor.action.showHover"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "o"
+            ],
+            "commands": [
+                "workbench.action.toggleSidebarVisibility"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "p"
+            ],
+            "commands": [
+                "workbench.action.togglePanel"
+            ]
+        },
+        {
+            "before": [
                 "<leader>",
                 "1"
             ],
@@ -37,6 +64,45 @@
                     "command": "todohighlight.listAnnotations",
                     "args": []
                 }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "e",
+            ],
+            "after": [],
+            "commands": [
+                "workbench.view.explorer"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "\\",
+            ],
+            "commands": [
+                "workbench.view.search"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "l",
+                "d"
+            ],
+            "commands": [
+                "workbench.actions.view.problems"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "r",
+                "n"
+            ],
+            "commands": [
+                "editor.action.rename"
             ]
         },
         {
@@ -268,6 +334,57 @@
                 "workbench.action.focusNextGroup"
             ]
         },
+        // changce case ~ vim abolish
+        {
+            "before": [
+                "c",
+                "r",
+                "c"
+            ],
+            "commands": [
+                "extension.changeCase.camel"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "."
+            ],
+            "commands": [
+                "extension.changeCase.dot"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "_"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "s"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "u"
+            ],
+            "commands": [
+                "extension.changeCase.constant"
+            ]
+        }
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
@@ -286,6 +403,15 @@
             ],
             "commands": [
                 "editor.action.goToReferences"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "x"
+            ],
+            "commands": [
+                "editor.action.openLink"
             ]
         }
     ],
@@ -307,7 +433,59 @@
             "commands": [
                 "editor.action.moveLinesUpAction"
             ]
+        },
+        // changce case ~ vim abolish
+        {
+            "before": [
+                "c",
+                "r",
+                "c"
+            ],
+            "commands": [
+                "extension.changeCase.camel"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "."
+            ],
+            "commands": [
+                "extension.changeCase.dot"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "_"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "s"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "u"
+            ],
+            "commands": [
+                "extension.changeCase.constant"
+            ]
         }
     ],
     "files.autoSave": "afterDelay",
+    "java.project.importHint": false,
 }
