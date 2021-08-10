@@ -29,5 +29,39 @@
         "key": "ctrl+l",
         "command": "workbench.action.navigateRight",
         "when": "sideBarFocus"
-    }
+    },
+    {
+        "key": "ctrl+shift+alt+down",
+        "command": "-incrementor.decrementByTenth"
+    },
+    {
+        "key": "ctrl+down",
+        "command": "-incrementor.decrementByOne"
+    },
+    {
+        "key": "ctrl+shift+down",
+        "command": "-incrementor.decrementByTen"
+    },
+    {
+        "key": "ctrl+shift+alt+up",
+        "command": "-incrementor.incrementByTenth"
+    },
+    {
+        "key": "ctrl+up",
+        "command": "-incrementor.incrementByOne"
+    },
+    {
+        "key": "ctrl+shift+up",
+        "command": "-incrementor.incrementByTen"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "explorer.newFile",
+        "when": "!editorFocus"
+    },
+    {
+        "key": "ctrl+shift+n",
+        "command": "explorer.newFolder",
+        "when": "!editorFocus"
+    },
 ]

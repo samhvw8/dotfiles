@@ -1,9 +1,9 @@
 {
+    "editor.fontFamily": "FiraCode Nerd Font, monospace",
     "editor.formatOnSave": true,
     "editor.renderControlCharacters": true,
     "editor.suggestSelection": "first",
     "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
-    "editor.fontFamily": "FiraCode Nerd Font, monospace",
     "workbench.colorTheme": "Dracula",
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
@@ -20,13 +20,33 @@
         "**/.settings": true,
         "**/.factorypath": true
     },
+    "vim.changeWordIncludesWhitespace": false,
     "vim.highlightedyank.enable": true,
     "vim.hlsearch": true,
+    "vim.incsearch": true,
     "vim.leader": "<space>",
+    "vim.searchHighlightColor": "#f1fa8c",
     "vim.useSystemClipboard": true,
-    "vim.changeWordIncludesWhitespace": false,
     "vim.visualstar": true,
     "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "<c-a>"
+            ],
+            "commands": [
+                "incrementor.incrementByOne",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "before": [
+                "<c-x>"
+            ],
+            "commands": [
+                "incrementor.decrementByOne",
+                "extension.vim_escape"
+            ]
+        },
         {
             "before": [
                 "K"
@@ -112,10 +132,17 @@
             ],
             "after": [],
             "commands": [
-                {
-                    "command": "workbench.action.files.save",
-                    "args": []
-                }
+                "workbench.action.files.save"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "W"
+            ],
+            "after": [],
+            "commands": [
+                "workbench.action.files.saveWithoutFormatting"
             ]
         },
         {
@@ -299,7 +326,7 @@
         {
             "before": [
                 "[",
-                "g"
+                "h"
             ],
             "commands": [
                 "workbench.action.editor.previousChange"
@@ -309,7 +336,7 @@
         {
             "before": [
                 "]",
-                "g"
+                "h"
             ],
             "commands": [
                 "workbench.action.editor.nextChange"
@@ -384,7 +411,25 @@
             "commands": [
                 "extension.changeCase.constant"
             ]
-        }
+        },
+        {
+            "before": [
+                "]",
+                "g"
+            ],
+            "commands": [
+                "editor.action.marker.next"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "g"
+            ],
+            "commands": [
+                "editor.action.marker.prev"
+            ]
+        },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
@@ -413,6 +458,28 @@
             "commands": [
                 "editor.action.openLink"
             ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "h",
+                "r"
+            ],
+            "commands": [
+                "git.revertSelectedRanges"
+            ],
+            "when": "isInDiffEditor"
+        },
+        {
+            "before": [
+                "<leader>",
+                "h",
+                "s"
+            ],
+            "commands": [
+                "git.stageSelectedRanges"
+            ],
+            "when": "isInDiffEditor"
         }
     ],
     "vim.visualModeKeyBindings": [
@@ -484,8 +551,39 @@
             "commands": [
                 "extension.changeCase.constant"
             ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "h",
+                "s"
+            ],
+            "commands": [
+                "git.stageSelectedRanges"
+            ],
+            "when": "isInDiffEditor"
         }
     ],
     "files.autoSave": "afterDelay",
     "java.project.importHint": false,
+    "incrementor.enums.values": [
+        [
+            "false",
+            "true"
+        ],
+        [
+            "let",
+            "const"
+        ],
+        [
+            "public",
+            "private",
+            "protected"
+        ],
+        [
+            "False",
+            "True"
+        ],
+    ],
+    "editor.renderWhitespace": "all",
 }

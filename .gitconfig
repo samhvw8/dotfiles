@@ -77,7 +77,9 @@
 	lall = log --oneline --decorate --graph --all
 	ls   = log --oneline --decorate --graph --stat
 	lt   = log --graph --decorate --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)%an%Creset'
-    sl   = branchless smartlog
-    undo = branchless undo
+  sl   = branchless smartlog
+  undo = branchless undo
+  review = "!sh -c 'git push origin HEAD:refs/for/master%r=$0'"
+
 [merge]
 	tool = vimdiff
