@@ -31,11 +31,7 @@ else
         atpull"%atclone" src"init.zsh" nocompile'!'
     zinit light ajeetdsouza/zoxide
     zinit skip'ripgrep fd' for console-tools
-    zinit lucid as=program pick="$ZPFX/bin/(fzf|fzf-tmux)" \
-    atclone="cp shell/completion.zsh _fzf_completion; \
-      cp bin/(fzf|fzf-tmux) $ZPFX/bin" \
-    make="PREFIX=$ZPFX install" for \
-        junegunn/fzf
+    zinit pack for fzf
     zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
     zinit light dandavison/delta
 fi
