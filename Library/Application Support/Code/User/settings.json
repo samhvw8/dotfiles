@@ -28,6 +28,7 @@
     "vim.searchHighlightColor": "#f1fa8c",
     "vim.useSystemClipboard": true,
     "vim.visualstar": true,
+    "vim.statusBarColorControl": false,
     "vim.normalModeKeyBindings": [
         {
             "before": [
