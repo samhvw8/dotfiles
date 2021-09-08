@@ -3,7 +3,7 @@ then
     echo "Macos"
 else
     echo "Linux"
-    sudo apt-get install --yes zsh unzip apt-transport-https ca-certificates curl software-properties-common build-essential terminator  && \
+    sudo apt-get install --yes zsh unzip zip apt-transport-https ca-certificates curl software-properties-common build-essential terminator  && \
     git clone https://github.com/kazhala/dotbare.git ~/.dotbare  && \
 
     export PATH=$PATH:$HOME/.dotbare && \
