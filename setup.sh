@@ -1,4 +1,3 @@
-
 if [[ `uname` == "Darwin" ]] 
 then
     echo "Macos"
