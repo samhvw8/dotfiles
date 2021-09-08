@@ -3,7 +3,7 @@ then
     echo "Macos"
 else
     echo "Linux"
-    sudo apt install zsh unzip apt-transport-https ca-certificates curl software-properties-common build-essential terminator
+    sudo apt install zsh unzip apt-transport-https ca-certificates curl software-properties-common build-essential terminator -y
 
     git clone https://github.com/kazhala/dotbare.git ~/.dotbare
 
