@@ -31,7 +31,6 @@ else
         atpull"%atclone" src"init.zsh" nocompile'!'
     zinit light ajeetdsouza/zoxide
     zinit skip'ripgrep fd' for console-tools
-    zinit pack"default+keys" for fzf
     zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
     zinit light dandavison/delta
 fi

@@ -21,6 +21,9 @@ else
 
     source ~/.profile && \
 
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
+    ~/.fzf/install && \
+
     curl -s "https://get.sdkman.io" | bash && \
 
     chsh -s $(which zsh) 
