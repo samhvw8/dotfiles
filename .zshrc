@@ -30,7 +30,7 @@ else
         atclone"./zoxide init zsh > init.zsh" \
         atpull"%atclone" src"init.zsh" nocompile'!'
     zinit light ajeetdsouza/zoxide
-    zinit skip'ripgrep fd' for console-tools
+    zinit for console-tools
     zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
     zinit light dandavison/delta
 fi

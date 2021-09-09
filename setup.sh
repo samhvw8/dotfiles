@@ -22,9 +22,12 @@ else
     source ~/.profile && \
 
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
+
     ~/.fzf/install && \
 
     curl -s "https://get.sdkman.io" | bash && \
+
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && \
 
     chsh -s $(which zsh) 
 
