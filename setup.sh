@@ -82,6 +82,9 @@ else
 
     kubectl krew install ctx && \
     
-    zsh
+    curl https://pyenv.run | bash && \
 
+    chsh -s $(which zsh)  && \
+    
+    zsh
 fi

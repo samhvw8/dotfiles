@@ -58,8 +58,6 @@
 	local    = yellow
 	remote   = green
 	upstream = cyan
-[github]
-	user   = samhvw8
 [alias]
 	a    = add
 	ca   = commit -a
