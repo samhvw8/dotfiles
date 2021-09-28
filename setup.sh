@@ -40,7 +40,7 @@ else
 
     wget -O "$HOME/tmp/helm.tar.gz" https://get.helm.sh/helm-v2.15.1-linux-amd64.tar.gz && \
 
-    tar -xvf "$HOME/tmp/helm.tar.gz" && \
+    tar -xvf "$HOME/tmp/helm.tar.gz"  --directory $HOME/tmp && \
 
     chmod +x $HOME/tmp/linux-amd64/helm && \
 
