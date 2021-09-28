@@ -4,7 +4,7 @@ then
 else
     echo "Linux"
     sudo apt update
-    sudo apt-get install --yes tmux vim zsh wget curl unzip zip apt-transport-https ca-certificates curl software-properties-common build-essential terminator  && \
+    sudo apt-get install --yes tmux vim zsh wget curl net-tools unzip zip apt-transport-https ca-certificates curl software-properties-common build-essential terminator  && \
     git clone https://github.com/kazhala/dotbare.git ~/.dotbare  && \
 
     export PATH=$PATH:$HOME/.dotbare && \
