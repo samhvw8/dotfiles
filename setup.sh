@@ -50,6 +50,8 @@ else
 
     sudo mv $HOME/tmp/linux-amd64/tiller /usr/local/bin &&  \
 
+    helm init --client-only --stable-repo-url 	https://charts.helm.sh/stable && \
+
     curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.14.0/skaffold-linux-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin  && \
 
     wget -O "$HOME/.local/bin/kubectl" "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
