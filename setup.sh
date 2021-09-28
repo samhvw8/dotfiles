@@ -19,6 +19,7 @@ else
 
     echo 'export PATH=$PATH:/usr/local/go/bin' | tee -a ~/.profile && \
     echo 'export PATH=$PATH:$HOME/.local/bin' | tee -a ~/.profile && \
+    echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'  tee -a ~/.profile && \
 
     mkdir -p $HOME/.local/bin && \
 
@@ -69,6 +70,17 @@ else
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y && \
 
     chsh -s $(which zsh) && \
+
+    (
+    set -x; cd "$(mktemp -d)" && OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+    ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
+    tar zxvf krew.tar.gz &&
+    KREW=./krew-"${OS}_${ARCH}" &&
+    "$KREW" install krew
+    ) && \
+
+    kubectl krew install ctx && \
     
     zsh
 
