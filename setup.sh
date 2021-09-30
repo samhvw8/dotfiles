@@ -40,7 +40,7 @@ else
 
     fc-cache -f -v && \
 
-    sudo wget -O "/usr/local/bin/bazel" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-arm64 && \
+    sudo wget -O "/usr/local/bin/bazel" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-amd64 && \
 
     sudo chmod +x "/usr/local/bin/bazel"  && \
 
