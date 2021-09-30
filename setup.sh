@@ -42,6 +42,8 @@ else
 
     sudo wget -O "/usr/local/bin/bazel" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-arm64 && \
 
+    sudo chmod +x "/usr/local/bin/bazel"  && \
+
     mkdir "$HOME/tmp" && \
 
     wget -O "$HOME/tmp/helm.tar.gz" https://get.helm.sh/helm-v2.15.1-linux-amd64.tar.gz && \
