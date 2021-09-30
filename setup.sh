@@ -3,8 +3,13 @@ then
     echo "Macos"
 else
     echo "Linux"
+
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list 
+
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
+
     sudo apt update
-    sudo apt-get install --yes tmux vim zsh wget curl net-tools unzip zip apt-transport-https ca-certificates curl software-properties-common build-essential terminator  && \
+    sudo apt-get install --yes tmux vim zsh wget curl net-tools unzip zip python3-pip apt-transport-https gnupg google-cloud-sdk ca-certificates curl software-properties-common build-essential terminator  && \
     git clone https://github.com/kazhala/dotbare.git ~/.dotbare  && \
 
     export PATH=$PATH:$HOME/.dotbare && \
@@ -19,7 +24,7 @@ else
 
     echo 'export PATH=$PATH:/usr/local/go/bin' | tee -a ~/.profile && \
     echo 'export PATH=$PATH:$HOME/.local/bin' | tee -a ~/.profile && \
-    echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'  tee -a ~/.profile && \
+    echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' | tee -a ~/.profile && \
 
     mkdir -p $HOME/.local/bin && \
 
@@ -69,7 +74,7 @@ else
 
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y && \
 
-    chsh -s $(which zsh) && \
+    pip install inquirer click pathlib pyyaml airspeed google-cloud-firestore && \
 
     (
     set -x; cd "$(mktemp -d)" && OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
@@ -84,7 +89,5 @@ else
     
     curl https://pyenv.run | bash && \
 
-    chsh -s $(which zsh)  && \
-    
-    zsh
+    chsh -s $(which zsh) 
 fi
