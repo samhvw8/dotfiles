@@ -5,7 +5,7 @@ xServerProcessName = "vcxsrv.exe"
 
 RunXserverProcess( xServerProcessName )
 
-RunTerminator()
+RunIdea()
 ' KillXserverProcess( xServerProcessName )
 
 function RunXserverProcess( strProcess )
@@ -15,7 +15,7 @@ function RunXserverProcess( strProcess )
 	end if
 end function
 
-function RunTerminator()
+function RunIdea()
 	'https://gist.github.com/GregRos/6d4ad376cebe7ce1c9e52deaf90171d3
 	cdPath = "~"
 	if WScript.Arguments.Length > 0 Then
