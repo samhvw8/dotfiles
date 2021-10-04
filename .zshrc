@@ -159,9 +159,10 @@ if [[ `uname` == "Darwin" ]]; then
 else
     export PATH=$PATH:/usr/local/go/bin
     alias open=xdg-open
-    alias idea=/home/samhoang/idea/idea-IC-203.8084.24/bin/idea.sh
+    alias idea=$HOME/idea/idea-IC-203.8084.24/bin/idea.sh
     # Generated for envman. Do not edit.
     [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+    export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 fi
 
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
