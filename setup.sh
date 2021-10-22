@@ -104,5 +104,5 @@ else
 
     bash ~/miniconda.sh -b -p $HOME/miniconda3 && \
     
-    chsh -s $(which zsh) 
+    sudo chsh -s /bin/bash $USERNAME
 fi
