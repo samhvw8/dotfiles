@@ -1,7 +1,3 @@
-# This is Git's per-user configuration file.
-[include]
-# Please adapt and uncomment the following lines:
-    path = ~/.gitconfig.local
 [core]
 	editor            = nvim
 	# pager = diff-so-fancy | less --tabs=4 -RFX

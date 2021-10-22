@@ -18,6 +18,9 @@ else
 
     dotbare finit -u  https://github.com/samhvw8/dotfiles.git && \
 
+    echo '[include]' | tee -a ~/.gitconfig && \
+    echo 'path = ~/.base.gitconfig' | tee -a ~/.gitconfig && \
+
     sudo dbus-uuidgen --ensure && \
 
     wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local && \
@@ -40,9 +43,17 @@ else
 
     fc-cache -f -v && \
 
-    sudo wget -O "/usr/local/bin/bazel" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-amd64 && \
+    sudo wget -O "/usr/local/bin/bazelisk" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-amd64 && \
 
-    sudo chmod +x "/usr/local/bin/bazel"  && \
+    sudo chmod +x "/usr/local/bin/bazelisk"  && \
+    
+    echo  "#\!/usr/bin/env bash" | sudo tee -a /usr/local/bin/bazel && \
+
+    echo 'export JAVA_HOME=$HOME/.sdkman/candidates/java/current' | sudo tee -a /usr/local/bin/bazel && \
+
+    echo '/usr/local/bin/bazelisk "$@"' | sudo tee -a /usr/local/bin/bazel && \
+
+    sudo chmod +x /user/local/bin/bazel && \
 
     mkdir "$HOME/tmp" && \
 
@@ -78,18 +89,16 @@ else
 
     pip install inquirer click pathlib pyyaml airspeed google-cloud-firestore && \
 
-    (
-    set -x; cd "$(mktemp -d)" && OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-    ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
-    tar zxvf krew.tar.gz &&
-    KREW=./krew-"${OS}_${ARCH}" &&
-    "$KREW" install krew
-    ) && \
+    set -x; cd "$(mktemp -d)" && OS="$(uname | tr '[:upper:]' '[:lower:]')" && \
+    ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" && \
+    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" && \ 
+    tar zxvf krew.tar.gz && \
+    KREW=./krew-"${OS}_${ARCH}" && \
+    "$KREW" install krew && \
+
+    cd ~ && \
 
     kubectl krew install ctx && \
     
-    curl https://pyenv.run | bash && \
-
     chsh -s $(which zsh) 
 fi
