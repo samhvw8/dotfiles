@@ -101,9 +101,6 @@ zinit ice wait lucid
 zinit snippet OMZP::jenv
 
 zinit ice wait lucid
-zinit snippet OMZP::pyenv
-
-zinit ice wait lucid
 zinit snippet OMZP::nvm
 
 zinit ice wait lucid
