@@ -131,22 +131,13 @@ zinit light "MichaelAquilina/zsh-you-should-use"
 zinit ice wait lucid
 zinit light Aloxaf/fzf-tab
 
-#     # z.lua
-#     zsh-nvm
-#     zsh-better-npm-completion
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# . /usr/local/etc/profile.d/z.sh
+
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/bin"
-
-# . $(brew --prefix asdf)/asdf.sh
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-# [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 if [[ `uname` == "Darwin" ]]; then
     test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
@@ -171,17 +162,8 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
 '
 export BAT_THEME="Dracula"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-
 
 export FZF_DEFAULT_COMMAND='fd --type file'
-
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-fi
 
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
@@ -190,13 +172,7 @@ export LANGUAGE="en_US.UTF-8"
 if command -v exa &> /dev/null
 then
     alias ls=exa
-fi
-
-if command -v bat &> /dev/null
-then
-    # alias cat=bat
-    # alias less=bat
-    # alias more=bat
+    alias la=ll -a
 fi
 
 # >>> conda initialize >>>
