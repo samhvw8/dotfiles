@@ -97,3 +97,8 @@ nmap <Space>w :action SaveDocument<CR>
 nmap <Space>f :action GotoFile<CR>
 
 map \r <Action>(ReformatCode)
+
+nmap crc :action StringManipulation.ToCamelCase<CR>
+nmap crm :action StringManipulation.ToPascalCase<CR>
+nmap cr_ :action StringManipulation.ToSnakeCase<CR>
+nmap cru :action StringManipulation.ToScreamingSnakeCase<CR>
