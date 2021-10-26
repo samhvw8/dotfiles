@@ -43,7 +43,8 @@ set clipboard^=unnamedplus,unname,ideaput
 """ Mappings
 nnoremap <Space>a :action ShowIntentionActions<CR>
 vnoremap <Space>a :action ShowIntentionActions<CR>
-nnoremap <Space>rr :action RenameElement<CR>
+nnoremap <leader>re :action RenameElement<cr>
+nnoremap <leader>rf :action RenameFile<cr>
 nnoremap <leader><cr> :nohlsearch<CR>
 
 
@@ -57,6 +58,10 @@ nnoremap <space>t :action FileStructurePopup<cr>
 nnoremap <space>T :action GotoSymbol<cr>
 nnoremap <space>A :action GotoAction<cr>
 
+nnoremap gR :action ShowUsages<cr>
+nnoremap gr :action FindUsages<cr>
+nnoremap gi :action GotoImplementation<cr>
+
 " unimpaired mappings
 nnoremap [<space> O<esc>j
 nnoremap ]<space> o<esc>k
@@ -68,6 +73,8 @@ nnoremap [h :action VcsShowPrevChangeMarker<cr>
 nnoremap ]h :action VcsShowNextChangeMarker<cr>
 nnoremap [b :action PreviousTab<cr>
 nnoremap ]b :action NextTab<cr>
+nnoremap [d :action GotoPreviousError<cr>
+nnoremap ]d :action GotoNextError<cr>
 
 " Moving lines
 nmap [e :action MoveLineUp<cr>
@@ -77,8 +84,7 @@ nmap [s :action MoveStatementUp<cr>
 nmap ]s :action MoveStatementDown<cr>
 
 " Search
-nmap <leader>/ :action Find<cr>
-nmap <leader>\ :action FindInPath<cr>
+nmap <leader>/ :action FindInPath<cr>
 
 " built-in navigation to navigated items works better
 nnoremap <c-o> :action Back<cr>
