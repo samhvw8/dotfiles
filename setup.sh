@@ -4,11 +4,11 @@ then
 else
     echo "Linux"
 
-    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list 
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list  && \
 
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
 
-    sudo apt update
+    sudo apt update && \
     sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg google-cloud-sdk ca-certificates curl software-properties-common build-essential terminator  && \
     git clone https://github.com/kazhala/dotbare.git ~/.dotbare  && \
 
@@ -53,7 +53,7 @@ else
 
     echo '/usr/local/bin/bazelisk "$@"' | sudo tee -a /usr/local/bin/bazel && \
 
-    sudo chmod +x /user/local/bin/bazel && \
+    sudo chmod +x /usr/local/bin/bazel && \
 
     mkdir "$HOME/tmp" && \
 
