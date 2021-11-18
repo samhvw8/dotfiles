@@ -85,7 +85,7 @@ else
 
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash && \
 
-    curl -s "https://get.sdkman.io" | bash && \
+    # curl -s "https://get.sdkman.io" | bash && \
 
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y && \
 
