@@ -47,6 +47,13 @@ then
     alias vimo="/usr/bin/vim"
 fi
 
+export SDKMAN_DIR="$HOME/.sdkman"
+zinit ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
+    atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
+    atpull"sdk selfupdate" \
+    atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
+zinit light zdharma-continuum/null
+
 zinit light zdharma-continuum/zui
 
 zinit snippet OMZ::lib/theme-and-appearance.zsh
