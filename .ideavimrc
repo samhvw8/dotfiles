@@ -57,6 +57,7 @@ nnoremap <space>E :action Switcher<cr>
 nnoremap <space>t :action FileStructurePopup<cr>
 nnoremap <space>T :action GotoSymbol<cr>
 nnoremap <space>A :action GotoAction<cr>
+nnoremap <Leader>ic :action InspectCode<CR>
 
 nnoremap gR :action ShowUsages<cr>
 nnoremap gr :action FindUsages<cr>
