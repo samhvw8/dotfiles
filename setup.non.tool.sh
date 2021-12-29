@@ -14,6 +14,9 @@ else
 
     dotbare finit -u  https://github.com/samhvw8/dotfiles.git && \
 
+    echo '[include]' | tee -a ~/.gitconfig && \
+    echo 'path = ~/.base.gitconfig' | tee -a ~/.gitconfig && \
+
     sudo dbus-uuidgen --ensure && \
 
     wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local && \
@@ -41,11 +44,13 @@ else
 
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash && \
 
-    # curl -s "https://get.sdkman.io" | bash && \
+    curl -s "https://get.sdkman.io" | bash && \
 
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y && \
 
-    curl https://pyenv.run | bash && \
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+
+    bash ~/miniconda.sh -b -p $HOME/miniconda3 && \
 
     chsh -s $(which zsh) 
 fi
