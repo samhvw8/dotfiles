@@ -587,4 +587,5 @@
         ],
     ],
     "editor.renderWhitespace": "all",
+    "window.zoomLevel": 1,
 }

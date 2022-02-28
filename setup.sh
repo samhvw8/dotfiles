@@ -29,9 +29,11 @@ else
 
     echo 'export PATH=$PATH:/usr/local/go/bin' | tee -a ~/.profile && \
     echo 'export PATH=$PATH:$HOME/.local/bin' | tee -a ~/.profile && \
+    echo 'export PATH=$PATH:$HOME/.bin' | tee -a ~/.profile && \
     echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' | tee -a ~/.profile && \
 
     mkdir -p $HOME/.local/bin && \
+    mkdir -p $HOME/.bin && \
 
     source ~/.profile && \
 
@@ -59,25 +61,35 @@ else
 
     mkdir "$HOME/tmp" && \
 
-    wget -O "$HOME/tmp/helm.tar.gz" https://get.helm.sh/helm-v2.15.1-linux-amd64.tar.gz && \
+    wget -O "$HOME/tmp/helmenv.tar.gz" https://github.com/little-angry-clouds/kubernetes-binaries-managers/releases/download/0.3.1/helmenv-linux-amd64.tar.gz && \
 
-    tar -xvf "$HOME/tmp/helm.tar.gz"  --directory $HOME/tmp && \
+    tar -xvf "$HOME/tmp/helmenv.tar.gz"  --directory $HOME/tmp && \
 
-    chmod +x $HOME/tmp/linux-amd64/helm && \
+    chmod +x $HOME/tmp/helmenv-linux-amd64 && \
 
-    chmod +x $HOME/tmp/linux-amd64/tiller && \
+    chmod +x $HOME/tmp/helm-wrapper-linux-amd64 && \
 
-    sudo mv $HOME/tmp/linux-amd64/helm /usr/local/bin &&  \
+    mv $HOME/tmp/linux-amd64/helmenv-linux-amd64 $HOME/.local/bin/helmenv &&  \
 
-    sudo mv $HOME/tmp/linux-amd64/tiller /usr/local/bin &&  \
+    mv $HOME/tmp/linux-amd64/helm-wrapper-linux-amd64 $HOME/.local/bin/helm &&  \
 
-    helm init --client-only --stable-repo-url 	https://charts.helm.sh/stable && \
+    helmenv install 2.15.1
+    helmenv install 3.8.0
+    helmenv use 2.15.1
 
     curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.14.0/skaffold-linux-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin  && \
 
-    wget -O "$HOME/.local/bin/kubectl" "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    wget -O "$HOME/tmp/kbenv.tar.gz" https://github.com/little-angry-clouds/kubernetes-binaries-managers/releases/download/0.3.1/helmenv-linux-amd64.tar.gz && \
+    tar -xvf "$HOME/tmp/kbenv.tar.gz"  --directory $HOME/tmp && \
+    
+    chmod +x $HOME/tmp/kbenv-linux-amd64 
+    chmod +x $HOME/tmp/kubectl-wrapper-linux-amd64 
 
-    chmod +x "$HOME/.local/bin/kubectl" && \
+    mv $HOME/tmp/kbenv-linux-amd64 $HOME/.local/bin/kbenv
+    mv $HOME/tmp/kubectl-wrapper-linux-amd64 $HOME/.local/bin/kubectl
+    
+    kbenv install 1.23.4
+    kbenv use 1.23.4
 
     curl -sS https://webinstall.dev/k9s | bash && \
 
@@ -113,5 +125,5 @@ else
 
     sudo dpkg -i minikube_latest_amd64.deb && \ 
     
-    sudo chsh -s $(which zsh) $USERNAME
+    chsh -s $(which zsh)
 fi
