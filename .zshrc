@@ -1,43 +1,96 @@
-### Added by Zinit's installer
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma-continuum/zinit.git ~/.zinit/bin && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
+  print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
+  command mkdir -p "$HOME/.zi" && command chmod g-rwX "$HOME/.zi"
+  command git clone -q --depth=1 --branch "main" https://github.com/z-shell/zi "$HOME/.zi/bin" && \
+    print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+    print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
+source "$HOME/.zi/bin/zi.zsh"
+autoload -Uz _zi
+(( ${+_comps} )) && _comps[zi]=_zi
+# examples here -> https://z-shell.pages.dev/docs/gallery/collection
+zicompinit # <- https://z-shell.pages.dev/docs/gallery/collection#minimal
 
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+zi light-mode for \
+  z-shell/z-a-meta-plugins \
+  @annexes @ext-git 
 
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit light-mode for \
-    zdharma-continuum/z-a-meta-plugins \
-    zdharma-continuum/z-a-rust \
-    zdharma-continuum/z-a-as-monitor \
-    zdharma-continuum/z-a-patch-dl \
-    zdharma-continuum/z-a-bin-gem-node
 
+#####################
+# PROMPT            #
+#####################
+zi lucid for \
+as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*unknown-linux-gnu*' \
+  starship/starship \
+
+##########################
+# OMZ Libs and Plugins   #
+##########################
+
+# IMPORTANT:
+# Ohmyzsh plugins and libs are loaded first as some these sets some defaults which are required later on.
+# Otherwise something will look messed up
+# ie. some settings help zsh-autosuggestions to clear after tab completion
+
+setopt promptsubst
+
+
+zi lucid for \
+OMZL::history.zsh 
+zi wait lucid for \
+OMZL::clipboard.zsh \
+OMZL::compfix.zsh \
+OMZL::completion.zsh \
+OMZL::correction.zsh  \
+  atload"\
+  alias ..='cd ..' \
+  alias ...='cd ../..' \
+  alias ....='cd ../../..' \
+  alias .....='cd ../../../..'" \
+OMZL::directories.zsh \
+OMZL::git.zsh \
+OMZL::grep.zsh \
+OMZL::spectrum.zsh \
+OMZL::termsupport.zsh \
+OMZP::git \
+OMZP::urltools \
+OMZP::extract \
+OMZP::encode64 \
+OMZP::helm \
+OMZP::kubectl \
+OMZP::minikube 
+
+zi snippet OMZ::lib/key-bindings.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+zi ice as"completion"
+zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
+
+zi ice as"completion"
+zi snippet https://github.com/docker/compose/tree/master/contrib/completion/zsh/_docker-compose
+
+
+zi snippet OMZ::lib/theme-and-appearance.zsh
+
+zi load z-shell/zui
 
 if [[ `uname` == "Darwin" ]]; then
     eval "$(zoxide init zsh)"
-    zinit snippet OMZP::fzf/fzf.plugin.zsh
+    zi snippet OMZP::fzf/fzf.plugin.zsh
 else
-    zinit ice wait"2" as"command" from"gh-r" lucid \
+    zi ice wait"2" as"command" from"gh-r" lucid \
         mv"zoxide*/zoxide -> zoxide" \
         atclone"./zoxide init zsh > init.zsh" \
         atpull"%atclone" src"init.zsh" nocompile'!'
-    zinit light ajeetdsouza/zoxide
-    zinit for console-tools
-    zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
-    zinit light dandavison/delta
+    zi light ajeetdsouza/zoxide
+
+    zi light-mode for \
+        z-shell/z-a-meta-plugins \
+        @console-tools
+
+    zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+    zi light dandavison/delta
 fi
-
-zinit for annexes  ext-git
-
-### End of Zinit's installer chunk
 
 if command -v nvim &> /dev/null
 then
@@ -48,87 +101,50 @@ then
 fi
 
 export SDKMAN_DIR="$HOME/.sdkman"
-zinit ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
+zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
     atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
     atpull"sdk selfupdate" \
     atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
-zinit light zdharma-continuum/null
+zi light z-shell/null
 
-zinit light zdharma-continuum/zui
+zi ice lucid wait as'completion' blockf has'cargo'
+zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
 
-zinit snippet OMZ::lib/theme-and-appearance.zsh
+zi ice lucid wait as'completion' blockf has'rg'
+zi snippet https://github.com/BurntSushi/ripgrep/blob/master/complete/_rg
 
-zinit ice pick"async.zsh" src"pure.zsh"
-zinit light sindresorhus/pure
+zi ice lucid wait as'completion' blockf has'youtube-dl' mv'youtube-dl.zsh -> _youtube-dl'
+zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
-# zinit light dracula/zsh
+# zi ice pick"async.zsh" src"pure.zsh"
+# zi light sindresorhus/pure
 
-zinit snippet OMZ::lib/history.zsh
-zinit snippet OMZL::grep.zsh
-zinit snippet OMZL::completion.zsh
-zinit snippet OMZL::clipboard.zsh
-zinit snippet OMZL::termsupport.zsh
-
-zinit snippet OMZ::lib/key-bindings.zsh
-zinit snippet OMZ::lib/directories.zsh
-
-
-zinit ice as"completion"
-zinit snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
-
-zinit ice as"completion"
-zinit snippet https://github.com/docker/compose/tree/master/contrib/completion/zsh/_docker-compose
-
-zinit ice wait lucid
-zinit snippet OMZP::git
-
-zinit ice wait lucid
-zinit snippet OMZP::git-extras
-
-zinit ice wait lucid
-zinit snippet OMZP::encode64
-
-zinit ice wait lucid
-zinit snippet OMZP::extract
-
-zinit ice wait lucid
-zinit snippet OMZP::urltools
-
-# zinit ice wait lucid
-# zinit light tom-auger/cmdtime
-
-zinit ice wait lucid
-zinit snippet OMZP::jenv
-
-zinit ice wait lucid
-zinit snippet OMZP::nvm
-
-zinit ice wait lucid
-zinit light kazhala/dotbare
-
-zplugin ice as"program" pick"bin/git-dsf"
-zplugin light zdharma-continuum/zsh-diff-so-fancy
-
-zinit wait lucid for \
- atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-    zdharma-continuum/fast-syntax-highlighting \
+zi wait lucid for \
+ atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+    z-shell/fast-syntax-highlighting \
  blockf \
     zsh-users/zsh-completions \
  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
+zi ice wait lucid
+zi snippet OMZP::nvm
+
+zi ice wait lucid
+zi light kazhala/dotbare
+
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-zinit ice wait lucid
-zinit snippet "OMZ::lib/completion.zsh"
+zi ice wait lucid
+zi snippet "OMZ::lib/completion.zsh"
 
-zinit ice wait lucid
-zinit light "MichaelAquilina/zsh-you-should-use"
+zi ice wait lucid
+zi light "MichaelAquilina/zsh-you-should-use"
 
-zinit ice wait lucid
-zinit light Aloxaf/fzf-tab
+zi ice lucid wait has'fzf'
+zi light Aloxaf/fzf-tab
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
@@ -153,6 +169,7 @@ else
     export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 fi
 
+
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --color=dark
 --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
@@ -172,8 +189,9 @@ then
     alias la=ll -a
 fi
 
+
 # >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
+
 __conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -186,4 +204,3 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
