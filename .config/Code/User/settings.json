@@ -433,7 +433,6 @@
         },
         {
             "before": [
-                "g",
                 "/"
             ],
             "commands": [
@@ -442,6 +441,15 @@
         },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "g",
+                "/"
+            ],
+            "after": [
+                "/"
+            ]
+        },
         {
             "before": [
                 "<leader>",
@@ -597,4 +605,8 @@
     ],
     "editor.renderWhitespace": "all",
     "window.zoomLevel": 1,
+    "vim.handleKeys": {
+        "<C-a>": false,
+        "<C-f>": false
+    }
 }
