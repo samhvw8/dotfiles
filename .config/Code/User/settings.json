@@ -431,6 +431,15 @@
                 "editor.action.marker.prev"
             ]
         },
+        {
+            "before": [
+                "g",
+                "/"
+            ],
+            "commands": [
+                "editor.action.startFindReplaceAction"
+            ]
+        },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
         {
