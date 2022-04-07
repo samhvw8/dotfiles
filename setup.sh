@@ -88,8 +88,8 @@ else
     mv $HOME/tmp/kbenv-linux-amd64 $HOME/.local/bin/kbenv
     mv $HOME/tmp/kubectl-wrapper-linux-amd64 $HOME/.local/bin/kubectl
     
-    kbenv install 1.23.4
-    kbenv use 1.23.4
+    kbenv install 1.21.6
+    kbenv use 1.21.6
 
     curl -sS https://webinstall.dev/k9s | bash && \
 
