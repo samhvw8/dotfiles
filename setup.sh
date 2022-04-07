@@ -79,7 +79,7 @@ else
 
     curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.14.0/skaffold-linux-amd64 && chmod +x skaffold && sudo mv skaffold /usr/local/bin  && \
 
-    wget -O "$HOME/tmp/kbenv.tar.gz" https://github.com/little-angry-clouds/kubernetes-binaries-managers/releases/download/0.3.1/helmenv-linux-amd64.tar.gz && \
+    wget -O "$HOME/tmp/kbenv.tar.gz" https://github.com/little-angry-clouds/kubernetes-binaries-managers/releases/download/0.3.1/kbenv-linux-amd64.tar.gz && \
     tar -xvf "$HOME/tmp/kbenv.tar.gz"  --directory $HOME/tmp && \
     
     chmod +x $HOME/tmp/kbenv-linux-amd64 
