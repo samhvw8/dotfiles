@@ -69,9 +69,9 @@ else
 
     chmod +x $HOME/tmp/helm-wrapper-linux-amd64 && \
 
-    mv $HOME/tmp/linux-amd64/helmenv-linux-amd64 $HOME/.local/bin/helmenv &&  \
+    mv $HOME/tmp/helmenv-linux-amd64 $HOME/.local/bin/helmenv &&  \
 
-    mv $HOME/tmp/linux-amd64/helm-wrapper-linux-amd64 $HOME/.local/bin/helm &&  \
+    mv $HOME/tmp/helm-wrapper-linux-amd64 $HOME/.local/bin/helm &&  \
 
     helmenv install 2.15.1
     helmenv install 3.8.0

@@ -95,7 +95,7 @@ nnoremap g<c-i> <c-i>
 
 
 " built in search looks better
-nnoremap / :action Find<cr>
+nnoremap / :action Replace<cr>
 " but preserve ideavim search
 nnoremap g/ /
 
