@@ -60,6 +60,9 @@ OMZP::helm \
 OMZP::kubectl \
 OMZP::minikube 
 
+zi ice lucid wait="0" pick="asdf.sh"
+zi light asdf-vm/asdf
+
 zi snippet OMZ::lib/key-bindings.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -80,7 +83,7 @@ if [[ `uname` == "Darwin" ]]; then
 else
     zi ice wait"2" as"command" from"gh-r" lucid \
         mv"zoxide*/zoxide -> zoxide" \
-        atclone"./zoxide init zsh > init.zsh" \
+        atclone"./zoxide init --cmd j zsh > init.zsh" \
         atpull"%atclone" src"init.zsh" nocompile'!'
     zi light ajeetdsouza/zoxide
 
@@ -127,8 +130,8 @@ zi wait lucid for \
  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
-zi ice wait lucid
-zi snippet OMZP::nvm
+# zi ice wait lucid
+# zi snippet OMZP::nvm
 
 zi ice wait lucid
 zi light kazhala/dotbare

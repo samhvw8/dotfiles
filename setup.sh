@@ -10,13 +10,16 @@ else
 
     set -x
 
+    mkdir -p $HOME/.local/bin && \
+    mkdir -p $HOME/.bin && \
+    mkdir -p $HOME/bin && \
+
     sudo apt update && \
     sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg google-cloud-sdk ca-certificates curl software-properties-common build-essential terminator  && \
+
     git clone https://github.com/kazhala/dotbare.git ~/.dotbare  && \
 
     export PATH=$PATH:$HOME/.dotbare && \
-
-    echo 'alias dotbare="$HOME/.dotbare/dotbare"' | tee -a ~/.profile && \
 
     dotbare finit -u  https://github.com/samhvw8/dotfiles.git && \
 
@@ -25,17 +28,7 @@ else
 
     sudo dbus-uuidgen --ensure && \
 
-    wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local && \
-
-    echo 'export PATH=$PATH:/usr/local/go/bin' | tee -a ~/.profile && \
-    echo 'export PATH=$PATH:$HOME/.local/bin' | tee -a ~/.profile && \
-    echo 'export PATH=$PATH:$HOME/.bin' | tee -a ~/.profile && \
-    echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' | tee -a ~/.profile && \
-
-    mkdir -p $HOME/.local/bin && \
-    mkdir -p $HOME/.bin && \
-
-    source ~/.profile && \
+    wget -c https://dl.google.com/go/go1.18.1.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
 
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
 
