@@ -1,4 +1,10 @@
 {
+    "go.alternateTools": {
+        "go": "~/.asdf/shims/go",
+    },
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.defaultProfile.windows": "zsh",
     "editor.fontFamily": "FiraCode Nerd Font, monospace",
     "editor.formatOnSave": true,
     "editor.renderControlCharacters": true,
