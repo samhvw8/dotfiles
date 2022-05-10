@@ -19,9 +19,15 @@ zi light-mode for \
 #####################
 # PROMPT            #
 #####################
-zi lucid for \
-as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*unknown-linux-gnu*' \
-  starship/starship \
+if [[ `uname` == "Darwin" ]]; then
+    zi lucid for \
+    as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*apple-darwin.tar.gz' \
+        starship/starship \
+else
+    zi lucid for \
+    as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*unknown-linux-gnu*' \
+        starship/starship \
+fi
 
 ##########################
 # OMZ Libs and Plugins   #
@@ -158,7 +164,6 @@ if [[ `uname` == "Darwin" ]]; then
     test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
     source ~/.iterm2_shell_integration.zsh
     export HOMEBREW_NO_INSTALL_CLEANUP=1
-    eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
     export PATH="/usr/local/sbin:$PATH"
     export PATH="/usr/local/opt/icu4c/bin:$PATH"
     export PATH="/usr/local/opt/icu4c/sbin:$PATH"
@@ -181,12 +186,6 @@ export FZF_DEFAULT_COMMAND='fd --type file'
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
-
-if command -v exa &> /dev/null
-then
-    alias ls=exa
-    alias la=ll -la
-fi
 
 
 # >>> conda initialize >>>
