@@ -194,6 +194,8 @@ else
     setup_krew_linux
 
     setup_minikube_linux
+
+    setup_miniconda_linux
     
     chsh -s $(which zsh)
 fi
