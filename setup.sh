@@ -197,5 +197,5 @@ else
 
     setup_miniconda_linux
     
-    chsh -s $(which zsh)
+    chsh -s $(which zsh) $USER
 fi
