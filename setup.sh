@@ -161,6 +161,7 @@ setup_gitconfig
 
 if [[ `uname` == "Darwin" ]] 
 then
+    :
 else
     setup_dbus_wsl2
     setup_font_linux
@@ -173,7 +174,8 @@ setup_go
 setup_fzf
 
 if [[ `uname` == "Darwin" ]] 
-then
+then 
+    :
 else
     setup_bazel_linux
 fi
@@ -206,6 +208,7 @@ setup_asdf_reshim
 
 if [[ `uname` == "Darwin" ]] 
 then
+    :
 else
     chsh -s $(which zsh) $USER
 fi
