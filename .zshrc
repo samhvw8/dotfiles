@@ -64,7 +64,11 @@ zi ice lucid wait="0" pick="asdf.sh"
 zi light asdf-vm/asdf
 
 zi snippet OMZ::lib/key-bindings.zsh
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+if [ -f ~/.fzf.zsh ]; then
+    zi ice wait"0" lucid
+    zi snippet $HOME/.fzf.zsh
+fi
 
 zi ice as"completion"
 zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
@@ -77,23 +81,18 @@ zi snippet OMZ::lib/theme-and-appearance.zsh
 
 zi load z-shell/zui
 
-if [[ `uname` == "Darwin" ]]; then
-    eval "$(zoxide init zsh)"
-    zi snippet OMZP::fzf/fzf.plugin.zsh
-else
-    zi ice wait"2" as"command" from"gh-r" lucid \
-        mv"zoxide*/zoxide -> zoxide" \
-        atclone"./zoxide init --cmd j zsh > init.zsh" \
-        atpull"%atclone" src"init.zsh" nocompile'!'
-    zi light ajeetdsouza/zoxide
+zi ice wait"2" as"command" from"gh-r" lucid \
+    mv"zoxide*/zoxide -> zoxide" \
+    atclone"./zoxide init --cmd j zsh > init.zsh" \
+    atpull"%atclone" src"init.zsh" nocompile'!'
+zi light ajeetdsouza/zoxide
 
-    zi light-mode for \
-        z-shell/z-a-meta-plugins \
-        @console-tools
+zi light-mode for \
+    z-shell/z-a-meta-plugins \
+    @console-tools
 
-    zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
-    zi light dandavison/delta
-fi
+zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+zi light dandavison/delta
 
 if command -v nvim &> /dev/null
 then
@@ -164,14 +163,11 @@ if [[ `uname` == "Darwin" ]]; then
     export PATH="/usr/local/opt/icu4c/bin:$PATH"
     export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 else
-    export PATH=$PATH:/usr/local/go/bin
     alias open=xdg-open
     alias idea=$HOME/idea/idea-IC-203.8084.24/bin/idea.sh
-    # Generated for envman. Do not edit.
-    [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-    export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 fi
 
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --color=dark
@@ -189,7 +185,7 @@ export LANGUAGE="en_US.UTF-8"
 if command -v exa &> /dev/null
 then
     alias ls=exa
-    alias la=ll -a
+    alias la=ll -la
 fi
 
 
