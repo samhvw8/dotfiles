@@ -60,8 +60,8 @@ OMZP::helm \
 OMZP::kubectl \
 OMZP::minikube 
 
-zi ice lucid wait="0" pick="asdf.sh"
-zi light asdf-vm/asdf
+zi ice wait"0" lucid
+zi snippet $HOME/.asdf/asdf.sh
 
 zi snippet OMZ::lib/key-bindings.zsh
 

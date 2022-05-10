@@ -1,11 +1,5 @@
 set -x;
 
-asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
-
-asdf install golang 1.18.1
-
-asdf global golang 1.18.1
-
 mkdir -p ~/workspace
 
 cd ~/workspace
@@ -16,8 +10,8 @@ cd asdf-exec
 
 go build
 
-cp asdf-exec $HOME/.zi/plugins/asdf-vm---asdf/bin/private
+cp asdf-exec $HOME/.asdf/bin/private
 
-sed -i.bak -e 's|exec $(asdf_dir)/bin/asdf exec|exec $(asdf_dir)/bin/private/asdf-exec|' $HOME/.zi/plugins/asdf-vm---asdf/lib/commands/reshim.bash && \
+sed -i.bak -e 's|exec $(asdf_dir)/bin/asdf exec|exec $(asdf_dir)/bin/private/asdf-exec|' $HOME/.asdf/lib/commands/reshim.bash && \
 rm ~/.asdf/shims/* && \
 asdf reshim

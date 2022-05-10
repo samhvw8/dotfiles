@@ -29,8 +29,10 @@ setup_font_linux () {
     fc-cache -f -v 
 }
 
-setup_go_linux () {
-    wget -c https://dl.google.com/go/go1.18.1.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+setup_go () {
+    asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
+    asdf install golang 1.18.1
+    asdf global golang 1.18.1
 }
 
 setup_fzf () {
@@ -54,42 +56,23 @@ setup_bazel_linux () {
     sudo chmod +x /usr/local/bin/bazel
 }
 
-setup_helm_linux () {
-    wget -O "$HOME/tmp/helmenv.tar.gz" https://github.com/little-angry-clouds/kubernetes-binaries-managers/releases/download/0.3.1/helmenv-linux-amd64.tar.gz && \
-
-    tar -xvf "$HOME/tmp/helmenv.tar.gz"  --directory $HOME/tmp && \
-
-    chmod +x $HOME/tmp/helmenv-linux-amd64 && \
-
-    chmod +x $HOME/tmp/helm-wrapper-linux-amd64 && \
-
-    mv $HOME/tmp/helmenv-linux-amd64 $HOME/.local/bin/helmenv &&  \
-
-    mv $HOME/tmp/helm-wrapper-linux-amd64 $HOME/.local/bin/helm &&  \
-
-    helmenv install 2.15.1
-    helmenv install 3.8.0
-    helmenv use 2.15.1
+setup_helm () {
+    asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git
+    asdf install helm 2.15.1
+    asdf install helm 3.8.0
+    asdf global helm 3.8.0
 }
 
-setup_skaffold_linux () {
-    curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.14.0/skaffold-linux-amd64 && \ 
-    chmod +x skaffold && \
-    sudo mv skaffold /usr/local/bin
+setup_skaffold () {
+    asdf plugin add skaffold https://github.com/nklmilojevic/asdf-skaffold.git
+    asdf install skaffold 1.14.0
+    asdf global skaffold 1.14.0
 }
 
-setup_kubectl_linux () {
-    wget -O "$HOME/tmp/kbenv.tar.gz" https://github.com/little-angry-clouds/kubernetes-binaries-managers/releases/download/0.3.1/kbenv-linux-amd64.tar.gz && \
-    tar -xvf "$HOME/tmp/kbenv.tar.gz"  --directory $HOME/tmp && \
-    
-    chmod +x $HOME/tmp/kbenv-linux-amd64  && \
-    chmod +x $HOME/tmp/kubectl-wrapper-linux-amd64  && \
-
-    mv $HOME/tmp/kbenv-linux-amd64 $HOME/.local/bin/kbenv && \
-    mv $HOME/tmp/kubectl-wrapper-linux-amd64 $HOME/.local/bin/kubectl && \
-    
-    kbenv install 1.21.6 && \
-    kbenv use 1.21.6 
+setup_kubectl () {
+    asdf plugin add kubectl https://github.com/Banno/asdf-kubectl.git
+    asdf install kubectl 1.21.6
+    asdf global kubectl 1.21.6
 }
 
 setup_k9s () {
@@ -100,8 +83,10 @@ setup_tpm () {
     git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm 
 }
 
-setup_nvm () {
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash 
+setup_nodejs () {
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    asdf install nodejs lts-fermium
+    asdf global nodejs lts-fermium
 }
 
 setup_sdkman () {
@@ -117,34 +102,49 @@ pip_install_dep () {
     pip install inquirer click pathlib pyyaml airspeed google-cloud-firestore 
 }
 
-setup_krew_linux () {
-    cd "$(mktemp -d)" && \
-    OS="$(uname | tr '[:upper:]' '[:lower:]')" && \
-    ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" && \
-    KREW="krew-${OS}_${ARCH}" && \
-    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" && \
-    tar zxvf "${KREW}.tar.gz" && \
-    ./"${KREW}" install krew  && \
+setup_krew () {
+    asdf plugin add krew https://github.com/jimmidyson/asdf-krew.git
+    asdf install krew 0.4.2
+    asdf global krew 0.4.2
     kubectl krew install ctx 
 }
 
-setup_miniconda_linux () {
-
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-
-    bash ~/miniconda.sh -b -p $HOME/miniconda3 
-
+setup_miniconda () {
+    if [[ `uname` == "Darwin" ]] 
+    then
+        brew install miniconda
+    else
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+        bash ~/miniconda.sh -b -p $HOME/miniconda3 
+    fi
 }
 
-setup_minikube_linux () {
-    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb && \
-
-    sudo dpkg -i minikube_latest_amd64.deb 
+setup_minikube () {
+    if [[ `uname` == "Darwin" ]] 
+    then
+        brew install minikube
+    else
+        curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb && \
+        sudo dpkg -i minikube_latest_amd64.deb 
+    fi
 }
+
+setup_asdf () {
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf 
+    . $HOME/.asdf/asdf.sh
+}
+
+setup_asdf_reshim () {
+    sh ~/setup-asdf.sh
+}
+
+set -x;
 
 if [[ `uname` == "Darwin" ]] 
 then
     echo "Macos"
+
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
     echo "Linux"
 
@@ -152,50 +152,65 @@ else
 
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
 
-    set -x;
-
-    setup_folder
-
     sudo apt update && \
     sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg google-cloud-sdk ca-certificates curl software-properties-common build-essential terminator  && \
+fi
 
-    setup_dotbare
+setup_folder
 
-    setup_gitconfig
+setup_dotbare
 
+setup_gitconfig
+
+if [[ `uname` == "Darwin" ]] 
+then
+else
     setup_dbus_wsl2
-
     setup_font_linux
+fi
 
-    setup_go_linux
+setup_asdf
 
-    setup_fzf
+setup_go
 
+setup_fzf
+
+if [[ `uname` == "Darwin" ]] 
+then
+else
     setup_bazel_linux
+fi
 
-    setup_helm_linux
+setup_helm
 
-    setup_skaffold_linux
+setup_skaffold
 
-    setup_kubectl_linux
+setup_kubectl
 
-    setup_k9s
+setup_k9s
 
-    setup_tpm
+setup_tpm
 
-    setup_nvm
+setup_nodejs
 
-    setup_sdkman
+setup_sdkman
 
-    setup_rust
+setup_rust
 
-    pip_install_dep
+pip_install_dep
 
-    setup_krew_linux
+setup_krew_linux
 
-    setup_minikube_linux
+setup_minikube
 
-    setup_miniconda_linux
-    
+setup_miniconda
+
+setup_asdf_reshim
+
+if [[ `uname` == "Darwin" ]] 
+then
+else
     chsh -s $(which zsh) $USER
 fi
+
+zsh
