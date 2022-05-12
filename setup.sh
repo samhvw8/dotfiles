@@ -129,6 +129,12 @@ setup_asdf_reshim() {
     . $HOME/setup-asdf.sh
 }
 
+setup_gcloud() {
+    asdf plugin add gcloud https://github.com/jthegedus/asdf-gcloud
+    asdf install gcloud latest
+    asdf global gcloud latest
+}
+
 set -x
 
 if [[ $(uname) == "Darwin" ]]; then
@@ -137,10 +143,8 @@ if [[ $(uname) == "Darwin" ]]; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
     echo "Linux"
-    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list &&
-        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - &&
         sudo apt update &&
-        sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg google-cloud-sdk ca-certificates curl software-properties-common build-essential terminator
+        sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg ca-certificates curl software-properties-common build-essential terminator
 fi
 
 setup_folder
@@ -167,6 +171,8 @@ if [[ $(uname) == "Darwin" ]]; then
 else
     setup_bazel_linux
 fi
+
+setup_gcloud
 
 setup_helm
 
