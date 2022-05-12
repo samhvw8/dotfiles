@@ -1,4 +1,13 @@
 {
+    "go.alternateTools": {
+        "go": "~/.asdf/shims/go",
+    },
+    "files.associations": {
+        "*.strings": "plist"
+    },
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.defaultProfile.windows": "zsh",
     "editor.fontFamily": "FiraCode Nerd Font, monospace",
     "editor.formatOnSave": true,
     "editor.renderControlCharacters": true,
@@ -431,8 +440,25 @@
                 "editor.action.marker.prev"
             ]
         },
+        {
+            "before": [
+                "/"
+            ],
+            "commands": [
+                "editor.action.startFindReplaceAction"
+            ]
+        },
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "g",
+                "/"
+            ],
+            "after": [
+                "/"
+            ]
+        },
         {
             "before": [
                 "<leader>",
@@ -587,4 +613,8 @@
         ],
     ],
     "editor.renderWhitespace": "all",
+    "window.zoomLevel": 1,
+    "vim.handleKeys": {
+        "<C-f>": false
+    }
 }
