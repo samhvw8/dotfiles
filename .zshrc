@@ -87,7 +87,7 @@ zi snippet OMZ::lib/theme-and-appearance.zsh
 zi load z-shell/zui
 
 zi ice wait"2" as"command" from"gh-r" lucid \
-    mv"zoxide*/zoxide -> zoxide" \
+    mv"*zoxide* -> zoxide" \
     atclone"./zoxide init --cmd j zsh > init.zsh" \
     atpull"%atclone" src"init.zsh" nocompile'!'
 zi light ajeetdsouza/zoxide
