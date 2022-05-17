@@ -141,6 +141,7 @@ if [[ $(uname) == "Darwin" ]]; then
     echo "Macos"
 
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    brew bundle install
 else
     echo "Linux"
         sudo apt update &&
@@ -150,6 +151,12 @@ fi
 setup_folder
 
 setup_dotbare
+
+if [[ $(uname) == "Darwin" ]]; then
+    brew bundle install
+else
+    :
+fi
 
 setup_gitconfig
 
