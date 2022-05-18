@@ -61,7 +61,6 @@ OMZP::git \
 OMZP::urltools \
 OMZP::extract \
 OMZP::encode64 \
-OMZP::helm \
 OMZP::minikube 
 
 zi ice lucid wait="0" pick="asdf.sh"
