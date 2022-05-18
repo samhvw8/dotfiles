@@ -21,7 +21,7 @@ zi light-mode for \
 #####################
 if [[ `uname` == "Darwin" ]]; then
     zi lucid for \
-    as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'apple-darwin.tar.gz' \
+    as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*apple-darwin.tar.gz' \
         starship/starship 
 else
     zi lucid for \
