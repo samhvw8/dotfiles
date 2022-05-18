@@ -159,6 +159,8 @@ else
     :
 fi
 
+setup_miniconda
+
 setup_gitconfig
 
 if [[ $(uname) == "Darwin" ]]; then
@@ -203,8 +205,6 @@ pip_install_dep
 setup_krew_linux
 
 setup_minikube
-
-setup_miniconda
 
 setup_asdf_reshim
 

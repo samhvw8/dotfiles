@@ -57,7 +57,6 @@ OMZL::directories.zsh \
 OMZL::git.zsh \
 OMZL::grep.zsh \
 OMZL::spectrum.zsh \
-OMZL::termsupport.zsh \
 OMZP::git \
 OMZP::urltools \
 OMZP::extract \
