@@ -201,7 +201,7 @@ setup_rust
 
 pip_install_dep
 
-setup_krew_linux
+setup_krew
 
 setup_minikube
 
