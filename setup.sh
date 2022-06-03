@@ -144,7 +144,7 @@ if [[ $(uname) == "Darwin" ]]; then
     eval $(/opt/homebrew/bin/brew shellenv)
 else
     echo "Linux"
-        sudo apt update &&
+    sudo apt update &&
         sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg ca-certificates curl software-properties-common build-essential terminator
 fi
 
@@ -208,7 +208,9 @@ setup_minikube
 setup_asdf_reshim
 
 if [[ $(uname) == "Darwin" ]]; then
-    softwareupdate --install-rosetta --agree-to-license
+    if [[ $(uname -m) == "arm64" ]]; then
+        softwareupdate --install-rosetta --agree-to-license
+    fi
 else
     chsh -s $(which zsh) $USER
 fi
