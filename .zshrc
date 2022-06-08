@@ -63,8 +63,10 @@ OMZP::extract \
 OMZP::encode64 \
 OMZP::minikube 
 
-zi ice lucid wait="0" pick="asdf.sh"
-zi light $HOME/.asdf
+if [ -f $HOME/.asdf/asdf.sh ]; then
+    zi ice lucid wait="0" pick="asdf.sh"
+    zi light $HOME/.asdf
+fi
 
 zi snippet OMZ::lib/key-bindings.zsh
 
@@ -217,3 +219,6 @@ fi
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
+if [[ -f  "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ]]; then
+    source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+fi
