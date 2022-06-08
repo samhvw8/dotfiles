@@ -125,8 +125,9 @@ setup_asdf() {
     . $HOME/.asdf/asdf.sh
 }
 
-setup_asdf_reshim() {
-    . $HOME/setup-asdf.sh
+setup_direnv() {
+    asdf plugin-add direnv
+    asdf direnv setup --shell zsh --version latest
 }
 
 setup_gcloud() {
@@ -205,7 +206,7 @@ setup_krew
 
 setup_minikube
 
-setup_asdf_reshim
+setup_direnv
 
 if [[ $(uname) == "Darwin" ]]; then
     if [[ $(uname -m) == "arm64" ]]; then
