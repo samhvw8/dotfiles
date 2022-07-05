@@ -1,6 +1,6 @@
 #!/bin/bash 
 export LC_ALL="C"
-rofi -show combi -combi-modi "window,run,ssh,drun" -modi combi  2>&1 | tee /tmp/rofi-run.log
+rofi -show combi   2>&1 | tee /tmp/rofi-run.log
 exit 0
 ~                                                                                                                      
 ~                                      

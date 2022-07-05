@@ -3,3 +3,7 @@ golang 1.18.1
 helm 3.8.0
 skaffold 1.14.0
 go-sdk 1.18.1
+kubectl 1.21.6
+krew 0.4.2
+gcloud 390.0.0
+kubectx 0.9.4
