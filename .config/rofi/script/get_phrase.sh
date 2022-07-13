@@ -4,7 +4,7 @@ CURRENT_DIR=$(dirname "${BASH_SOURCE[0]:-$0}")
 source "$CURRENT_DIR"/phrase.env
 
 if [[ ! -d "$cache_dir" ]]; then
-  mkdir "$cache_dir"
+  mkdir -p "$cache_dir"
 fi
 
 if [ -z "$*" ]; then

@@ -16,6 +16,8 @@ set exchange
 
 set highlightedyank
 
+set matchit
+
 set so=5
 set incsearch
 set hlsearch
@@ -41,71 +43,71 @@ set ideastrictmode
 set clipboard^=unnamedplus,unname,ideaput
 
 """ Mappings
-nnoremap <Space>a :action ShowIntentionActions<CR>
-vnoremap <Space>a :action ShowIntentionActions<CR>
-nnoremap <leader>re :action RenameElement<cr>
-nnoremap <leader>rf :action RenameFile<cr>
+nnoremap <leader>a <Action>(ShowIntentionActions)
+vnoremap <leader>a <Action>(ShowIntentionActions)
+nnoremap <leader>re <Action>(RenameElement)
+nnoremap <leader>rf <Action>(RenameFile)
 nnoremap <leader><cr> :nohlsearch<CR>
 
 
 " actions
-nnoremap <space>q :action CloseContent<cr>
-nnoremap <space>Q :action ReopenClosedTab<cr>
-nnoremap <space>\ :action VimFilePrevious<cr>
-nnoremap <space>s :action SearchEverywhere<cr>
-nnoremap <space>E :action Switcher<cr>
-nnoremap <space>t :action FileStructurePopup<cr>
-nnoremap <space>T :action GotoSymbol<cr>
-nnoremap <space>A :action GotoAction<cr>
-nnoremap <Leader>ic :action InspectCode<CR>
-nnoremap gR :action ShowUsages<cr>
-nnoremap gr :action FindUsages<cr>
-nnoremap gi :action GotoImplementation<cr>
+nnoremap <leader>q <Action>(CloseContent)
+nnoremap <leader>Q <Action>(ReopenClosedTab)
+nnoremap <leader>\ <Action>(VimFilePrevious)
+nnoremap <leader>s <Action>(SearchEverywhere)
+nnoremap <leader>E <Action>(Switcher)
+nnoremap <leader>t <Action>(FileStructurePopup)
+nnoremap <leader>T <Action>(GotoSymbol)
+nnoremap <leader>A <Action>(GotoAction)
+nnoremap <Leader>ic <Action>(InspectCode)
+nnoremap gR <Action>(ShowUsages)
+nnoremap gr <Action>(FindUsages)
+nnoremap gi <Action>(GotoImplementation)
 
 " unimpaired mappings
-nnoremap [<space> O<esc>j
-nnoremap ]<space> o<esc>k
-nnoremap [q :action PreviousOccurence<cr>
-nnoremap ]q :action NextOccurence<cr>
-nnoremap [m :action MethodUp<cr>
-nnoremap ]m :action MethodDown<cr>
-nnoremap [h :action VcsShowPrevChangeMarker<cr>
-nnoremap ]h :action VcsShowNextChangeMarker<cr>
-nnoremap [b :action PreviousTab<cr>
-nnoremap ]b :action NextTab<cr>
-nnoremap [d :action GotoPreviousError<cr>
-nnoremap ]d :action GotoNextError<cr>
+nnoremap [<leader> O<esc>j
+nnoremap ]<leader> o<esc>k
+nnoremap [q <Action>(PreviousOccurence)
+nnoremap ]q <Action>(NextOccurence)
+nnoremap [m <Action>(MethodUp)
+nnoremap ]m <Action>(MethodDown)
+nnoremap [h <Action>(VcsShowPrevChangeMarker)
+nnoremap ]h <Action>(VcsShowNextChangeMarker)
+nnoremap [b <Action>(PreviousTab)
+nnoremap ]b <Action>(NextTab)
+nnoremap [d <Action>(GotoPreviousError)
+nnoremap ]d <Action>(GotoNextError)
 
 " Moving lines
-nmap [e :action MoveLineUp<cr>
-nmap ]e :action MoveLineDown<cr>
+nmap [e <Action>(MoveLineUp)
+nmap ]e <Action>(MoveLineDown)
 " Moving statements
-nmap [s :action MoveStatementUp<cr>
-nmap ]s :action MoveStatementDown<cr>
+nmap [s <Action>(MoveStatementUp)
+nmap ]s <Action>(MoveStatementDown)
 
 " Search
-nmap <leader>/ :action FindInPath<cr>
+nmap <leader>/ <Action>(FindInPath)
 
 " built-in navigation to navigated items works better
-nnoremap <c-o> :action Back<cr>
-nnoremap <c-i> :action Forward<cr>
+nnoremap <c-o> <Action>(Back)
+nnoremap <c-i> <Action>(Forward)
 " but preserve ideavim defaults
 nnoremap g<c-o> <c-o>
 nnoremap g<c-i> <c-i>
 
 
 " built in search looks better
-nnoremap / :action Replace<cr>
+nnoremap / <Action>(Replace)
 " but preserve ideavim search
 nnoremap g/ /
 
-nmap <Space>w :action SaveDocument<CR>
+nmap <leader>w <Action>(SaveDocument)
 
-nmap <Space>f :action GotoFile<CR>
+nmap <leader>f <Action>(GotoFile)
 
 map \r <Action>(ReformatCode)
 
-nmap crc :action StringManipulation.ToCamelCase<CR>
-nmap crm :action StringManipulation.ToPascalCase<CR>
-nmap cr_ :action StringManipulation.ToSnakeCase<CR>
-nmap cru :action StringManipulation.ToScreamingSnakeCase<CR>
+nmap crc <Action>(StringManipulation.ToCamelCase)
+nmap crm <Action>(StringManipulation.ToPascalCase)
+nmap cr_ <Action>(StringManipulation.ToSnakeCase)
+nmap cru <Action>(StringManipulation.ToScreamingSnakeCase)
