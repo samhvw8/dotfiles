@@ -89,8 +89,8 @@ nmap ]s <Action>(MoveStatementDown)
 nmap <leader>/ <Action>(FindInPath)
 
 " built-in navigation to navigated items works better
-nnoremap <c-o> <Action>(Back)
-nnoremap <c-i> <Action>(Forward)
+nnoremap <c-o> :action Back<cr>
+nnoremap <c-i> :action Forward<cr>
 " but preserve ideavim defaults
 nnoremap g<c-o> <c-o>
 nnoremap g<c-i> <c-i>
