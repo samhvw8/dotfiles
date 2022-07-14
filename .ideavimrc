@@ -106,6 +106,8 @@ nmap <leader>w <Action>(SaveDocument)
 nmap <leader>f <Action>(GotoFile)
 
 map \r <Action>(ReformatCode)
+nmap \t <Action>(Refactorings.QuickListPopupAction)
+vmap \t <Action>(Refactorings.QuickListPopupAction)
 
 nmap crc <Action>(StringManipulation.ToCamelCase)
 nmap crm <Action>(StringManipulation.ToPascalCase)
