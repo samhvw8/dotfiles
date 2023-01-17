@@ -60,8 +60,7 @@ OMZL::spectrum.zsh \
 OMZP::git \
 OMZP::urltools \
 OMZP::extract \
-OMZP::encode64 \
-OMZP::minikube 
+OMZP::encode64
 
 if [ -f $HOME/.asdf/asdf.sh ]; then
     zi ice lucid wait="0" pick="asdf.sh"
@@ -123,9 +122,6 @@ zi snippet https://github.com/BurntSushi/ripgrep/blob/master/complete/_rg
 zi ice lucid wait as'completion' blockf has'youtube-dl' mv'youtube-dl.zsh -> _youtube-dl'
 zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
-# zi ice pick"async.zsh" src"pure.zsh"
-# zi light sindresorhus/pure
-
 zi wait lucid for \
  atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     z-shell/fast-syntax-highlighting \
@@ -134,16 +130,8 @@ zi wait lucid for \
  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
-# zi ice wait lucid
-# zi snippet OMZP::nvm
-
 zi ice wait lucid
 zi light kazhala/dotbare
-
-ZSH_AUTOSUGGEST_USE_ASYNC=true
-
-zi ice wait lucid
-zi snippet "OMZ::lib/completion.zsh"
 
 zi ice wait lucid
 zi light "MichaelAquilina/zsh-you-should-use"
@@ -222,3 +210,4 @@ fi
 if [[ -f  "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ]]; then
     source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 fi
+[[ ! -f ~/.kubecm ]] || source ~/.kubecm

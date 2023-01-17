@@ -624,5 +624,6 @@
     "editor.guides.indentation": false,
     "editor.guides.bracketPairs": false,
     "editor.inlayHints.enabled": false,
-    "blockman.n04ColorComboPreset": "Small Galaxy (Gradients)"
+    "blockman.n04ColorComboPreset": "Small Galaxy (Gradients)",
+    "terminal.integrated.enableMultiLinePasteWarning": false
 }
