@@ -14,5 +14,5 @@ if [ -f "$HOME/.zshrc" ]; then
 fi
 
 # Added by Toolbox App
-export PATH="$PATH:/home/samhv/.local/share/JetBrains/Toolbox/scripts"
+export PATH="$PATH:$HOME/.local/share/JetBrains/Toolbox/scripts"
 
