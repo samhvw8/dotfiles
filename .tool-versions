@@ -5,7 +5,7 @@ skaffold 1.14.0
 go-sdk 1.18.1
 kubectl 1.21.6
 krew 0.4.2
-gcloud 390.0.0
+gcloud 415.0.0
 kubectx 0.9.4
 krew 0.4.3
 kubectl 1.21.6
@@ -13,4 +13,9 @@ aria2 1.36.0
 buildpack 0.27.0-rc1
 dive 0.10.0
 peco 0.5.10
-rust 1.62.0
+rust 1.66.1
+awscli 2.7.35
+kubefwd 1.22.4
+kubecm 0.21.1
+just 1.11.0
+direnv 2.32.2

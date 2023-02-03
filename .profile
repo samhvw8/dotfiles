@@ -35,3 +35,7 @@ if [[ $(uname) == "Darwin" ]]; then
 else
     :
 fi
+
+# Added by Toolbox App
+export PATH="$PATH:/home/samhv/.local/share/JetBrains/Toolbox/scripts"
+

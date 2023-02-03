@@ -2,6 +2,7 @@
     "go.alternateTools": {
         "go": "~/.asdf/shims/go",
     },
+    "terminal.integrated.shellIntegration.enabled": true,
     "terminal.integrated.defaultProfile.linux": "zsh",
     "terminal.integrated.defaultProfile.osx": "zsh",
     "terminal.integrated.defaultProfile.windows": "zsh",
@@ -624,5 +625,13 @@
     "editor.guides.indentation": false,
     "editor.guides.bracketPairs": false,
     "editor.inlayHints.enabled": false,
-    "blockman.n04ColorComboPreset": "Small Galaxy (Gradients)"
+    "blockman.n04ColorComboPreset": "Small Galaxy (Gradients)",
+    "rust-analyzer.cargo.extraEnv": {},
+    "rust-analyzer.server.extraEnv": {
+        "RA_LOG": "INFO"
+    },
+    "rust-analyzer.trace.server": "verbose"
+    // "rust-analyzer.cargo.extraEnv": {
+    //     "CARGO_HOME"
+    // }
 }
