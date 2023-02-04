@@ -75,9 +75,14 @@ OMZP::encode64
 
 zi snippet OMZ::lib/key-bindings.zsh
 
+zi wait lucid for z-shell/zi-console
+
 if [ -f ~/.fzf.zsh ]; then
     zi ice wait"0" lucid
     zi snippet $HOME/.fzf.zsh
+
+    zi ice lucid wait has'fzf'
+    zi light Aloxaf/fzf-tab
 fi
 
 zi ice as"completion"
@@ -142,8 +147,6 @@ zi light kazhala/dotbare
 zi ice wait lucid
 zi light "MichaelAquilina/zsh-you-should-use"
 
-zi ice lucid wait has'fzf'
-zi light Aloxaf/fzf-tab
 
 
 
