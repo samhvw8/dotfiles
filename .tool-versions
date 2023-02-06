@@ -16,7 +16,6 @@ krew 0.4.3
 kubecm 0.21.1
 kubectl 1.21.6
 kubectx 0.9.4
-kubefwd 1.22.4
 nodejs 16.15.1
 peco 0.5.10
 rust 1.66.1
