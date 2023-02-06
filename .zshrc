@@ -75,7 +75,8 @@ OMZP::encode64
 
 zi snippet OMZ::lib/key-bindings.zsh
 
-zi wait lucid for z-shell/zi-console
+zi load z-shell/zui
+zi load z-shell/zi-console
 
 if [ -f ~/.fzf.zsh ]; then
     zi ice wait"0" lucid
@@ -94,7 +95,6 @@ zi snippet https://github.com/docker/compose/tree/master/contrib/completion/zsh/
 
 zi snippet OMZ::lib/theme-and-appearance.zsh
 
-zi load z-shell/zui
 
 zi ice wait"2" as"command" from"gh-r" lucid \
     mv"*zoxide* -> zoxide" \
