@@ -61,7 +61,7 @@ if [ -f $HOME/.asdf/asdf.sh ]; then
     source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
   fi
     asdf-tool-version-plugin(){
-        cut -d' ' -f1 ~/.tool-versions|xargs -I{} asdf plugin add {}
+        cut -d' ' -f1 ~/.tool-versions| xargs -I{} asdf plugin add {}
     }
 fi
 
@@ -164,8 +164,6 @@ zi ice wait lucid
 zi light "MichaelAquilina/zsh-you-should-use"
 
 
-
-
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
@@ -202,32 +200,23 @@ export LANGUAGE="en_US.UTF-8"
 
 # >>> conda initialize >>>
 
-
 if [[ `uname` == "Darwin" ]]; then
-    __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-    if [ $? -eq 0 ]; then
-        eval "$__conda_setup"
-    else
-        if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-            . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-        else
-            export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-        fi
-    fi
-    unset __conda_setup
+    export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
 else
-    __conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-    if [ $? -eq 0 ]; then
-        eval "$__conda_setup"
-    else
-        if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-            . "$HOME/miniconda3/etc/profile.d/conda.sh"
-        else
-            export PATH="$HOME/miniconda3/bin:$PATH"
-        fi
-    fi
-    unset __conda_setup
+    export _CONDA_BASE=$HOME/miniconda3
 fi
+
+__conda_setup="$('$_CONDA_BASE/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "$_CONDA_BASE/etc/profile.d/conda.sh" ]; then
+        . "$_CONDA_BASE/etc/profile.d/conda.sh"
+    else
+        export PATH="$_CONDA_BASE/bin:$PATH"
+    fi
+fi
+unset __conda_setup
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
