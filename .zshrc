@@ -5,17 +5,9 @@ export XDG_STATE_HOME="${HOME}/.local/state"
 export XDG_RUNTIME_DIR="${HOME}/.local/run"
 
 
-export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 export ZSH_DATA_DIR="${XDG_DATA_HOME}/zsh"
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
 export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
-
-
-typeset -TUx FPATH fpath=(
-    ${ZDOTDIR}
-    ${ZSH_CACHE_DIR}/completions
-    ${fpath[@]}
-)
 
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
   print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
@@ -26,6 +18,7 @@ if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
 fi
 source "$HOME/.zi/bin/zi.zsh"
 autoload -Uz _zi
+
 (( ${+_comps} )) && _comps[zi]=_zi
 # examples here -> https://wiki.zshell.dev/ecosystem/category/-annexes
 zicompinit # <- https://wiki.zshell.dev/docs/guides/commands
@@ -106,6 +99,7 @@ if [ -f ~/.fzf.zsh ]; then
     zi snippet $HOME/.fzf.zsh
 
     zi light Aloxaf/fzf-tab
+    zi light wfxr/forgit
 fi
 
 zi ice as"completion"
