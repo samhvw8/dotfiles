@@ -16,6 +16,8 @@ zi light-mode for \
 # examples here -> https://wiki.zshell.dev/community/gallery/collection
 zicompinit # <- https://wiki.zshell.dev/docs/guides/commands
 
+export DIRENV_LOG_FORMAT=
+
 #####################
 # PROMPT            #
 #####################
