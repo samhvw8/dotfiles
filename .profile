@@ -25,7 +25,7 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
-alias dotbare="$HOME/.dotbare/dotbare"
+
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/bin
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"

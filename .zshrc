@@ -1,3 +1,22 @@
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+export XDG_RUNTIME_DIR="${HOME}/.local/run"
+
+
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+export ZSH_DATA_DIR="${XDG_DATA_HOME}/zsh"
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
+export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
+
+
+typeset -TUx FPATH fpath=(
+    ${ZDOTDIR}
+    ${ZSH_CACHE_DIR}/completions
+    ${fpath[@]}
+)
+
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
   print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
   command mkdir -p "$HOME/.zi" && command chmod go-rwX "$HOME/.zi"
@@ -72,7 +91,9 @@ OMZL::spectrum.zsh \
 OMZP::git \
 OMZP::urltools \
 OMZP::extract \
-OMZP::encode64
+OMZP::encode64 \
+OMZP::kubectl \
+OMZP::helm
 
 
 zi snippet OMZ::lib/key-bindings.zsh
@@ -81,10 +102,9 @@ zi load z-shell/zui
 zi load z-shell/zi-console
 
 if [ -f ~/.fzf.zsh ]; then
-    zi ice wait"0" lucid
+    zi ice wait"0" lucid 
     zi snippet $HOME/.fzf.zsh
 
-    zi ice lucid wait has'fzf'
     zi light Aloxaf/fzf-tab
 fi
 
@@ -144,7 +164,7 @@ zi wait lucid for \
     zsh-users/zsh-autosuggestions
 
 zi ice wait lucid
-zi light kazhala/dotbare
+zi light $HOME/.dotbare
 
 zi ice wait lucid
 zi light "MichaelAquilina/zsh-you-should-use"

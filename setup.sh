@@ -1,8 +1,28 @@
 setup_folder() {
     mkdir -p $HOME/.local/bin
+    mkdir -p $HOME/.local/share
+    mkdir -p $HOME/.local/state
+    mkdir -p $HOME/.local/run
     mkdir -p $HOME/.bin
+    mkdir -p $HOME/.config
     mkdir -p $HOME/bin
     mkdir -p $HOME/tmp
+    chmod 0700 "${XDG_RUNTIME_DIR}"
+
+    export XDG_CONFIG_HOME="${HOME}/.config"
+    export XDG_CACHE_HOME="${HOME}/.cache"
+    export XDG_DATA_HOME="${HOME}/.local/share"
+    export XDG_STATE_HOME="${HOME}/.local/state"
+    export XDG_RUNTIME_DIR="${HOME}/.local/run"
+
+
+    export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+    export ZSH_DATA_DIR="${XDG_DATA_HOME}/zsh"
+    export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
+    export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
+
+    mkdir -p "${ZSH_CACHE_DIR}"{,/completions}
+    mkdir -p "${ZSH_DATA_DIR}"
 }
 
 setup_dotbare() {
@@ -14,7 +34,7 @@ setup_dotbare() {
 
 setup_gitconfig() {
     echo '[include]' | tee -a ~/.gitconfig &&
-        echo 'path = ~/.base.gitconfig' | tee -a ~/.gitconfig
+    echo 'path = ~/.base.gitconfig' | tee -a ~/.gitconfig
 }
 
 setup_dbus_wsl2() {
@@ -29,7 +49,7 @@ setup_font_linux() {
 }
 
 setup_go() {
-    asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
+    asdf plugin-add golang
     asdf install golang 1.18.1
     asdf global golang 1.18.1
 }
@@ -42,34 +62,36 @@ setup_fzf() {
 setup_bazel_linux() {
 
     sudo wget -O "/usr/local/bin/bazelisk" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-amd64 &&
-        sudo chmod +x "/usr/local/bin/bazelisk" &&
-        echo "#\!/usr/bin/env bash" | sudo tee -a /usr/local/bin/bazel &&
-        echo 'export JAVA_HOME=$HOME/.sdkman/candidates/java/current' | sudo tee -a /usr/local/bin/bazel &&
-        echo '/usr/local/bin/bazelisk "$@"' | sudo tee -a /usr/local/bin/bazel &&
-        sudo chmod +x /usr/local/bin/bazel
+    sudo chmod +x "/usr/local/bin/bazelisk" &&
+    echo "#\!/usr/bin/env bash" | sudo tee -a /usr/local/bin/bazel &&
+    echo 'export JAVA_HOME=$HOME/.sdkman/candidates/java/current' | sudo tee -a /usr/local/bin/bazel &&
+    echo '/usr/local/bin/bazelisk "$@"' | sudo tee -a /usr/local/bin/bazel &&
+    sudo chmod +x /usr/local/bin/bazel
 }
 
 setup_helm() {
-    asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git
+    asdf plugin-add helm 
     asdf install helm 2.15.1
     asdf install helm 3.8.0
     asdf global helm 3.8.0
 }
 
 setup_skaffold() {
-    asdf plugin add skaffold https://github.com/nklmilojevic/asdf-skaffold.git
+    asdf plugin add skaffold
     asdf install skaffold 1.14.0
     asdf global skaffold 1.14.0
 }
 
 setup_kubectl() {
-    asdf plugin add kubectl https://github.com/Banno/asdf-kubectl.git
+    asdf plugin add kubectl
     asdf install kubectl 1.21.6
     asdf global kubectl 1.21.6
 }
 
 setup_k9s() {
-    curl -sS https://webinstall.dev/k9s | bash
+    asdf plugin add k9s
+    asdf install k9s 0.26.3
+    asdf global k9s 0.26.3
 }
 
 setup_tpm() {
@@ -96,7 +118,7 @@ pip_install_dep() {
 }
 
 setup_krew() {
-    asdf plugin add krew https://github.com/jimmidyson/asdf-krew.git
+    asdf plugin add krew
     asdf install krew 0.4.2
     asdf global krew 0.4.2
     kubectl krew install ctx
@@ -128,12 +150,14 @@ setup_asdf() {
 setup_direnv() {
     asdf plugin-add direnv
     asdf direnv setup --shell zsh --version latest
+    direnv allow $HOME
 }
 
 setup_gcloud() {
-    asdf plugin add gcloud https://github.com/jthegedus/asdf-gcloud
-    asdf install gcloud latest
-    asdf global gcloud latest
+    asdf plugin add gcloud
+    asdf install gcloud 417.0.1
+    asdf global gcloud 417.0.1
+    gcloud components install gke-gcloud-auth-plugin
 }
 
 set -x
