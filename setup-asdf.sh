@@ -49,9 +49,9 @@ setup_font_linux() {
 }
 
 setup_go() {
-    rtx plugin add golang
-    rtx install golang 1.18.1
-    rtx global golang 1.18.1
+    asdf plugin-add golang
+    asdf install golang 1.18.1
+    asdf global golang 1.18.1
 }
 
 setup_fzf() {
@@ -70,28 +70,28 @@ setup_bazel_linux() {
 }
 
 setup_helm() {
-    rtx plugin add helm 
-    rtx install helm 2.15.1
-    rtx install helm 3.8.0
-    rtx global helm 3.8.0
+    asdf plugin-add helm 
+    asdf install helm 2.15.1
+    asdf install helm 3.8.0
+    asdf global helm 3.8.0
 }
 
 setup_skaffold() {
-    rtx plugin add skaffold
-    rtx install skaffold 1.14.0
-    rtx global skaffold 1.14.0
+    asdf plugin add skaffold
+    asdf install skaffold 1.14.0
+    asdf global skaffold 1.14.0
 }
 
 setup_kubectl() {
-    rtx plugin add kubectl
-    rtx install kubectl 1.21.6
-    rtx global kubectl 1.21.6
+    asdf plugin add kubectl
+    asdf install kubectl 1.21.6
+    asdf global kubectl 1.21.6
 }
 
 setup_k9s() {
-    rtx plugin add k9s
-    rtx install k9s 0.26.3
-    rtx global k9s 0.26.3
+    asdf plugin add k9s
+    asdf install k9s 0.26.3
+    asdf global k9s 0.26.3
 }
 
 setup_tpm() {
@@ -99,9 +99,9 @@ setup_tpm() {
 }
 
 setup_nodejs() {
-    rtx plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-    rtx install nodejs lts-fermium
-    rtx global nodejs lts-fermium
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    asdf install nodejs lts-fermium
+    asdf global nodejs lts-fermium
 }
 
 setup_sdkman() {
@@ -118,9 +118,9 @@ pip_install_dep() {
 }
 
 setup_krew() {
-    rtx plugin add krew
-    rtx install krew 0.4.2
-    rtx global krew 0.4.2
+    asdf plugin add krew
+    asdf install krew 0.4.2
+    asdf global krew 0.4.2
     kubectl krew install ctx
 }
 
@@ -147,10 +147,16 @@ setup_asdf() {
     . $HOME/.asdf/asdf.sh
 }
 
+setup_direnv() {
+    asdf plugin-add direnv
+    asdf direnv setup --shell zsh --version latest
+    direnv allow $HOME
+}
+
 setup_gcloud() {
-    rtx plugin add gcloud
-    rtx install gcloud 417.0.1
-    rtx global gcloud 417.0.1
+    asdf plugin add gcloud
+    asdf install gcloud 417.0.1
+    asdf global gcloud 417.0.1
     gcloud components install gke-gcloud-auth-plugin
 }
 

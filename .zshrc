@@ -54,16 +54,45 @@ fi
 
 setopt promptsubst
 
-if [ -f $HOME/.asdf/asdf.sh ]; then
-    zi ice pick="asdf.sh"
-    zi load $HOME/.asdf
-  if [[ -f  "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ]]; then
-    source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
-  fi
-    asdf-tool-version-plugin(){
-        cut -d' ' -f1 ~/.tool-versions| xargs -I{} asdf plugin add {}
-    }
+if [ -f $HOME/.local/share/rtx/bin/rtx ]; then
+    eval "$($HOME/.local/share/rtx/bin/rtx activate -s zsh)"
+
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_rtx" ]]; then
+        rtx complete -s zsh | tee "$ZSH_CACHE_DIR/completions/_rtx" >/dev/null
+    fi
+    zi ice as"completion"
+    zi snippet $ZSH_CACHE_DIR/completions/_rtx
 fi
+
+if rtx which kubectl &>/dev/null ; then
+    alias k=kubectl
+    alias kaf='kubectl apply -f'
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_kubectl" ]]; then
+        kubectl completion zsh 2> /dev/null >| "$ZSH_CACHE_DIR/completions/_kubectl"
+    fi
+    zi ice as"completion"
+    zi snippet $ZSH_CACHE_DIR/completions/_kubectl
+fi
+
+if rtx which helm &>/dev/null ; then
+
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
+        helm completion zsh 2> /dev/null >| "$ZSH_CACHE_DIR/completions/_helm"
+    fi
+    zi ice as"completion"
+    zi snippet $ZSH_CACHE_DIR/completions/_helm
+fi
+
+# if [ -f $HOME/.asdf/asdf.sh ]; then
+#     zi ice pick="asdf.sh"
+#     zi load $HOME/.asdf
+#   if [[ -f  "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ]]; then
+#     source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+#   fi
+#     asdf-tool-version-plugin(){
+#         cut -d' ' -f1 ~/.tool-versions| xargs -I{} asdf plugin add {}
+#     }
+# fi
 
 zi lucid for \
 OMZL::history.zsh 
@@ -84,9 +113,7 @@ OMZL::spectrum.zsh \
 OMZP::git \
 OMZP::urltools \
 OMZP::extract \
-OMZP::encode64 \
-OMZP::kubectl \
-OMZP::helm
+OMZP::encode64
 
 
 zi snippet OMZ::lib/key-bindings.zsh
@@ -222,3 +249,4 @@ unset __conda_setup
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 [[ ! -f ~/.kubecm ]] || source ~/.kubecm
+

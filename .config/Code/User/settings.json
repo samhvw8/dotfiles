@@ -611,7 +611,6 @@
         ],
     ],
     "editor.renderWhitespace": "all",
-    "window.zoomLevel": 1,
     "vim.handleKeys": {
         "<C-f>": false
     },
@@ -630,7 +629,11 @@
     "rust-analyzer.server.extraEnv": {
         "RA_LOG": "INFO"
     },
-    "rust-analyzer.trace.server": "verbose"
+    "rust-analyzer.trace.server": "verbose",
+    "deno.path": "",
+    "[typescript]": {
+        "editor.defaultFormatter": "denoland.vscode-deno"
+    }
     // "rust-analyzer.cargo.extraEnv": {
     //     "CARGO_HOME"
     // }
