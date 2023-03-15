@@ -8,19 +8,19 @@ setup_folder() {
     mkdir -p $HOME/bin
     mkdir -p $HOME/tmp
     chmod 0700 "${XDG_RUNTIME_DIR}"
-
+    
     export XDG_CONFIG_HOME="${HOME}/.config"
     export XDG_CACHE_HOME="${HOME}/.cache"
     export XDG_DATA_HOME="${HOME}/.local/share"
     export XDG_STATE_HOME="${HOME}/.local/state"
     export XDG_RUNTIME_DIR="${HOME}/.local/run"
-
-
+    
+    
     export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
     export ZSH_DATA_DIR="${XDG_DATA_HOME}/zsh"
     export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
     export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
-
+    
     mkdir -p "${ZSH_CACHE_DIR}"{,/completions}
     mkdir -p "${ZSH_DATA_DIR}"
 }
@@ -43,24 +43,22 @@ setup_dbus_wsl2() {
 
 setup_font_linux() {
     mkdir -p $HOME/.fonts
-
     wget -O "$HOME/.fonts/FiraCode Nerd Font Mono.tff" https://git.io/JznfU &&
-        fc-cache -f -v
+    fc-cache -f -v
 }
 
 setup_go() {
     rtx plugin add golang
-    rtx install golang 1.18.1
-    rtx global golang 1.18.1
+    rtx install golang 1.20.2
+    rtx global golang 1.20.2
 }
 
 setup_fzf() {
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf &&
-        ~/.fzf/install
+    ~/.fzf/install
 }
 
 setup_bazel_linux() {
-
     sudo wget -O "/usr/local/bin/bazelisk" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-amd64 &&
     sudo chmod +x "/usr/local/bin/bazelisk" &&
     echo "#\!/usr/bin/env bash" | sudo tee -a /usr/local/bin/bazel &&
@@ -70,7 +68,7 @@ setup_bazel_linux() {
 }
 
 setup_helm() {
-    rtx plugin add helm 
+    rtx plugin add helm
     rtx install helm 2.15.1
     rtx install helm 3.8.0
     rtx global helm 3.8.0
@@ -99,7 +97,7 @@ setup_tpm() {
 }
 
 setup_nodejs() {
-    rtx plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    rtx plugin add nodejs
     rtx install nodejs lts-fermium
     rtx global nodejs lts-fermium
 }
@@ -109,8 +107,9 @@ setup_sdkman() {
 }
 
 setup_rust() {
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y &&
-        cargo install --locked git-branchless
+    rtx plugin add krew
+    rtx install krew 0.4.2
+    rtx global krew 0.4.2
 }
 
 pip_install_dep() {
@@ -129,7 +128,7 @@ setup_miniconda() {
         brew install miniconda
     else
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh &&
-            bash ~/miniconda.sh -b -p $HOME/miniconda3
+        bash ~/miniconda.sh -b -p $HOME/miniconda3
     fi
 }
 
@@ -138,13 +137,12 @@ setup_minikube() {
         brew install minikube
     else
         curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb &&
-            sudo dpkg -i minikube_latest_amd64.deb
+        sudo dpkg -i minikube_latest_amd64.deb
     fi
 }
 
-setup_asdf() {
-    git clone https://github.com/asdf-vm/asdf.git ~/.asdf
-    . $HOME/.asdf/asdf.sh
+setup_rtx() {
+    curl https://rtx.pub/install.sh | sh
 }
 
 setup_gcloud() {
@@ -154,22 +152,28 @@ setup_gcloud() {
     gcloud components install gke-gcloud-auth-plugin
 }
 
+setup_debget() {
+    curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get
+}
+
 set -x
 
 if [[ $(uname) == "Darwin" ]]; then
     echo "Macos"
-
+    
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval $(/opt/homebrew/bin/brew shellenv)
 else
     echo "Linux"
-    sudo apt update 
+    sudo apt update
     sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg ca-certificates curl software-properties-common build-essential terminator
 fi
 
 setup_folder
 
 setup_dotbare
+
+setup_debget
 
 if [[ $(uname) == "Darwin" ]]; then
     brew bundle install
@@ -188,7 +192,7 @@ else
     setup_font_linux
 fi
 
-setup_asdf
+setup_rtx
 
 setup_go
 

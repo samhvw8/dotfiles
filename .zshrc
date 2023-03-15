@@ -10,9 +10,9 @@ export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
 export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
 
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
-  print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
-  command mkdir -p "$HOME/.zi" && command chmod go-rwX "$HOME/.zi"
-  command git clone -q --depth=1 --branch "main" https://github.com/z-shell/zi "$HOME/.zi/bin" && \
+    print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
+    command mkdir -p "$HOME/.zi" && command chmod go-rwX "$HOME/.zi"
+    command git clone -q --depth=1 --branch "main" https://github.com/z-shell/zi "$HOME/.zi/bin" && \
     print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
     print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -23,8 +23,8 @@ autoload -Uz _zi
 # examples here -> https://wiki.zshell.dev/ecosystem/category/-annexes
 zicompinit # <- https://wiki.zshell.dev/docs/guides/commands
 zi light-mode for \
-  z-shell/z-a-meta-plugins \
-  @annexes # <- https://wiki.zshell.dev/ecosystem/category/-annexes
+z-shell/z-a-meta-plugins \
+@annexes # <- https://wiki.zshell.dev/ecosystem/category/-annexes
 # examples here -> https://wiki.zshell.dev/community/gallery/collection
 zicompinit # <- https://wiki.zshell.dev/docs/guides/commands
 
@@ -36,11 +36,11 @@ export DIRENV_LOG_FORMAT=
 if [[ `uname` == "Darwin" ]]; then
     zi lucid for \
     as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*apple-darwin.tar.gz' \
-        starship/starship 
+    starship/starship
 else
     zi lucid for \
     as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*unknown-linux-gnu*' \
-        starship/starship 
+    starship/starship
 fi
 
 ##########################
@@ -56,7 +56,7 @@ setopt promptsubst
 
 if [ -f $HOME/.local/share/rtx/bin/rtx ]; then
     eval "$($HOME/.local/share/rtx/bin/rtx activate -s zsh)"
-
+    
     if [[ ! -f "$ZSH_CACHE_DIR/completions/_rtx" ]]; then
         rtx complete -s zsh | tee "$ZSH_CACHE_DIR/completions/_rtx" >/dev/null
     fi
@@ -75,7 +75,7 @@ if rtx which kubectl &>/dev/null ; then
 fi
 
 if rtx which helm &>/dev/null ; then
-
+    
     if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
         helm completion zsh 2> /dev/null >| "$ZSH_CACHE_DIR/completions/_helm"
     fi
@@ -95,17 +95,17 @@ fi
 # fi
 
 zi lucid for \
-OMZL::history.zsh 
+OMZL::history.zsh
 zi wait lucid for \
 OMZL::clipboard.zsh \
 OMZL::compfix.zsh \
 OMZL::completion.zsh \
 OMZL::correction.zsh  \
-  atload"\
-  alias ..='cd ..' \
-  alias ...='cd ../..' \
-  alias ....='cd ../../..' \
-  alias .....='cd ../../../..'" \
+atload"\
+alias ..='cd ..' \
+alias ...='cd ../..' \
+alias ....='cd ../../..' \
+alias .....='cd ../../../..'" \
 OMZL::directories.zsh \
 OMZL::git.zsh \
 OMZL::grep.zsh \
@@ -122,12 +122,14 @@ zi load z-shell/zui
 zi load z-shell/zi-console
 
 if [ -f ~/.fzf.zsh ]; then
-    zi ice wait"0" lucid 
+    zi ice wait"0" lucid
     zi snippet $HOME/.fzf.zsh
-
+    
     zi light Aloxaf/fzf-tab
     zi light wfxr/forgit
 fi
+
+
 
 zi ice as"completion"
 zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
@@ -140,14 +142,14 @@ zi snippet OMZ::lib/theme-and-appearance.zsh
 
 
 zi ice wait"2" as"command" from"gh-r" lucid \
-    mv"*zoxide* -> zoxide" \
-    atclone"./zoxide init --cmd j zsh > init.zsh" \
-    atpull"%atclone" src"init.zsh" nocompile'!'
+mv"*zoxide* -> zoxide" \
+atclone"./zoxide init --cmd j zsh > init.zsh" \
+atpull"%atclone" src"init.zsh" nocompile'!'
 zi light ajeetdsouza/zoxide
 
 zi light-mode for \
-    z-shell/z-a-meta-plugins \
-    @console-tools
+z-shell/z-a-meta-plugins \
+@console-tools
 
 zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
 zi light dandavison/delta
@@ -162,9 +164,9 @@ fi
 
 export SDKMAN_DIR="$HOME/.sdkman"
 zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
-    atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
-    atpull"sdk selfupdate" \
-    atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
+atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
+atpull"sdk selfupdate" \
+atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
 zi light z-shell/null
 
 zi ice lucid wait as'completion' blockf has'cargo'
@@ -177,12 +179,12 @@ zi ice lucid wait as'completion' blockf has'youtube-dl' mv'youtube-dl.zsh -> _yo
 zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
 zi wait lucid for \
- atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-    z-shell/fast-syntax-highlighting \
- blockf \
-    zsh-users/zsh-completions \
- atload"!_zsh_autosuggest_start" \
-    zsh-users/zsh-autosuggestions
+atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+z-shell/fast-syntax-highlighting \
+blockf \
+zsh-users/zsh-completions \
+atload"!_zsh_autosuggest_start" \
+zsh-users/zsh-autosuggestions
 
 zi ice wait lucid
 zi light $HOME/.dotbare
@@ -249,4 +251,3 @@ unset __conda_setup
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 [[ ! -f ~/.kubecm ]] || source ~/.kubecm
-

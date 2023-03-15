@@ -450,6 +450,48 @@
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": [
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "D"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "D"
+            ]
+        },
+        {
+            "before": [
+                "d",
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "<BS>"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        },
+        {
+            "before": [
                 "g",
                 "/"
             ],
@@ -505,6 +547,50 @@
                 "git.stageSelectedRanges"
             ],
             "when": "isInDiffEditor"
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "D"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "D"
+            ]
+        },
+        {
+            "before": [
+                "d",
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "<BS>"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
         }
     ],
     "vim.visualModeKeyBindings": [
@@ -633,7 +719,11 @@
     "deno.path": "",
     "[typescript]": {
         "editor.defaultFormatter": "denoland.vscode-deno"
-    }
+    },
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "terminal.integrated.inheritEnv": false
     // "rust-analyzer.cargo.extraEnv": {
     //     "CARGO_HOME"
     // }
