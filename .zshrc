@@ -229,7 +229,9 @@ export LANGUAGE="en_US.UTF-8"
 
 # >>> conda initialize >>>
 
-if [[ `uname` == "Darwin" ]]; then
+if rtx which helm &>/dev/null ; then
+    export _CONDA_BASE=$(dirname $(dirname $(rtx which conda)))
+elif [[ `uname` == "Darwin" ]]; then
     export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
 else
     export _CONDA_BASE=$HOME/miniconda3

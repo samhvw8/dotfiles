@@ -15,6 +15,7 @@
 [profiles]
   [[default]]
     background_color = "#1e1f29"
+    background_darkness = 0.48
     cursor_blink = False
     cursor_shape = underline
     cursor_color = "#bbbbbb"

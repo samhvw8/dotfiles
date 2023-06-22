@@ -721,9 +721,15 @@
         "editor.defaultFormatter": "denoland.vscode-deno"
     },
     "[python]": {
-        "editor.formatOnType": true
+        "editor.formatOnType": true,
+        "editor.defaultFormatter": "ms-python.black-formatter"
     },
-    "terminal.integrated.inheritEnv": false
+    "terminal.integrated.inheritEnv": false,
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "python.defaultInterpreterPath": "/home/samhoang/miniconda3/envs/diagram",
+    "python.formatting.provider": "none"
     // "rust-analyzer.cargo.extraEnv": {
     //     "CARGO_HOME"
     // }
