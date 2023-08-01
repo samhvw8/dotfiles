@@ -130,6 +130,8 @@ if [ -f ~/.fzf.zsh ]; then
 fi
 
 
+# zi ice depth=1
+# zi light jeffreytse/zsh-vi-mode
 
 zi ice as"completion"
 zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker

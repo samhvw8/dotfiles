@@ -729,7 +729,9 @@
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "python.defaultInterpreterPath": "/home/samhoang/miniconda3/envs/diagram",
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "cmake.configureOnOpen": true
     // "rust-analyzer.cargo.extraEnv": {
     //     "CARGO_HOME"
     // }
