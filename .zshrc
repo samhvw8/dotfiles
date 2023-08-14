@@ -137,7 +137,7 @@ zi ice as"completion"
 zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
 
 zi ice as"completion"
-zi snippet https://github.com/docker/compose/tree/master/contrib/completion/zsh/_docker-compose
+zi snippet https://github.com/docker/compose/blob/v1/contrib/completion/zsh/_docker-compose
 
 
 zi snippet OMZ::lib/theme-and-appearance.zsh
