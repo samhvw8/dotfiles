@@ -54,26 +54,11 @@ setup_fzf() {
     ~/.fzf/install
 }
 
-setup_bazel_linux() {
-    sudo wget -O "/usr/local/bin/bazelisk" https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-amd64 &&
-    sudo chmod +x "/usr/local/bin/bazelisk" &&
-    echo "#\!/usr/bin/env bash" | sudo tee -a /usr/local/bin/bazel &&
-    echo 'export JAVA_HOME=$HOME/.sdkman/candidates/java/current' | sudo tee -a /usr/local/bin/bazel &&
-    echo '/usr/local/bin/bazelisk "$@"' | sudo tee -a /usr/local/bin/bazel &&
-    sudo chmod +x /usr/local/bin/bazel
-}
-
 setup_helm() {
     rtx plugin add helm
     rtx install helm 2.15.1
     rtx install helm 3.8.0
     rtx global helm 3.8.0
-}
-
-setup_skaffold() {
-    rtx plugin add skaffold
-    rtx install skaffold 1.14.0
-    rtx global skaffold 1.14.0
 }
 
 setup_kubectl() {
@@ -82,14 +67,11 @@ setup_kubectl() {
     rtx global kubectl 1.21.6
 }
 
+
 setup_k9s() {
     rtx plugin add k9s
     rtx install k9s 0.26.3
     rtx global k9s 0.26.3
-}
-
-setup_tpm() {
-    git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 }
 
 setup_nodejs() {
@@ -106,10 +88,6 @@ setup_rust() {
     rtx plugin add rust
     rtx install rust 1.66.1
     rtx global rust 1.66.1
-}
-
-pip_install_dep() {
-    pip install inquirer click pathlib pyyaml airspeed google-cloud-firestore
 }
 
 setup_krew() {
@@ -186,31 +164,19 @@ setup_go
 
 setup_fzf
 
-if [[ $(uname) == "Darwin" ]]; then
-    :
-else
-    setup_bazel_linux
-fi
+setup_kubectl
 
 setup_gcloud
 
 setup_helm
 
-setup_skaffold
-
-setup_kubectl
-
 setup_k9s
-
-setup_tpm
 
 setup_nodejs
 
 setup_sdkman
 
 setup_rust
-
-pip_install_dep
 
 setup_krew
 
