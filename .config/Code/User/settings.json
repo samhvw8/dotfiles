@@ -39,6 +39,15 @@
     "vim.normalModeKeyBindings": [
         {
             "before": [
+                "\\",
+                "r"
+            ],
+            "commands": [
+                "fzf-quick-open.runFzfSearchProjectRoot"
+            ]
+        },
+        {
+            "before": [
                 "<c-a>"
             ],
             "commands": [
