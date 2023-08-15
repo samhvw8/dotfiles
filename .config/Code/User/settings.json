@@ -1,7 +1,4 @@
 {
-    "go.alternateTools": {
-        "go": "~/.asdf/shims/go",
-    },
     "terminal.integrated.shellIntegration.enabled": true,
     "terminal.integrated.defaultProfile.linux": "zsh",
     "terminal.integrated.defaultProfile.osx": "zsh",
@@ -20,7 +17,6 @@
         "default": "right",
         "jupyter-notebook": "left"
     },
-    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "files.exclude": {
         "**/.classpath": true,
         "**/.project": true,
@@ -559,6 +555,15 @@
         }
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "\\",
+                "r"
+            ],
+            "commands": [
+                "fzf-quick-open.runFzfSearchProjectRoot"
+            ]
+        },
         {
             "before": [
                 "d"
