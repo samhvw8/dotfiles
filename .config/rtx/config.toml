@@ -1,3 +1,6 @@
 [settings]
 experimental = true
 legacy_version_file_disable_tools = ['java']
+
+[tools]
+chezmoi = "2.38.0"

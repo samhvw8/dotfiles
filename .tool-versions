@@ -27,3 +27,4 @@ hyperfine  1.16.1
 gallery-dl 1.25.1
 youtube-dl 2021.12.17
 python     miniconda3-4.7.12
+chezmoi    2.38.0
