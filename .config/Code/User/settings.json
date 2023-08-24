@@ -744,7 +744,11 @@
     },
     "python.formatting.provider": "none",
     "terminal.integrated.enableMultiLinePasteWarning": false,
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "fzf-quick-open.ripgrepSearchStyle": "Smart case",
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format"
+    }
     // "rust-analyzer.cargo.extraEnv": {
     //     "CARGO_HOME"
     // }

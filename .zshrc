@@ -255,3 +255,8 @@ unset __conda_setup
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 [[ ! -f ~/.kubecm ]] || source ~/.kubecm
+
+if [[ `uname` == "Darwin" ]]; then
+else
+    [[ ! -f ~/.spack/share/spack/setup-env.sh ]] || . ~/.spack/share/spack/setup-env.sh
+fi
