@@ -64,9 +64,4 @@
         "command": "explorer.newFolder",
         "when": "!editorFocus"
     },
-    {
-        "key": "ctrl+shift+c",
-        "command": "-workbench.action.terminal.openNativeConsole",
-        "when": "!terminalFocus"
-    },
 ]

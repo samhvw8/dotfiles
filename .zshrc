@@ -54,17 +54,18 @@ fi
 
 setopt promptsubst
 
-if [ -f $HOME/.local/share/rtx/bin/rtx ]; then
-    eval "$($HOME/.local/share/rtx/bin/rtx activate -s zsh)"
+if [ -f $HOME/.local/bin/mise ]; then
+    eval "$($HOME/.local/bin/mise activate zsh)"
     
-    if [[ ! -f "$ZSH_CACHE_DIR/completions/_rtx" ]]; then
-        rtx complete -s zsh | tee "$ZSH_CACHE_DIR/completions/_rtx" >/dev/null
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_mise" ]]; then
+        mise completion zsh  > $ZSH_CACHE_DIR/completions/_mise
     fi
+
     zi ice as"completion"
-    zi snippet $ZSH_CACHE_DIR/completions/_rtx
+    zi snippet $ZSH_CACHE_DIR/completions/_mise
 fi
 
-if rtx which kubectl &>/dev/null ; then
+if mise which kubectl &>/dev/null ; then
     alias k=kubectl
     alias kaf='kubectl apply -f'
     if [[ ! -f "$ZSH_CACHE_DIR/completions/_kubectl" ]]; then
@@ -74,7 +75,7 @@ if rtx which kubectl &>/dev/null ; then
     zi snippet $ZSH_CACHE_DIR/completions/_kubectl
 fi
 
-if rtx which helm &>/dev/null ; then
+if mise which helm &>/dev/null ; then
     
     if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
         helm completion zsh 2> /dev/null >| "$ZSH_CACHE_DIR/completions/_helm"
@@ -231,8 +232,8 @@ export LANGUAGE="en_US.UTF-8"
 
 # >>> conda initialize >>>
 
-if rtx which conda &>/dev/null ; then
-    export _CONDA_BASE=$(dirname $(dirname $(rtx which conda)))
+if mise which conda &>/dev/null ; then
+    export _CONDA_BASE=$(dirname $(dirname $(mise which conda)))
 elif [[ `uname` == "Darwin" ]]; then
     export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
 else
@@ -255,8 +256,3 @@ unset __conda_setup
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 [[ ! -f ~/.kubecm ]] || source ~/.kubecm
-
-if [[ `uname` == "Darwin" ]]; then
-else
-    [[ ! -f ~/.spack/share/spack/setup-env.sh ]] || . ~/.spack/share/spack/setup-env.sh
-fi

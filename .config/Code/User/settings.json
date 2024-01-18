@@ -36,6 +36,15 @@
         {
             "before": [
                 "\\",
+                "e"
+            ],
+            "commands": [
+                "editor.showCallHierarchy"
+            ]
+        },
+        {
+            "before": [
+                "\\",
                 "r"
             ],
             "commands": [
