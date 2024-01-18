@@ -256,3 +256,4 @@ unset __conda_setup
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 [[ ! -f ~/.kubecm ]] || source ~/.kubecm
+
