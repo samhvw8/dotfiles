@@ -7,7 +7,6 @@ golang     1.21.1
 helm       3.11.1
 jq         1.6
 just       1.11.0
-k6         0.43.1
 k9s        0.26.3
 krew       0.4.3
 kubecm     0.21.1
@@ -21,7 +20,6 @@ shfmt      3.3.0
 skaffold   1.14.0
 hyperfine  1.16.1
 gallery-dl 1.25.1
-youtube-dl 2021.12.17
 chezmoi    2.38.0
 python     3.9.16
 ripgrep    12.1.1
