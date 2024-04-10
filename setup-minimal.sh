@@ -36,37 +36,14 @@ setup_gitconfig() {
         echo 'path = ~/.base.gitconfig' | tee -a ~/.gitconfig
 }
 
-setup_font_linux() {
-    mkdir -p $HOME/.fonts
-    wget -O "$HOME/.fonts/FiraCode Nerd Font Mono.tff" https://git.io/JznfU &&
-        fc-cache -f -v
-}
-
-setup_fzf() {
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf &&
-        ~/.fzf/install
-}
-
-setup_tpm() {
-    git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-}
-
-setup_miniconda() {
-    if [[ $(uname) == "Darwin" ]]; then
-        brew install miniconda
-    else
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh &&
-            bash ~/miniconda.sh -b -p $HOME/miniconda3
-    fi
-}
-
 setup_mise() {
     curl https://mise.run | sh &&
         mise install
 }
 
-setup_debget() {
-    curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get
+setup_fzf() {
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf &&
+        ~/.fzf/install
 }
 
 set -x
@@ -78,7 +55,7 @@ if [[ $(uname) == "Darwin" ]]; then
 else
     echo "Linux"
     sudo apt update
-    sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip zip python3-pip aptitude apt-transport-https gnupg ca-certificates curl software-properties-common build-essential terminator
+    sudo apt-get install --yes tmux vim git zsh wget curl net-tools unzip aptitude apt-transport-https curl
     setup_debget
 fi
 
@@ -88,8 +65,8 @@ setup_dotbare
 
 rm $HOME/.tool-versions
 rm $HOME/.config/mise/config.toml
-cp $HOME/.config/mise/config.toml.setup $HOME/.config/mise/config.toml
-cp $HOME/.tool-versions.setup $HOME/.tool-versions
+cp $HOME/.config/mise/config.toml.setup.minimal $HOME/.config/mise/config.toml
+cp $HOME/.zshrc.setup.minimal $HOME/.zshrc
 
 if [[ $(uname) == "Darwin" ]]; then
     brew bundle install
@@ -97,26 +74,8 @@ else
     :
 fi
 
-setup_miniconda
-
 setup_gitconfig
-
-if [[ $(uname) == "Darwin" ]]; then
-    :
-else
-    setup_font_linux
-fi
 
 setup_mise
 
 setup_fzf
-
-setup_tpm
-
-if [[ $(uname) == "Darwin" ]]; then
-    if [[ $(uname -m) == "arm64" ]]; then
-        softwareupdate --install-rosetta --agree-to-license
-    fi
-else
-    chsh -s $(which zsh) $USER
-fi

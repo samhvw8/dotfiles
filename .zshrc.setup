@@ -186,6 +186,7 @@ export PATH="$PATH:$HOME/bin"
 
 if [[ `uname` == "Darwin" ]]; then
     test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+    source ~/.iterm2_shell_integration.zsh
     export HOMEBREW_NO_INSTALL_CLEANUP=1
     export PATH="/usr/local/sbin:$PATH"
     export PATH="/usr/local/opt/icu4c/bin:$PATH"
@@ -232,8 +233,3 @@ else
     fi
 fi
 unset __conda_setup
-
-# Generated for envman. Do not edit.
-[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
-[[ ! -f ~/.kubecm ]] || source ~/.kubecm

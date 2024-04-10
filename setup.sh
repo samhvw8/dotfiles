@@ -89,7 +89,7 @@ setup_dotbare
 rm $HOME/.tool-versions
 rm $HOME/.config/mise/config.toml
 cp $HOME/.config/mise/config.toml.setup $HOME/.config/mise/config.toml
-cp $HOME/.tool-versions.setup $HOME/.tool-versions
+cp $HOME/.zshrc.setup $HOME/.zshrc
 
 if [[ $(uname) == "Darwin" ]]; then
     brew bundle install

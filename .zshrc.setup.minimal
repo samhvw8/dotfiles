@@ -65,25 +65,6 @@ if [ -f $HOME/.local/bin/mise ]; then
     zi snippet $ZSH_CACHE_DIR/completions/_mise
 fi
 
-if mise which kubectl &>/dev/null ; then
-    alias k=kubectl
-    alias kaf='kubectl apply -f'
-    if [[ ! -f "$ZSH_CACHE_DIR/completions/_kubectl" ]]; then
-        kubectl completion zsh 2> /dev/null >| "$ZSH_CACHE_DIR/completions/_kubectl"
-    fi
-    zi ice as"completion"
-    zi snippet $ZSH_CACHE_DIR/completions/_kubectl
-fi
-
-if mise which helm &>/dev/null ; then
-    
-    if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
-        helm completion zsh 2> /dev/null >| "$ZSH_CACHE_DIR/completions/_helm"
-    fi
-    zi ice as"completion"
-    zi snippet $ZSH_CACHE_DIR/completions/_helm
-fi
-
 zi lucid for \
 OMZL::history.zsh
 zi wait lucid for \
@@ -111,33 +92,17 @@ zi snippet OMZ::lib/key-bindings.zsh
 zi load z-shell/zui
 zi load z-shell/zi-console
 
-if [ -f ~/.fzf.zsh ]; then
-    zi ice wait"0" lucid
-    zi snippet $HOME/.fzf.zsh
-    
-    zi light Aloxaf/fzf-tab
-    zi light wfxr/forgit
-fi
+# if [ -f ~/.fzf.zsh ]; then
+#    zi ice wait"0" lucid
+#    zi snippet $HOME/.fzf.zsh
+#    zi light Aloxaf/fzf-tab
+#fi
 
 
 # zi ice depth=1
 # zi light jeffreytse/zsh-vi-mode
 
-zi ice as"completion"
-zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
-
-zi ice as"completion"
-zi snippet https://github.com/docker/compose/blob/v1/contrib/completion/zsh/_docker-compose
-
-
 zi snippet OMZ::lib/theme-and-appearance.zsh
-
-
-zi ice wait"2" as"command" from"gh-r" lucid \
-mv"*zoxide* -> zoxide" \
-atclone"./zoxide init --cmd j zsh > init.zsh" \
-atpull"%atclone" src"init.zsh" nocompile'!'
-zi light ajeetdsouza/zoxide
 
 zi light-mode for \
 z-shell/z-a-meta-plugins \
@@ -153,19 +118,6 @@ then
     alias nvimo="nvim -u NORC  --noplugin"
     alias vimo="/usr/bin/vim"
 fi
-
-export SDKMAN_DIR="$HOME/.sdkman"
-zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
-atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
-atpull"sdk selfupdate" \
-atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
-zi light z-shell/null
-
-zi ice lucid wait as'completion' blockf has'cargo'
-zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
-
-zi ice lucid wait as'completion' blockf has'youtube-dl' mv'youtube-dl.zsh -> _youtube-dl'
-zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
 zi wait lucid for \
 atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
@@ -188,52 +140,16 @@ if [[ `uname` == "Darwin" ]]; then
     test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
     export HOMEBREW_NO_INSTALL_CLEANUP=1
     export PATH="/usr/local/sbin:$PATH"
-    export PATH="/usr/local/opt/icu4c/bin:$PATH"
-    export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 else
     alias open=xdg-open
-    alias idea=$HOME/idea/idea-IC-203.8084.24/bin/idea.sh
 fi
-
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --color=dark
 --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
 --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
 '
-export BAT_THEME="Dracula"
-
-export FZF_DEFAULT_COMMAND='fd --type file'
-
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 
-
-# >>> conda initialize >>>
-
-if mise which conda &>/dev/null ; then
-    export _CONDA_BASE=$(dirname $(dirname $(mise which conda)))
-elif [[ `uname` == "Darwin" ]]; then
-    export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
-else
-    export _CONDA_BASE=$HOME/miniconda3
-fi
-
-__conda_setup="$('$_CONDA_BASE/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "$_CONDA_BASE/etc/profile.d/conda.sh" ]; then
-        . "$_CONDA_BASE/etc/profile.d/conda.sh"
-    else
-        export PATH="$_CONDA_BASE/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-
-# Generated for envman. Do not edit.
-[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
-[[ ! -f ~/.kubecm ]] || source ~/.kubecm
