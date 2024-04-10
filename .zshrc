@@ -84,17 +84,6 @@ if mise which helm &>/dev/null ; then
     zi snippet $ZSH_CACHE_DIR/completions/_helm
 fi
 
-# if [ -f $HOME/.asdf/asdf.sh ]; then
-#     zi ice pick="asdf.sh"
-#     zi load $HOME/.asdf
-#   if [[ -f  "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ]]; then
-#     source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
-#   fi
-#     asdf-tool-version-plugin(){
-#         cut -d' ' -f1 ~/.tool-versions| xargs -I{} asdf plugin add {}
-#     }
-# fi
-
 zi lucid for \
 OMZL::history.zsh
 zi wait lucid for \
@@ -175,9 +164,6 @@ zi light z-shell/null
 zi ice lucid wait as'completion' blockf has'cargo'
 zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
 
-zi ice lucid wait as'completion' blockf has'rg'
-zi snippet https://github.com/BurntSushi/ripgrep/blob/master/complete/_rg
-
 zi ice lucid wait as'completion' blockf has'youtube-dl' mv'youtube-dl.zsh -> _youtube-dl'
 zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
@@ -195,11 +181,7 @@ zi light $HOME/.dotbare
 zi ice wait lucid
 zi light "MichaelAquilina/zsh-you-should-use"
 
-
-export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.jenv/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/bin"
 
 if [[ `uname` == "Darwin" ]]; then

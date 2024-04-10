@@ -1,0 +1,11 @@
+[settings]
+experimental = true
+legacy_version_file_disable_tools = ['java']
+
+[tools]
+k6 = "0.50.0"
+dotnet = "8.0.203"
+azure-cli = "2.59.0"
+terraform = "1.7.5"
+node = "20.12.0"
+go = "1.22.2"
