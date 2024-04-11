@@ -15,7 +15,6 @@ setup_folder() {
     export XDG_STATE_HOME="${HOME}/.local/state"
     export XDG_RUNTIME_DIR="${HOME}/.local/run"
 
-    export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
     export ZSH_DATA_DIR="${XDG_DATA_HOME}/zsh"
     export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
     export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
@@ -86,7 +85,6 @@ setup_folder
 
 setup_dotbare
 
-rm $HOME/.tool-versions
 rm $HOME/.config/mise/config.toml
 cp $HOME/.config/mise/config.toml.setup $HOME/.config/mise/config.toml
 cp $HOME/.zshrc.setup $HOME/.zshrc

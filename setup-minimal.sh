@@ -63,7 +63,6 @@ setup_folder
 
 setup_dotbare
 
-rm $HOME/.tool-versions
 rm $HOME/.config/mise/config.toml
 cp $HOME/.config/mise/config.toml.setup.minimal $HOME/.config/mise/config.toml
 cp $HOME/.zshrc.setup.minimal $HOME/.zshrc
