@@ -1,13 +1,13 @@
 # For new Setup
 
 ```bash
-curl -L http://gg.gg/shvw8-dotfile-setup | bash
+curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash
 
 ```
 
 # For new Setup with minimal
 
 ```bash
-curl -L http://gg.gg/shvw8-dotfile-setup-minimal | bash
+curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup-minimal.sh | bash
 
 ```
