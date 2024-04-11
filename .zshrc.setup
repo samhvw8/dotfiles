@@ -154,13 +154,6 @@ then
     alias vimo="/usr/bin/vim"
 fi
 
-export SDKMAN_DIR="$HOME/.sdkman"
-zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
-atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
-atpull"sdk selfupdate" \
-atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
-zi light z-shell/null
-
 zi ice lucid wait as'completion' blockf has'cargo'
 zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
 
