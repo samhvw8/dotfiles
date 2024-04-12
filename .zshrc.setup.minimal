@@ -92,17 +92,23 @@ zi snippet OMZ::lib/key-bindings.zsh
 zi load z-shell/zui
 zi load z-shell/zi-console
 
-# if [ -f ~/.fzf.zsh ]; then
-#    zi ice wait"0" lucid
-#    zi snippet $HOME/.fzf.zsh
-#    zi light Aloxaf/fzf-tab
-#fi
+if [ -f ~/.fzf.zsh ]; then
+    zi ice wait"0" lucid
+    zi snippet $HOME/.fzf.zsh
+    zi light Aloxaf/fzf-tab
+fi
 
 
 # zi ice depth=1
 # zi light jeffreytse/zsh-vi-mode
 
 zi snippet OMZ::lib/theme-and-appearance.zsh
+
+zi ice wait"2" as"command" from"gh-r" lucid \
+mv"*zoxide* -> zoxide" \
+atclone"./zoxide init --cmd j zsh > init.zsh" \
+atpull"%atclone" src"init.zsh" nocompile'!'
+zi light ajeetdsouza/zoxide
 
 zi light-mode for \
 z-shell/z-a-meta-plugins \
