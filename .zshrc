@@ -1,3 +1,8 @@
+setopt appendhistory beep nomatch
+setopt SHARE_HISTORY # share history between open shells
+setopt INC_APPEND_HISTORY     # append history as command are entered
+setopt HIST_NO_STORE          # don't save 'history' cmd in history
+
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_DATA_HOME="${HOME}/.local/share"

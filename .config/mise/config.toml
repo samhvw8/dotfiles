@@ -4,7 +4,6 @@ legacy_version_file_disable_tools = ['java']
 
 [tools]
 azure-cli = "2.59.0"
-bin = "0.17.2"
 buildpack = "0.27.0-rc1"
 chezmoi = "2.38.0"
 devspace = "6.2.4"
