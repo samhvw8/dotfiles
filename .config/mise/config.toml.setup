@@ -3,9 +3,13 @@ experimental = true
 legacy_version_file_disable_tools = ['java']
 
 [tools]
+buildpack = "0.27.0-rc1"
 direnv = "2.32.2"
 go = "1.22.2"
+jq = "1.6"
+k6 = "0.50.0"
 node = "20.12.0"
 python = "3.9.16"
 ripgrep = "12.1.1"
 rust = "1.67.0"
+zig = "0.11.0"
