@@ -42,6 +42,10 @@ if [[ `uname` == "Darwin" ]]; then
     zi lucid for \
     as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*apple-darwin.tar.gz' \
     starship/starship
+elif [[ `uname -i` == "aarch64" ]]; then
+    zi lucid for \
+    as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*aarch64-unknown-linux*' \
+    starship/starship
 else
     zi lucid for \
     as"command" from"gh-r" atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' bpick'*unknown-linux-gnu*' \

@@ -8,7 +8,7 @@
     "editor.renderControlCharacters": true,
     "editor.suggestSelection": "first",
     "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
-    "workbench.colorTheme": "Dracula",
+    "workbench.colorTheme": "Dracula Theme",
     "workbench.editorAssociations": {
         "*.ipynb": "jupyter-notebook"
     },
