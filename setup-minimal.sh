@@ -77,3 +77,5 @@ setup_gitconfig
 setup_mise
 
 setup_fzf
+
+chsh -s "$(which zsh)" "$USER"

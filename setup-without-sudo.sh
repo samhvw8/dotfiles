@@ -109,5 +109,5 @@ if [[ $(uname) == "Darwin" ]]; then
         softwareupdate --install-rosetta --agree-to-license
     fi
 else
-    chsh -s $(which zsh) $USER
+    chsh -s "$(which zsh)" "$USER"
 fi
