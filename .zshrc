@@ -329,3 +329,6 @@ fi
 
 # Kubecm configuration
 [[ -f "$HOME/.kubecm" ]] && source "$HOME/.kubecm"
+
+alias ls='ls -G'
+alias ll='ls -lh'
