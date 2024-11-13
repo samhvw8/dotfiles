@@ -214,14 +214,11 @@ fi
 # =============================================================================
 
 # SDKMAN configuration
-export SDKMAN_DIR="$HOME/.sdkman"
-if [[ ! -d "$SDKMAN_DIR" ]]; then
-    zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
-        atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
-        atpull"sdk selfupdate" \
-        atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
-    zi light z-shell/null
-fi
+zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
+    atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
+    atpull"sdk selfupdate" \
+    atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
+zi light z-shell/null
 
 # Cargo completion
 if command_exists cargo; then
