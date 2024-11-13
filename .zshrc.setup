@@ -99,7 +99,7 @@ fi
 # =============================================================================
 #                               Tool Configuration
 # =============================================================================
-
+# 
 # Mise (formerly rtx) configuration
 if [[ -x "$HOME/.local/bin/mise" ]]; then
     if ! eval "$($HOME/.local/bin/mise activate zsh)"; then
@@ -185,22 +185,18 @@ if command_exists docker; then
 fi
 
 # Zoxide configuration
-if command_exists zoxide; then
-    zi ice wait"2" as"command" from"gh-r" lucid \
-        mv"*zoxide* -> zoxide" \
-        atclone"./zoxide init --cmd j zsh > init.zsh" \
-        atpull"%atclone" src"init.zsh" nocompile'!'
-    zi light ajeetdsouza/zoxide
-fi
+zi ice wait"2" as"command" from"gh-r" lucid \
+    mv"*zoxide* -> zoxide" \
+    atclone"./zoxide init --cmd j zsh > init.zsh" \
+    atpull"%atclone" src"init.zsh" nocompile'!'
+zi light ajeetdsouza/zoxide
 
 # Console tools
 zi light-mode for z-shell/z-a-meta-plugins @console-tools
 
 # Delta (better diff tool)
-if ! command_exists delta; then
-    zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
-    zi light dandavison/delta
-fi
+zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+zi light dandavison/delta
 
 # =============================================================================
 #                               Editor Configuration
@@ -218,26 +214,19 @@ fi
 # =============================================================================
 
 # SDKMAN configuration
-export SDKMAN_DIR="$HOME/.sdkman"
-if [[ ! -d "$SDKMAN_DIR" ]]; then
-    zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
-        atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
-        atpull"sdk selfupdate" \
-        atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
-    zi light z-shell/null
-fi
+zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
+    atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
+    atpull"sdk selfupdate" \
+    atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
+zi light z-shell/null
 
 # Cargo completion
-if command_exists cargo; then
-    zi ice lucid wait as'completion' blockf
-    zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
-fi
+zi ice lucid wait as'completion' blockf
+zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
 
 # Youtube-dl completion
-if command_exists youtube-dl; then
-    zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
-    zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
-fi
+zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
+zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
 # =============================================================================
 #                               ZSH Enhancements
