@@ -99,7 +99,7 @@ fi
 # =============================================================================
 #                               Tool Configuration
 # =============================================================================
-
+# 
 # Mise (formerly rtx) configuration
 if [[ -x "$HOME/.local/bin/mise" ]]; then
     if ! eval "$($HOME/.local/bin/mise activate zsh)"; then
@@ -185,13 +185,11 @@ if command_exists docker; then
 fi
 
 # Zoxide configuration
-if command_exists zoxide; then
-    zi ice wait"2" as"command" from"gh-r" lucid \
-        mv"*zoxide* -> zoxide" \
-        atclone"./zoxide init --cmd j zsh > init.zsh" \
-        atpull"%atclone" src"init.zsh" nocompile'!'
-    zi light ajeetdsouza/zoxide
-fi
+zi ice wait"2" as"command" from"gh-r" lucid \
+    mv"*zoxide* -> zoxide" \
+    atclone"./zoxide init --cmd j zsh > init.zsh" \
+    atpull"%atclone" src"init.zsh" nocompile'!'
+zi light ajeetdsouza/zoxide
 
 # Console tools
 zi light-mode for z-shell/z-a-meta-plugins @console-tools
