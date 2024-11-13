@@ -221,16 +221,12 @@ zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpu
 zi light z-shell/null
 
 # Cargo completion
-if command_exists cargo; then
-    zi ice lucid wait as'completion' blockf
-    zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
-fi
+zi ice lucid wait as'completion' blockf
+zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
 
 # Youtube-dl completion
-if command_exists youtube-dl; then
-    zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
-    zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
-fi
+zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
+zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
 # =============================================================================
 #                               ZSH Enhancements
