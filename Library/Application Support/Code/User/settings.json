@@ -758,7 +758,8 @@
     "fzf-quick-open.ripgrepSearchStyle": "Smart case",
     "[shellscript]": {
         "editor.defaultFormatter": "foxundermoon.shell-format"
-    }
+    },
+    "astGrep.serverPath": "/Users/samhv/.local/share/mise/installs/npm-ast-grep/0.1.0/bin/ast-grep"
     // "rust-analyzer.cargo.extraEnv": {
     //     "CARGO_HOME"
     // }
