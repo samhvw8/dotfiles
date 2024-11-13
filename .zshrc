@@ -195,10 +195,8 @@ zi light ajeetdsouza/zoxide
 zi light-mode for z-shell/z-a-meta-plugins @console-tools
 
 # Delta (better diff tool)
-if ! command_exists delta; then
-    zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
-    zi light dandavison/delta
-fi
+zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+zi light dandavison/delta
 
 # =============================================================================
 #                               Editor Configuration
