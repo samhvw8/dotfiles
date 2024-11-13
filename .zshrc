@@ -332,3 +332,4 @@ fi
 
 alias ls='ls -G'
 alias ll='ls -lh'
+set -o emacs
