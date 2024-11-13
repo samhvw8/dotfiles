@@ -3,7 +3,9 @@
 # =============================================================================
 
 # History Configuration
-setopt SHARE_HISTORY INC_APPEND_HISTORY HIST_NO_STORE
+setopt SHARE_HISTORY          # Share history between open shells
+setopt INC_APPEND_HISTORY     # Append history as commands are entered
+setopt HIST_NO_STORE         # Don't save 'history' cmd in history
 setopt appendhistory beep nomatch
 
 # XDG Base Directory Specification
@@ -13,7 +15,7 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
 export XDG_RUNTIME_DIR="${HOME}/.local/run"
 
-# Create necessary directories
+# Create necessary directories if they don't exist
 for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_RUNTIME_DIR"; do
     [[ ! -d "$dir" ]] && mkdir -p "$dir"
 done
@@ -36,15 +38,25 @@ done
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
     print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
     command mkdir -p "$HOME/.zi" && command chmod go-rwX "$HOME/.zi"
-    command git clone -q --depth=1 --branch "main" https://github.com/z-shell/zi "$HOME/.zi/bin" && \
-    print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-    print -P "%F{160}▓▒░ The clone has failed.%f%b"
+    if command git clone -q --depth=1 --branch "main" https://github.com/z-shell/zi "$HOME/.zi/bin"; then
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b"
+    else
+        print -P "%F{160}▓▒░ The clone has failed. Please check your internet connection and git installation.%f%b"
+        return 1
+    fi
 fi
 
-source "$HOME/.zi/bin/zi.zsh"
-autoload -Uz _zi
-(( ${+_comps} )) && _comps[zi]=_zi
+# Source ZI with error handling
+if [[ -f "$HOME/.zi/bin/zi.zsh" ]]; then
+    source "$HOME/.zi/bin/zi.zsh"
+    autoload -Uz _zi
+    (( ${+_comps} )) && _comps[zi]=_zi
+else
+    print -P "%F{160}▓▒░ ZI installation not found. Please check the installation.%f%b"
+    return 1
+fi
 
+# Load annexes
 zi light-mode for z-shell/z-a-meta-plugins @annexes
 zicompinit
 
@@ -55,7 +67,12 @@ zicompinit
 export DIRENV_LOG_FORMAT=
 setopt promptsubst
 
-# Starship prompt installation
+# Function to check command existence
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Starship prompt installation based on system architecture
 if [[ $(uname) == "Darwin" ]]; then
     zi lucid for \
         as"command" from"gh-r" \
@@ -82,15 +99,42 @@ fi
 # =============================================================================
 #                               Tool Configuration
 # =============================================================================
-
-# Mise configuration
+# 
+# Mise (formerly rtx) configuration
 if [[ -x "$HOME/.local/bin/mise" ]]; then
-    eval "$($HOME/.local/bin/mise activate zsh)"
-    if [[ ! -f "$ZSH_CACHE_DIR/completions/_mise" ]]; then
-        mise completion zsh > "$ZSH_CACHE_DIR/completions/_mise"
+    if ! eval "$($HOME/.local/bin/mise activate zsh)"; then
+        echo "Warning: Failed to activate mise"
+    else
+        if [[ ! -f "$ZSH_CACHE_DIR/completions/_mise" ]]; then
+            mise completion zsh > "$ZSH_CACHE_DIR/completions/_mise" 2>/dev/null
+        fi
+        zi ice as"completion"
+        zi snippet "$ZSH_CACHE_DIR/completions/_mise"
     fi
-    zi ice as"completion"
-    zi snippet "$ZSH_CACHE_DIR/completions/_mise"
+fi
+
+# Kubernetes tools configuration
+if command_exists kubectl; then
+    alias k=kubectl
+    alias kaf='kubectl apply -f'
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_kubectl" ]]; then
+        kubectl completion zsh 2>/dev/null > "$ZSH_CACHE_DIR/completions/_kubectl"
+    fi
+    [[ -f "$ZSH_CACHE_DIR/completions/_kubectl" ]] && {
+        zi ice as"completion"
+        zi snippet "$ZSH_CACHE_DIR/completions/_kubectl"
+    }
+fi
+
+# Helm configuration
+if command_exists helm; then
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_helm" ]]; then
+        helm completion zsh 2>/dev/null > "$ZSH_CACHE_DIR/completions/_helm"
+    fi
+    [[ -f "$ZSH_CACHE_DIR/completions/_helm" ]] && {
+        zi ice as"completion"
+        zi snippet "$ZSH_CACHE_DIR/completions/_helm"
+    }
 fi
 
 # =============================================================================
@@ -130,6 +174,14 @@ if [[ -f "$HOME/.fzf.zsh" ]]; then
     zi ice wait"0" lucid
     zi snippet "$HOME/.fzf.zsh"
     zi light Aloxaf/fzf-tab
+    zi light wfxr/forgit
+fi
+
+# Docker completions
+if command_exists docker; then
+    zi ice as"completion"
+    zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
+    zi snippet https://github.com/docker/compose/blob/v1/contrib/completion/zsh/_docker-compose
 fi
 
 # Zoxide configuration
@@ -150,12 +202,31 @@ zi light dandavison/delta
 #                               Editor Configuration
 # =============================================================================
 
-if command -v nvim &> /dev/null; then
+if command_exists nvim; then
     alias vim="nvim"
     export EDITOR='nvim'
     alias nvimo="nvim -u NORC --noplugin"
     alias vimo="/usr/bin/vim"
 fi
+
+# =============================================================================
+#                               Development Tools
+# =============================================================================
+
+# SDKMAN configuration
+zi ice wait lucid as"program" pick"$HOME/.sdkman/bin/sdk" id-as'sdkman' run-atpull \
+    atclone"wget https://get.sdkman.io -O $HOME/.sdkman/scr.sh; bash $HOME/.sdkman/scr.sh" \
+    atpull"sdk selfupdate" \
+    atinit"source $HOME/.sdkman/bin/sdkman-init.sh"
+zi light z-shell/null
+
+# Cargo completion
+zi ice lucid wait as'completion' blockf
+zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
+
+# Youtube-dl completion
+zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
+zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
 # =============================================================================
 #                               ZSH Enhancements
@@ -182,17 +253,27 @@ zi light "MichaelAquilina/zsh-you-should-use"
 #                               Path Configuration
 # =============================================================================
 
+# Function to add to PATH if directory exists
+add_to_path() {
+    [[ -d "$1" ]] && export PATH="$1:$PATH"
+}
+
 # Add directories to PATH
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$PATH:$HOME/bin"
+add_to_path "$HOME/.local/bin"
+add_to_path "$HOME/bin"
+add_to_path "${KREW_ROOT:-$HOME/.krew}/bin"
 
 # OS-specific configuration
 if [[ $(uname) == "Darwin" ]]; then
     [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
     export HOMEBREW_NO_INSTALL_CLEANUP=1
-    export PATH="/usr/local/sbin:$PATH"
+    add_to_path "/usr/local/sbin"
+    add_to_path "/usr/local/opt/icu4c/bin"
+    add_to_path "/usr/local/opt/icu4c/sbin"
 else
     alias open=xdg-open
+    [[ -f "$HOME/idea/idea-IC-203.8084.24/bin/idea.sh" ]] && \
+        alias idea="$HOME/idea/idea-IC-203.8084.24/bin/idea.sh"
 fi
 
 # =============================================================================
@@ -205,8 +286,49 @@ export FZF_DEFAULT_OPTS='
 --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
 --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
 '
+export FZF_DEFAULT_COMMAND='fd --type file'
+export BAT_THEME="Dracula"
 
 # Locale settings
 export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
+
+# =============================================================================
+#                               Conda Configuration
+# =============================================================================
+
+# Determine Conda base directory
+if command_exists conda; then
+    export _CONDA_BASE=$(dirname $(dirname $(which conda)))
+elif [[ $(uname) == "Darwin" ]]; then
+    export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
+else
+    export _CONDA_BASE=$HOME/miniconda3
+fi
+
+# Initialize Conda
+if [[ -f "$_CONDA_BASE/bin/conda" ]]; then
+    __conda_setup="$('$_CONDA_BASE/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    elif [ -f "$_CONDA_BASE/etc/profile.d/conda.sh" ]; then
+        . "$_CONDA_BASE/etc/profile.d/conda.sh"
+    else
+        export PATH="$_CONDA_BASE/bin:$PATH"
+    fi
+    unset __conda_setup
+fi
+
+# =============================================================================
+#                               Additional Sources
+# =============================================================================
+
+# Envman configuration
+[[ -s "$HOME/.config/envman/load.sh" ]] && source "$HOME/.config/envman/load.sh"
+
+# Kubecm configuration
+[[ -f "$HOME/.kubecm" ]] && source "$HOME/.kubecm"
+
+alias ls='ls -G'
+alias ll='ls -lh'
