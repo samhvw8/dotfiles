@@ -8,6 +8,11 @@ else
     :
 fi
 
+
+if [ -f "$HOME/.local/bin/mise" ]; then 
+    eval "$($HOME/.local/bin/mise activate zsh --shims)"
+fi
+
 if [ -f "$HOME/.zshrc" ]; then
   # shellcheck disable=SC1091
   . "$HOME/.zshrc"
@@ -20,8 +25,5 @@ export PATH="$PATH:$HOME/.local/share/JetBrains/Toolbox/scripts"
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
-if [[ "$TERM_PROGRAM" == "vscode" ]]; then
-  eval "$($HOME/.local/bin/mise activate zsh --shims)"
-elif; then
-  eval "$($HOME/.local/bin/mise activate zsh)"
-fi
+
+

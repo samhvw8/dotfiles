@@ -102,6 +102,8 @@ fi
 # 
 # Mise (formerly rtx) configuration
 if [[ -x "$HOME/.local/bin/mise" ]]; then
+    eval "$($HOME/.local/bin/mise activate zsh)"
+
     if [[ ! -f "$ZSH_CACHE_DIR/completions/_mise" ]]; then
         mise completion zsh > "$ZSH_CACHE_DIR/completions/_mise" 2>/dev/null
     fi
