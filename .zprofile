@@ -19,3 +19,9 @@ export PATH="$PATH:$HOME/.local/share/JetBrains/Toolbox/scripts"
 
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+  eval "$($HOME/.local/bin/mise activate zsh --shims)"
+elif; then
+  eval "$($HOME/.local/bin/mise activate zsh)"
+fi

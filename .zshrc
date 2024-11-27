@@ -102,15 +102,11 @@ fi
 # 
 # Mise (formerly rtx) configuration
 if [[ -x "$HOME/.local/bin/mise" ]]; then
-    if ! eval "$($HOME/.local/bin/mise activate zsh)"; then
-        echo "Warning: Failed to activate mise"
-    else
-        if [[ ! -f "$ZSH_CACHE_DIR/completions/_mise" ]]; then
-            mise completion zsh > "$ZSH_CACHE_DIR/completions/_mise" 2>/dev/null
-        fi
-        zi ice as"completion"
-        zi snippet "$ZSH_CACHE_DIR/completions/_mise"
+    if [[ ! -f "$ZSH_CACHE_DIR/completions/_mise" ]]; then
+        mise completion zsh > "$ZSH_CACHE_DIR/completions/_mise" 2>/dev/null
     fi
+    zi ice as"completion"
+    zi snippet "$ZSH_CACHE_DIR/completions/_mise"
 fi
 
 # Kubernetes tools configuration
