@@ -329,3 +329,7 @@ fi
 alias ls='ls -G'
 alias ll='ls -lh'
 set -o emacs
+
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line  # Ctrl-X-E, like in bash
