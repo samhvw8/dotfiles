@@ -8,10 +8,17 @@ else
     :
 fi
 
-
-if [ -f "$HOME/.local/bin/mise" ]; then 
-    eval "$($HOME/.local/bin/mise activate zsh --shims)"
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    if [ -f "$HOME/.local/bin/mise" ]; then 
+        eval "$($HOME/.local/bin/mise activate zsh)"
+    fi
+else
+    if [ -f "$HOME/.local/bin/mise" ]; then 
+        eval "$($HOME/.local/bin/mise activate zsh)"
+    fi
 fi
+
+
 
 if [ -f "$HOME/.zshrc" ]; then
   # shellcheck disable=SC1091
