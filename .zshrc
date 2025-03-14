@@ -67,6 +67,13 @@ zicompinit
 export DIRENV_LOG_FORMAT=
 setopt promptsubst
 
+fbd() {
+  local branches branch
+  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
+  branch=$(echo "$branches" | fzf --multi ) &&
+  git branch -D $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
 # Function to check command existence
 command_exists() {
     command -v "$1" >/dev/null 2>&1
