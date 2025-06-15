@@ -160,12 +160,14 @@ if [[ -f "$HOME/.fzf.zsh" ]]; then
     zi light wfxr/forgit
 fi
 
-# Docker completions
+{{- if not .minimal }}
+# Docker completions (full installation only)
 if command_exists docker; then
     zi ice as"completion"
     zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
     zi snippet https://github.com/docker/compose/blob/v1/contrib/completion/zsh/_docker-compose
 fi
+{{- end }}
 
 # Zoxide (better cd)
 zi ice wait"2" as"command" from"gh-r" lucid \
@@ -174,7 +176,8 @@ zi ice wait"2" as"command" from"gh-r" lucid \
     atpull"%atclone" src"init.zsh" nocompile'!'
 zi light ajeetdsouza/zoxide
 
-# Console tools collection
+{{- if not .minimal }}
+# Console tools collection (full installation only)
 zi light-mode for z-shell/z-a-meta-plugins @console-tools
 
 # Delta (better diff)
@@ -187,6 +190,7 @@ zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
 
 zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
 zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
+{{- end }}
 
 # =============================================================================
 # ZSH Enhancements
@@ -255,7 +259,8 @@ export FZF_DEFAULT_COMMAND='fd --type file'
 # Conda Configuration
 # =============================================================================
 
-# Determine Conda base directory
+{{- if not .minimal }}
+# Determine Conda base directory (full installation only)
 if command_exists conda; then
     export _CONDA_BASE=$(dirname $(dirname $(which conda)))
 elif [[ $(uname) == "Darwin" ]]; then
@@ -276,6 +281,7 @@ if [[ -f "$_CONDA_BASE/bin/conda" ]]; then
     fi
     unset __conda_setup
 fi
+{{- end }}
 
 # =============================================================================
 # Additional Sources
