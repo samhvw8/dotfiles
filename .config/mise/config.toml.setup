@@ -1,15 +1,16 @@
 [settings]
 experimental = true
 legacy_version_file_disable_tools = ['java']
+idiomatic_version_file_enable_tools = ["node"]
 
 [tools]
 buildpack = "0.27.0-rc1"
 direnv = "2.32.2"
-go = "1.22.2"
+go = "1.23.4"
 jq = "1.6"
-k6 = "0.50.0"
-node = "20.12.0"
-python = "3.9.16"
+k6 = "0.54.0"
+node = "22"
+python = "3.12"
 ripgrep = "12.1.1"
-rust = "1.67.0"
+rust = "1.87.0"
 zig = "0.11.0"

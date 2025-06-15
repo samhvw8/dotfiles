@@ -333,7 +333,7 @@ main() {
 
     # Install packages on macOS
     if [[ $(uname) == "Darwin" ]]; then
-        if ! brew bundle install; then
+        if ! brew bundle install --file="$HOME/Brewfile.setup"; then
             log_error "Failed to install brew packages"
             exit 1
         fi
