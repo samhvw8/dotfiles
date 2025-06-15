@@ -1,0 +1,117 @@
+let mapleader=" "
+
+""" Plugins  --------------------------------
+set multiple-cursors
+" set easymotion
+set textobj-entire
+
+" ys, cs, ds, S
+set surround
+" gcc, gc + motion, v_gc
+set commentary
+" argument text objects: aa, ia
+set argtextobj
+" cx{motion} to select, again to exchange
+set exchange
+
+set highlightedyank
+
+set matchit
+
+set so=5
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set visualbell
+set noerrorbells
+
+
+set ideajoin
+set ideamarks
+set ideastatusicon=gray
+set idearefactormode=keep
+set showmode
+
+set number
+set relativenumber
+
+""" IdeaVim development stuff
+set ideastrictmode
+
+
+set clipboard^=unnamedplus,unname,ideaput
+
+""" Mappings
+nnoremap <leader>a :action ShowIntentionActions<cr>
+vnoremap <leader>a :action ShowIntentionActions<cr>
+nnoremap <leader>re :action RenameElement<cr>
+nnoremap <leader>rf :action RenameFile<cr>
+nnoremap <leader><cr> :nohlsearch<CR>
+
+
+" actions
+nnoremap <leader>q :action CloseContent<cr>
+nnoremap <leader>Q :action ReopenClosedTab<cr>
+nnoremap <leader>\ :action VimFilePrevious<cr>
+nnoremap <leader>s :action SearchEverywhere<cr>
+nnoremap <leader>E :action Switcher<cr>
+nnoremap <leader>t :action FileStructurePopup<cr>
+nnoremap <leader>T :action GotoSymbol<cr>
+nnoremap <leader>A :action GotoAction<cr>
+nnoremap <Leader>ic :action InspectCode<cr>
+nnoremap gR :action ShowUsages<cr>
+nnoremap gr :action FindUsages<cr>
+nnoremap gi :action GotoImplementation<cr>
+
+" unimpaired mappings
+nnoremap [<leader> O<esc>j
+nnoremap ]<leader> o<esc>k
+nnoremap [q :action PreviousOccurence<cr>
+nnoremap ]q :action NextOccurence<cr>
+nnoremap [m :action MethodUp<cr>
+nnoremap ]m :action MethodDown<cr>
+nnoremap [h :action VcsShowPrevChangeMarker<cr>
+nnoremap ]h :action VcsShowNextChangeMarker<cr>
+nnoremap [b :action PreviousTab<cr>
+nnoremap ]b :action NextTab<cr>
+nnoremap [d :action GotoPreviousError<cr>
+nnoremap ]d :action GotoNextError<cr>
+
+" Moving lines
+nmap [e :action MoveLineUp<cr>
+nmap ]e :action MoveLineDown<cr>
+" Moving statements
+nmap [s :action MoveStatementUp<cr>
+nmap ]s :action MoveStatementDown<cr>
+
+" Search
+nmap <leader>/ :action FindInPath<cr>
+
+" built-in navigation to navigated items works better
+nnoremap <c-o> :action Back<cr>
+nnoremap <c-i> :action Forward<cr>
+" but preserve ideavim defaults
+nnoremap g<c-o> <c-o>
+nnoremap g<c-i> <c-i>
+
+
+" built in search looks better
+nnoremap / :action Replace<cr>
+vnoremap / :action Replace<cr>
+" but preserve ideavim search
+nnoremap g/ /
+vnoremap g/ /
+
+nmap <leader>w :action SaveDocument<cr>
+
+nmap <leader>f :action GotoFile<cr>
+
+map \r :action ReformatCode<cr>
+nmap \t :action Refactorings.QuickListPopupAction<cr>
+vmap \t :action Refactorings.QuickListPopupAction<cr>
+
+nmap crc :action StringManipulation.ToCamelCase<cr>
+nmap crm :action StringManipulation.ToPascalCase<cr>
+nmap cr_ :action StringManipulation.ToSnakeCase<cr>
+nmap cru :action StringManipulation.ToScreamingSnakeCase<cr>

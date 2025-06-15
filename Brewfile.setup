@@ -1,0 +1,8 @@
+brew "telnet"
+brew "wget"
+cask "macfuse"
+cask "miniconda"
+cask "calibre"
+cask "iterm2"
+brew "sshuttle"
+brew "htop"

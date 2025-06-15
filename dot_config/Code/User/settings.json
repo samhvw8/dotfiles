@@ -1,0 +1,764 @@
+{
+    "terminal.integrated.shellIntegration.enabled": true,
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.defaultProfile.windows": "zsh",
+    "editor.fontFamily": "FiraCode Nerd Font, monospace",
+    "editor.formatOnSave": true,
+    "editor.renderControlCharacters": true,
+    "editor.suggestSelection": "first",
+    "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "workbench.colorTheme": "Dracula",
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "redhat.telemetry.enabled": true,
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "vim.changeWordIncludesWhitespace": false,
+    "vim.highlightedyank.enable": true,
+    "vim.hlsearch": true,
+    "vim.incsearch": true,
+    "vim.leader": "<space>",
+    "vim.searchHighlightColor": "#f1fa8c",
+    "vim.useSystemClipboard": true,
+    "vim.visualstar": true,
+    "vim.statusBarColorControl": false,
+    "vim.normalModeKeyBindings": [
+        {
+            "before": [
+                "\\",
+                "e"
+            ],
+            "commands": [
+                "editor.showCallHierarchy"
+            ]
+        },
+        {
+            "before": [
+                "\\",
+                "r"
+            ],
+            "commands": [
+                "fzf-quick-open.runFzfSearchProjectRoot"
+            ]
+        },
+        {
+            "before": [
+                "<c-a>"
+            ],
+            "commands": [
+                "incrementor.incrementByOne",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "before": [
+                "<c-x>"
+            ],
+            "commands": [
+                "incrementor.decrementByOne",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "before": [
+                "K"
+            ],
+            "commands": [
+                "editor.action.showHover"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "o"
+            ],
+            "commands": [
+                "workbench.action.toggleSidebarVisibility"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "p"
+            ],
+            "commands": [
+                "workbench.action.togglePanel"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "1"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "todohighlight.listAnnotations",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "e",
+            ],
+            "after": [],
+            "commands": [
+                "workbench.view.explorer"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "\\",
+            ],
+            "commands": [
+                "workbench.view.search"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "l",
+                "d"
+            ],
+            "commands": [
+                "workbench.actions.view.problems"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "r",
+                "n"
+            ],
+            "commands": [
+                "editor.action.rename"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "w"
+            ],
+            "after": [],
+            "commands": [
+                "workbench.action.files.save"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "W"
+            ],
+            "after": [],
+            "commands": [
+                "workbench.action.files.saveWithoutFormatting"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                " "
+            ],
+            "after": [
+                "O",
+                "<Esc>",
+                "j",
+                "0"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                " "
+            ],
+            "after": [
+                "o",
+                "<Esc>",
+                "k",
+                "0"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesDownAction"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesUpAction"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "h"
+            ],
+            "commands": [
+                "editor.action.dirtydiff.next"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "h"
+            ],
+            "commands": [
+                "editor.action.dirtydiff.previous"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "h"
+            ],
+            "commands": [
+                "workbench.action.compareEditor.nextChange"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "h"
+            ],
+            "commands": [
+                "workbench.action.compareEditor.previousChange"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "b"
+            ],
+            "commands": [
+                "workbench.action.previousEditor"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "b"
+            ],
+            "commands": [
+                "workbench.action.nextEditor"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "f"
+            ],
+            "commands": [
+                "workbench.view.explorer",
+                "list.focusUp",
+                "explorer.openAndPassFocus"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "f"
+            ],
+            "commands": [
+                "workbench.view.explorer",
+                "list.focusDown",
+                "explorer.openAndPassFocus"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "q"
+            ],
+            "commands": [
+                "search.action.focusPreviousSearchResult"
+            ],
+            "when": "hasSearchResult"
+        },
+        {
+            "before": [
+                "]",
+                "q"
+            ],
+            "commands": [
+                "search.action.focusNextSearchResult"
+            ],
+            "when": "hasSearchResult"
+        },
+        {
+            "before": [
+                "[",
+                "r"
+            ],
+            "commands": [
+                "references-view.prev"
+            ],
+            "when": "reference-list.hasResult"
+        },
+        {
+            "before": [
+                "]",
+                "r"
+            ],
+            "commands": [
+                "references-view.next"
+            ],
+            "when": "reference-list.hasResult"
+        },
+        {
+            "before": [
+                "[",
+                "l"
+            ],
+            "commands": [
+                "editor.action.marker.prevInFiles"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "]",
+                "l"
+            ],
+            "commands": [
+                "editor.action.marker.nextInFiles"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "[",
+                "h"
+            ],
+            "commands": [
+                "workbench.action.editor.previousChange"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "]",
+                "h"
+            ],
+            "commands": [
+                "workbench.action.editor.nextChange"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": [
+                "[",
+                "w"
+            ],
+            "commands": [
+                "workbench.action.focusPreviousGroup"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "w"
+            ],
+            "commands": [
+                "workbench.action.focusNextGroup"
+            ]
+        },
+        // changce case ~ vim abolish
+        {
+            "before": [
+                "c",
+                "r",
+                "c"
+            ],
+            "commands": [
+                "extension.changeCase.camel"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "."
+            ],
+            "commands": [
+                "extension.changeCase.dot"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "_"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "s"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "u"
+            ],
+            "commands": [
+                "extension.changeCase.constant"
+            ]
+        },
+        {
+            "before": [
+                "]",
+                "g"
+            ],
+            "commands": [
+                "editor.action.marker.next"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "g"
+            ],
+            "commands": [
+                "editor.action.marker.prev"
+            ]
+        },
+        {
+            "before": [
+                "/"
+            ],
+            "commands": [
+                "editor.action.startFindReplaceAction"
+            ]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "D"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "D"
+            ]
+        },
+        {
+            "before": [
+                "d",
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "<BS>"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "/"
+            ],
+            "after": [
+                "/"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "<cr>"
+            ],
+            "commands": [
+                ":nohl"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "r"
+            ],
+            "commands": [
+                "editor.action.goToReferences"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "x"
+            ],
+            "commands": [
+                "editor.action.openLink"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "h",
+                "r"
+            ],
+            "commands": [
+                "git.revertSelectedRanges"
+            ],
+            "when": "isInDiffEditor"
+        },
+        {
+            "before": [
+                "<leader>",
+                "h",
+                "s"
+            ],
+            "commands": [
+                "git.stageSelectedRanges"
+            ],
+            "when": "isInDiffEditor"
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "\\",
+                "r"
+            ],
+            "commands": [
+                "fzf-quick-open.runFzfSearchProjectRoot"
+            ]
+        },
+        {
+            "before": [
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "D"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "D"
+            ]
+        },
+        {
+            "before": [
+                "d",
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d",
+                "d"
+            ]
+        },
+        {
+            "before": [
+                "<BS>"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        }
+    ],
+    "vim.visualModeKeyBindings": [
+        {
+            "before": [
+                "]",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesDownAction"
+            ]
+        },
+        {
+            "before": [
+                "[",
+                "e"
+            ],
+            "commands": [
+                "editor.action.moveLinesUpAction"
+            ]
+        },
+        // changce case ~ vim abolish
+        {
+            "before": [
+                "c",
+                "r",
+                "c"
+            ],
+            "commands": [
+                "extension.changeCase.camel"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "."
+            ],
+            "commands": [
+                "extension.changeCase.dot"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "_"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "s"
+            ],
+            "commands": [
+                "extension.changeCase.snake"
+            ]
+        },
+        {
+            "before": [
+                "c",
+                "r",
+                "u"
+            ],
+            "commands": [
+                "extension.changeCase.constant"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "h",
+                "s"
+            ],
+            "commands": [
+                "git.stageSelectedRanges"
+            ],
+            "when": "isInDiffEditor"
+        }
+    ],
+    "files.autoSave": "afterDelay",
+    "java.project.importHint": false,
+    "incrementor.enums.values": [
+        [
+            "false",
+            "true"
+        ],
+        [
+            "let",
+            "const"
+        ],
+        [
+            "public",
+            "private",
+            "protected"
+        ],
+        [
+            "False",
+            "True"
+        ],
+    ],
+    "editor.renderWhitespace": "all",
+    "vim.handleKeys": {
+        "<C-f>": false
+    },
+    "blockman.n01LineHeight": 0,
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBackground": "#1073cf2d",
+        "editor.lineHighlightBorder": "#9fced11f"
+    },
+    "editor.wordWrap": "off",
+    "diffEditor.wordWrap": "off",
+    "editor.guides.indentation": false,
+    "editor.guides.bracketPairs": false,
+    "editor.inlayHints.enabled": false,
+    "blockman.n04ColorComboPreset": "Small Galaxy (Gradients)",
+    "rust-analyzer.cargo.extraEnv": {},
+    "rust-analyzer.server.extraEnv": {
+        "RA_LOG": "INFO"
+    },
+    "rust-analyzer.trace.server": "verbose",
+    "deno.path": "",
+    "[typescript]": {
+        "editor.defaultFormatter": "denoland.vscode-deno"
+    },
+    "[python]": {
+        "editor.formatOnType": true,
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "terminal.integrated.inheritEnv": false,
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "python.formatting.provider": "none",
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "cmake.configureOnOpen": true,
+    "fzf-quick-open.ripgrepSearchStyle": "Smart case",
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format"
+    }
+    // "rust-analyzer.cargo.extraEnv": {
+    //     "CARGO_HOME"
+    // }
+}
