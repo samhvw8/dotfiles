@@ -202,10 +202,7 @@ zi wait lucid for \
         zsh-users/zsh-autosuggestions
 
 # Optional tools
-[[ -d "$HOME/.dotbare" ]] && {
-    zi ice wait lucid
-    zi light "$HOME/.dotbare"
-}
+# Note: Now using chezmoi for dotfile management instead of dotbare
 
 zi ice wait lucid
 zi light "MichaelAquilina/zsh-you-should-use"
