@@ -112,31 +112,35 @@ setup_folder() {
     log_success "Folder setup completed successfully"
 }
 
-setup_dotbare() {
-    if [[ -d "$HOME/.dotbare" ]]; then
-        log_info "dotbare already installed, skipping"
+setup_chezmoi() {
+    if command_exists chezmoi; then
+        log_info "chezmoi already installed, skipping"
         return 0
     fi
 
-    if ! git clone https://github.com/kazhala/dotbare.git ~/.dotbare; then
-        log_error "Failed to clone dotbare repository"
+    # Install chezmoi
+    if ! curl -sfL https://install.chezmoi.io | sh; then
+        log_error "Failed to install chezmoi"
         return 1
     fi
 
-    export PATH=$PATH:$HOME/.dotbare
-    if ! dotbare finit -u https://github.com/samhvw8/dotfiles.git; then
-        log_error "Failed to initialize dotbare"
+    # Add chezmoi to PATH for this session
+    export PATH="$HOME/bin:$PATH"
+
+    # Initialize and apply dotfiles from repository
+    if ! chezmoi init --apply https://github.com/samhvw8/dotfiles.git; then
+        log_error "Failed to initialize chezmoi with dotfiles repository"
         return 1
     fi
 
+    # Source profile if it exists
     if [[ -f "$HOME/.profile" ]]; then
         source "$HOME/.profile"
     else
-        log_error "$HOME/.profile not found after dotbare setup"
-        return 1
+        log_info "Profile not found, continuing without sourcing"
     fi
 
-    log_success "dotbare setup completed successfully"
+    log_success "chezmoi setup completed successfully"
 }
 
 setup_gitconfig() {
@@ -318,7 +322,7 @@ main() {
     fi
 
     setup_folder
-    setup_dotbare
+    setup_chezmoi
 
     # Configure based on minimal/full setup
     if [[ "$MINIMAL" == "true" ]]; then

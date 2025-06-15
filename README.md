@@ -42,7 +42,7 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bas
 - Rosetta 2 (macOS ARM)
 
 ### Tools & Utilities
-- [dotbare](https://github.com/kazhala/dotbare) for dotfiles management
+- [chezmoi](https://chezmoi.io) for dotfiles management
 - [fzf](https://github.com/junegunn/fzf) for fuzzy finding
 - [mise](https://mise.run) for runtime version management
 - [tmux](https://github.com/tmux/tmux) with plugin manager (full installation)
