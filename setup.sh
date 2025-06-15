@@ -113,24 +113,53 @@ setup_folder() {
 }
 
 setup_chezmoi() {
-    if command_exists chezmoi; then
-        log_info "chezmoi already installed, skipping"
-        return 0
+    # Install chezmoi if not present
+    if ! command_exists chezmoi; then
+        log_info "Installing chezmoi..."
+        if ! curl -sfL https://install.chezmoi.io | sh; then
+            log_error "Failed to install chezmoi"
+            return 1
+        fi
+        # Add chezmoi to PATH for this session
+        export PATH="$HOME/bin:$PATH"
+    else
+        log_info "chezmoi already installed, skipping installation"
     fi
 
-    # Install chezmoi
-    if ! curl -sfL https://install.chezmoi.io | sh; then
-        log_error "Failed to install chezmoi"
-        return 1
-    fi
+    # Configure chezmoi data based on installation type
+    local chezmoi_config_dir="$HOME/.config/chezmoi"
+    mkdir -p "$chezmoi_config_dir"
+    
+    # Create chezmoi configuration with data variables
+    cat > "$chezmoi_config_dir/chezmoi.toml" << EOF
+[data]
+    minimal = ${MINIMAL}
+    
+[git]
+    autoPush = false
+    autoCommit = true
 
-    # Add chezmoi to PATH for this session
-    export PATH="$HOME/bin:$PATH"
+[edit]
+    command = "nvim"
+
+[merge]
+    command = "nvim"
+    args = ["-d"]
+EOF
 
     # Initialize and apply dotfiles from repository
-    if ! chezmoi init --apply https://github.com/samhvw8/dotfiles.git; then
-        log_error "Failed to initialize chezmoi with dotfiles repository"
-        return 1
+    if [[ ! -d "$HOME/.local/share/chezmoi/.git" ]]; then
+        log_info "Initializing chezmoi with dotfiles repository..."
+        if ! chezmoi init --apply https://github.com/samhvw8/dotfiles.git; then
+            log_error "Failed to initialize chezmoi with dotfiles repository"
+            return 1
+        fi
+    else
+        log_info "Chezmoi already initialized, applying configurations..."
+        if ! chezmoi apply; then
+            log_error "Failed to apply chezmoi configurations"
+            return 1
+        fi
     fi
 
     # Source profile if it exists
@@ -324,16 +353,8 @@ main() {
     setup_folder
     setup_chezmoi
 
-    # Configure based on minimal/full setup
-    if [[ "$MINIMAL" == "true" ]]; then
-        rm -f "$HOME/.config/mise/config.toml"
-        cp "$HOME/.config/mise/config.toml.setup.minimal" "$HOME/.config/mise/config.toml"
-        cp "$HOME/.zshrc.setup.minimal" "$HOME/.zshrc"
-    else
-        rm -f "$HOME/.config/mise/config.toml"
-        cp "$HOME/.config/mise/config.toml.setup" "$HOME/.config/mise/config.toml"
-        cp "$HOME/.zshrc.setup" "$HOME/.zshrc"
-    fi
+    # Note: Configuration files (.zshrc, mise config) are now handled automatically
+    # by chezmoi templates based on the 'minimal' data variable
 
     # Install packages on macOS
     if [[ $(uname) == "Darwin" ]]; then
