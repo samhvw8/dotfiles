@@ -160,14 +160,12 @@ if [[ -f "$HOME/.fzf.zsh" ]]; then
     zi light wfxr/forgit
 fi
 
-{{- if not .minimal }}
 # Docker completions (full installation only)
 if command_exists docker; then
     zi ice as"completion"
     zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
     zi snippet https://github.com/docker/compose/blob/v1/contrib/completion/zsh/_docker-compose
 fi
-{{- end }}
 
 # Zoxide (better cd)
 zi ice wait"2" as"command" from"gh-r" lucid \
@@ -176,7 +174,6 @@ zi ice wait"2" as"command" from"gh-r" lucid \
     atpull"%atclone" src"init.zsh" nocompile'!'
 zi light ajeetdsouza/zoxide
 
-{{- if not .minimal }}
 # Console tools collection (full installation only)
 zi light-mode for z-shell/z-a-meta-plugins @console-tools
 
@@ -190,7 +187,6 @@ zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
 
 zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
 zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
-{{- end }}
 
 # =============================================================================
 # ZSH Enhancements
