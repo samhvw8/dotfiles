@@ -1,0 +1,6 @@
+#!/bin/bash 
+export LC_ALL="C"
+rofi -show combi   2>&1 | tee /tmp/rofi-run.log
+exit 0
+~                                                                                                                      
+~                                      

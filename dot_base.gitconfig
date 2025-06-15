@@ -1,0 +1,79 @@
+[core]
+	editor            = nvim
+	# pager = diff-so-fancy | less --tabs=4 -RFX
+	pager             = delta
+	precomposeunicode = true
+	quotePath         = false
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    features     = line-numbers decorations
+    syntax-theme = Dracula
+    plus-style   = syntax "#003800"
+    minus-style  = syntax "#3f0001"
+
+[delta "decorations"]
+    commit-decoration-style      = bold yellow box ul
+    file-style                   = bold yellow ul
+    file-decoration-style        = none
+    hunk-header-decoration-style = cyan box ul
+
+[delta "line-numbers"]
+    line-numbers-left-style  = cyan
+    line-numbers-right-style = cyan
+    line-numbers-minus-style = 124
+    line-numbers-plus-style  = 28
+[pull]
+	rebase = false
+[credential]
+	helper = cache
+[color]
+	ui = true
+# [color "diff-highlight"]
+#	oldNormal = red bold
+#	oldHighlight = red bold 52
+#	newNormal = green bold
+#	newHighlight = green bold 22
+# [color "diff"]
+#	meta = 11
+#	frag = magenta bold
+#	commit = yellow bold
+#	old = red bold
+#	new = green bold
+#	whitespace = red reverse
+[color "status"]
+	header    = white
+	branch    = white bold
+	added     = yellow bold
+	changed   = green bold
+	untracked = cyan bold reverse
+	nobranch  = red bold
+[color "branch"]
+	plain    = white
+	current  = yellow bold reverse
+	local    = yellow
+	remote   = green
+	upstream = cyan
+[alias]
+	a    = add
+	ca   = commit -a
+	cm   = commit -m
+	cam  = commit -am
+	s    = status
+	pom  = push origin master
+	pog  = push origin gh-pages
+	puom = pull origin master
+	puog = pull origin gh-pages
+	cob  = checkout -b
+	co   = checkout
+	fp   = fetch --prune --all
+	l    = log --oneline --decorate --graph
+	lall = log --oneline --decorate --graph --all
+	ls   = log --oneline --decorate --graph --stat
+	lt   = log --graph --decorate --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)%an%Creset'
+  bsl   = branchless smartlog
+  bu = branchless undo
+  review = "!sh -c 'git push origin HEAD:refs/for/master%r=$0'"
+
+[merge]
+	tool = vimdiff
