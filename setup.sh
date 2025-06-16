@@ -98,7 +98,7 @@ EOF
     if [[ ! -d "$HOME/.local/share/chezmoi/.git" ]]; then
         log_info "Initializing chezmoi with dotfiles repository..."
         log_info "This will automatically install all required tools and dependencies..."
-        if ! chezmoi init --apply https://github.com/samhvw8/dotfiles.git; then
+        if ! chezmoi init --apply samhvw8; then
             log_error "Failed to initialize chezmoi with dotfiles repository"
             exit 1
         fi
