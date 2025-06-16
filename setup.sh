@@ -62,7 +62,7 @@ main() {
     # Install chezmoi if not present
     if ! command_exists chezmoi; then
         log_info "Installing chezmoi..."
-        if ! curl -sfL https://install.chezmoi.io | sh; then
+        if ! sh -c "$(curl -fsLS get.chezmoi.io)"; then
             log_error "Failed to install chezmoi"
             exit 1
         fi
