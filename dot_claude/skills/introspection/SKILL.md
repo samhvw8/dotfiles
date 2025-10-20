@@ -1,6 +1,6 @@
 ---
 name: introspection
-description: Meta-cognitive analysis for exposing reasoning processes, identifying decision patterns, and optimizing problem-solving approaches through systematic self-reflection. Use when analyzing Claude's decision-making, debugging unexpected outcomes, validating framework compliance, or when user requests "explain your reasoning", "why did you choose", "analyze this decision", "show your thinking", or mentions reasoning transparency, decision analysis, or pattern recognition.
+description: Analyze and explain Claude's reasoning, decision patterns, and problem-solving approaches. Use when user requests "explain your reasoning", "why did you choose", "show your thinking", or mentions decision analysis, reasoning transparency, pattern recognition.
 ---
 
 # Introspection

@@ -1,6 +1,6 @@
 ---
 name: mise-expert
-description: Expert guidance for mise task runner, tool version manager, and environment manager. Use when installing/managing runtime versions (node, python, go, etc), setting up project development environments, creating/optimizing mise.toml configurations, designing task workflows with caching and parallel execution, configuring per-directory environment variables, converting from make/npm/asdf to mise, troubleshooting mise issues, or setting up CI/CD with mise. (project, gitignored)
+description: Manage tool versions (node, python, go), create task runners, and setup development environments using mise. Use when user requests "install node", "setup mise", "create task", or mentions mise.toml, version manager, tool management, task runner.
 ---
 
 # Mise Expert Skill

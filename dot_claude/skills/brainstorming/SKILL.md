@@ -1,6 +1,6 @@
 ---
 name: brainstorm
-description: Collaborative discovery mindset for interactive requirements exploration and creative problem solving. This skill should be used when users have vague project ideas, express uncertainty about requirements, or need help exploring possibilities before implementation. Triggers include exploration keywords (brainstorm, explore, discuss, figure out) and uncertainty indicators (maybe, possibly, thinking about, could we).
+description: Transform vague ideas into clear requirements through collaborative discovery. Use when user requests "brainstorm", "explore", "discuss", "figure out", or expresses uncertainty like "maybe", "thinking about", "could we".
 ---
 
 # Brainstorm
