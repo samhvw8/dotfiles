@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.
+description: Guide for creating effective Anthropic skills that extend Claude's capabilities with specialized knowledge, workflows, or tool integrations. Use when user requests "create a skill", "new skill", "build a skill", "make a skill", "skill for", "add a skill", or mentions skill creation, skill development, SKILL.md, skill packaging, or extending Claude's capabilities.
 ---
 
 # Skill Creator

@@ -1,6 +1,6 @@
 ---
 name: skill-enhancer
-description: Expert skill enhancement tool for transforming existing Anthropic skills into production-ready, optimally structured capabilities. Use this skill when improving SKILL.md files, restructuring skills for clarity, optimizing resource organization, or upgrading skills to follow current best practices.
+description: Expert tool for transforming existing Anthropic skills into production-ready, optimally structured capabilities. Use when improving SKILL.md files, restructuring skills for clarity, optimizing resource organization, or upgrading to best practices. Triggers include "improve this skill", "enhance skill", "optimize skill", "refactor skill", "update skill", "fix this SKILL.md", or mentions skill quality, skill optimization, or skill restructuring.
 ---
 
 # Skill Enhancer
