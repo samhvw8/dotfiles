@@ -1,6 +1,6 @@
 ---
 name: excalidraw-architect
-description: Expert diagram creation using Excalidraw via Chrome MCP. Use when user requests diagrams, flowcharts, architecture visualizations, or mentions Excalidraw. Creates professional system architecture diagrams, workflows, and technical visualizations programmatically. (project, gitignored)
+description: Create diagrams, flowcharts, and architecture visualizations using Excalidraw. Use when user requests "create diagram", "draw flowchart", "architecture diagram", or mentions Excalidraw, visualization, system design.
 ---
 
 <prompt>

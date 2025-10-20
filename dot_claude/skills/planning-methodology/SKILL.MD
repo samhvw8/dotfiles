@@ -1,6 +1,6 @@
 ---
 name: planning-methodology
-description: Systematic approach for creating minimal-change, reversible implementation plans with clear verification steps. Use when transforming requirements into executable blueprints, or when user requests "create a plan", "how should we implement", "plan this feature", "implementation strategy", "architecture approach", or mentions planning, implementation roadmap, or step-by-step execution. Emphasizes simplicity, safety, and reversibility.
+description: Create minimal-change, reversible implementation plans with verification steps. Use when user requests "create a plan", "how should we implement", "plan this feature", "implementation strategy", or mentions planning, roadmap, architecture.
 auto_invoke: true
 tags: [planning, architecture, minimal-change, reversibility]
 ---
