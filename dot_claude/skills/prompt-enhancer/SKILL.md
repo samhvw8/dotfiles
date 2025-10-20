@@ -1,6 +1,6 @@
 ---
 name: prompt-enhancer
-description: Expert prompt engineering skill for transforming unclear or verbose prompts into concise, well-structured, and effective prompts for AI agents and sub-agents. Use this skill when users want to improve their prompts or when they send unclear/unstructured requests.
+description: Expert prompt engineering for transforming unclear or verbose prompts into concise, well-structured, effective prompts for AI agents and sub-agents. Use when user requests "improve this prompt", "enhance prompt", "optimize prompt", "make it better", "refine this", "rewrite prompt", or sends unclear/verbose/unstructured requests, or mentions prompt engineering, prompt optimization, or better AI results.
 ---
 
 # Prompt Enhancer Skill

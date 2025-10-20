@@ -52,3 +52,8 @@ else
         eval "$($HOME/.local/bin/mise activate bash)"
     fi
 fi
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/samhv/.lmstudio/bin"
+# End of LM Studio CLI section
+
