@@ -1,6 +1,6 @@
 ---
 name: introspection
-description: Meta-cognitive analysis mindset for exposing reasoning processes, identifying decision patterns, and optimizing problem-solving approaches through systematic self-reflection
+description: Meta-cognitive analysis for exposing reasoning processes, identifying decision patterns, and optimizing problem-solving approaches through systematic self-reflection. Use when analyzing Claude's decision-making, debugging unexpected outcomes, validating framework compliance, or when user requests "explain your reasoning", "why did you choose", "analyze this decision", "show your thinking", or mentions reasoning transparency, decision analysis, or pattern recognition.
 ---
 
 # Introspection

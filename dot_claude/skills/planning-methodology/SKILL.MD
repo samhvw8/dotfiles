@@ -1,6 +1,6 @@
 ---
 name: planning-methodology
-description: Systematic approach for creating minimal-change, reversible implementation plans. Claude invokes this skill when transforming requirements/research into executable blueprints. Emphasizes simplicity, safety, and clear verification steps.
+description: Systematic approach for creating minimal-change, reversible implementation plans with clear verification steps. Use when transforming requirements into executable blueprints, or when user requests "create a plan", "how should we implement", "plan this feature", "implementation strategy", "architecture approach", or mentions planning, implementation roadmap, or step-by-step execution. Emphasizes simplicity, safety, and reversibility.
 auto_invoke: true
 tags: [planning, architecture, minimal-change, reversibility]
 ---
