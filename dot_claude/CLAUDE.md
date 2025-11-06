@@ -2,68 +2,28 @@ Always respond in English
 
 Don't assume, ask me to clarify
 
-# Decision Framework: Before Taking Action
+# 🔥 CRITICAL: ALWAYS Check Skills FIRST Before Manual Work!
 
-Before executing any task, follow this systematic evaluation process:
+<workflow>
+1. **Extract keywords** from user request
+2. **Match keywords** against skill triggers (use `/skills` to list all 42 available skills)
+3. **If match found** → Invoke skill IMMEDIATELY, do NOT proceed manually
+4. **If no match** → Check MCP tools (context7, magic, chrome) → Native tools (Read, Write, Edit, Bash)
+</workflow>
 
-<pre_action_checklist>
-1. **Understand the Request**
-   - What is the user actually asking for?
-   - Are there ambiguities that need clarification?
-   - What is the expected outcome?
+## 🚨 Common Mistakes
 
-2. **Check Available Skills** (use `/skills` to list)
-   - Does a specialized skill exist for this task?
-   - Skills to consider:
-     - `mise-expert`: Tool management, task runners, environment setup
-     - `brainstorming`: Exploratory discussions, requirement gathering
-     - `planning-methodology`: Implementation planning, architecture design
-     - `prompt-enhancer`: Improving prompts and instructions
-     - `skill-creator`: Creating new skills
-     - `introspection`: Meta-analysis and reasoning patterns
-   - If yes → Invoke the skill for specialized handling
+❌ "I can do this manually" → ✅ **Skills are specialized experts - ALWAYS prefer them**
+❌ Skipping keyword extraction → ✅ **Extract keywords from EVERY request**
+❌ Focusing on context instead of triggers → ✅ **Match trigger words and synonys/close meaning words, not context**
 
-3. **Check Available MCP Functions**
-   - Can an MCP server solve this more efficiently?
-   - MCP tools to consider:
-     - `context7`: Library documentation, framework patterns, API references
-     - `magic`: UI component generation, design systems
-     - `chrome-mcp-server`: Browser automation, web scraping, testing
-   - If yes → Use the appropriate MCP function
+## MCP Tools Priority
 
-4. **Evaluate Native Capabilities**
-   - Can this be solved with standard tools (Read, Write, Edit, Bash, Grep, Glob)?
-   - Is this a simple task that doesn't require specialized handling?
-   - Would native tools be more efficient than invoking a skill/MCP?
+- **context7**: Library/framework documentation (React, Next.js, Prisma, etc.)
+- **magic**: UI component generation, design systems
+- **chrome**: Browser automation, web scraping, testing
 
-5. **Choose the Best Approach**
-   - Specialized Skill: Complex domain-specific tasks
-   - MCP Function: External data or specialized operations
-   - Native Tools: Direct file operations, code editing, searches
-   - Combination: Complex tasks may need multiple approaches
-</pre_action_checklist>
-
-<decision_examples>
-**Example 1: "Install Node.js for my project"**
-- ✓ Check skills → `mise-expert` handles tool installation
-- Action: Invoke `mise-expert` skill
-
-**Example 2: "Create a login form component"**
-- ✓ Check MCP → `magic` generates UI components
-- Action: Use `mcp__magic__21st_magic_component_builder`
-
-**Example 3: "How does React useEffect work?"**
-- ✓ Check MCP → `context7` provides official React docs
-- Action: Use `mcp__context7__get-library-docs`
-
-**Example 4: "Fix this typo in README.md"**
-- ✓ Simple edit, no skill/MCP needed
-- Action: Use Edit tool directly
-
-**Example 5: "Setup development environment for Python/Node project"**
-- ✓ Check skills → `mise-expert` handles polyglot environments
-- Action: Invoke `mise-expert` skill
-</decision_examples>
+---
 
 # MISE
 - mise is a polyglot tool version manager. It replaces tools like asdf, nvm, pyenv, rbenv, etc.
