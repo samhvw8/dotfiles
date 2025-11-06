@@ -1,0 +1,614 @@
+{
+  "prompt-enhancer": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "enhance prompt",
+        "improve prompt",
+        "optimize prompt",
+        "fix prompt",
+        "better prompt"
+      ],
+      "intentPatterns": [
+        "(enhance|improve|optimize|fix|refactor).*?(prompt|instruction)",
+        "make.*?prompt.*?(better|clearer|concise)"
+      ]
+    }
+  },
+  "claude-md-architect": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "init claude.md",
+        "create claude.md",
+        "optimize claude.md",
+        "claude.md setup",
+        "project instructions"
+      ],
+      "intentPatterns": [
+        "(init|create|optimize|setup).*?claude\\.md",
+        "project.*?(instructions|setup)"
+      ]
+    }
+  },
+  "skill-enhancer": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "improve skill",
+        "enhance skill",
+        "optimize skill",
+        "refactor skill"
+      ],
+      "intentPatterns": [
+        "(improve|enhance|optimize|refactor).*?skill"
+      ]
+    }
+  },
+  "skill-creator": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "create skill",
+        "new skill",
+        "build skill",
+        "skill.md"
+      ],
+      "intentPatterns": [
+        "(create|new|build).*?skill"
+      ]
+    }
+  },
+  "brainstorming": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "brainstorm",
+        "explore",
+        "discuss",
+        "figure out",
+        "maybe",
+        "thinking about",
+        "could we"
+      ],
+      "intentPatterns": [
+        "^(brainstorm|explore|discuss)",
+        "(maybe|thinking about|could we|what if)"
+      ]
+    }
+  },
+  "planning-methodology": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "create plan",
+        "strategy",
+        "architecture",
+        "implementation plan",
+        "roadmap"
+      ],
+      "intentPatterns": [
+        "(create|make|build).*?(plan|strategy|roadmap)",
+        "(how should|what's the best).*?(implement|approach)"
+      ]
+    }
+  },
+  "introspection": {
+    "enforcement": "suggest",
+    "priority": "low",
+    "promptTriggers": {
+      "keywords": [
+        "explain reasoning",
+        "show thinking",
+        "why did you",
+        "decision analysis"
+      ],
+      "intentPatterns": [
+        "(explain|show).*?(reasoning|thinking|decision)",
+        "why did you (choose|decide|pick)"
+      ]
+    }
+  },
+  "docker": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "docker",
+        "dockerfile",
+        "docker compose",
+        "containerize",
+        "container"
+      ],
+      "intentPatterns": [
+        "docker(file|compose|-compose)?",
+        "containeriz(e|ing|ation)"
+      ]
+    }
+  },
+  "debugging": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "debug",
+        "debugging",
+        "performance analysis",
+        "browser automation"
+      ],
+      "intentPatterns": [
+        "debug(ging)?",
+        "performance.*?analys(is|e)"
+      ]
+    }
+  },
+  "chrome-devtools": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "puppeteer",
+        "screenshot",
+        "web scraping",
+        "browser automation",
+        "network monitoring"
+      ],
+      "intentPatterns": [
+        "browser.*?automat(e|ion)",
+        "web.*?scrap(e|ing)"
+      ]
+    }
+  },
+  "repomix": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "repomix",
+        "pack repository",
+        "codebase snapshot",
+        "ai analysis"
+      ],
+      "intentPatterns": [
+        "pack(age|ing)?.*?(repo|codebase)",
+        "codebase.*?snapshot"
+      ]
+    }
+  },
+  "cloudflare": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "cloudflare",
+        "workers",
+        "edge functions",
+        "durable objects",
+        "d1",
+        "r2",
+        "kv"
+      ],
+      "intentPatterns": [
+        "cloudflare.*?(workers?|edge|d1|r2|kv)",
+        "edge.*?(function|database|platform)"
+      ]
+    }
+  },
+  "cloudflare-workers": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "cloudflare workers",
+        "wrangler",
+        "edge functions",
+        "workers api"
+      ],
+      "intentPatterns": [
+        "cloudflare.*?workers?",
+        "wrangler.*?(cli|deploy)"
+      ]
+    }
+  },
+  "cloudflare-r2": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "cloudflare r2",
+        "r2 storage",
+        "object storage",
+        "s3 compatible"
+      ],
+      "intentPatterns": [
+        "(cloudflare )?r2.*?(storage|bucket)",
+        "object.*?storage"
+      ]
+    }
+  },
+  "cloudflare-browser-rendering": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "browser rendering",
+        "headless browser",
+        "puppeteer cloudflare"
+      ],
+      "intentPatterns": [
+        "cloudflare.*?browser.*?rendering",
+        "headless.*?browser"
+      ]
+    }
+  },
+  "gcloud": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "gcloud",
+        "google cloud",
+        "gcp",
+        "compute engine",
+        "gke",
+        "app engine"
+      ],
+      "intentPatterns": [
+        "g(oogle )?cloud|gcp",
+        "gcloud.*?(cli|deploy)"
+      ]
+    }
+  },
+  "nextjs": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "next.js",
+        "nextjs",
+        "app router",
+        "server components",
+        "next/image",
+        "next/link"
+      ],
+      "intentPatterns": [
+        "next(\\.|js| js)",
+        "app.*?router",
+        "server.*?component"
+      ]
+    }
+  },
+  "shadcn-ui": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "shadcn",
+        "shadcn/ui",
+        "radix ui",
+        "ui components",
+        "design system"
+      ],
+      "intentPatterns": [
+        "shadcn(/ui)?",
+        "radix.*?ui"
+      ]
+    }
+  },
+  "tailwindcss": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "tailwind",
+        "tailwindcss",
+        "utility classes",
+        "responsive design",
+        "dark mode"
+      ],
+      "intentPatterns": [
+        "tailwind(css| css)?",
+        "utility.*?class(es)?"
+      ]
+    }
+  },
+  "better-auth": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "authentication",
+        "oauth",
+        "2fa",
+        "passkeys",
+        "better-auth",
+        "auth"
+      ],
+      "intentPatterns": [
+        "auth(entication)?",
+        "oauth|2fa|passkey"
+      ]
+    }
+  },
+  "mongodb": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "mongodb",
+        "mongo",
+        "document database",
+        "aggregation pipeline",
+        "atlas"
+      ],
+      "intentPatterns": [
+        "mongo(db)?",
+        "document.*?database",
+        "aggregation.*?pipeline"
+      ]
+    }
+  },
+  "postgresql-psql": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "postgresql",
+        "postgres",
+        "psql",
+        "sql queries",
+        "database management"
+      ],
+      "intentPatterns": [
+        "postgres(ql)?",
+        "psql",
+        "sql.*?(quer(y|ies)|database)"
+      ]
+    }
+  },
+  "shopify": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "shopify",
+        "shopify app",
+        "checkout extension",
+        "polaris ui",
+        "liquid"
+      ],
+      "intentPatterns": [
+        "shopify.*?(app|extension|theme)",
+        "polaris.*?ui"
+      ]
+    }
+  },
+  "ffmpeg": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "ffmpeg",
+        "video conversion",
+        "audio processing",
+        "media encoding",
+        "streaming"
+      ],
+      "intentPatterns": [
+        "ffmpeg",
+        "video.*?(conver(t|sion)|encoding|processing)",
+        "audio.*?(processing|encoding)"
+      ]
+    }
+  },
+  "imagemagick": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "imagemagick",
+        "image processing",
+        "format conversion",
+        "resize image",
+        "image effects"
+      ],
+      "intentPatterns": [
+        "imagemagick",
+        "image.*?(processing|conversion|resize|effect)"
+      ]
+    }
+  },
+  "canvas-design": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "create poster",
+        "create art",
+        "visual design",
+        "graphic design",
+        "design"
+      ],
+      "intentPatterns": [
+        "create.*?(poster|art|graphic|visual)",
+        "(visual|graphic).*?design"
+      ]
+    }
+  },
+  "gemini-vision": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "image analysis",
+        "visual qa",
+        "object detection",
+        "image captioning",
+        "gemini vision"
+      ],
+      "intentPatterns": [
+        "image.*?(analysis|caption|detection)",
+        "visual.*?(qa|question)"
+      ]
+    }
+  },
+  "gemini-audio": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "audio transcription",
+        "audio analysis",
+        "speech generation",
+        "tts",
+        "text to speech"
+      ],
+      "intentPatterns": [
+        "audio.*?(transcription|analysis)",
+        "speech.*?generation|tts|text.*?to.*?speech"
+      ]
+    }
+  },
+  "gemini-image-gen": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "image generation",
+        "text to image",
+        "generate image",
+        "create image"
+      ],
+      "intentPatterns": [
+        "image.*?generat(e|ion)",
+        "text.*?to.*?image",
+        "(create|generate).*?image"
+      ]
+    }
+  },
+  "gemini-video-understanding": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "video analysis",
+        "video transcription",
+        "youtube processing",
+        "video qa"
+      ],
+      "intentPatterns": [
+        "video.*?(analysis|transcription|processing)",
+        "youtube.*?(process|analyze)"
+      ]
+    }
+  },
+  "gemini-document-processing": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "pdf processing",
+        "document analysis",
+        "extract data from pdf",
+        "structured data extraction"
+      ],
+      "intentPatterns": [
+        "pdf.*?(processing|analysis|extract)",
+        "document.*?(analysis|extraction)"
+      ]
+    }
+  },
+  "mcp-builder": {
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "mcp server",
+        "create mcp",
+        "fastmcp",
+        "mcp sdk",
+        "model context protocol"
+      ],
+      "intentPatterns": [
+        "mcp.*?(server|build|create)",
+        "model.*?context.*?protocol"
+      ]
+    }
+  },
+  "docs-seeker": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "find documentation",
+        "search docs",
+        "llms.txt",
+        "library docs",
+        "documentation search"
+      ],
+      "intentPatterns": [
+        "(find|search|get).*?(documentation|docs)",
+        "llms\\.txt"
+      ]
+    }
+  },
+  "remix-icon": {
+    "enforcement": "suggest",
+    "priority": "low",
+    "promptTriggers": {
+      "keywords": [
+        "remix icon",
+        "remixicon",
+        "icons",
+        "svg icons"
+      ],
+      "intentPatterns": [
+        "remix.*?icon",
+        "add.*?icon"
+      ]
+    }
+  },
+  "mise-expert": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "mise",
+        "version manager",
+        "install node",
+        "install python",
+        "mise.toml",
+        "task runner"
+      ],
+      "intentPatterns": [
+        "mise.*?(install|setup|task|toml)",
+        "version.*?manager",
+        "install.*?(node|python|go|rust)"
+      ]
+    }
+  },
+  "excalidraw-architect": {
+    "enforcement": "suggest",
+    "priority": "medium",
+    "promptTriggers": {
+      "keywords": [
+        "create diagram",
+        "draw flowchart",
+        "architecture diagram",
+        "excalidraw",
+        "visualization"
+      ],
+      "intentPatterns": [
+        "create.*?(diagram|flowchart)",
+        "draw.*?(diagram|flowchart|architecture)",
+        "excalidraw"
+      ]
+    }
+  }
+}
