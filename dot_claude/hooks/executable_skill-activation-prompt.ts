@@ -1,277 +1,188 @@
-#!/usr/bin/env -S npx tsx
-
-import * as fs from "fs";
-import * as path from "path";
+#!/usr/bin/env node
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import { homedir } from 'os';
 
 interface HookInput {
-  session_id: string;
-  transcript_path: string;
-  working_directory: string;
-  permission_mode: string;
-  prompt: string;
+    session_id: string;
+    transcript_path: string;
+    cwd: string;
+    permission_mode: string;
+    prompt: string;
+}
+
+interface PromptTriggers {
+    keywords?: string[];
+    intentPatterns?: string[];
 }
 
 interface SkillRule {
-  enforcement?: "block" | "suggest" | "warn";
-  priority?: "critical" | "high" | "medium" | "low";
-  promptTriggers?: {
-    keywords?: string[];
-    intentPatterns?: string[];
-  };
-  fileTriggers?: {
-    pathPatterns?: string[];
-    contentPatterns?: string[];
-  };
-  blockMessage?: string;
-  skipConditions?: {
-    sessionSkillUsed?: string[];
-    fileMarkers?: string[];
-  };
+    type: 'guardrail' | 'domain';
+    enforcement: 'block' | 'suggest' | 'warn';
+    priority: 'critical' | 'high' | 'medium' | 'low';
+    description?: string;
+    promptTriggers?: PromptTriggers;
+}
+
+interface SkillRules {
+    version: string;
+    description?: string;
+    skills: Record<string, SkillRule>;
 }
 
 interface MatchedSkill {
-  name: string;
-  enforcement: string;
-  priority: string;
-  reason: string;
+    name: string;
+    matchType: 'keyword' | 'intent';
+    config: SkillRule;
+}
+
+function findSkillRulesPath(cwd: string): string | null {
+    // Priority order:
+    // 1. Project-specific rules
+    // 2. Global user rules
+
+    const projectRulesPath = join(cwd, '.claude', 'skills', 'skill-rules.json');
+    if (existsSync(projectRulesPath)) {
+        return projectRulesPath;
+    }
+
+    const globalRulesPath = join(homedir(), '.claude', 'skills', 'skill-rules.json');
+    if (existsSync(globalRulesPath)) {
+        return globalRulesPath;
+    }
+
+    return null;
 }
 
 async function main() {
-  try {
-    // Read input from stdin
-    const input = fs.readFileSync(0, "utf-8");
-    const hookInput: HookInput = JSON.parse(input);
+    try {
+        // Read and parse stdin
+        const input = readFileSync(0, 'utf-8');
+        const data: HookInput = JSON.parse(input);
+        const prompt = data.prompt.toLowerCase();
 
-    const prompt = hookInput.prompt.toLowerCase();
-    let workingDir = hookInput.working_directory;
+        // Find skill-rules.json (project-specific or global)
+        const rulesPath = findSkillRulesPath(data.cwd || process.cwd());
+        if (!rulesPath) {
+            // No rules configured - exit silently
+            process.exit(0);
+        }
 
-    // Fallback to HOME if working_directory is not provided
-    if (!workingDir || workingDir === ".") {
-      workingDir = process.env.HOME || process.cwd();
-    }
+        // Load and parse skill rules
+        const rulesContent = readFileSync(rulesPath, 'utf-8');
+        const rules: SkillRules = JSON.parse(rulesContent);
 
-    // Try to load skill rules from multiple locations
-    // 1. Project-specific rules: $PROJECT/.claude/skills/skill-rules.json
-    // 2. Global rules: $HOME/.claude/skills/skill-rules.json
-    let skillRulesPath = path.join(workingDir, ".claude", "skills", "skill-rules.json");
+        // Track matched skills (deduplicated by name)
+        const matchedSkillsMap = new Map<string, MatchedSkill>();
 
-    if (!fs.existsSync(skillRulesPath)) {
-      // Try global rules in HOME directory
-      const homeDir = process.env.HOME || require('os').homedir();
-      skillRulesPath = path.join(homeDir, ".claude", "skills", "skill-rules.json");
+        // Check each skill for matches
+        for (const [skillName, config] of Object.entries(rules.skills)) {
+            const triggers = config.promptTriggers;
+            if (!triggers) continue;
 
-      if (!fs.existsSync(skillRulesPath)) {
-        // No skill rules configured anywhere, exit silently
+            let matched = false;
+
+            // Check keyword triggers
+            if (triggers.keywords && !matched) {
+                for (const keyword of triggers.keywords) {
+                    if (prompt.includes(keyword.toLowerCase())) {
+                        matchedSkillsMap.set(skillName, {
+                            name: skillName,
+                            matchType: 'keyword',
+                            config
+                        });
+                        matched = true;
+                        break;
+                    }
+                }
+            }
+
+            // Check intent pattern triggers
+            if (triggers.intentPatterns && !matched) {
+                for (const pattern of triggers.intentPatterns) {
+                    try {
+                        const regex = new RegExp(pattern, 'i');
+                        if (regex.test(data.prompt)) {
+                            matchedSkillsMap.set(skillName, {
+                                name: skillName,
+                                matchType: 'intent',
+                                config
+                            });
+                            matched = true;
+                            break;
+                        }
+                    } catch (err) {
+                        // Skip invalid regex patterns
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // No matches - exit silently
+        if (matchedSkillsMap.size === 0) {
+            process.exit(0);
+        }
+
+        // Group by priority
+        const matchedSkills = Array.from(matchedSkillsMap.values());
+        const byPriority = {
+            critical: matchedSkills.filter(s => s.config.priority === 'critical'),
+            high: matchedSkills.filter(s => s.config.priority === 'high'),
+            medium: matchedSkills.filter(s => s.config.priority === 'medium'),
+            low: matchedSkills.filter(s => s.config.priority === 'low')
+        };
+
+        // Build output message
+        let output = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+        output += '🎯 SKILL ACTIVATION CHECK\n';
+        output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+        // Add matched skills by priority
+        const priorityLabels = {
+            critical: { icon: '⚠️', label: 'CRITICAL SKILLS (REQUIRED)' },
+            high: { icon: '📚', label: 'RECOMMENDED SKILLS' },
+            medium: { icon: '💡', label: 'SUGGESTED SKILLS' },
+            low: { icon: '📌', label: 'OPTIONAL SKILLS' }
+        };
+
+        for (const [priority, label] of Object.entries(priorityLabels)) {
+            const skills = byPriority[priority as keyof typeof byPriority];
+            if (skills.length > 0) {
+                output += `${label.icon} ${label.label}:\n`;
+                skills.forEach(skill => {
+                    output += `  → ${skill.name}`;
+                    if (skill.config.description) {
+                        const shortDesc = skill.config.description.split('.')[0];
+                        output += ` - ${shortDesc}`;
+                    }
+                    output += '\n';
+                });
+                output += '\n';
+            }
+        }
+
+        // Add action instruction
+        const hasHighPriority = byPriority.critical.length > 0 || byPriority.high.length > 0;
+        if (hasHighPriority) {
+            output += '⚡ ACTION: Use Skill tool BEFORE responding\n';
+        } else {
+            output += '💡 TIP: Consider using Skill tool for better results\n';
+        }
+
+        output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+
+        console.log(output);
         process.exit(0);
-      }
+    } catch (err) {
+        // Log error to stderr but don't fail the hook
+        // This ensures Claude Code continues working even if hook has issues
+        console.error('Error in skill-activation-prompt hook:', err);
+        process.exit(0); // Exit successfully to not block workflow
     }
-
-    const skillRules: Record<string, SkillRule> = JSON.parse(
-      fs.readFileSync(skillRulesPath, "utf-8")
-    );
-
-    const matchedSkills: MatchedSkill[] = [];
-    const matchedSkillNames = new Set<string>();
-
-    // Check each skill rule
-    for (const [skillName, rule] of Object.entries(skillRules)) {
-      const enforcement = rule.enforcement || "suggest";
-      const priority = rule.priority || "medium";
-      let skillMatched = false;
-
-      // Check prompt triggers
-      if (rule.promptTriggers) {
-        // Keyword matching
-        if (rule.promptTriggers.keywords && !skillMatched) {
-          for (const keyword of rule.promptTriggers.keywords) {
-            if (prompt.includes(keyword.toLowerCase())) {
-              matchedSkills.push({
-                name: skillName,
-                enforcement,
-                priority,
-                reason: `keyword: "${keyword}"`,
-              });
-              matchedSkillNames.add(skillName);
-              skillMatched = true;
-              break;
-            }
-          }
-        }
-
-        // Intent pattern matching
-        if (rule.promptTriggers.intentPatterns && !skillMatched) {
-          for (const pattern of rule.promptTriggers.intentPatterns) {
-            const regex = new RegExp(pattern, "i");
-            if (regex.test(hookInput.prompt)) {
-              matchedSkills.push({
-                name: skillName,
-                enforcement,
-                priority,
-                reason: `intent pattern: "${pattern}"`,
-              });
-              matchedSkillNames.add(skillName);
-              skillMatched = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    // If no skills matched, exit silently
-    if (matchedSkills.length === 0) {
-      process.exit(0);
-    }
-
-    // Group by priority
-    const byPriority: Record<string, MatchedSkill[]> = {
-      critical: [],
-      high: [],
-      medium: [],
-      low: [],
-    };
-
-    for (const skill of matchedSkills) {
-      byPriority[skill.priority].push(skill);
-    }
-
-    // Get unique skill names for invocation
-    const uniqueSkillNames = Array.from(matchedSkillNames);
-
-    // Generate output
-    console.log("\n╔═══════════════════════════════════════════════════════════╗");
-    console.log("║          🎯 ANTHROPIC SKILL DETECTED - ACTION REQUIRED    ║");
-    console.log("╚═══════════════════════════════════════════════════════════╝");
-    console.log("");
-    console.log("<context>");
-    console.log("This hook guides Claude Code to use specialized Anthropic Skills—expert");
-    console.log("agents with domain knowledge, battle-tested patterns, and optimized workflows.");
-    console.log("</context>");
-    console.log("");
-
-    let hasBlockingSkills = false;
-
-    console.log("<matched_skills>");
-    for (const priority of ["critical", "high", "medium", "low"] as const) {
-      const skills = byPriority[priority];
-      if (skills.length === 0) continue;
-
-      const priorityLabels = {
-        critical: "🔴 CRITICAL",
-        high: "🟠 HIGH",
-        medium: "🟡 MEDIUM",
-        low: "🟢 LOW",
-      };
-
-      console.log(`\n${priorityLabels[priority]}`);
-      console.log("─".repeat(60));
-
-      // Track unique skills already shown at this priority level
-      const shownAtLevel = new Set<string>();
-
-      for (const skill of skills) {
-        if (shownAtLevel.has(skill.name)) continue;
-        shownAtLevel.add(skill.name);
-
-        const enforcementIcon = {
-          block: "🚫",
-          warn: "⚠️",
-          suggest: "💡",
-        }[skill.enforcement];
-
-        console.log(`  ${enforcementIcon} ${skill.name}`);
-
-        if (skill.enforcement === "block") {
-          hasBlockingSkills = true;
-        }
-      }
-    }
-    console.log("</matched_skills>");
-    console.log("");
-
-    // Determine instruction level based on highest priority
-    const hasCritical = byPriority.critical.length > 0;
-    const hasHigh = byPriority.high.length > 0;
-    const hasMedium = byPriority.medium.length > 0;
-
-    if (hasBlockingSkills || hasCritical || hasHigh) {
-      console.log("╔═══════════════════════════════════════════════════════════╗");
-      console.log("║                  🚨 MANDATORY SKILL USAGE                 ║");
-      console.log("╚═══════════════════════════════════════════════════════════╝");
-      console.log("");
-      console.log("<instruction>");
-      console.log("STOP! You MUST invoke the Anthropic Skill using the Skill tool.");
-      console.log("Manual implementation is PROHIBITED for this request.");
-      console.log("</instruction>");
-      console.log("");
-
-      console.log("<required_action>");
-      const primarySkill = uniqueSkillNames[0] || "skill-enhancer";
-      console.log("Invoke: Skill tool with skill: \"" + primarySkill + "\"");
-      if (uniqueSkillNames.length > 1) {
-        const alternatives = uniqueSkillNames.slice(1, 3).map(s => `"${s}"`).join(" or ");
-        console.log("Alternatives: " + alternatives);
-      }
-      console.log("</required_action>");
-      console.log("");
-
-      console.log("<prohibited>");
-      console.log("❌ Read/Write/Edit tools for implementation");
-      console.log("❌ Manual code generation");
-      console.log("❌ Proceeding without skill invocation");
-      console.log("</prohibited>");
-    } else if (hasMedium) {
-      console.log("╔═══════════════════════════════════════════════════════════╗");
-      console.log("║                   💡 SKILL RECOMMENDED                    ║");
-      console.log("╚═══════════════════════════════════════════════════════════╝");
-      console.log("");
-
-      console.log("<recommendation>");
-      console.log("Specialized Anthropic Skills detected for this request.");
-      console.log("Strongly consider invoking skill before manual implementation.");
-      console.log("</recommendation>");
-      console.log("");
-
-      console.log("<suggested_action>");
-      const mediumSkillsArray = uniqueSkillNames.slice(0, 2);
-      console.log("Invoke: Skill tool with skill: \"" + mediumSkillsArray[0] + "\"");
-      if (mediumSkillsArray.length > 1) {
-        console.log("Alternative: \"" + mediumSkillsArray[1] + "\"");
-      }
-      console.log("</suggested_action>");
-      console.log("");
-
-      console.log("<benefits>");
-      console.log("• Domain-specific patterns and best practices");
-      console.log("• Consistent, production-grade output");
-      console.log("• Reduced implementation time");
-      console.log("</benefits>");
-    } else {
-      console.log("╔═══════════════════════════════════════════════════════════╗");
-      console.log("║                   💡 OPTIONAL SKILL                       ║");
-      console.log("╚═══════════════════════════════════════════════════════════╝");
-      console.log("");
-
-      console.log("<note>");
-      console.log("Low-priority skill available. May provide value for this task.");
-      console.log("</note>");
-      console.log("");
-
-      console.log("<optional_action>");
-      const lowSkillsArray = uniqueSkillNames.slice(0, 2);
-      console.log("Invoke: Skill tool with skill: \"" + lowSkillsArray[0] + "\"");
-      if (lowSkillsArray.length > 1) {
-        console.log("Alternative: \"" + lowSkillsArray[1] + "\"");
-      }
-      console.log("</optional_action>");
-    }
-
-    console.log("\n" + "═".repeat(60) + "\n");
-
-  } catch (error) {
-    console.error("Error in skill-activation-prompt hook:", error);
-    process.exit(1);
-  }
 }
 
-main();
+main().catch(err => {
+    console.error('Uncaught error in skill-activation-prompt:', err);
+    process.exit(0); // Exit successfully to not block workflow
+});
