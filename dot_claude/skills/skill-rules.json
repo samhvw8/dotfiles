@@ -1,101 +1,133 @@
 {
   "prompt-enhancer": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "enhance prompt",
         "improve prompt",
         "optimize prompt",
         "fix prompt",
-        "better prompt"
+        "better prompt",
+        "rewrite prompt",
+        "refine prompt",
+        "clean up prompt",
+        "make prompt clearer"
       ],
       "intentPatterns": [
-        "(enhance|improve|optimize|fix|refactor).*?(prompt|instruction)",
-        "make.*?prompt.*?(better|clearer|concise)"
+        "(enhance|improve|optimize|fix|refactor|rewrite|refine|clean).*?(prompt|instruction)",
+        "make.*?prompt.*?(better|clearer|concise|shorter|more effective)",
+        "reduce.*?token",
+        "verbose.*?prompt"
       ]
     }
   },
   "claude-md-architect": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "init claude.md",
         "create claude.md",
         "optimize claude.md",
         "claude.md setup",
-        "project instructions"
+        "project instructions",
+        "setup claude.md",
+        "generate claude.md",
+        "improve claude.md"
       ],
       "intentPatterns": [
-        "(init|create|optimize|setup).*?claude\\.md",
-        "project.*?(instructions|setup)"
+        "(init|create|optimize|setup|generate|improve|enhance).*?claude\\.md",
+        "project.*?(instructions|setup|configuration)",
+        "codebase.*?instructions"
       ]
     }
   },
   "skill-enhancer": {
     "enforcement": "suggest",
-    "priority": "medium",
+    "priority": "high",
     "promptTriggers": {
       "keywords": [
         "improve skill",
         "enhance skill",
         "optimize skill",
-        "refactor skill"
+        "refactor skill",
+        "update skill",
+        "fix skill",
+        "upgrade skill",
+        "refine skill"
       ],
       "intentPatterns": [
-        "(improve|enhance|optimize|refactor).*?skill"
+        "(improve|enhance|optimize|refactor|update|fix|upgrade|refine).*?skill",
+        "make.*?skill.*?(better|clearer)",
+        "skill.*?(improvement|enhancement|optimization)"
       ]
     }
   },
   "skill-creator": {
     "enforcement": "suggest",
-    "priority": "medium",
+    "priority": "high",
     "promptTriggers": {
       "keywords": [
         "create skill",
         "new skill",
         "build skill",
-        "skill.md"
+        "skill.md",
+        "make skill",
+        "generate skill",
+        "write skill"
       ],
       "intentPatterns": [
-        "(create|new|build).*?skill"
+        "(create|new|build|make|generate|write).*?skill",
+        "skill.*?(creation|development)",
+        "develop.*?skill"
       ]
     }
   },
   "brainstorming": {
     "enforcement": "suggest",
-    "priority": "medium",
+    "priority": "high",
     "promptTriggers": {
       "keywords": [
         "brainstorm",
-        "explore",
-        "discuss",
+        "explore ideas",
+        "discuss options",
         "figure out",
-        "maybe",
+        "not sure how",
         "thinking about",
-        "could we"
+        "could we",
+        "what if",
+        "help me think",
+        "explore approach"
       ],
       "intentPatterns": [
         "^(brainstorm|explore|discuss)",
-        "(maybe|thinking about|could we|what if)"
+        "(maybe|thinking about|could we|what if|not sure|help me think)",
+        "explore.*?(idea|option|approach|solution)",
+        "figure.*?out"
       ]
     }
   },
   "planning-methodology": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "create plan",
+        "make plan",
         "strategy",
         "architecture",
         "implementation plan",
-        "roadmap"
+        "roadmap",
+        "plan feature",
+        "plan implementation",
+        "approach for"
       ],
       "intentPatterns": [
-        "(create|make|build).*?(plan|strategy|roadmap)",
-        "(how should|what's the best).*?(implement|approach)"
+        "(create|make|build|develop|design).*?(plan|strategy|roadmap)",
+        "(how should|what's the best|what's the approach).*?(implement|build|approach)",
+        "plan.*?(feature|implementation|architecture)",
+        "implementation.*?(strategy|approach)"
       ]
     }
   },
@@ -267,7 +299,7 @@
   },
   "nextjs": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "next.js",
@@ -275,64 +307,86 @@
         "app router",
         "server components",
         "next/image",
-        "next/link"
+        "next/link",
+        "server actions",
+        "route handlers",
+        "middleware next"
       ],
       "intentPatterns": [
         "next(\\.|js| js)",
         "app.*?router",
-        "server.*?component"
+        "server.*?(component|action)",
+        "next.*?(routing|navigation|image|optimization)",
+        "route.*?handler"
       ]
     }
   },
   "shadcn-ui": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "shadcn",
         "shadcn/ui",
         "radix ui",
         "ui components",
-        "design system"
+        "design system",
+        "add component",
+        "install component"
       ],
       "intentPatterns": [
         "shadcn(/ui)?",
-        "radix.*?ui"
+        "radix.*?ui",
+        "(add|install|use).*?(component|ui)",
+        "ui.*?(component|library)"
       ]
     }
   },
   "tailwindcss": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "tailwind",
         "tailwindcss",
         "utility classes",
         "responsive design",
-        "dark mode"
+        "dark mode",
+        "styling",
+        "css framework"
       ],
       "intentPatterns": [
         "tailwind(css| css)?",
-        "utility.*?class(es)?"
+        "utility.*?class(es)?",
+        "(responsive|mobile).*?(design|styling)",
+        "dark.*?mode",
+        "styling.*?framework"
       ]
     }
   },
   "better-auth": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "authentication",
+        "authorization",
         "oauth",
         "2fa",
+        "two factor",
         "passkeys",
         "better-auth",
-        "auth"
+        "auth flow",
+        "login",
+        "signup",
+        "sign in"
       ],
       "intentPatterns": [
-        "auth(entication)?",
-        "oauth|2fa|passkey"
+        "auth(entication|orization)?",
+        "oauth|2fa|passkey",
+        "(login|signup|sign in|sign up).*?(flow|system|implementation)",
+        "(implement|add|setup).*?auth",
+        "user.*?authentication"
       ]
     }
   },
@@ -526,35 +580,46 @@
   },
   "mcp-builder": {
     "enforcement": "suggest",
-    "priority": "high",
+    "priority": "critical",
     "promptTriggers": {
       "keywords": [
         "mcp server",
         "create mcp",
+        "build mcp",
         "fastmcp",
         "mcp sdk",
-        "model context protocol"
+        "model context protocol",
+        "mcp tool",
+        "implement mcp"
       ],
       "intentPatterns": [
-        "mcp.*?(server|build|create)",
-        "model.*?context.*?protocol"
+        "mcp.*?(server|build|create|implement|develop)",
+        "model.*?context.*?protocol",
+        "(build|create|implement).*?mcp",
+        "mcp.*?(integration|development)"
       ]
     }
   },
   "docs-seeker": {
     "enforcement": "suggest",
-    "priority": "medium",
+    "priority": "high",
     "promptTriggers": {
       "keywords": [
         "find documentation",
         "search docs",
         "llms.txt",
         "library docs",
-        "documentation search"
+        "documentation search",
+        "get docs",
+        "fetch docs",
+        "latest docs",
+        "official docs"
       ],
       "intentPatterns": [
-        "(find|search|get).*?(documentation|docs)",
-        "llms\\.txt"
+        "(find|search|get|fetch|locate).*?(documentation|docs)",
+        "llms\\.txt",
+        "(latest|official|up-to-date).*?(docs|documentation)",
+        "documentation.*?(for|about)"
       ]
     }
   },
