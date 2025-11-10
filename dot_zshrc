@@ -254,8 +254,6 @@ export FZF_DEFAULT_COMMAND='fd --type file'
 # =============================================================================
 # Conda Configuration
 # =============================================================================
-
-{{- if not .minimal }}
 # Determine Conda base directory (full installation only)
 if command_exists conda; then
     export _CONDA_BASE=$(dirname $(dirname $(which conda)))
@@ -277,7 +275,6 @@ if [[ -f "$_CONDA_BASE/bin/conda" ]]; then
     fi
     unset __conda_setup
 fi
-{{- end }}
 
 # =============================================================================
 # Additional Sources
@@ -294,3 +291,11 @@ set -o emacs
 autoload -U edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line  # Ctrl-X-E to edit command in editor
+
+# pnpm
+export PNPM_HOME="/Users/samhv/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
