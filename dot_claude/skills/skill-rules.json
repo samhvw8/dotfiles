@@ -509,6 +509,50 @@
                     "excalidraw"
                 ]
             }
+        },
+        "git-workflow": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "critical",
+            "description": "Git workflow management with atomic commit enforcement",
+            "promptTriggers": {
+                "keywords": [
+                    "git commit",
+                    "git push",
+                    "git branch",
+                    "git merge",
+                    "git rebase",
+                    "stage changes",
+                    "staged files",
+                    "commit message",
+                    "pull request",
+                    "code review",
+                    "git status",
+                    "git add",
+                    "organize commits",
+                    "divide commits",
+                    "split commits",
+                    "atomic commits",
+                    "single responsibility commit",
+                    "commit strategy",
+                    "staging area",
+                    "git history",
+                    "repository management",
+                    "version control",
+                    "multiple commits",
+                    "separate commits"
+                ],
+                "intentPatterns": [
+                    "git (commit|push|branch|merge|rebase|add|status|log|diff)",
+                    "(create|make|write).*?(commit|pull request|pr)",
+                    "(stage|staged|staging).*?(changes|files)",
+                    "(divide|split|separate|organize).*?(commit|changes)",
+                    "(atomic|single responsibility).*?commit",
+                    "commit.*?(message|strategy|organization)",
+                    "multiple.*?commit",
+                    "version.*?control"
+                ]
+            }
         }
     },
     "notes": {
