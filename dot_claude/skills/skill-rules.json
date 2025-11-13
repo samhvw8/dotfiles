@@ -106,17 +106,29 @@
             "priority": "critical",
             "promptTriggers": {
                 "keywords": [
+                    "claude md",
+                    "claude.md",
+                    "init claude md",
                     "init claude.md",
+                    "create claude md",
                     "create claude.md",
+                    "optimize claude md",
                     "optimize claude.md",
-                    "claude.md setup",
-                    "project instructions",
+                    "setup claude md",
                     "setup claude.md",
+                    "generate claude md",
                     "generate claude.md",
-                    "improve claude.md"
+                    "improve claude md",
+                    "improve claude.md",
+                    "enhance claude md",
+                    "update claude md",
+                    "fix claude md",
+                    "project instructions",
+                    "codebase instructions"
                 ],
                 "intentPatterns": [
-                    "(init|create|optimize|setup|generate|improve|enhance).*?claude\\.md",
+                    "(init|create|optimize|setup|generate|improve|enhance|update|fix).*?claude[\\s\\.]?md",
+                    "claude[\\s\\.]?md.*?(init|create|optimize|setup|generate|improve|enhance|update|fix)",
                     "project.*?(instructions|setup|configuration)",
                     "codebase.*?instructions"
                 ]
