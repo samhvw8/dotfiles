@@ -1,6 +1,6 @@
 ---
 name: skill-developer
-description: Create, enhance, and manage Claude Code skills following Anthropic best practices. Use when creating new skills, improving/enhancing/optimizing existing skills, modifying skill-rules.json, understanding trigger patterns, working with hooks, debugging skill activation, or implementing progressive disclosure. Covers skill structure, YAML frontmatter, trigger types (keywords, intent patterns, file paths, content patterns), enforcement levels (block, suggest, warn), hook mechanisms (UserPromptSubmit, PreToolUse), session tracking, skill enhancement techniques, and the 500-line rule.
+description: Skill system infrastructure manager. Create/modify skills, configure skill-rules.json, design trigger patterns, debug activation, implement hooks (UserPromptSubmit/PreToolUse). Scope: meta-level operations only - NOT domain content (UI/backend/workflows). Covers: YAML frontmatter, keyword/intent patterns, enforcement levels, progressive disclosure, 500-line rule, Anthropic best practices.
 ---
 
 # Skill Developer Guide
@@ -24,6 +24,74 @@ Automatically activates when you mention:
 - Progressive disclosure
 - YAML frontmatter
 - 500-line rule
+
+## Context Awareness: What This Skill Covers
+
+### ✅ This Skill is FOR (Meta-Level)
+
+**Skill System Management:**
+- Creating/modifying `.claude/skills/` directory contents
+- Editing `skill-rules.json` configuration
+- Writing/updating `SKILL.md` files
+- Designing trigger patterns (keywords, intent patterns)
+- Understanding hook mechanisms (UserPromptSubmit, PreToolUse)
+- Skill activation and debugging
+- Progressive disclosure patterns
+- Anthropic best practices (500-line rule, etc.)
+
+**Keywords That Trigger This Skill:**
+- "skill triggers", "skill activation", "skill keywords"
+- "intent patterns", "promptTriggers", "enforcement levels"
+- "skill-rules.json", "SKILL.md", "skill frontmatter"
+- "UserPromptSubmit", "PreToolUse", "hook system"
+- "progressive disclosure", "500-line rule"
+- "skill metadata", "trigger conditions"
+
+### ❌ This Skill is NOT FOR (Domain-Specific Content)
+
+**UI/Frontend Development:**
+- Use `ui-design-system` skill for: TailwindCSS, Radix UI, shadcn/ui, design tokens, OKLCH colors, component libraries
+
+**Backend Development:**
+- Use other skills for: API design, database patterns, server architecture
+
+**Documentation Discovery:**
+- Use `docs-seeker` skill for: Finding llms.txt, searching documentation, library references
+
+**Git Workflows:**
+- Use `git-workflow` skill for: Commits, branches, atomic commits, PR creation
+
+**Other Domain Skills:**
+- Each domain skill covers its specific topic (Docker, PostgreSQL, Cloudflare, etc.)
+
+### 🎯 Clear Distinction Examples
+
+| User Query | Correct Skill | Why |
+|------------|---------------|-----|
+| "How do skill triggers work?" | ✅ skill-developer | Meta-level: about skill system |
+| "Add keywords to ui-design-system" | ✅ skill-developer | Modifying skill configuration |
+| "What are design tokens?" | ❌ ui-design-system | Domain content, not skill system |
+| "How to use OKLCH colors?" | ❌ ui-design-system | UI/frontend topic |
+| "Create a new skill for Docker" | ✅ skill-developer | Creating skill infrastructure |
+| "How to containerize app?" | ❌ docker skill | Domain content |
+| "Update skill-rules.json keywords" | ✅ skill-developer | Skill system configuration |
+| "What are naming conventions for design tokens?" | ❌ ui-design-system | UI design content |
+
+### 🔍 Context-Aware Trigger Strategy
+
+**Trigger When:**
+- User explicitly mentions "skill" + system terms (triggers, keywords, rules, activation)
+- User is working on `.claude/skills/` directory
+- User asks about hook mechanisms or skill architecture
+- User wants to create/modify/debug skills
+
+**Don't Trigger When:**
+- User asks domain-specific questions (even if they're about design systems, tokens, etc.)
+- Generic terms like "naming conventions" without "skill" context
+- Backend/frontend development questions
+- General coding questions
+
+**Key Principle:** This skill is **meta-level** (about skills themselves), not **domain-level** (about UI, backend, etc.)
 
 ---
 
