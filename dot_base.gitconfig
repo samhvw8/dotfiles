@@ -4,6 +4,7 @@
 	pager             = delta
 	precomposeunicode = true
 	quotePath         = false
+	attributesfile = ~/.gitattributes
 [interactive]
     diffFilter = delta --color-only
 [delta]
@@ -75,5 +76,9 @@
   bu = branchless undo
   review = "!sh -c 'git push origin HEAD:refs/for/master%r=$0'"
 
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = true
 [merge]
-	tool = vimdiff
+    conflictStyle = "diff3"
