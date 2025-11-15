@@ -1,0 +1,15 @@
+[include]
+path = ~/.base.gitconfig
+[user]
+	name = sam hoang
+	email = samhv.ict@gmail.com
+	signingkey = FCC9A748460F7899
+[credential]
+	helper = cache --timeout=604800
+# if you haven't got a global gitattributes file yet
+[core]
+    attributesfile = ~/.gitattributes
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = true
