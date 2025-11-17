@@ -2,6 +2,41 @@
     "version": "1.0",
     "description": "Skill activation triggers for Claude Code. Controls when skills automatically suggest or block actions.",
     "skills": {
+        "agent-creator": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Create and optimize Claude Code sub-agents following Anthropic best practices",
+            "promptTriggers": {
+                "keywords": [
+                    "create agent",
+                    "build agent",
+                    "new claude agent",
+                    "design agent yaml",
+                    "write agent prompt",
+                    "agent prompt engineering",
+                    "agent metadata yaml",
+                    "agent yaml frontmatter",
+                    "agent tools selection",
+                    "agent model selection",
+                    "optimize agent prompt",
+                    "refactor agent yaml",
+                    "agent system prompt design",
+                    "anthropic agent best practices",
+                    "claude code sub-agent",
+                    "progressive disclosure agent"
+                ],
+                "intentPatterns": [
+                    "(create|build|write).*?(new |claude code )?agent.*?(yaml|metadata|prompt)",
+                    "agent.*(yaml|frontmatter|metadata|system prompt).*?(create|design|write)",
+                    "(optimize|refactor).*?agent.*?(prompt|yaml)",
+                    "agent.*(prompt engineering|tool selection|model selection)",
+                    "claude code.*?sub-?agent",
+                    "anthropic.*?agent.*?best.*?practice",
+                    "progressive disclosure.*?agent"
+                ]
+            }
+        },
         "skill-developer": {
             "type": "domain",
             "enforcement": "suggest",
