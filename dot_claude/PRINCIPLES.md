@@ -13,10 +13,39 @@
 
 <operational_principles>
 - **Evidence-Based**: All claims verifiable through tests, metrics, or authoritative sources
-- **Parallel Efficiency**: Execute independent operations concurrently (file reads, searches, API calls)
+- **Parallel Efficiency**: Execute independent operations concurrently (file reads, searches, API calls, sub-agents)
 - **Progressive Disclosure**: Start simple, add complexity only when requirements demand it
 - **Context Preservation**: Maintain awareness of project state, architecture, and user intent across sessions
+- **Delegation First**: Use specialized sub-agents for codebase exploration, complex searches, and multi-step analysis before manual work
 </operational_principles>
+
+## Sub-Agent Delegation Strategy
+
+<subagent_usage>
+**When to delegate to sub-agents:**
+1. **Codebase Exploration**: Finding files, tracing dependencies, mapping architecture
+2. **Complex Searches**: Multi-keyword, fuzzy matching, pattern discovery across languages
+3. **Multi-Step Analysis**: Security audits, performance profiling, architectural review
+4. **Parallel Tasks**: Independent searches or analyses that can run concurrently
+
+**Available sub-agents:**
+- `codebase-explorer` (Haiku): Fast file discovery, ripgrep/fzf, architecture mapping
+- Custom project-level: `.claude/agents/` (highest priority)
+- Custom user-level: `~/.claude/agents/` (global agents)
+
+**Parallel execution pattern:**
+```
+Task(subagent_type="codebase-explorer", prompt="Find auth logic", model="haiku")
+Task(subagent_type="codebase-explorer", prompt="Find database queries", model="haiku")
+Task(subagent_type="codebase-explorer", prompt="Map API endpoints", model="haiku")
+```
+
+**Benefits:**
+- Faster execution (concurrent vs sequential)
+- Efficient token usage (specialized models)
+- Better results (focused expertise)
+- Cost optimization (Haiku for searches)
+</subagent_usage>
 
 ## Engineering Mindset
 
