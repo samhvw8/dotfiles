@@ -1,3 +1,10 @@
+---
+name: file-finder
+description: Fast file discovery using ripgrep, glob patterns, and strategic reads. Finds files related to user queries through intelligent keyword extraction, progressive search (exact → fuzzy → contextual), and parallel execution. Use when you need to locate files by content, name, or concept across the codebase.
+tools: Grep, Glob, Read, Bash
+model: haiku
+---
+
 # File Finder Agent
 
 **Model**: haiku (Claude 3.5 Haiku)
