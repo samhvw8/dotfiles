@@ -1,13 +1,15 @@
 ---
 name: ui-design-system
-description: Complete modern UI development stack combining TailwindCSS (utility-first styling), Radix UI (accessible primitives), and shadcn/ui (beautiful components). Use for building responsive, accessible React applications with design systems, component libraries, dark mode, forms, and enterprise UI patterns.
+description: Expert UI/UX design and development for modern web frontends. Reviews, designs, and improves React/Next.js interfaces using TailwindCSS, Radix UI, shadcn/ui, and modern styling systems. Focuses on accessibility, performance, responsive design, and component architecture.
 license: MIT
-version: 1.0.0
+version: 2.0.0
 ---
 
-# Modern UI Design System Stack
+# UI/UX Design & Development Expert
 
-Production-ready UI development with **TailwindCSS + Radix UI + shadcn/ui**.
+**Comprehensive UI/UX design, review, and improvement for modern web applications.**
+
+Production-ready implementations with **TailwindCSS + Radix UI + shadcn/ui** and modern React patterns.
 
 ## Stack Architecture
 
@@ -44,6 +46,45 @@ TailwindCSS Utilities (Design system, styling)
 ```
 
 **Key Principle:** Each layer enhances the one below. Start with Tailwind for styling, add Radix for accessible behavior, use shadcn/ui for complete components.
+
+## Core Capabilities
+
+### UI/UX Review & Audit
+Systematic evaluation of existing interfaces:
+- **Component Architecture Review:** Analyze component composition, reusability, and single responsibility
+- **Accessibility Audit:** WCAG 2.1/2.2 AA/AAA compliance, keyboard navigation, screen reader support
+- **Performance Analysis:** Core Web Vitals (LCP, FID, CLS), bundle size, render performance
+- **Responsive Design Review:** Mobile-first implementation, breakpoint usage, container queries
+- **Design System Consistency:** Token usage, spacing scale adherence, color palette compliance
+- **Code Quality:** React best practices, hooks usage, state management patterns
+- **Visual Hierarchy:** Typography scale, spacing rhythm, color contrast, focus indicators
+
+### UI/UX Design
+Creating production-ready interface designs:
+- **Component Design:** Atomic design principles, composition patterns, variant systems
+- **Layout Architecture:** Grid systems, flexbox patterns, responsive containers
+- **Interaction Design:** Hover states, focus states, loading states, error states
+- **Design Tokens:** Three-tier token system (primitive → semantic → component)
+- **Color Systems:** OKLCH color space, accessible palettes, dark mode support
+- **Typography Systems:** Scale design, hierarchy, readability optimization
+- **Animation & Transitions:** Micro-interactions, loading feedback, state changes
+
+### UI/UX Improvement
+Enhancing existing implementations:
+- **Accessibility Enhancement:** ARIA patterns, semantic HTML, keyboard navigation
+- **Performance Optimization:** Code splitting, lazy loading, virtualization, image optimization
+- **Responsive Refinement:** Breakpoint optimization, mobile-first improvements
+- **Component Refactoring:** Extract shared patterns, reduce complexity, improve reusability
+- **Visual Polish:** Spacing consistency, typography refinement, color harmony
+- **State Management:** Optimistic updates, error handling, loading states
+- **Developer Experience:** Component documentation, Storybook stories, type safety
+
+### Styling Integration
+Framework-agnostic styling approaches:
+- **Tailwind with Components:** Utility-first styling for any framework
+- **CSS-in-JS:** emotion, styled-components, vanilla-extract
+- **CSS Modules:** Scoped styles without runtime overhead
+- **Design System Integration:** Token-based styling across frameworks
 
 ## When to Use Each Layer
 
@@ -193,188 +234,75 @@ Combine multiple primitives for complex UIs:
 
 ## Design Token Architecture
 
-### Three-Tier Token System (Industry Standard)
+Use three-tier token system for scalable, maintainable design systems:
+- **Tier 1 (Primitive)**: Raw values (`gray-50`, `spacing-4`)
+- **Tier 2 (Semantic)**: Purpose-driven (`background-primary`, `text-error`)
+- **Tier 3 (Component)**: Component-specific (`button-height`, `card-padding`)
 
-Based on USWDS, IBM Carbon, and Shopify Polaris patterns:
+**Modern Color:** Use OKLCH color space for perceptual uniformity and better accessibility calculations.
 
-**Tier 1: Primitive Tokens** (Foundation Layer)
-- Raw design values without context
-- Examples: `gray-50`, `gray-900`, `spacing-4`, `font-sans`
-- Purpose: "The most basic form of tokens, reducing infinite possibilities to a select few"
-- Never reference other tokens
-- Immutable across themes
-
-**Tier 2: Semantic Tokens** (Context Layer)
-- Carry meaning about usage
-- Examples: `background-primary`, `text-error`, `border-interactive`
-- Purpose: Describe function, not appearance
-- Reference primitive tokens
-- Change between themes (light/dark)
-
-**Tier 3: Component Tokens** (Application Layer)
-- Specific to UI components
-- Examples: `button-height`, `card-padding`, `input-border-radius`
-- Reference semantic or primitive tokens
-- Enable component-level theming
-
-**Token Hierarchy Benefits:**
-- Single source of truth
-- Update one token → cascades everywhere
-- Dark mode: Change semantic layer only
-- Rebrand: Update primitive layer only
-
-### OKLCH Color Space (Modern Standard)
-
-**Why OKLCH over HSL:**
-- **Perceptually uniform**: Equal lightness steps look equal to human eyes
-- **Consistent brightness**: Yellow/cyan don't appear lighter than blue/red
-- **Algorithmic palettes**: Generate entire color systems from formulas
-- **Better gradients**: Smooth transitions without lightness jumps
-- **Accessibility**: Easier to calculate contrast ratios
-
-**Browser Support:** 93%+ (2024) - All modern browsers
-**Adoption:** TailwindCSS v4 uses OKLCH by default
-
-**Format:** `oklch(L C H)`
-- L: Lightness (0-1 or 0%-100%)
-- C: Chroma/saturation (0-0.4)
-- H: Hue (0-360 degrees)
-
-**HSL vs OKLCH Example:**
-- HSL: `hsl(210, 100%, 50%)` - Unpredictable perceived brightness
-- OKLCH: `oklch(0.55 0.22 264)` - Perceptually consistent
-
-### Token Naming Conventions
-
-**Best Practices from Smashing Magazine & Design Systems Collective:**
-
-**Structure Pattern:**
-```
-[category]-[property]-[variant]-[state]
-```
-
-**✅ Purpose-Driven Names:**
-- `background-primary` (semantic)
-- `text-error` (semantic)
-- `button-primary-hover` (component + state)
-
-**❌ Avoid Appearance-Based:**
-- `blue-500` (no context)
-- `dark-blue-bg` (ties to visual)
-- `header-color-1` (meaningless)
-
-**Color Naming:**
-- Primitives: `[family]-[brightness]` → `gray-50` to `gray-900`
-- Semantic: `[purpose]-[role]` → `background-primary`, `text-on-primary`
-- Component: `[component]-[property]` → `button-background-primary`
-
-**Key Characteristics:**
-- **Logical**: Consistent patterns team understands
-- **Scalable**: Accommodates growth without restructuring
-- **Searchable**: Easy filtering in design tools
-- **Short**: Balance descriptiveness with brevity
-
-### Multi-Theme Support
-Support multiple brands/themes:
-- Define theme objects with token values
-- Inject CSS variables dynamically with JavaScript
-- Semantic tokens adapt per theme
-- Primitive tokens can vary by brand
+**📖 See [DESIGN_TOKENS.md](references/DESIGN_TOKENS.md) for:**
+- Complete three-tier token system implementation
+- OKLCH color space guide and examples
+- Token naming conventions and best practices
+- CSS variable configuration
+- Multi-theme support patterns
 
 ## Responsive Design Strategy
 
-### Breakpoint Philosophy
-Mobile-first breakpoints:
-- **Base:** 0-639px (mobile)
-- **sm:** 640px+ (large phones, small tablets)
-- **md:** 768px+ (tablets)
-- **lg:** 1024px+ (laptops, desktops)
-- **xl:** 1280px+ (large desktops)
-- **2xl:** 1536px+ (ultra-wide)
+**Mobile-first approach:** Start with mobile (0-639px), scale up through sm/md/lg/xl/2xl breakpoints.
 
-### Responsive Component Patterns
-Build components that adapt to screen size:
-- **Layout shifts:** Column to row, stacked to grid
-- **Component switching:** Dialog on desktop, Drawer on mobile
-- **Content visibility:** Hide/show elements per breakpoint
-- **Typography scaling:** Responsive font sizes
+**Key patterns:** Layout shifts (column→row), component switching (Dialog→Drawer), container queries for modular responsiveness.
 
-### Container Queries
-Use for component-based responsiveness:
-- Components respond to parent width, not viewport
-- Better for modular, reusable components
-- Use `@container` queries with Tailwind
+**📖 See [RESPONSIVE_PATTERNS.md](references/RESPONSIVE_PATTERNS.md) for:**
+- Complete breakpoint strategy and implementation
+- Responsive component patterns and examples
+- Container queries guide
+- Image optimization strategies
+- Performance considerations for responsive design
+- Comprehensive testing checklist
 
 ## Form Architecture
 
-**Validation Strategy:** React Hook Form + Zod
-- Schema-first validation with type inference
-- Unified error handling and display
-- Accessible error messages
+**Strategy:** React Hook Form + Zod for schema-first validation with type inference and accessible error handling.
 
-**Reusable Patterns:**
-- Field wrappers for consistency
-- Required indicators
-- Multi-step forms with progress tracking
+**📖 See [CUSTOMIZATION.md](references/CUSTOMIZATION.md#form-architecture) for:**
+- Complete React Hook Form + Zod setup
+- Reusable field wrapper patterns
+- Multi-step form implementation
+- Accessibility requirements checklist
 
 ## Performance Best Practices
 
-**Code Splitting:** Lazy load heavy components (tables, charts) with React.lazy + Suspense
+**Core strategies:** Code splitting (React.lazy), Tailwind optimization (accurate content paths), virtualization (@tanstack/react-virtual for long lists).
 
-**Tailwind Optimization:** Configure `content` paths accurately | Remove unused plugins | Avoid broad globs
+**📖 See [PERFORMANCE_OPTIMIZATION.md](references/PERFORMANCE_OPTIMIZATION.md) for:**
+- Complete performance optimization guide
+- Core Web Vitals optimization strategies
+- Bundle analysis and tree shaking
+- Common pitfalls and solutions
+- Performance monitoring setup
 
-**Virtualization:** Use @tanstack/react-virtual for long lists (render only visible items)
+## Component Customization & Dark Mode
 
-**Dynamic Classes:** ❌ `text-${color}-500` won't work | ✅ Use conditionals or safelist
+### Customization Strategies
+1. **Direct Modification**: Edit shadcn/ui files in your codebase
+2. **Variant Extension**: Use CVA for type-safe variants
+3. **Wrapper Components**: Add custom logic around base components
+4. **Theme Customization**: Modify CSS variables globally
 
-## Component Customization Strategies
+### Dark Mode Setup
+1. **ThemeProvider** with next-themes
+2. **Class strategy** (`class`, not media query)
+3. **CSS variables** in `.dark` class
+4. **Accessible toggle** component
 
-### 1. Direct Modification
-shadcn/ui components live in your codebase:
-- Edit files in `components/ui/` directly
-- Add new variants with CVA
-- Modify default styles
-- You own the code - full control
-
-### 2. Variant Extension
-Use Class Variance Authority (CVA):
-- Define variant options (default, secondary, etc.)
-- Add size variants (sm, md, lg)
-- Create compound variants (variant + size combinations)
-- Type-safe component props
-
-### 3. Wrapper Components
-Create higher-level components:
-- Wrap shadcn/ui components with custom logic
-- Add default props and behaviors
-- Enforce design system constraints
-
-### 4. Theme Customization
-Modify design tokens:
-- Change colors, spacing, typography in CSS variables
-- Affects all components automatically
-- Maintain consistency across application
-
-## Dark Mode Implementation
-
-### Setup Requirements
-1. **ThemeProvider:** Wrap app with next-themes provider
-2. **Class strategy:** Use `class` dark mode (not media query)
-3. **Hydration fix:** Add `suppressHydrationWarning` to `<html>`
-4. **CSS variables:** Define dark mode tokens in `.dark` class
-
-### Design Considerations
-- Test all components in both modes
-- Ensure sufficient contrast (WCAG AA minimum)
-- Use semantic tokens (background, foreground) not color names
-- Transition smoothly with CSS transitions
-
-### Toggle Component
-Provide accessible theme switcher:
-- Show current theme state (sun/moon icon)
-- Keyboard accessible
-- Visible focus indicator
-- System preference detection
+**📖 See [CUSTOMIZATION.md](references/CUSTOMIZATION.md) for:**
+- Complete customization strategies with examples
+- CVA variant implementation guide
+- Dark mode setup and configuration
+- Design considerations and testing
+- Form architecture patterns
 
 ## Accessibility Standards
 
@@ -424,25 +352,14 @@ Perceptually uniform color space makes contrast calculations more reliable and p
 
 ## Common Pitfalls
 
-### 1. Dynamic Class Generation
-**Problem:** Tailwind doesn't generate classes at runtime
-**Solution:** Use conditional logic or safelist
+Avoid these frequent issues:
+1. **Dynamic classes**: Tailwind doesn't generate at runtime → use conditionals
+2. **Content config**: Verify paths include all component files
+3. **Import paths**: Check tsconfig.json aliases
+4. **Dark mode**: Ensure ThemeProvider setup and CSS variables
+5. **Accessibility**: Never remove ARIA attributes
 
-### 2. Content Configuration
-**Problem:** Styles not applied, CSS purged incorrectly
-**Solution:** Verify `content` paths include all component files
-
-### 3. Import Path Issues
-**Problem:** Component imports fail
-**Solution:** Check path aliases in tsconfig.json and components.json
-
-### 4. Dark Mode Not Working
-**Problem:** Styles don't change in dark mode
-**Solution:** Verify ThemeProvider setup, CSS variables defined
-
-### 5. Accessibility Override
-**Problem:** Breaking Radix accessibility features
-**Solution:** Never remove ARIA attributes, use `asChild` prop correctly
+**📖 See [PERFORMANCE_OPTIMIZATION.md](references/PERFORMANCE_OPTIMIZATION.md#common-pitfalls) for complete troubleshooting guide with 10+ common issues and solutions.**
 
 ## Resources
 
@@ -457,49 +374,97 @@ Perceptually uniform color space makes contrast calculations more reliable and p
 - **OKLCH Color Space:** https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl
 - **WCAG Contrast:** https://webaim.org/articles/contrast/
 
-### Reference Files (Code Examples & Patterns)
+### Reference Files (Detailed Guides & Patterns)
+
+**Core Concepts:**
+- **[DESIGN_TOKENS.md](references/DESIGN_TOKENS.md)** - Three-tier token system, OKLCH, naming
+- **[RESPONSIVE_PATTERNS.md](references/RESPONSIVE_PATTERNS.md)** - Breakpoints, container queries, testing
+- **[CUSTOMIZATION.md](references/CUSTOMIZATION.md)** - Component customization, dark mode, forms
+- **[PERFORMANCE_OPTIMIZATION.md](references/PERFORMANCE_OPTIMIZATION.md)** - Performance, Core Web Vitals, pitfalls
+
+**Implementation References:**
 - **[TAILWIND_REFERENCE.md](references/TAILWIND_REFERENCE.md)** - Complete utilities
 - **[RADIX_REFERENCE.md](references/RADIX_REFERENCE.md)** - Primitives with code
 - **[SHADCN_REFERENCE.md](references/SHADCN_REFERENCE.md)** - Components with install
 - **[INTEGRATION_PATTERNS.md](references/INTEGRATION_PATTERNS.md)** - Advanced patterns
 
+## Triggers & Use Cases
+
+**Activate for:** UI/UX review/audit | Design system architecture | Accessibility audit (WCAG) | Design tokens (3-tier system) | Color systems (OKLCH) | Typography systems | Spacing/layout design | Tailwind/Radix/shadcn/ui setup | Responsive design patterns | Dark mode theming | Component library design
+
+**Do NOT activate for:** React/Next.js architecture (use react-nextjs-expert) | State management | Server Components | Backend APIs | Database design | Infrastructure/DevOps
+
+## Behavioral Traits
+
+**Core Philosophy:** User-centric | Performance-aware (Core Web Vitals) | Accessibility-first (WCAG AA) | Evidence-based | Maintainable | Type-safe
+
+**Design Principles:** Progressive enhancement | Mobile-first | Atomic design | Consistent tokens (3-tier) | Semantic HTML | Comprehensive error handling
+
+**Code Quality:** Component composition | Single responsibility | Proper hooks usage | Optimized rendering | Comprehensive testing
+
+## Response Approach
+
+**Review:** Understand context → Systematic audit → Identify issues → Provide evidence → Recommend solutions → Prioritize
+
+**Design:** Gather requirements → Choose architecture → Design tokens → Component structure → Implement accessibly → Include states → Responsive → Document
+
+**Improve:** Analyze current state → Identify bottlenecks → Plan improvements → Implement incrementally → Measure impact → Document → Test
+
+**Integration:** Verify compatibility → Follow official patterns → Best practices → Type safety → Performance budget → Error boundaries
+
 ## Implementation Checklist
 
-### Setup (Foundation)
-- [ ] Install TailwindCSS + `npx shadcn@latest init`
-- [ ] Configure three-tier token system (primitive → semantic → component)
-- [ ] Set up OKLCH color space (modern browsers)
-- [ ] Configure dark mode with ThemeProvider
-- [ ] Create `cn()` utility helper
+**Setup:** Install Tailwind + shadcn/ui | Configure three-tier tokens | Set up dark mode | Create `cn()` helper
 
-### Development (Build)
-- [ ] Install shadcn/ui components as needed
-- [ ] Apply mobile-first responsive design
-- [ ] Implement dark mode for all components
-- [ ] Test keyboard navigation + screen readers
-- [ ] Verify WCAG AA contrast (4.5:1 text, 3:1 UI)
+**Development:** Apply mobile-first design | Implement dark mode | Test accessibility | Verify WCAG AA contrast
 
-### Production (Deploy)
-- [ ] Verify Tailwind CSS purging works
-- [ ] Test all states (hover, focus, active, disabled)
-- [ ] Validate WCAG 2.1 AA compliance
-- [ ] Cross-browser test (Chrome, Firefox, Safari, Edge)
-- [ ] Performance audit (Lighthouse)
+**Production:** Validate Tailwind purging | Test all states | Cross-browser testing | Performance audit
 
-## Best Practices
+**📖 Detailed checklists available in:**
+- [DESIGN_TOKENS.md](references/DESIGN_TOKENS.md#implementation-checklist)
+- [RESPONSIVE_PATTERNS.md](references/RESPONSIVE_PATTERNS.md#testing-checklist)
+- [CUSTOMIZATION.md](references/CUSTOMIZATION.md#accessibility-requirements)
+- [PERFORMANCE_OPTIMIZATION.md](references/PERFORMANCE_OPTIMIZATION.md#optimization-checklist)
 
-**Design Tokens:** Use three-tier system (primitive → semantic → component) | OKLCH color space | Purpose-driven naming
+## Best Practices Summary
 
-**Accessibility:** WCAG AA minimum (4.5:1 text, 3:1 UI) | Test keyboard navigation | Screen reader compatible
+**Design Tokens:** Three-tier system | OKLCH color space | Purpose-driven naming
+**Accessibility:** WCAG AA minimum (4.5:1 text, 3:1 UI) | Keyboard navigation | Screen readers
+**Performance:** Code splitting | Virtualization | Tailwind optimization
+**Maintenance:** Modular components | Documentation | Version control tokens
 
-**Performance:** Code split heavy components | Virtualize long lists | Optimize Tailwind bundle
+## Skill Summary
 
-**Maintenance:** Modular components | Document modifications | Version control tokens
+**Primary Functions:**
+1. **Review:** Audit UI/UX for accessibility, performance, and design system consistency
+2. **Design:** Create production-ready interfaces with modern React and styling systems
+3. **Improve:** Enhance existing implementations for better UX, performance, and maintainability
+
+**Technology Focus:**
+- TailwindCSS, Radix UI, shadcn/ui (styling layer)
+- Design tokens and design systems
+- Accessibility standards (WCAG 2.1/2.2)
+- Responsive design and mobile-first patterns
+- Color systems (OKLCH) and typography
+
+**Activation Triggers:**
+- UI/UX review, audit, or analysis requests
+- Design system architecture and token design
+- Accessibility improvements (WCAG compliance)
+- Tailwind/Radix/shadcn/ui implementation
+- Responsive design and mobile-first development
+- Color system and typography design
+
+**Boundaries:**
+✅ Design systems, styling, accessibility, design tokens, UI patterns
+❌ React architecture (react-nextjs-expert), state management, backend APIs, infrastructure
 
 ---
 
-**Skill Version:** 2.0.0
-**Last Updated:** 2025-11-12
-**Enhanced With:** USWDS, IBM Carbon, Shopify Polaris patterns
-**Authoritative Sources:** WCAG 2.1, OKLCH color science, industry naming conventions
-**Progressive Disclosure:** Reference files for code examples ✅
+**Skill Version:** 2.1.0
+**Last Updated:** 2025-11-15
+**Enhanced With:** UI/UX review capabilities, design system architecture, framework-agnostic patterns
+**Authoritative Sources:** WCAG 2.1/2.2, OKLCH color science, industry design systems (USWDS, Carbon, Polaris)
+**Progressive Disclosure:** Reference files for detailed guides ✅
+**Scope:** Design systems, styling, accessibility, UI/UX patterns (framework-agnostic)
+**Companion Skills:** react-nextjs-expert (for React/Next.js architecture and state management)

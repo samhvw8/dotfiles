@@ -7,9 +7,3 @@ path = ~/.base.gitconfig
 [credential]
 	helper = cache --timeout=604800
 # if you haven't got a global gitattributes file yet
-[core]
-    attributesfile = ~/.gitattributes
-[commit]
-	gpgsign = true
-[tag]
-	gpgSign = true
