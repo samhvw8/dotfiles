@@ -1,8 +1,8 @@
 ---
 name: Systematic Debugging
-description: Four-phase debugging framework that ensures root cause investigation before attempting fixes. Never jump to solutions.
-when_to_use: when encountering any bug, test failure, or unexpected behavior, before proposing fixes
-version: 2.1.0
+description: Four-phase debugging framework (investigate → analyze → test → fix) that ensures root cause identification before attempting solutions. Automatically triggers on errors, bugs, TypeErrors, stack traces, "not working", "broken", "fails", or "fix" keywords. Use for any error, exception, unexpected behavior, or when things break.
+when_to_use: ANY error, bug, exception, TypeError, crash, failure, broken code, "not working", or unexpected behavior - ALWAYS before proposing fixes
+version: 2.2.0
 languages: all
 ---
 
@@ -293,3 +293,48 @@ From debugging sessions:
 - Random fixes approach: 2-3 hours of thrashing
 - First-time fix rate: 95% vs 40%
 - New bugs introduced: Near zero vs common
+
+## Real-World Example: LangChain `__input__` Error
+
+**Symptom**: `TypeError: Cannot read properties of undefined (reading '__input__')` when streaming chat responses
+
+**Phase 1: Root Cause Investigation**
+1. **Read Error**: Stack trace showed error in LangGraph's internal `_applyWrites()` → `_first()` during checkpoint processing
+2. **Reproduce**: Consistently failed when sending follow-up messages with conversation history
+3. **Recent Changes**: New chat continuation feature using LangGraph checkpoints
+4. **Gather Evidence**: Added progressive logging at each step:
+   - Checkpoint structure had `channel_values.messages` ✓
+   - Checkpoint structure had `channel_values.__input__` ✓
+   - Error still occurred → Something happening AFTER our code
+
+**Phase 2: Pattern Analysis**
+1. **Find Working**: New sessions (no history) worked fine
+2. **Compare**: Working = no checkpoint loading, Broken = checkpoint loading
+3. **Key Difference**: LangGraph creates internal intermediate checkpoints during execution that don't preserve `__input__`
+4. **Understand Dependencies**: LangGraph automatically loads checkpoints when `thread_id` passed to `stream()`
+
+**Phase 3: Hypothesis and Testing**
+1. **Hypothesis 1**: "Missing `__input__` in our checkpoint creation"
+   - Test: Added `__input__` to checkpoint structure
+   - Result: ❌ Still failed
+2. **Hypothesis 2**: "LangGraph creates internal checkpoints without `__input__`"
+   - Test: Don't pass `thread_id`, manually load history instead
+   - Result: ✅ **Success!**
+
+**Phase 4: Implementation**
+1. **Solution**: Bypass automatic checkpoint loading
+   ```typescript
+   // Load history manually from database
+   const historyResult = await this.chatHistoryRepo.getMessages(sessionId);
+   const allMessages = [...previousMessages, new HumanMessage(question)];
+
+   // DON'T pass thread_id - prevents checkpoint loading
+   stream = await this.agent.stream(
+     { messages: allMessages },
+     { streamMode: 'values' }  // No thread_id!
+   );
+   ```
+2. **Verify**: Chat continuation now works with full history
+3. **Impact**: Feature fully functional, no more `__input__` errors
+
+**Key Takeaway**: Progressive logging revealed the error was in LangGraph's internals, not our code. Understanding the dependency (automatic checkpoint loading) led to the workaround (manual history loading).
