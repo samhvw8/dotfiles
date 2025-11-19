@@ -1,5 +1,5 @@
 ---
-name: Defense-in-Depth Validation
+name: defense-in-depth
 description: Validate at every layer data passes through to make bugs impossible
 when_to_use: when invalid data causes failures deep in execution, requiring validation at multiple system layers
 version: 1.1.0

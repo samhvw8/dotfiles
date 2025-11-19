@@ -1,5 +1,5 @@
 ---
-name: Simplification Cascades
+name: simplification-cascades
 description: Find one insight that eliminates multiple components - "if this is true, we don't need X, Y, or Z"
 when_to_use: when implementing the same concept multiple ways, accumulating special cases, or complexity is spiraling
 version: 1.1.0

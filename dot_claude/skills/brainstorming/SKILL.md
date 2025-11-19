@@ -1,5 +1,5 @@
 ---
-name: brainstorm
+name: brainstorming
 description: Transform vague ideas into clear requirements through collaborative discovery. Use when user requests "brainstorm", "explore", "discuss", "figure out", or expresses uncertainty like "maybe", "thinking about", "could we".
 ---
 
