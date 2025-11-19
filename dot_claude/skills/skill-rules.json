@@ -1236,7 +1236,336 @@
                     "container.*?orchestration",
                     "k8s.*?(troubleshoot|debug|deploy|manifest|cluster|production)",
                     "kubernetes.*?(troubleshoot|debug|deploy|manifest|cluster|production)",
-                    "(pod|deployment|service).*?(not.*?(start|work|reach)|fail|error)"
+                    "( |deployment|service).*?(not.*?(start|work|reach)|fail|error)"
+                ]
+            }
+        },
+        "turborepo": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Guide for implementing Turborepo - a high-performance build system for JavaScript and TypeScript monorepos. Use when setting up monorepos, optimizing build performance, implementing task pipelines, configuring caching strategies, or orchestrating tasks across multiple packages.",
+            "promptTriggers": {
+                "keywords": [
+                    "turborepo",
+                    "turbo",
+                    "monorepo",
+                    "turbo.json",
+                    "turbo run",
+                    "turbo build",
+                    "monorepo build",
+                    "workspace caching",
+                    "task pipeline",
+                    "remote cache",
+                    "turbo prune",
+                    "package workspace",
+                    "build system monorepo"
+                ],
+                "intentPatterns": [
+                    "turbo(repo)?",
+                    "monorepo.*?(build|cache|task|pipeline)",
+                    "(build|cache|task).*?monorepo",
+                    "workspace.*?(caching|pipeline|orchestration)",
+                    "turbo\\.(json|run|build|prune)"
+                ]
+            }
+        },
+        "pdf": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.",
+            "promptTriggers": {
+                "keywords": [
+                    "pdf",
+                    "pdf file",
+                    "pdf document",
+                    "extract pdf",
+                    "create pdf",
+                    "merge pdf",
+                    "split pdf",
+                    "pdf form",
+                    "fill pdf",
+                    "pdf table",
+                    "pdf text"
+                ],
+                "intentPatterns": [
+                    "pdf.*?(extract|create|merge|split|form|fill|table|text)",
+                    "(extract|create|merge|split|fill).*?pdf",
+                    "pdf.*?manipulation"
+                ]
+            }
+        },
+        "xlsx": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for creating, reading, analyzing, or modifying spreadsheets.",
+            "promptTriggers": {
+                "keywords": [
+                    "xlsx",
+                    "excel",
+                    "spreadsheet",
+                    "excel file",
+                    "excel formula",
+                    "excel sheet",
+                    "workbook",
+                    "csv file",
+                    "excel data"
+                ],
+                "intentPatterns": [
+                    "(xlsx|excel|spreadsheet)",
+                    "excel.*?(file|formula|sheet|data)",
+                    "(create|read|analyze|modify).*?(xlsx|excel|spreadsheet)",
+                    "spreadsheet.*?(create|read|analyze|modify)"
+                ]
+            }
+        },
+        "docx": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for creating, modifying, or working with tracked changes.",
+            "promptTriggers": {
+                "keywords": [
+                    "docx",
+                    "word document",
+                    "word file",
+                    "doc file",
+                    "tracked changes",
+                    "word comments",
+                    "document editing"
+                ],
+                "intentPatterns": [
+                    "(docx|word document|word file)",
+                    "word.*?(document|file|comments)",
+                    "(create|modify|edit).*?(docx|word document)",
+                    "tracked.*?changes"
+                ]
+            }
+        },
+        "pptx": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for creating new presentations, modifying content, working with layouts, or adding comments.",
+            "promptTriggers": {
+                "keywords": [
+                    "pptx",
+                    "powerpoint",
+                    "presentation",
+                    "slides",
+                    "ppt file",
+                    "slide deck"
+                ],
+                "intentPatterns": [
+                    "(pptx|powerpoint|presentation)",
+                    "powerpoint.*?(file|slide|deck)",
+                    "(create|modify|edit).*?(pptx|powerpoint|presentation)",
+                    "slide.*?(deck|presentation)"
+                ]
+            }
+        },
+        "systematic-debugging": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "critical",
+            "description": "Four-phase debugging framework (investigate → analyze → test → fix) that ensures root cause identification before attempting solutions. Automatically triggers on errors, bugs, TypeErrors, stack traces, 'not working', 'broken', 'fails', or 'fix' keywords.",
+            "promptTriggers": {
+                "keywords": [
+                    "systematic debug",
+                    "root cause",
+                    "investigate error",
+                    "analyze bug",
+                    "debugging framework",
+                    "debugging process",
+                    "error investigation"
+                ],
+                "intentPatterns": [
+                    "systematic.*?debug",
+                    "root.*?cause.*?(investigation|analysis)",
+                    "(investigate|analyze).*?(error|bug)",
+                    "debugging.*?(framework|process|methodology)"
+                ]
+            }
+        },
+        "defense-in-depth": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Defense-in-depth debugging approach with multiple layers of validation and error detection.",
+            "promptTriggers": {
+                "keywords": [
+                    "defense in depth",
+                    "layered validation",
+                    "multiple validation",
+                    "validation layers"
+                ],
+                "intentPatterns": [
+                    "defense.*?in.*?depth",
+                    "(layered|multiple).*?validation",
+                    "validation.*?layers"
+                ]
+            }
+        },
+        "root-cause-tracing": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Root cause tracing techniques for identifying underlying causes of errors and bugs.",
+            "promptTriggers": {
+                "keywords": [
+                    "trace root cause",
+                    "root cause tracing",
+                    "underlying cause",
+                    "trace error"
+                ],
+                "intentPatterns": [
+                    "trace.*?root.*?cause",
+                    "root.*?cause.*?tracing",
+                    "(trace|find|identify).*?underlying.*?cause"
+                ]
+            }
+        },
+        "verification-before-completion": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Verification strategies to ensure code is working correctly before marking tasks complete.",
+            "promptTriggers": {
+                "keywords": [
+                    "verify before complete",
+                    "verification strategy",
+                    "check before done",
+                    "validate completion"
+                ],
+                "intentPatterns": [
+                    "verif(y|ication).*?before.*?(complete|done)",
+                    "(check|validate).*?before.*?(complete|done|finish)",
+                    "verification.*?strategy"
+                ]
+            }
+        },
+        "collision-zone-thinking": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Collision-zone thinking for innovative problem-solving by forcing metaphors from unrelated domains.",
+            "promptTriggers": {
+                "keywords": [
+                    "collision zone",
+                    "force metaphor",
+                    "unrelated domain",
+                    "innovative thinking"
+                ],
+                "intentPatterns": [
+                    "collision.*?zone",
+                    "force.*?metaphor",
+                    "unrelated.*?domain.*?(thinking|approach)",
+                    "innovative.*?(thinking|approach|solution)"
+                ]
+            }
+        },
+        "inversion-exercise": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Inversion exercise for breaking assumptions by inverting problem constraints and requirements.",
+            "promptTriggers": {
+                "keywords": [
+                    "inversion exercise",
+                    "invert assumption",
+                    "reverse thinking",
+                    "question premise"
+                ],
+                "intentPatterns": [
+                    "inversion.*?exercise",
+                    "invert.*?(assumption|constraint|premise)",
+                    "reverse.*?thinking",
+                    "question.*?premise"
+                ]
+            }
+        },
+        "meta-pattern-recognition": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Meta-pattern recognition for identifying recurring patterns across different domains and contexts.",
+            "promptTriggers": {
+                "keywords": [
+                    "meta pattern",
+                    "recurring pattern",
+                    "pattern across domains",
+                    "pattern recognition"
+                ],
+                "intentPatterns": [
+                    "meta.*?pattern",
+                    "recurring.*?pattern",
+                    "pattern.*?across.*?domains",
+                    "pattern.*?recognition.*?(cross|across)"
+                ]
+            }
+        },
+        "scale-game": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Scale-game thinking for testing solutions at extreme scales to reveal edge cases and limitations.",
+            "promptTriggers": {
+                "keywords": [
+                    "scale game",
+                    "extreme scale",
+                    "scale testing",
+                    "production scale",
+                    "edge cases scale"
+                ],
+                "intentPatterns": [
+                    "scale.*?game",
+                    "extreme.*?scale",
+                    "(test|check).*?at.*?scale",
+                    "production.*?scale",
+                    "edge.*?cases.*?scale"
+                ]
+            }
+        },
+        "simplification-cascades": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Simplification cascades for reducing complexity through systematic elimination of unnecessary elements.",
+            "promptTriggers": {
+                "keywords": [
+                    "simplification cascade",
+                    "reduce complexity",
+                    "simplify code",
+                    "eliminate complexity"
+                ],
+                "intentPatterns": [
+                    "simplification.*?cascade",
+                    "reduce.*?complexity",
+                    "simplif(y|ication).*?(code|solution|implementation)",
+                    "eliminate.*?complexity"
+                ]
+            }
+        },
+        "when-stuck": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Dispatch to the right problem-solving technique based on how you're stuck.",
+            "promptTriggers": {
+                "keywords": [
+                    "stuck",
+                    "don't know how",
+                    "unsure how to",
+                    "problem solving",
+                    "need help"
+                ],
+                "intentPatterns": [
+                    "stuck",
+                    "(don't|dont|unsure).*?know.*?how",
+                    "problem.*?solving.*?(dispatch|technique)",
+                    "which.*?(technique|approach|method).*?use"
                 ]
             }
         }

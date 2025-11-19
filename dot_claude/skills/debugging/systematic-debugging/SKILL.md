@@ -1,5 +1,5 @@
 ---
-name: Systematic Debugging
+name: systematic-debugging
 description: Four-phase debugging framework (investigate → analyze → test → fix) that ensures root cause identification before attempting solutions. Automatically triggers on errors, bugs, TypeErrors, stack traces, "not working", "broken", "fails", or "fix" keywords. Use for any error, exception, unexpected behavior, or when things break.
 when_to_use: ANY error, bug, exception, TypeError, crash, failure, broken code, "not working", or unexpected behavior - ALWAYS before proposing fixes
 version: 2.2.0
