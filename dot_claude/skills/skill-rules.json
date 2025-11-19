@@ -176,6 +176,8 @@
             "promptTriggers": {
                 "keywords": [
                     "brainstorm",
+                    "bs",
+                    "ideate",
                     "explore ideas",
                     "discuss options",
                     "figure out",
@@ -184,7 +186,8 @@
                     "could we",
                     "what if",
                     "help me think",
-                    "explore approach"
+                    "explore approach",
+                    "explore options"
                 ],
                 "intentPatterns": [
                     "^(brainstorm|explore|discuss)",
@@ -194,27 +197,53 @@
                 ]
             }
         },
-        "planning-methodology": {
+        "implementation-planner": {
             "type": "domain",
             "enforcement": "suggest",
             "priority": "critical",
+            "description": "Create minimal-change, reversible implementation plans with verification steps and standardized format. Automatically checks docs/plan.md for active plans before creating new ones. Supports continuing existing plans.",
             "promptTriggers": {
                 "keywords": [
-                    "create plan",
-                    "make plan",
-                    "strategy",
-                    "architecture",
+                    "impl plan",
+                    "impl strategy",
                     "implementation plan",
-                    "roadmap",
-                    "plan feature",
+                    "implementation strategy",
+                    "implementation approach",
+                    "implementation roadmap",
+                    "dev plan",
+                    "dev strategy",
+                    "development plan",
+                    "development strategy",
                     "plan implementation",
-                    "approach for"
+                    "plan the implementation",
+                    "how to implement",
+                    "how should implement",
+                    "approach to implement",
+                    "strategy to implement",
+                    "continue plan",
+                    "continue planning",
+                    "continue the plan",
+                    "resume plan",
+                    "check plan",
+                    "active plan",
+                    "current plan",
+                    "plan status",
+                    "plan format",
+                    "plan validation",
+                    "master plan",
+                    "plan tracker"
                 ],
                 "intentPatterns": [
-                    "(create|make|build|develop|design).*?(plan|strategy|roadmap)",
-                    "(how should|what's the best|what's the approach).*?(implement|build|approach)",
-                    "plan.*?(feature|implementation|architecture)",
-                    "implementation.*?(strategy|approach)"
+                    "(impl|implementation).*?(plan|strategy|approach|roadmap)",
+                    "(dev|development).*?(plan|strategy|approach)",
+                    "(create|make|build|develop|design).*?implementation.*?(plan|strategy)",
+                    "(how should|how to|what's the best|what's the approach).*(implement|impl|build)",
+                    "plan.*?(implementation|impl)",
+                    "strategy.*?(for |to )?(implement|impl)",
+                    "(continue|resume|check).*?plan",
+                    "plan.*?(continue|resume|status|active|current)",
+                    "(active|current|master).*?plan",
+                    "plan.*?(format|validation|tracker)"
                 ]
             }
         },
@@ -244,8 +273,13 @@
                     "docker",
                     "dockerfile",
                     "docker compose",
+                    "docker-compose",
                     "containerize",
-                    "container"
+                    "container",
+                    "containers",
+                    "docker image",
+                    "docker build",
+                    "docker run"
                 ],
                 "intentPatterns": [
                     "docker(file|compose|-compose)?",
@@ -256,17 +290,44 @@
         "debugging": {
             "type": "domain",
             "enforcement": "suggest",
-            "priority": "medium",
+            "priority": "critical",
+            "description": "Systematic debugging - triggers when encountering errors, bugs, or things not working",
             "promptTriggers": {
                 "keywords": [
                     "debug",
-                    "debugging",
-                    "performance analysis",
-                    "browser automation"
+                    "dbg",
+                    "error",
+                    "err",
+                    "bug",
+                    "broken",
+                    "not working",
+                    "doesnt work",
+                    "doesn't work",
+                    "fails",
+                    "failing",
+                    "fix error",
+                    "fix bug",
+                    "fix issue",
+                    "got error",
+                    "getting error",
+                    "see error",
+                    "check error",
+                    "TypeError",
+                    "Cannot read",
+                    "undefined",
+                    "stack trace",
+                    "stacktrace",
+                    "exception",
+                    "crash",
+                    "crashed"
                 ],
                 "intentPatterns": [
-                    "debug(ging)?",
-                    "performance.*?analys(is|e)"
+                    "(error|bug|broken|fail).*?(fix|check|debug|got|getting|see)",
+                    "(fix|solve|resolve).*?(error|bug|issue)",
+                    "(got|getting|see|check).*?(error|bug|exception)",
+                    "(TypeError|ReferenceError|Cannot read|undefined)",
+                    "not (working|responding)",
+                    "still.*?(error|fail|broken)"
                 ]
             }
         },
@@ -285,6 +346,54 @@
                 "intentPatterns": [
                     "browser.*?automat(e|ion)",
                     "web.*?scrap(e|ing)"
+                ]
+            }
+        },
+        "playwright-skill": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Complete browser automation with Playwright. Auto-detects dev servers, writes test scripts, handles screenshots, form filling, responsive testing, and any browser-based automation.",
+            "promptTriggers": {
+                "keywords": [
+                    "test page",
+                    "test website",
+                    "test web app",
+                    "browser test",
+                    "e2e test",
+                    "end to end test",
+                    "playwright",
+                    "automate browser",
+                    "fill form browser",
+                    "test form",
+                    "test login",
+                    "test auth flow",
+                    "check responsive",
+                    "test responsive design",
+                    "validate ux",
+                    "test ux",
+                    "check links",
+                    "test navigation",
+                    "screenshot page",
+                    "capture screenshot",
+                    "visual test",
+                    "test localhost",
+                    "test dev server",
+                    "browser automation playwright"
+                ],
+                "intentPatterns": [
+                    "test.*(page|website|web app|localhost|dev server)",
+                    "(e2e|end.to.end|integration).*?test",
+                    "playwright",
+                    "automat(e|ion).*?browser",
+                    "(fill|test|submit).*?form.*?(browser|web)",
+                    "test.*(login|auth|authentication).*?flow",
+                    "(check|test|validate).*(responsive|viewport|mobile|desktop)",
+                    "(test|validate|check).*?ux",
+                    "(check|test|validate).*?link",
+                    "test.*?navigation",
+                    "(screenshot|capture|visual).*?(page|test)",
+                    "browser.*?(test|automat)"
                 ]
             }
         },
@@ -584,12 +693,17 @@
                     "postgresql",
                     "postgres",
                     "psql",
+                    "pg",
                     "sql queries",
-                    "database management"
+                    "sql query",
+                    "database management",
+                    "db query",
+                    "postgres query"
                 ],
                 "intentPatterns": [
                     "postgres(ql)?",
                     "psql",
+                    "\\bpg\\b",
                     "sql.*?(quer(y|ies)|database)"
                 ]
             }
@@ -656,20 +770,25 @@
             "promptTriggers": {
                 "keywords": [
                     "find documentation",
+                    "find docs",
                     "search docs",
                     "llms.txt",
                     "library docs",
+                    "lib docs",
                     "documentation search",
                     "get docs",
                     "fetch docs",
                     "latest docs",
-                    "official docs"
+                    "official docs",
+                    "api docs",
+                    "api documentation"
                 ],
                 "intentPatterns": [
                     "(find|search|get|fetch|locate).*?(documentation|docs)",
                     "llms\\.txt",
                     "(latest|official|up-to-date).*?(docs|documentation)",
-                    "documentation.*?(for|about)"
+                    "documentation.*?(for|about)",
+                    "\\bapi\\b.*?docs"
                 ]
             }
         },
@@ -782,11 +901,15 @@
                 "keywords": [
                     "refactor",
                     "refactoring",
+                    "rfc",
+                    "rfct",
                     "code quality",
                     "technical debt",
+                    "tech debt",
                     "intentional debt",
                     "unintentional debt",
                     "clean code",
+                    "cleanup code",
                     "code smell",
                     "code smells",
                     "bloaters",
@@ -949,6 +1072,171 @@
                     "(lambda|arrow).*?function",
                     "(pipe|pipeline|point.free)",
                     "referential.*?transparency"
+                ]
+            }
+        },
+        "project-planner": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Create structured, actionable plans for any project type - business, personal, creative, academic, event planning, or organizational change. Use for non-programming projects. Automatically checks docs/plan.md for active plans.",
+            "promptTriggers": {
+                "keywords": [
+                    "create plan",
+                    "project plan",
+                    "planning",
+                    "plan project",
+                    "business plan",
+                    "personal plan",
+                    "goal plan",
+                    "event plan",
+                    "plan event",
+                    "launch plan",
+                    "marketing plan",
+                    "strategy plan",
+                    "roadmap",
+                    "project roadmap",
+                    "action plan",
+                    "execution plan",
+                    "initiative plan",
+                    "campaign plan",
+                    "learning plan",
+                    "study plan",
+                    "career plan",
+                    "product launch",
+                    "plan launch",
+                    "plan campaign",
+                    "plan initiative",
+                    "plan strategy",
+                    "organize project",
+                    "structure project",
+                    "plan objectives",
+                    "plan goals",
+                    "plan timeline",
+                    "plan milestones",
+                    "plan deliverables",
+                    "plan scope",
+                    "plan resources",
+                    "plan budget",
+                    "continue plan",
+                    "resume plan",
+                    "active plan",
+                    "current plan"
+                ],
+                "intentPatterns": [
+                    "(create|make|build|develop|design).*?(plan|roadmap|strategy)",
+                    "plan.*?(project|event|launch|campaign|initiative|goal|objective)",
+                    "(project|event|launch|campaign|initiative).*?(plan|planning|roadmap)",
+                    "(business|personal|marketing|product|career|learning).*?plan",
+                    "plan.*?(business|personal|marketing|product|career|learning)",
+                    "how.*?(plan|organize|structure).*?(project|event|launch|campaign)",
+                    "(organize|structure).*?project",
+                    "plan.*?(timeline|milestone|deliverable|scope|resource|budget)",
+                    "(continue|resume|check).*?plan",
+                    "plan.*?(continue|resume|active|current)"
+                ]
+            }
+        },
+        "k8s-ops": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "high",
+            "description": "Production Kubernetes and Helm operations covering kubectl commands, cluster management, deployment strategies, troubleshooting, resource optimization, security, GitOps, RBAC, and cost optimization for production environments.",
+            "promptTriggers": {
+                "keywords": [
+                    "kubernetes",
+                    "k8s",
+                    "kubectl",
+                    "helm",
+                    "helm chart",
+                    "helm charts",
+                    "values.yaml",
+                    "deployment yaml",
+                    "deployment.yaml",
+                    "service yaml",
+                    "ingress yaml",
+                    "configmap",
+                    "pod",
+                    "pods",
+                    "deployment",
+                    "deployments",
+                    "statefulset",
+                    "daemonset",
+                    "replicaset",
+                    "service",
+                    "ingress",
+                    "namespace",
+                    "namespaces",
+                    "cluster",
+                    "k8s cluster",
+                    "kubernetes cluster",
+                    "kustomize",
+                    "argocd",
+                    "argo cd",
+                    "flux",
+                    "gitops",
+                    "pod disruption budget",
+                    "pdb",
+                    "horizontal pod autoscaler",
+                    "hpa",
+                    "vertical pod autoscaler",
+                    "vpa",
+                    "cluster autoscaler",
+                    "rbac kubernetes",
+                    "role binding",
+                    "cluster role",
+                    "service account",
+                    "secrets kubernetes",
+                    "network policy",
+                    "resource quota",
+                    "limit range",
+                    "liveness probe",
+                    "readiness probe",
+                    "startup probe",
+                    "k8s deployment",
+                    "k8s troubleshooting",
+                    "kubectl get",
+                    "kubectl describe",
+                    "kubectl logs",
+                    "kubectl exec",
+                    "kubectl apply",
+                    "kubectl delete",
+                    "kubectl rollout",
+                    "helm install",
+                    "helm upgrade",
+                    "helm rollback",
+                    "helm template",
+                    "container orchestration",
+                    "pod not starting",
+                    "crashloopbackoff",
+                    "imagepullbackoff",
+                    "pending pod",
+                    "evicted pod",
+                    "oomkilled",
+                    "node not ready",
+                    "service not reachable",
+                    "k8s manifest",
+                    "kubernetes manifest",
+                    "k8s yaml",
+                    "kubernetes yaml"
+                ],
+                "intentPatterns": [
+                    "(kubernetes|k8s|kubectl)",
+                    "helm.*?(chart|install|upgrade|rollback|template)",
+                    "(deploy|deployment|pod|service|ingress).*?(yaml|manifest|k8s|kubernetes)",
+                    "(create|apply|update|delete|get|describe).*?(deployment|pod|service|configmap|secret).*?(k8s|kubernetes)",
+                    "kubectl.*?(get|describe|logs|exec|apply|delete|rollout)",
+                    "(troubleshoot|debug|fix).*?(pod|deployment|service|cluster|k8s|kubernetes)",
+                    "(crashloop|imagepull|pending|evicted|oomkill).*?(pod|container)",
+                    "(liveness|readiness|startup).*?probe",
+                    "(hpa|vpa|autoscal).*?(k8s|kubernetes|pod)",
+                    "(rbac|role.*?binding|service.*?account).*?(k8s|kubernetes)",
+                    "(network.*?policy|resource.*?quota|limit.*?range).*?(k8s|kubernetes)",
+                    "(argocd|argo cd|flux|gitops).*?(k8s|kubernetes|deploy)",
+                    "container.*?orchestration",
+                    "k8s.*?(troubleshoot|debug|deploy|manifest|cluster|production)",
+                    "kubernetes.*?(troubleshoot|debug|deploy|manifest|cluster|production)",
+                    "(pod|deployment|service).*?(not.*?(start|work|reach)|fail|error)"
                 ]
             }
         }
