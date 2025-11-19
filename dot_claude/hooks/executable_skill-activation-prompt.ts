@@ -36,22 +36,64 @@ interface MatchedSkill {
     config: SkillRule;
 }
 
-function findSkillRulesPath(cwd: string): string | null {
-    // Priority order:
-    // 1. Project-specific rules
-    // 2. Global user rules
+interface SkillRulesPaths {
+    global: string | null;
+    project: string | null;
+}
 
-    const projectRulesPath = join(cwd, '.claude', 'skills', 'skill-rules.json');
-    if (existsSync(projectRulesPath)) {
-        return projectRulesPath;
-    }
-
+/**
+ * Find both global and project-level skill-rules.json paths
+ */
+function findSkillRulesPaths(cwd: string): SkillRulesPaths {
     const globalRulesPath = join(homedir(), '.claude', 'skills', 'skill-rules.json');
-    if (existsSync(globalRulesPath)) {
-        return globalRulesPath;
+    const projectRulesPath = join(cwd, '.claude', 'skills', 'skill-rules.json');
+
+    return {
+        global: existsSync(globalRulesPath) ? globalRulesPath : null,
+        project: existsSync(projectRulesPath) ? projectRulesPath : null
+    };
+}
+
+/**
+ * Load skill rules from a file path
+ */
+function loadSkillRules(path: string): SkillRules | null {
+    try {
+        const content = readFileSync(path, 'utf-8');
+        return JSON.parse(content);
+    } catch (err) {
+        console.error(`Warning: Failed to load skill rules from ${path}:`, err);
+        return null;
+    }
+}
+
+/**
+ * Merge global and project skill rules
+ * Project rules override global rules for the same skill name
+ */
+function mergeSkillRules(global: SkillRules | null, project: SkillRules | null): SkillRules | null {
+    // If no rules exist, return null
+    if (!global && !project) {
+        return null;
     }
 
-    return null;
+    // If only one exists, return it
+    if (!global) return project;
+    if (!project) return global;
+
+    // Merge both: project overrides global
+    const merged: SkillRules = {
+        version: project.version || global.version,
+        description: project.description || global.description,
+        skills: {
+            // Start with global skills
+            ...global.skills,
+            // Override with project skills
+            ...project.skills
+        }
+    };
+
+    return merged;
 }
 
 async function main() {
@@ -61,16 +103,20 @@ async function main() {
         const data: HookInput = JSON.parse(input);
         const prompt = data.prompt.toLowerCase();
 
-        // Find skill-rules.json (project-specific or global)
-        const rulesPath = findSkillRulesPath(data.cwd || process.cwd());
-        if (!rulesPath) {
-            // No rules configured - exit silently
+        // Find both global and project-level skill-rules.json
+        const paths = findSkillRulesPaths(data.cwd || process.cwd());
+
+        // Load both rule sets
+        const globalRules = paths.global ? loadSkillRules(paths.global) : null;
+        const projectRules = paths.project ? loadSkillRules(paths.project) : null;
+
+        // Merge rules (project overrides global)
+        const rules = mergeSkillRules(globalRules, projectRules);
+
+        // If no rules are available, exit silently
+        if (!rules) {
             process.exit(0);
         }
-
-        // Load and parse skill rules
-        const rulesContent = readFileSync(rulesPath, 'utf-8');
-        const rules: SkillRules = JSON.parse(rulesContent);
 
         // Track matched skills (deduplicated by name)
         const matchedSkillsMap = new Map<string, MatchedSkill>();
