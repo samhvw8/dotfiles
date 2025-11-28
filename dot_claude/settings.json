@@ -15,10 +15,15 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/skill-activation-prompt.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/agent-activation-prompt.sh"
           }
         ]
       }
     ]
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": false,
+  "model": "sonnet"
 }

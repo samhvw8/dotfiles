@@ -18,33 +18,9 @@ Don't assume, ask me to clarify
 - **Codebase exploration**: "find X", "where is Y", "explore architecture", "trace dependencies"
 - **Complex searches**: Multi-keyword searches, fuzzy matching, pattern discovery
 - **Multi-step analysis**: Architecture review, dependency mapping, security audits
+- **Specialized tasks**: Backend design, refactoring, security audits, testing strategy
 - **Parallel execution**: Run multiple agents concurrently for independent tasks
 
-**Available Sub-Agents:**
-- `codebase-explorer` (Haiku): Lightning-fast file finding, ripgrep/fzf, architecture mapping
-- Custom agents in `.claude/agents/` or `~/.claude/agents/`
-
-### 🔥 Parallel Sub-Agent Execution
-
-**When to run agents in parallel:**
-- Multiple independent searches (different keywords, different file types)
-- Simultaneous codebase exploration (architecture + dependencies + patterns)
-- Multi-language analysis (find patterns across TS, Python, Go files)
-- Parallel component analysis (UI + logic + tests)
-
-**Example - Parallel Invocation:**
-```
-Use Task tool to launch multiple agents in a SINGLE message:
-- codebase-explorer: Find authentication logic
-- codebase-explorer: Find database queries
-- codebase-explorer: Map API endpoints
-```
-
-**Benefits:**
-- ✅ Faster responses (concurrent execution)
-- ✅ Comprehensive results (multiple perspectives)
-- ✅ Efficient token usage (specialized agents)
-- ✅ Better context (Haiku model for searches)
 
 ## 🚨 Common Mistakes
 
@@ -53,12 +29,14 @@ Use Task tool to launch multiple agents in a SINGLE message:
 ❌ Focusing on context instead of triggers → ✅ **Match trigger words and synonyms/close meaning words, not context**
 ❌ Running agents sequentially → ✅ **Launch multiple agents in parallel when tasks are independent**
 ❌ Using grep/glob directly for complex searches → ✅ **Use codebase-explorer sub-agent instead**
+❌ Not using specialized agents → ✅ **Use python-expert for Python, backend-architect for APIs, etc.**
+❌ Manual refactoring without agent → ✅ **Use refactoring-expert for SOLID principles and code quality**
+❌ Manual security reviews → ✅ **Use security-engineer for OWASP audits and threat modeling**
+❌ Debugging without systematic approach → ✅ **Use root-cause-analyst for hypothesis-driven investigation**
 
 ## MCP Tools Priority
 
 - **context7**: Library/framework documentation (React, Next.js, Prisma, etc.)
-- **magic**: UI component generation, design systems
-- **chrome**: Browser automation, web scraping, testing
 
 ---
 
@@ -71,5 +49,3 @@ Use Task tool to launch multiple agents in a SINGLE message:
 
 # MCP Documentation
 @MCP_Context7.md
-@MCP_Magic.md
-@MCP_Playwright.md
