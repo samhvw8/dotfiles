@@ -1,0 +1,448 @@
+{
+    "version": "1.0",
+    "description": "Agent activation triggers for Claude Code sub-agents. Controls when agents automatically suggest or activate.",
+    "agents": {
+        "codebase-explorer": {
+            "type": "exploration",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "haiku",
+            "description": "Lightning-fast codebase exploration using ast-grep for structural code search, ripgrep for text search, and fzf for fuzzy matching",
+            "promptTriggers": {
+                "keywords": [
+                    "explore codebase",
+                    "find files",
+                    "find code",
+                    "locate file",
+                    "locate code",
+                    "where is",
+                    "search codebase",
+                    "search for",
+                    "show architecture",
+                    "map dependencies",
+                    "trace how",
+                    "trace dependencies",
+                    "find class",
+                    "find function",
+                    "find method",
+                    "find interface",
+                    "find type",
+                    "find component",
+                    "codebase structure",
+                    "project structure",
+                    "architecture overview"
+                ],
+                "intentPatterns": [
+                    "(explore|search|find|locate|where is).*?(codebase|code|file|class|function|method|component)",
+                    "(show|map|trace|visualize).*?(architecture|dependencies|structure)",
+                    "where.*?(is|are|can i find)",
+                    "find.*?(files|code|implementation).*?(related to|for|about)",
+                    "architecture.*?(overview|mapping|analysis)"
+                ]
+            }
+        },
+        "root-cause-analyst": {
+            "type": "exploration",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Systematic bug investigation, hypothesis testing, evidence-based debugging",
+            "promptTriggers": {
+                "keywords": [
+                    "investigate error",
+                    "debug issue",
+                    "root cause",
+                    "why is failing",
+                    "why doesn't work",
+                    "why is broken",
+                    "troubleshoot",
+                    "diagnose problem",
+                    "analyze bug",
+                    "analyze error",
+                    "systematic debugging",
+                    "hypothesis testing"
+                ],
+                "intentPatterns": [
+                    "(investigate|debug|diagnose|analyze).*?(error|bug|issue|problem|failure)",
+                    "why.*?(failing|broken|not working|doesn't work)",
+                    "root.*?cause.*?(analysis|investigation)",
+                    "systematic.*?(debug|investigation)",
+                    "(troubleshoot|diagnose).*?(issue|problem|error)"
+                ]
+            }
+        },
+        "backend-architect": {
+            "type": "architecture",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "API design, database schema, SOLID principles, DI/IoC, security, reliability",
+            "promptTriggers": {
+                "keywords": [
+                    "design api",
+                    "design rest api",
+                    "design graphql",
+                    "api architecture",
+                    "backend architecture",
+                    "database schema",
+                    "database design",
+                    "implement auth flow",
+                    "authentication design",
+                    "authorization design",
+                    "api security",
+                    "backend security",
+                    "dependency injection",
+                    "solid principles backend",
+                    "design microservice",
+                    "service design",
+                    "endpoint design"
+                ],
+                "intentPatterns": [
+                    "design.*?(api|rest|graphql|backend|service|microservice|endpoint)",
+                    "(api|backend|service).*?(architecture|design|structure|pattern)",
+                    "database.*?(schema|design|architecture|model)",
+                    "(implement|design|create).*?(auth|authentication|authorization).*?(flow|system)",
+                    "(dependency injection|di|ioc|solid).*?(backend|api|service)",
+                    "(security|reliability).*?(backend|api|service)"
+                ]
+            }
+        },
+        "system-architect": {
+            "type": "architecture",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "System design, scalability planning, architectural decisions",
+            "promptTriggers": {
+                "keywords": [
+                    "system design",
+                    "system architecture",
+                    "scalability",
+                    "architectural decision",
+                    "design system",
+                    "architecture planning",
+                    "high-level design",
+                    "system structure",
+                    "distributed system",
+                    "microservices architecture"
+                ],
+                "intentPatterns": [
+                    "system.*?(design|architecture|structure)",
+                    "(design|architect|plan).*?system",
+                    "scalability.*?(design|planning|architecture)",
+                    "architectural.*?(decision|pattern|choice)",
+                    "(distributed|microservices).*?(system|architecture)"
+                ]
+            }
+        },
+        "requirements-analyst": {
+            "type": "architecture",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "Requirements gathering, spec creation, ambiguity resolution",
+            "promptTriggers": {
+                "keywords": [
+                    "gather requirements",
+                    "requirements analysis",
+                    "create spec",
+                    "specification",
+                    "clarify requirements",
+                    "ambiguity resolution",
+                    "requirements document"
+                ],
+                "intentPatterns": [
+                    "(gather|collect|analyze).*?requirements",
+                    "requirements.*?(analysis|gathering|documentation)",
+                    "(create|write|develop).*?(spec|specification)",
+                    "(clarify|resolve).*?(ambiguity|requirements)"
+                ]
+            }
+        },
+        "python-expert": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Production Python, FastAPI/Django, async patterns, DI, testing, security",
+            "promptTriggers": {
+                "keywords": [
+                    "python code",
+                    "python implementation",
+                    "fastapi",
+                    "django",
+                    "python async",
+                    "asyncio",
+                    "python testing",
+                    "pytest",
+                    "python security",
+                    "python best practices",
+                    "python patterns"
+                ],
+                "intentPatterns": [
+                    "python.*?(code|implementation|service|api|application)",
+                    "(fastapi|django|flask).*?(implementation|service|endpoint)",
+                    "(async|asyncio).*?python",
+                    "python.*?(async|testing|security|pattern|best practice)"
+                ]
+            }
+        },
+        "react-next-architect": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "React/Next.js, App Router, state management, performance optimization",
+            "promptTriggers": {
+                "keywords": [
+                    "react component",
+                    "next.js",
+                    "nextjs",
+                    "app router",
+                    "server components",
+                    "client components",
+                    "react state",
+                    "react hooks",
+                    "react performance",
+                    "optimize react",
+                    "react architecture"
+                ],
+                "intentPatterns": [
+                    "react.*?(component|architecture|pattern|state|hook|performance)",
+                    "(next\\.js|nextjs).*?(component|route|page|api|architecture)",
+                    "(app router|server component|client component)",
+                    "(optimize|improve).*?react"
+                ]
+            }
+        },
+        "svelte-kit-architect": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "SvelteKit, reactive patterns, full-stack Svelte applications",
+            "promptTriggers": {
+                "keywords": [
+                    "sveltekit",
+                    "svelte component",
+                    "svelte store",
+                    "reactive store",
+                    "svelte routing",
+                    "svelte form"
+                ],
+                "intentPatterns": [
+                    "sveltekit.*?(component|route|page|store|form)",
+                    "svelte.*?(component|store|reactive|pattern)"
+                ]
+            }
+        },
+        "refactoring-expert": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Code quality, SOLID principles, complexity reduction, technical debt",
+            "promptTriggers": {
+                "keywords": [
+                    "refactor code",
+                    "refactoring",
+                    "reduce complexity",
+                    "apply solid",
+                    "solid principles",
+                    "clean code",
+                    "code quality",
+                    "technical debt",
+                    "code smell",
+                    "improve code",
+                    "simplify code"
+                ],
+                "intentPatterns": [
+                    "refactor(ing)?.*?(code|implementation|function|class)",
+                    "(reduce|decrease).*?(complexity|technical debt)",
+                    "apply.*?(solid|dry|kiss|design pattern)",
+                    "(clean|improve|simplify).*?code",
+                    "code.*?(quality|smell|debt)",
+                    "technical.*?debt"
+                ]
+            }
+        },
+        "batch-refactorer": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Automated codebase refactoring, ast-grep transformations, pattern replacement at scale",
+            "promptTriggers": {
+                "keywords": [
+                    "rename across codebase",
+                    "rename class codebase",
+                    "rename function codebase",
+                    "modernize patterns",
+                    "batch refactor",
+                    "mass refactor",
+                    "codebase-wide refactor",
+                    "ast-grep refactor",
+                    "transform codebase",
+                    "replace pattern codebase",
+                    "update all files"
+                ],
+                "intentPatterns": [
+                    "(rename|replace|transform).*?(across|throughout|codebase|all files)",
+                    "(batch|mass|codebase-wide).*?(refactor|rename|transform|replace)",
+                    "modernize.*?(pattern|syntax|code).*?(codebase|all files)",
+                    "(ast-grep|sed|ripgrep).*?(refactor|transform|replace)",
+                    "replace.*?pattern.*?(codebase|everywhere)"
+                ]
+            }
+        },
+        "quality-engineer": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "Testing strategy, test coverage, edge case detection",
+            "promptTriggers": {
+                "keywords": [
+                    "test coverage",
+                    "testing strategy",
+                    "edge cases",
+                    "unit tests",
+                    "integration tests",
+                    "test plan",
+                    "improve tests",
+                    "add tests"
+                ],
+                "intentPatterns": [
+                    "(test|testing).*?(coverage|strategy|plan)",
+                    "(edge case|boundary condition).*?(test|detection)",
+                    "(unit|integration|e2e).*?test",
+                    "(improve|add|create).*?tests"
+                ]
+            }
+        },
+        "security-engineer": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Security audits, OWASP compliance, threat modeling, vulnerability scanning",
+            "promptTriggers": {
+                "keywords": [
+                    "security review",
+                    "security audit",
+                    "owasp check",
+                    "vulnerability scan",
+                    "threat model",
+                    "security assessment",
+                    "penetration test",
+                    "security analysis"
+                ],
+                "intentPatterns": [
+                    "security.*?(review|audit|check|assessment|analysis)",
+                    "(owasp|vulnerability|threat).*?(check|scan|model|analysis)",
+                    "(penetration|security).*?test"
+                ]
+            }
+        },
+        "devops-architect": {
+            "type": "infrastructure",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "CI/CD, Docker, Kubernetes, infrastructure automation, monitoring",
+            "promptTriggers": {
+                "keywords": [
+                    "docker setup",
+                    "k8s deployment",
+                    "kubernetes deployment",
+                    "ci/cd pipeline",
+                    "github actions",
+                    "gitlab ci",
+                    "jenkins pipeline",
+                    "infrastructure automation",
+                    "monitoring setup",
+                    "deployment pipeline"
+                ],
+                "intentPatterns": [
+                    "(docker|container).*?(setup|configuration|deployment)",
+                    "(k8s|kubernetes).*?(deployment|setup|configuration)",
+                    "(ci/cd|cicd|pipeline).*?(setup|configuration|automation)",
+                    "infrastructure.*?(automation|as code|setup)",
+                    "monitoring.*?(setup|configuration|implementation)"
+                ]
+            }
+        },
+        "ui-ux-designer": {
+            "type": "design",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "Interface design, wireframes, accessibility, user research",
+            "promptTriggers": {
+                "keywords": [
+                    "design dashboard",
+                    "design interface",
+                    "wireframe",
+                    "ui design",
+                    "ux design",
+                    "user interface",
+                    "user experience",
+                    "accessibility design",
+                    "design system"
+                ],
+                "intentPatterns": [
+                    "design.*?(dashboard|interface|ui|ux|wireframe)",
+                    "(ui|ux|interface|user experience).*?design",
+                    "(wireframe|mockup|prototype).*?(design|create)",
+                    "accessibility.*?(design|implementation)",
+                    "design system.*?(create|implement)"
+                ]
+            }
+        },
+        "learning-guide": {
+            "type": "design",
+            "enforcement": "suggest",
+            "priority": "low",
+            "model": "sonnet",
+            "description": "Concept explanation, progressive learning, practical examples",
+            "promptTriggers": {
+                "keywords": [
+                    "explain async/await",
+                    "teach tdd",
+                    "how does work",
+                    "what is",
+                    "explain concept",
+                    "teach me",
+                    "help understand"
+                ],
+                "intentPatterns": [
+                    "(explain|teach|describe).*?(concept|pattern|principle|technique)",
+                    "(how does|what is|help understand).*?work",
+                    "teach.*?(me|about)",
+                    "explain.*?(async|await|promise|closure|hoisting|concept)"
+                ]
+            }
+        }
+    },
+    "notes": {
+        "enforcement_types": {
+            "suggest": "Agent suggestion appears but doesn't block execution",
+            "block": "Requires agent to be used before proceeding",
+            "warn": "Shows warning but allows proceeding"
+        },
+        "priority_levels": {
+            "critical": "Highest - Always trigger when matched",
+            "high": "Important - Trigger for most matches",
+            "medium": "Moderate - Trigger for clear matches",
+            "low": "Optional - Trigger only for explicit matches"
+        },
+        "types": {
+            "exploration": "Codebase exploration and analysis agents",
+            "architecture": "System and API design agents",
+            "language": "Language and framework specialists",
+            "quality": "Code quality and refactoring agents",
+            "infrastructure": "DevOps and infrastructure agents",
+            "design": "UI/UX and educational agents"
+        }
+    }
+}
