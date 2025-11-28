@@ -182,15 +182,15 @@ async function main() {
 
         // Build output message
         let output = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-        output += '🤖 AGENT ACTIVATION CHECK\n';
+        output += '💡 SPECIALIZED AGENTS AVAILABLE\n';
         output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
 
         // Add matched agents by priority
         const priorityLabels = {
-            critical: { icon: '⚠️', label: 'CRITICAL AGENTS (REQUIRED)' },
-            high: { icon: '📚', label: 'RECOMMENDED AGENTS' },
-            medium: { icon: '💡', label: 'SUGGESTED AGENTS' },
-            low: { icon: '📌', label: 'OPTIONAL AGENTS' }
+            critical: { icon: '⭐', label: 'HIGHLY RECOMMENDED' },
+            high: { icon: '💎', label: 'RECOMMENDED' },
+            medium: { icon: '💡', label: 'SUGGESTED' },
+            low: { icon: '📌', label: 'AVAILABLE' }
         };
 
         for (const [priority, label] of Object.entries(priorityLabels)) {
@@ -212,12 +212,13 @@ async function main() {
             }
         }
 
-        // Add action instruction
+        // Add suggestion instruction
         const hasHighPriority = byPriority.critical.length > 0 || byPriority.high.length > 0;
         if (hasHighPriority) {
-            output += '⚡ ACTION: Use Task tool with subagent_type BEFORE responding\n';
+            output += '💡 Consider using: Task tool with subagent_type parameter\n';
+            output += '   Example: Task(subagent_type="agent-name", prompt="your task")\n';
         } else {
-            output += '💡 TIP: Consider using Task tool with subagent_type for better results\n';
+            output += '💡 Optional: These agents may help with specialized tasks\n';
         }
 
         output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
