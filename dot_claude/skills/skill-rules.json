@@ -1,6 +1,26 @@
 {
-    "version": "1.0",
+    "version": "2.0",
     "description": "Skill activation triggers for Claude Code. Controls when skills automatically suggest or block actions.",
+    "schema": {
+        "keywords": "string (auto-weight by length) | {value: string, weight: number} (user-defined)",
+        "intentPatterns": "string | {value: string, weight: number} - regex patterns get 1.2x bonus",
+        "weightGuidelines": {
+            "high": "3.0-5.0 - Very specific terms (k8s, kubectl, specific tool names)",
+            "medium": "1.5-3.0 - Domain terms (deployment, container)",
+            "low": "0.5-1.5 - Generic terms (help, create, fix)"
+        },
+        "scoring": {
+            "priorityMultiplier": {"critical": 4.0, "high": 3.0, "medium": 2.0, "low": 1.0},
+            "diminishingFactor": 0.4
+        },
+        "confidenceLevels": [
+            {"level": "critical", "minScore": 12.0, "enforcement": "REQUIRED", "icon": "🔴"},
+            {"level": "high", "minScore": 8.0, "enforcement": "RECOMMENDED", "icon": "🟠"},
+            {"level": "medium", "minScore": 4.0, "enforcement": "SUGGESTED", "icon": "🟡"},
+            {"level": "low", "minScore": 2.0, "enforcement": "OPTIONAL", "icon": "🟢"}
+        ],
+        "extensible": "Add more levels in skill-activation-prompt.ts CONFIDENCE_LEVELS array"
+    },
     "skills": {
         "agent-creator": {
             "type": "domain",
@@ -9,6 +29,10 @@
             "description": "Create and optimize Claude Code sub-agents following Anthropic best practices",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "sub-agent", "weight": 5.0},
+                    {"value": "subagent", "weight": 5.0},
+                    {"value": "agent yaml", "weight": 4.5},
+                    {"value": "agent prompt", "weight": 4.0},
                     "create agent",
                     "build agent",
                     "new claude agent",
@@ -44,6 +68,16 @@
             "description": "Meta-skill for creating, enhancing, and managing Claude Code skills",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "skill-rules.json", "weight": 5.0},
+                    {"value": "SKILL.md", "weight": 5.0},
+                    {"value": "promptTriggers", "weight": 5.0},
+                    {"value": "UserPromptSubmit", "weight": 5.0},
+                    {"value": "PreToolUse", "weight": 5.0},
+                    {"value": "skill activation", "weight": 4.5},
+                    {"value": "skill triggers", "weight": 4.5},
+                    {"value": "intent patterns", "weight": 4.0},
+                    {"value": "keyword weight", "weight": 4.5},
+                    {"value": "pattern weight", "weight": 4.5},
                     "skill system",
                     "create skill",
                     "add skill",
@@ -60,25 +94,18 @@
                     "fix skill",
                     "upgrade skill",
                     "refine skill",
-                    "skill triggers",
-                    "skill activation",
                     "skill keyword",
                     "skill pattern",
                     "skill rules",
                     "skill metadata",
                     "skill frontmatter",
                     "skill description",
-                    "intent patterns",
-                    "promptTriggers",
                     "enforcement levels",
                     "skill priority",
                     "skill enforcement",
                     "hook system",
-                    "UserPromptSubmit",
-                    "PreToolUse",
                     "skill-activation-prompt",
                     "skill development",
-                    "skill-rules.json",
                     "skill.md",
                     "progressive disclosure",
                     "500-line rule",
@@ -93,7 +120,31 @@
                     "claude code skills",
                     "skill documentation",
                     "skill testing",
-                    "skill validation"
+                    "skill validation",
+                    "add trigger",
+                    "add keyword",
+                    "add pattern",
+                    "fix trigger",
+                    "update trigger",
+                    "trigger word",
+                    "activation word",
+                    "shorthand",
+                    "shorthands",
+                    "synonym",
+                    "synonyms",
+                    "abbreviation",
+                    "abbreviations",
+                    "abbrev",
+                    "alias",
+                    "aliases",
+                    "alt keyword",
+                    "alternative keyword",
+                    "scoring",
+                    "match score",
+                    "skill score",
+                    "diminishing returns",
+                    "keyword priority",
+                    "pattern priority"
                 ],
                 "intentPatterns": [
                     "(how do|how does|explain).*?skill.*?(system|trigger|activation|work)",
@@ -107,7 +158,11 @@
                     "SKILL\\.md",
                     "(progressive disclosure|500-line rule|reference files).*?skill",
                     "anthropic.*?(skill|guideline|best practice)",
-                    "(test|validate|debug).*?skill.*?(trigger|activation|keyword)"
+                    "(test|validate|debug).*?skill.*?(trigger|activation|keyword)",
+                    "(add|update|fix|improve).*?(trigger|keyword|pattern|shorthand|synonym|abbreviation|alias)",
+                    "(shorthand|synonym|abbreviation|abbrev|alias).*?(keyword|trigger|pattern)?",
+                    "(keyword|pattern).*?(weight|score|priority|level)",
+                    "(scoring|weighting|ranking).*?(skill|trigger|keyword)"
                 ]
             }
         },
@@ -117,12 +172,12 @@
             "priority": "critical",
             "promptTriggers": {
                 "keywords": [
-                    "enhance prompt",
-                    "improve prompt",
-                    "optimize prompt",
-                    "fix prompt",
-                    "better prompt",
-                    "rewrite prompt",
+                    {"value": "enhance prompt", "weight": 4.5},
+                    {"value": "improve prompt", "weight": 4.5},
+                    {"value": "optimize prompt", "weight": 4.5},
+                    {"value": "fix prompt", "weight": 4.5},
+                    {"value": "rewrite prompt", "weight": 4.5},
+                    {"value": "better prompt", "weight": 4.0},
                     "refine prompt",
                     "clean up prompt",
                     "make prompt clearer"
@@ -162,10 +217,10 @@
                     "codebase instructions"
                 ],
                 "intentPatterns": [
-                    "(init|create|optimize|setup|generate|improve|enhance|update|fix).*?claude[\\s\\.]?md",
-                    "claude[\\s\\.]?md.*?(init|create|optimize|setup|generate|improve|enhance|update|fix)",
-                    "project.*?(instructions|setup|configuration)",
-                    "codebase.*?instructions"
+                    {"value": "(init|create|optimize|setup|generate|improve|enhance|update|fix).*?claude[\\s\\.]?md", "weight": 4.0},
+                    {"value": "claude[\\s\\.]?md.*?(init|create|optimize|setup|generate|improve|enhance|update|fix)", "weight": 4.0},
+                    {"value": "project.*?(instructions|setup|configuration)", "weight": 2.5},
+                    {"value": "codebase.*?instructions", "weight": 2.5}
                 ]
             }
         },
@@ -177,7 +232,9 @@
                 "keywords": [
                     "brainstorm",
                     "bs",
+                    "brain storm",
                     "ideate",
+                    "ideation",
                     "explore ideas",
                     "discuss options",
                     "figure out",
@@ -187,13 +244,33 @@
                     "what if",
                     "help me think",
                     "explore approach",
-                    "explore options"
+                    "explore options",
+                    "spitball",
+                    "bounce ideas",
+                    "think through",
+                    "work through",
+                    "pros cons",
+                    "pros and cons",
+                    "tradeoffs",
+                    "trade-offs",
+                    "options",
+                    "alternatives",
+                    "possibilities",
+                    "ideas",
+                    "hmm",
+                    "idk",
+                    "dunno",
+                    "unsure"
                 ],
                 "intentPatterns": [
-                    "^(brainstorm|explore|discuss)",
-                    "(maybe|thinking about|could we|what if|not sure|help me think)",
-                    "explore.*?(idea|option|approach|solution)",
-                    "figure.*?out"
+                    {"value": "^(brainstorm|bs|explore|discuss)", "weight": 2.0},
+                    {"value": "(maybe|thinking about|could we|what if|not sure|unsure|help me think|idk|dunno)", "weight": 1.0},
+                    {"value": "explore.*?(idea|option|approach|solution|alt)", "weight": 1.8},
+                    {"value": "figure.*?out", "weight": 1.2},
+                    {"value": "(bounce|spitball|toss).*?idea", "weight": 3.5},
+                    {"value": "(think|work).*?through", "weight": 1.2},
+                    {"value": "(pros|trade).*(cons|off)", "weight": 2.5},
+                    {"value": "what.*?(options|alternatives|possibilities)", "weight": 2.5}
                 ]
             }
         },
@@ -234,16 +311,16 @@
                     "plan tracker"
                 ],
                 "intentPatterns": [
-                    "(impl|implementation).*?(plan|strategy|approach|roadmap)",
-                    "(dev|development).*?(plan|strategy|approach)",
-                    "(create|make|build|develop|design).*?implementation.*?(plan|strategy)",
-                    "(how should|how to|what's the best|what's the approach).*(implement|impl|build)",
-                    "plan.*?(implementation|impl)",
-                    "strategy.*?(for |to )?(implement|impl)",
-                    "(continue|resume|check).*?plan",
-                    "plan.*?(continue|resume|status|active|current)",
-                    "(active|current|master).*?plan",
-                    "plan.*?(format|validation|tracker)"
+                    {"value": "(impl|implementation).*?(plan|strategy|approach|roadmap)", "weight": 4.0},
+                    {"value": "(dev|development).*?(plan|strategy|approach)", "weight": 4.0},
+                    {"value": "(create|make|build|develop|design).*?implementation.*?(plan|strategy)", "weight": 3.5},
+                    {"value": "(how should|how to|what's the best|what's the approach).*(implement|impl|build)", "weight": 3.5},
+                    {"value": "plan.*?(implementation|impl)", "weight": 4.0},
+                    {"value": "strategy.*?(for |to )?(implement|impl)", "weight": 4.0},
+                    {"value": "(continue|resume|check).*?plan", "weight": 3.8},
+                    {"value": "plan.*?(continue|resume|status|active|current)", "weight": 3.8},
+                    {"value": "(active|current|master).*?plan", "weight": 3.8},
+                    {"value": "plan.*?(format|validation|tracker)", "weight": 2.8}
                 ]
             }
         },
@@ -259,8 +336,8 @@
                     "decision analysis"
                 ],
                 "intentPatterns": [
-                    "(explain|show).*?(reasoning|thinking|decision)",
-                    "why did you (choose|decide|pick)"
+                    {"value": "(explain|show).*?(reasoning|thinking|decision)", "weight": 3.5},
+                    {"value": "why did you (choose|decide|pick)", "weight": 4.0}
                 ]
             }
         },
@@ -270,64 +347,36 @@
             "priority": "medium",
             "promptTriggers": {
                 "keywords": [
-                    "docker",
-                    "dockerfile",
+                    {"value": "docker", "weight": 4.5},
+                    {"value": "dockerfile", "weight": 5.0},
+                    {"value": "docker-compose", "weight": 5.0},
+                    {"value": "dkr", "weight": 5.0},
+                    {"value": "ecr", "weight": 5.0},
+                    {"value": "gcr", "weight": 5.0},
+                    {"value": "acr", "weight": 5.0},
                     "docker compose",
-                    "docker-compose",
                     "containerize",
                     "container",
                     "containers",
                     "docker image",
                     "docker build",
-                    "docker run"
+                    "docker run",
+                    "docker ps",
+                    "docker exec",
+                    "docker logs",
+                    "multi-stage build",
+                    "multistage",
+                    "container registry",
+                    "dockerhub",
+                    "docker hub"
                 ],
                 "intentPatterns": [
                     "docker(file|compose|-compose)?",
-                    "containeriz(e|ing|ation)"
-                ]
-            }
-        },
-        "debugging": {
-            "type": "domain",
-            "enforcement": "suggest",
-            "priority": "critical",
-            "description": "Systematic debugging - triggers when encountering errors, bugs, or things not working",
-            "promptTriggers": {
-                "keywords": [
-                    "debug",
-                    "dbg",
-                    "error",
-                    "err",
-                    "bug",
-                    "broken",
-                    "not working",
-                    "doesnt work",
-                    "doesn't work",
-                    "fails",
-                    "failing",
-                    "fix error",
-                    "fix bug",
-                    "fix issue",
-                    "got error",
-                    "getting error",
-                    "see error",
-                    "check error",
-                    "TypeError",
-                    "Cannot read",
-                    "undefined",
-                    "stack trace",
-                    "stacktrace",
-                    "exception",
-                    "crash",
-                    "crashed"
-                ],
-                "intentPatterns": [
-                    "(error|bug|broken|fail).*?(fix|check|debug|got|getting|see)",
-                    "(fix|solve|resolve).*?(error|bug|issue)",
-                    "(got|getting|see|check).*?(error|bug|exception)",
-                    "(TypeError|ReferenceError|Cannot read|undefined)",
-                    "not (working|responding)",
-                    "still.*?(error|fail|broken)"
+                    "dkr",
+                    "containeriz(e|ing|ation)",
+                    "multi.?stage.*?build",
+                    "container.*?(registry|image|build)",
+                    "(ecr|gcr|acr|dockerhub)"
                 ]
             }
         },
@@ -344,8 +393,8 @@
                     "network monitoring"
                 ],
                 "intentPatterns": [
-                    "browser.*?automat(e|ion)",
-                    "web.*?scrap(e|ing)"
+                    {"value": "browser.*?automat(e|ion)", "weight": 2.5},
+                    {"value": "web.*?scrap(e|ing)", "weight": 2.8}
                 ]
             }
         },
@@ -356,13 +405,19 @@
             "description": "Complete browser automation with Playwright. Auto-detects dev servers, writes test scripts, handles screenshots, form filling, responsive testing, and any browser-based automation.",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "playwright", "weight": 5.0},
+                    {"value": "e2e test", "weight": 5.0},
+                    {"value": "e2e", "weight": 5.0},
+                    {"value": "end2end", "weight": 5.0},
+                    {"value": "pw test", "weight": 5.0},
+                    {"value": "browser test", "weight": 4.5},
+                    {"value": "ui test", "weight": 4.5},
+                    {"value": "visual regression", "weight": 4.5},
                     "test page",
                     "test website",
                     "test web app",
-                    "browser test",
-                    "e2e test",
+                    "test webapp",
                     "end to end test",
-                    "playwright",
                     "automate browser",
                     "fill form browser",
                     "test form",
@@ -376,24 +431,42 @@
                     "test navigation",
                     "screenshot page",
                     "capture screenshot",
+                    "take screenshot",
                     "visual test",
                     "test localhost",
                     "test dev server",
-                    "browser automation playwright"
+                    "browser automation playwright",
+                    "ui testing",
+                    "functional test",
+                    "acceptance test",
+                    "smoke test",
+                    "regression test",
+                    "cross browser",
+                    "xbrowser",
+                    "headless test",
+                    "click test",
+                    "selector test",
+                    "locator",
+                    "page object",
+                    "pom"
                 ],
                 "intentPatterns": [
-                    "test.*(page|website|web app|localhost|dev server)",
-                    "(e2e|end.to.end|integration).*?test",
-                    "playwright",
+                    "test.*(page|website|web ?app|localhost|dev server)",
+                    "(e2e|end.?to.?end|end2end|integration|functional|acceptance|smoke|regression).*?test",
+                    "playwright|pw.*?test",
                     "automat(e|ion).*?browser",
-                    "(fill|test|submit).*?form.*?(browser|web)",
+                    "(fill|test|submit).*?form.*?(browser|web)?",
                     "test.*(login|auth|authentication).*?flow",
                     "(check|test|validate).*(responsive|viewport|mobile|desktop)",
                     "(test|validate|check).*?ux",
                     "(check|test|validate).*?link",
                     "test.*?navigation",
-                    "(screenshot|capture|visual).*?(page|test)",
-                    "browser.*?(test|automat)"
+                    "(screenshot|capture|visual).*?(page|test|regression)",
+                    "browser.*?(test|automat)",
+                    "(ui|functional|acceptance).*?test",
+                    "(cross|x).?browser",
+                    "headless.*?(test|browser)",
+                    "(page.*?object|pom).*?(model|pattern)?"
                 ]
             }
         },
@@ -409,8 +482,8 @@
                     "ai analysis"
                 ],
                 "intentPatterns": [
-                    "pack(age|ing)?.*?(repo|codebase)",
-                    "codebase.*?snapshot"
+                    {"value": "pack(age|ing)?.*?(repo|codebase)", "weight": 4.0},
+                    {"value": "codebase.*?snapshot", "weight": 4.0}
                 ]
             }
         },
@@ -420,17 +493,37 @@
             "priority": "medium",
             "promptTriggers": {
                 "keywords": [
-                    "cloudflare",
+                    {"value": "cloudflare", "weight": 4.5},
+                    {"value": "cf workers", "weight": 5.0},
+                    {"value": "d1", "weight": 5.0},
+                    {"value": "r2", "weight": 5.0},
+                    {"value": "kv", "weight": 4.0},
+                    {"value": "wrangler", "weight": 5.0},
+                    {"value": "durable objects", "weight": 4.5},
+                    "cf",
                     "workers",
                     "edge functions",
-                    "durable objects",
-                    "d1",
-                    "r2",
-                    "kv"
+                    "edge computing",
+                    "do",
+                    "pages",
+                    "cf pages",
+                    "workers ai",
+                    "ai gateway",
+                    "hyperdrive",
+                    "queues",
+                    "pub sub",
+                    "stream",
+                    "images",
+                    "zero trust",
+                    "warp",
+                    "argo"
                 ],
                 "intentPatterns": [
-                    "cloudflare.*?(workers?|edge|d1|r2|kv)",
-                    "edge.*?(function|database|platform)"
+                    "cloudflare|\\bcf\\b",
+                    "(cloudflare|cf).*?(workers?|edge|d1|r2|kv|pages|ai|queues)",
+                    "edge.*?(function|database|platform|computing)",
+                    "durable.*?objects?|\\bdo\\b.*?cloudflare",
+                    "(workers?|cf).*?ai"
                 ]
             }
         },
@@ -441,13 +534,26 @@
             "promptTriggers": {
                 "keywords": [
                     "cloudflare workers",
+                    "cf workers",
                     "wrangler",
                     "edge functions",
-                    "workers api"
+                    "workers api",
+                    "worker script",
+                    "miniflare",
+                    "wrangler dev",
+                    "wrangler publish",
+                    "wrangler deploy",
+                    "worker routes",
+                    "worker bindings",
+                    "env bindings",
+                    "worker secrets"
                 ],
                 "intentPatterns": [
-                    "cloudflare.*?workers?",
-                    "wrangler.*?(cli|deploy)"
+                    {"value": "(cloudflare|cf).*?workers?", "weight": 4.5},
+                    {"value": "wrangler.*?(cli|deploy|dev|publish)", "weight": 5.0},
+                    {"value": "miniflare", "weight": 5.0},
+                    {"value": "worker.*?(script|route|binding|secret)", "weight": 4.0},
+                    {"value": "env.*?binding", "weight": 4.0}
                 ]
             }
         },
@@ -458,13 +564,23 @@
             "promptTriggers": {
                 "keywords": [
                     "cloudflare r2",
+                    "cf r2",
                     "r2 storage",
+                    "r2 bucket",
                     "object storage",
-                    "s3 compatible"
+                    "s3 compatible",
+                    "s3 api",
+                    "zero egress",
+                    "r2 upload",
+                    "r2 download",
+                    "presigned url r2"
                 ],
                 "intentPatterns": [
-                    "(cloudflare )?r2.*?(storage|bucket)",
-                    "object.*?storage"
+                    {"value": "(cloudflare|cf)?.*?r2.*?(storage|bucket|upload|download)", "weight": 4.5},
+                    {"value": "object.*?storage.*?(cloudflare|cf|r2)?", "weight": 2.8},
+                    {"value": "s3.*?(compatible|api).*?(cloudflare|cf|r2)?", "weight": 3.5},
+                    {"value": "zero.*?egress", "weight": 3.5},
+                    {"value": "presigned.*?url.*?r2", "weight": 4.0}
                 ]
             }
         },
@@ -475,12 +591,19 @@
             "promptTriggers": {
                 "keywords": [
                     "browser rendering",
+                    "cf browser",
                     "headless browser",
-                    "puppeteer cloudflare"
+                    "puppeteer cloudflare",
+                    "playwright cloudflare",
+                    "browser api cloudflare",
+                    "screenshot cloudflare",
+                    "pdf cloudflare"
                 ],
                 "intentPatterns": [
-                    "cloudflare.*?browser.*?rendering",
-                    "headless.*?browser"
+                    {"value": "(cloudflare|cf).*?browser.*?(rendering|api)", "weight": 4.5},
+                    {"value": "headless.*?browser.*?(cloudflare|cf)?", "weight": 4.0},
+                    {"value": "(puppeteer|playwright).*?(cloudflare|cf)", "weight": 4.5},
+                    {"value": "(screenshot|pdf).*?(cloudflare|cf|workers?)", "weight": 4.0}
                 ]
             }
         },
@@ -490,16 +613,42 @@
             "priority": "medium",
             "promptTriggers": {
                 "keywords": [
-                    "gcloud",
+                    {"value": "gcloud", "weight": 5.0},
+                    {"value": "gcp", "weight": 5.0},
+                    {"value": "gce", "weight": 5.0},
+                    {"value": "gke", "weight": 5.0},
+                    {"value": "gae", "weight": 5.0},
+                    {"value": "gcf", "weight": 5.0},
+                    {"value": "gcs", "weight": 5.0},
+                    {"value": "gcr", "weight": 5.0},
+                    {"value": "bq", "weight": 5.0},
+                    {"value": "gsutil", "weight": 5.0},
+                    {"value": "bigquery", "weight": 4.5},
+                    {"value": "firestore", "weight": 4.0},
+                    {"value": "vertex ai", "weight": 4.5},
                     "google cloud",
-                    "gcp",
                     "compute engine",
-                    "gke",
-                    "app engine"
+                    "app engine",
+                    "cloud run",
+                    "cloud functions",
+                    "cloud storage",
+                    "pubsub",
+                    "pub sub",
+                    "spanner",
+                    "cloud sql",
+                    "artifact registry",
+                    "iam gcp",
+                    "service account gcp",
+                    "bq command"
                 ],
                 "intentPatterns": [
-                    "g(oogle )?cloud|gcp",
-                    "gcloud.*?(cli|deploy)"
+                    "g(oogle)?.*?cloud|gcp",
+                    "gcloud.*?(cli|deploy|config|auth)",
+                    "(gce|gke|gae|gcf|gcs|gcr|bq)\\b",
+                    "cloud.*?(run|functions|storage|sql)",
+                    "(bigquery|pubsub|firestore|spanner|vertex)",
+                    "gsutil",
+                    "artifact.*?registry"
                 ]
             }
         },
@@ -510,6 +659,18 @@
             "description": "Expert React and Next.js development specialist. Reviews, designs, and improves modern React applications with focus on React 19 features, Next.js App Router, state management, performance optimization, and production-ready architecture patterns.",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "react 19", "weight": 5.0},
+                    {"value": "nextjs", "weight": 5.0},
+                    {"value": "next.js", "weight": 5.0},
+                    {"value": "app router", "weight": 5.0},
+                    {"value": "server components", "weight": 5.0},
+                    {"value": "server actions", "weight": 5.0},
+                    {"value": "zustand", "weight": 5.0},
+                    {"value": "jotai", "weight": 5.0},
+                    {"value": "tanstack query", "weight": 5.0},
+                    {"value": "react query", "weight": 5.0},
+                    {"value": "useactionstate", "weight": 5.0},
+                    {"value": "useoptimistic", "weight": 5.0},
                     "react architecture",
                     "react component architecture",
                     "react patterns",
@@ -519,15 +680,9 @@
                     "usestate",
                     "usememo",
                     "usecallback",
-                    "react 19",
-                    "server components",
                     "client components",
-                    "server actions",
-                    "useactionstate",
-                    "useoptimistic",
                     "usetransition",
                     "usedeferredvalue",
-                    "next.js app router",
                     "nextjs architecture",
                     "app router patterns",
                     "parallel routes",
@@ -538,11 +693,7 @@
                     "static site generation",
                     "incremental static regeneration",
                     "state management react",
-                    "zustand",
-                    "jotai",
                     "valtio",
-                    "tanstack query",
-                    "react query",
                     "swr data fetching",
                     "redux toolkit",
                     "context api optimization",
@@ -661,26 +812,26 @@
                     "css variables design tokens"
                 ],
                 "intentPatterns": [
-                    "(ui|ux|interface|component).*?(review|audit|analysis)",
-                    "(accessibility|wcag|a11y).*?(audit|check|compliance|review)",
-                    "(performance|core web vitals).*?(audit|review).*?(ui|interface)",
-                    "design system.*?(audit|consistency|review)",
-                    "(design|create|build).*?(ui component|interface|layout)",
-                    "component.*?(library|design|architecture).*?(ui|react)",
-                    "(layout|grid|responsive).*?(design|system).*?(ui)",
-                    "design.*?token.*?(system|architecture|three-tier|naming)",
-                    "(color|typography|spacing).*?system.*?(design|ui)",
-                    "(interaction|animation|micro-interaction).*?(design|ui)",
-                    "(improve|enhance|refine|polish).*?(ui|ux|interface|design)",
-                    "(fix|improve).*?(accessibility|contrast|keyboard).*?(ui)",
-                    "responsive.*?(improvement|refinement|ui|design)",
-                    "(tailwind|shadcn|radix).*?(setup|config|component|ui|primitive)",
-                    "(dark mode|theme system).*?(ui|implementation|design)",
-                    "(semantic|primitive|component).*?token",
-                    "oklch.*?color",
-                    "wcag.*?(contrast|accessibility)",
-                    "perceptual.*?uniform",
-                    "design.*?system.*?(architecture|token|color|typography)"
+                    {"value": "(ui|ux|interface|component).*?(review|audit|analysis)", "weight": 3.5},
+                    {"value": "(accessibility|wcag|a11y).*?(audit|check|compliance|review)", "weight": 4.0},
+                    {"value": "(performance|core web vitals).*?(audit|review).*?(ui|interface)", "weight": 3.0},
+                    {"value": "design system.*?(audit|consistency|review)", "weight": 4.0},
+                    {"value": "(design|create|build).*?(ui component|interface|layout)", "weight": 3.5},
+                    {"value": "component.*?(library|design|architecture).*?(ui|react)", "weight": 3.0},
+                    {"value": "(layout|grid|responsive).*?(design|system).*?(ui)", "weight": 3.0},
+                    {"value": "design.*?token.*?(system|architecture|three-tier|naming)", "weight": 4.0},
+                    {"value": "(color|typography|spacing).*?system.*?(design|ui)", "weight": 3.5},
+                    {"value": "(interaction|animation|micro-interaction).*?(design|ui)", "weight": 3.0},
+                    {"value": "(improve|enhance|refine|polish).*?(ui|ux|interface|design)", "weight": 2.5},
+                    {"value": "(fix|improve).*?(accessibility|contrast|keyboard).*?(ui)", "weight": 3.5},
+                    {"value": "responsive.*?(improvement|refinement|ui|design)", "weight": 3.0},
+                    {"value": "(tailwind|shadcn|radix).*?(setup|config|component|ui|primitive)", "weight": 4.5},
+                    {"value": "(dark mode|theme system).*?(ui|implementation|design)", "weight": 3.0},
+                    {"value": "(semantic|primitive|component).*?token", "weight": 4.0},
+                    {"value": "oklch.*?color", "weight": 4.0},
+                    {"value": "wcag.*?(contrast|accessibility)", "weight": 4.0},
+                    {"value": "perceptual.*?uniform", "weight": 4.0},
+                    {"value": "design.*?system.*?(architecture|token|color|typography)", "weight": 4.0}
                 ]
             }
         },
@@ -690,21 +841,47 @@
             "priority": "medium",
             "promptTriggers": {
                 "keywords": [
-                    "postgresql",
-                    "postgres",
-                    "psql",
+                    {"value": "postgresql", "weight": 5.0},
+                    {"value": "postgres", "weight": 5.0},
+                    {"value": "psql", "weight": 5.0},
+                    {"value": "pgsql", "weight": 5.0},
+                    {"value": "pg_dump", "weight": 5.0},
+                    {"value": "pg_restore", "weight": 5.0},
+                    {"value": "cte", "weight": 4.5},
+                    {"value": "explain analyze", "weight": 4.5},
                     "pg",
                     "sql queries",
                     "sql query",
                     "database management",
                     "db query",
-                    "postgres query"
+                    "postgres query",
+                    "db connection",
+                    "connection string",
+                    "vacuum",
+                    "query plan",
+                    "index",
+                    "indexes",
+                    "foreign key",
+                    "fk",
+                    "pk",
+                    "primary key",
+                    "join",
+                    "left join",
+                    "inner join",
+                    "common table expression",
+                    "window function",
+                    "aggregate",
+                    "group by"
                 ],
                 "intentPatterns": [
                     "postgres(ql)?",
-                    "psql",
+                    "p(g)?sql",
                     "\\bpg\\b",
-                    "sql.*?(quer(y|ies)|database)"
+                    "sql.*?(quer(y|ies)|database)",
+                    "(explain|vacuum|analyze).*?(query|table)",
+                    "(index|fk|pk|join|cte).*?(create|add|query)",
+                    "window.*?function",
+                    "common.*?table.*?expression"
                 ]
             }
         },
@@ -714,16 +891,51 @@
             "priority": "medium",
             "promptTriggers": {
                 "keywords": [
-                    "ffmpeg",
+                    {"value": "ffmpeg", "weight": 5.0},
+                    {"value": "h264", "weight": 5.0},
+                    {"value": "h265", "weight": 5.0},
+                    {"value": "hevc", "weight": 5.0},
+                    {"value": "transcode", "weight": 4.5},
+                    {"value": "codec", "weight": 4.0},
+                    "ff",
                     "video conversion",
+                    "video convert",
                     "audio processing",
                     "media encoding",
-                    "streaming"
+                    "streaming",
+                    "transcoding",
+                    "mp4",
+                    "mkv",
+                    "avi",
+                    "webm",
+                    "gif convert",
+                    "video to gif",
+                    "extract audio",
+                    "video compress",
+                    "compress video",
+                    "bitrate",
+                    "fps",
+                    "framerate",
+                    "resolution",
+                    "scale video",
+                    "trim video",
+                    "cut video",
+                    "merge video",
+                    "concat video",
+                    "subtitle",
+                    "srt",
+                    "watermark"
                 ],
                 "intentPatterns": [
                     "ffmpeg",
-                    "video.*?(conver(t|sion)|encoding|processing)",
-                    "audio.*?(processing|encoding)"
+                    "video.*?(conver(t|sion)|encoding|processing|compress|trim|cut|merge|scale)",
+                    "audio.*?(processing|encoding|extract)",
+                    "transcode",
+                    "(h264|h265|hevc|codec)",
+                    "(mp4|mkv|avi|webm).*?(convert|to)",
+                    "video.*?gif",
+                    "(bitrate|fps|framerate|resolution)",
+                    "(subtitle|srt|watermark).*?video"
                 ]
             }
         },
@@ -733,15 +945,43 @@
             "priority": "medium",
             "promptTriggers": {
                 "keywords": [
-                    "imagemagick",
+                    {"value": "imagemagick", "weight": 5.0},
+                    {"value": "magick", "weight": 5.0},
+                    {"value": "montage", "weight": 4.5},
+                    {"value": "composite", "weight": 4.0},
+                    "convert image",
                     "image processing",
                     "format conversion",
                     "resize image",
-                    "image effects"
+                    "image effects",
+                    "crop image",
+                    "rotate image",
+                    "flip image",
+                    "image thumbnail",
+                    "thumbnail",
+                    "png to jpg",
+                    "jpg to png",
+                    "webp",
+                    "image optimize",
+                    "optimize image",
+                    "batch image",
+                    "bulk image",
+                    "image quality",
+                    "image compress",
+                    "compress image",
+                    "collage",
+                    "image overlay",
+                    "image composite",
+                    "blur image",
+                    "sharpen image"
                 ],
                 "intentPatterns": [
-                    "imagemagick",
-                    "image.*?(processing|conversion|resize|effect)"
+                    "imagemagick|magick",
+                    "image.*?(processing|conversion|resize|effect|crop|rotate|flip|compress|optimize|blur|sharpen)",
+                    "(png|jpg|jpeg|gif|webp|svg).*?(to|convert)",
+                    "(batch|bulk).*?image",
+                    "(thumbnail|montage|collage|overlay|composite).*?image",
+                    "image.*?(thumbnail|montage|collage|overlay|composite)"
                 ]
             }
         },
@@ -758,8 +998,8 @@
                     "design"
                 ],
                 "intentPatterns": [
-                    "create.*?(poster|art|graphic|visual)",
-                    "(visual|graphic).*?design"
+                    {"value": "create.*?(poster|art|graphic|visual)", "weight": 3.5},
+                    {"value": "(visual|graphic).*?design", "weight": 3.5}
                 ]
             }
         },
@@ -784,11 +1024,70 @@
                     "api documentation"
                 ],
                 "intentPatterns": [
-                    "(find|search|get|fetch|locate).*?(documentation|docs)",
-                    "llms\\.txt",
-                    "(latest|official|up-to-date).*?(docs|documentation)",
-                    "documentation.*?(for|about)",
-                    "\\bapi\\b.*?docs"
+                    {"value": "(find|search|get|fetch|locate).*?(documentation|docs)", "weight": 4.0},
+                    {"value": "llms\\.txt", "weight": 5.0},
+                    {"value": "(latest|official|up-to-date).*?(docs|documentation)", "weight": 3.8},
+                    {"value": "documentation.*?(for|about)", "weight": 3.5},
+                    {"value": "\\bapi\\b.*?docs", "weight": 3.8}
+                ]
+            }
+        },
+        "gemini-cli": {
+            "type": "domain",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "description": "Wield Google's Gemini CLI as a powerful auxiliary tool for code generation, review, analysis, and web research. Use when tasks benefit from a second AI perspective, current web information via Google Search, codebase architecture analysis, or parallel code generation.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "gemini", "weight": 5.0},
+                    {"value": "gemini cli", "weight": 5.0},
+                    {"value": "gem", "weight": 4.5},
+                    {"value": "gsearch", "weight": 5.0},
+                    {"value": "xcheck", "weight": 5.0},
+                    {"value": "2nd opinion", "weight": 4.5},
+                    {"value": "second opinion", "weight": 4.5},
+                    "gemi",
+                    "use gemini",
+                    "ask gemini",
+                    "gemini review",
+                    "gemini analysis",
+                    "second ai",
+                    "2nd ai",
+                    "another perspective",
+                    "diff perspective",
+                    "different perspective",
+                    "alt perspective",
+                    "alternative view",
+                    "google search grounding",
+                    "codebase investigator",
+                    "parallel ai",
+                    "parallel code generation",
+                    "web research",
+                    "current web info",
+                    "latest web",
+                    "google search",
+                    "architecture analysis",
+                    "arch analysis",
+                    "codebase analysis",
+                    "code review ai",
+                    "ai review",
+                    "cross check",
+                    "verify with ai",
+                    "double check ai"
+                ],
+                "intentPatterns": [
+                    "gem(ini)?.*?(cli|review|analysis|generate)",
+                    "(use|ask|run).*?gem(ini)?",
+                    "(2nd|second).*?(opinion|perspective|ai|view)",
+                    "(another|different|diff|alt|alternative).*?(ai|perspective|opinion|view)",
+                    "google.*?search",
+                    "web.*?(research|info|information)",
+                    "(current|latest|up-to-date|uptodate).*?web",
+                    "codebase.*?(investigator|analysis|architecture|arch)",
+                    "(architecture|arch).*?analysis",
+                    "parallel.*?(ai|code|generation|gen)",
+                    "(cross|x|double).*?check.*?ai",
+                    "verify.*?(with|using).*?ai"
                 ]
             }
         },
@@ -804,8 +1103,8 @@
                     "svg icons"
                 ],
                 "intentPatterns": [
-                    "remix.*?icon",
-                    "add.*?icon"
+                    {"value": "remix.*?icon", "weight": 4.5},
+                    {"value": "add.*?icon", "weight": 1.5}
                 ]
             }
         },
@@ -823,9 +1122,9 @@
                     "task runner"
                 ],
                 "intentPatterns": [
-                    "mise.*?(install|setup|task|toml)",
-                    "version.*?manager",
-                    "install.*?(node|python|go|rust)"
+                    {"value": "mise.*?(install|setup|task|toml)", "weight": 4.5},
+                    {"value": "version.*?manager", "weight": 2.0},
+                    {"value": "install.*?(node|python|go|rust)", "weight": 2.5}
                 ]
             }
         },
@@ -842,9 +1141,9 @@
                     "visualization"
                 ],
                 "intentPatterns": [
-                    "create.*?(diagram|flowchart)",
-                    "draw.*?(diagram|flowchart|architecture)",
-                    "excalidraw"
+                    {"value": "create.*?(diagram|flowchart)", "weight": 3.5},
+                    {"value": "draw.*?(diagram|flowchart|architecture)", "weight": 3.5},
+                    {"value": "excalidraw", "weight": 5.0}
                 ]
             }
         },
@@ -855,40 +1154,72 @@
             "description": "Git workflow management with atomic commit enforcement",
             "promptTriggers": {
                 "keywords": [
-                    "git commit",
+                    {"value": "git commit", "weight": 5.0},
+                    {"value": "git rebase", "weight": 5.0},
+                    {"value": "git merge", "weight": 4.5},
+                    {"value": "pull request", "weight": 4.5},
+                    {"value": "pr", "weight": 5.0},
+                    {"value": "mr", "weight": 5.0},
+                    {"value": "atomic commits", "weight": 5.0},
+                    {"value": "squash", "weight": 4.5},
+                    {"value": "gitflow", "weight": 5.0},
                     "git push",
                     "git branch",
-                    "git merge",
-                    "git rebase",
+                    "git stash",
+                    "git cherry-pick",
+                    "git reset",
+                    "git checkout",
+                    "git switch",
                     "stage changes",
                     "staged files",
                     "commit message",
-                    "pull request",
+                    "commit msg",
+                    "merge request",
                     "code review",
+                    "cr",
                     "git status",
                     "git add",
+                    "git diff",
+                    "git log",
                     "organize commits",
                     "divide commits",
                     "split commits",
-                    "atomic commits",
                     "single responsibility commit",
                     "commit strategy",
                     "staging area",
                     "git history",
                     "repository management",
+                    "repo management",
                     "version control",
+                    "vc",
+                    "vcs",
                     "multiple commits",
-                    "separate commits"
+                    "separate commits",
+                    "fixup",
+                    "amend",
+                    "interactive rebase",
+                    "force push",
+                    "git conflict",
+                    "merge conflict",
+                    "resolve conflict",
+                    "trunk based",
+                    "feature branch",
+                    "hotfix",
+                    "release branch"
                 ],
                 "intentPatterns": [
-                    "git (commit|push|branch|merge|rebase|add|status|log|diff)",
-                    "(create|make|write).*?(commit|pull request|pr)",
+                    "git (commit|push|branch|merge|rebase|add|status|log|diff|stash|cherry-pick|reset|checkout|switch)",
+                    "(create|make|write).*?(commit|pull request|pr|merge request|mr)",
                     "(stage|staged|staging).*?(changes|files)",
                     "(divide|split|separate|organize).*?(commit|changes)",
                     "(atomic|single responsibility).*?commit",
-                    "commit.*?(message|strategy|organization)",
+                    "commit.*?(message|msg|strategy|organization)",
                     "multiple.*?commit",
-                    "version.*?control"
+                    "version.*?control|vcs",
+                    "(squash|fixup|amend).*?commit",
+                    "(merge|resolve).*?conflict",
+                    "(gitflow|trunk.based|feature.branch)",
+                    "(pr|mr|pull request|merge request).*?(create|review|merge)"
                 ]
             }
         },
@@ -899,13 +1230,17 @@
             "description": "Systematic code refactoring for quality improvement and technical debt reduction",
             "promptTriggers": {
                 "keywords": [
-                    "refactor",
-                    "refactoring",
+                    {"value": "refactor", "weight": 5.0},
+                    {"value": "refactoring", "weight": 5.0},
+                    {"value": "code smell", "weight": 5.0},
+                    {"value": "technical debt", "weight": 5.0},
+                    {"value": "tech debt", "weight": 5.0},
+                    {"value": "solid principles", "weight": 4.5},
+                    {"value": "clean code", "weight": 4.5},
+                    {"value": "hof", "weight": 4.5},
                     "rfc",
                     "rfct",
                     "code quality",
-                    "technical debt",
-                    "tech debt",
                     "intentional debt",
                     "unintentional debt",
                     "clean code",
@@ -1124,16 +1459,16 @@
                     "current plan"
                 ],
                 "intentPatterns": [
-                    "(create|make|build|develop|design).*?(plan|roadmap|strategy)",
-                    "plan.*?(project|event|launch|campaign|initiative|goal|objective)",
-                    "(project|event|launch|campaign|initiative).*?(plan|planning|roadmap)",
-                    "(business|personal|marketing|product|career|learning).*?plan",
-                    "plan.*?(business|personal|marketing|product|career|learning)",
-                    "how.*?(plan|organize|structure).*?(project|event|launch|campaign)",
-                    "(organize|structure).*?project",
-                    "plan.*?(timeline|milestone|deliverable|scope|resource|budget)",
-                    "(continue|resume|check).*?plan",
-                    "plan.*?(continue|resume|active|current)"
+                    {"value": "(create|make|build|develop|design).*?(plan|roadmap|strategy)", "weight": 3.5},
+                    {"value": "plan.*?(project|event|launch|campaign|initiative|goal|objective)", "weight": 3.5},
+                    {"value": "(project|event|launch|campaign|initiative).*?(plan|planning|roadmap)", "weight": 3.5},
+                    {"value": "(business|personal|marketing|product|career|learning).*?plan", "weight": 3.0},
+                    {"value": "plan.*?(business|personal|marketing|product|career|learning)", "weight": 3.0},
+                    {"value": "how.*?(plan|organize|structure).*?(project|event|launch|campaign)", "weight": 3.0},
+                    {"value": "(organize|structure).*?project", "weight": 2.5},
+                    {"value": "plan.*?(timeline|milestone|deliverable|scope|resource|budget)", "weight": 3.0},
+                    {"value": "(continue|resume|check).*?plan", "weight": 3.8},
+                    {"value": "plan.*?(continue|resume|active|current)", "weight": 3.8}
                 ]
             }
         },
@@ -1144,10 +1479,19 @@
             "description": "Production Kubernetes and Helm operations covering kubectl commands, cluster management, deployment strategies, troubleshooting, resource optimization, security, GitOps, RBAC, and cost optimization for production environments.",
             "promptTriggers": {
                 "keywords": [
-                    "kubernetes",
-                    "k8s",
-                    "kubectl",
-                    "helm",
+                    {"value": "kubernetes", "weight": 4.0},
+                    {"value": "k8s", "weight": 5.0},
+                    {"value": "kube", "weight": 4.0},
+                    {"value": "kubectl", "weight": 5.0},
+                    {"value": "helm", "weight": 4.5},
+                    {"value": "eks", "weight": 5.0},
+                    {"value": "gke", "weight": 5.0},
+                    {"value": "aks", "weight": 5.0},
+                    {"value": "minikube", "weight": 4.0},
+                    {"value": "k3s", "weight": 4.5},
+                    {"value": "argocd", "weight": 4.0},
+                    {"value": "kustomize", "weight": 4.0},
+                    "ctl",
                     "helm chart",
                     "helm charts",
                     "values.yaml",
@@ -1156,24 +1500,33 @@
                     "service yaml",
                     "ingress yaml",
                     "configmap",
+                    "cm",
                     "pod",
                     "pods",
+                    "po",
                     "deployment",
+                    "deploy",
                     "deployments",
                     "statefulset",
+                    "sts",
                     "daemonset",
+                    "ds",
                     "replicaset",
+                    "rs",
                     "service",
+                    "svc",
                     "ingress",
+                    "ing",
                     "namespace",
+                    "ns",
                     "namespaces",
                     "cluster",
                     "k8s cluster",
                     "kubernetes cluster",
-                    "kustomize",
-                    "argocd",
                     "argo cd",
+                    "argo",
                     "flux",
+                    "fluxcd",
                     "gitops",
                     "pod disruption budget",
                     "pdb",
@@ -1182,17 +1535,26 @@
                     "vertical pod autoscaler",
                     "vpa",
                     "cluster autoscaler",
+                    "ca",
                     "rbac kubernetes",
                     "role binding",
+                    "rb",
                     "cluster role",
+                    "cr",
                     "service account",
+                    "sa",
                     "secrets kubernetes",
+                    "secret",
                     "network policy",
+                    "netpol",
                     "resource quota",
+                    "rq",
                     "limit range",
+                    "lr",
                     "liveness probe",
                     "readiness probe",
                     "startup probe",
+                    "probe",
                     "k8s deployment",
                     "k8s troubleshooting",
                     "kubectl get",
@@ -1202,6 +1564,11 @@
                     "kubectl apply",
                     "kubectl delete",
                     "kubectl rollout",
+                    "kget",
+                    "kdesc",
+                    "klogs",
+                    "kexec",
+                    "kapply",
                     "helm install",
                     "helm upgrade",
                     "helm rollback",
@@ -1209,34 +1576,38 @@
                     "container orchestration",
                     "pod not starting",
                     "crashloopbackoff",
+                    "clb",
                     "imagepullbackoff",
+                    "ipb",
                     "pending pod",
                     "evicted pod",
                     "oomkilled",
+                    "oom",
                     "node not ready",
                     "service not reachable",
                     "k8s manifest",
                     "kubernetes manifest",
                     "k8s yaml",
-                    "kubernetes yaml"
+                    "kubernetes yaml",
+                    "kind",
+                    "rancher"
                 ],
                 "intentPatterns": [
-                    "(kubernetes|k8s|kubectl)",
+                    "(kubernetes|k8s|kube|kubectl)",
                     "helm.*?(chart|install|upgrade|rollback|template)",
-                    "(deploy|deployment|pod|service|ingress).*?(yaml|manifest|k8s|kubernetes)",
-                    "(create|apply|update|delete|get|describe).*?(deployment|pod|service|configmap|secret).*?(k8s|kubernetes)",
+                    "(deploy|deployment|pod|po|service|svc|ingress|ing).*?(yaml|manifest|k8s|kubernetes)",
+                    "(create|apply|update|delete|get|describe).*?(deployment|deploy|pod|po|service|svc|configmap|cm|secret).*?(k8s|kubernetes)?",
                     "kubectl.*?(get|describe|logs|exec|apply|delete|rollout)",
-                    "(troubleshoot|debug|fix).*?(pod|deployment|service|cluster|k8s|kubernetes)",
-                    "(crashloop|imagepull|pending|evicted|oomkill).*?(pod|container)",
+                    "(troubleshoot|debug|fix).*?(pod|po|deployment|deploy|service|svc|cluster|k8s|kubernetes)",
+                    "(crashloop|clb|imagepull|ipb|pending|evicted|oomkill|oom).*?(pod|container)?",
                     "(liveness|readiness|startup).*?probe",
-                    "(hpa|vpa|autoscal).*?(k8s|kubernetes|pod)",
-                    "(rbac|role.*?binding|service.*?account).*?(k8s|kubernetes)",
-                    "(network.*?policy|resource.*?quota|limit.*?range).*?(k8s|kubernetes)",
-                    "(argocd|argo cd|flux|gitops).*?(k8s|kubernetes|deploy)",
+                    "(hpa|vpa|pdb|autoscal).*?(k8s|kubernetes|pod)?",
+                    "(rbac|role.*?binding|rb|service.*?account|sa).*?(k8s|kubernetes)?",
+                    "(network.*?policy|netpol|resource.*?quota|rq|limit.*?range|lr).*?(k8s|kubernetes)?",
+                    "(argocd|argo|flux|fluxcd|gitops).*?(k8s|kubernetes|deploy)?",
                     "container.*?orchestration",
-                    "k8s.*?(troubleshoot|debug|deploy|manifest|cluster|production)",
-                    "kubernetes.*?(troubleshoot|debug|deploy|manifest|cluster|production)",
-                    "( |deployment|service).*?(not.*?(start|work|reach)|fail|error)"
+                    "(eks|gke|aks|minikube|kind|k3s|rancher)",
+                    "(ns|namespace|sts|ds|rs|cm|ing|svc|po).*?(create|get|delete|apply)"
                 ]
             }
         },
@@ -1262,11 +1633,11 @@
                     "build system monorepo"
                 ],
                 "intentPatterns": [
-                    "turbo(repo)?",
-                    "monorepo.*?(build|cache|task|pipeline)",
-                    "(build|cache|task).*?monorepo",
-                    "workspace.*?(caching|pipeline|orchestration)",
-                    "turbo\\.(json|run|build|prune)"
+                    {"value": "turbo(repo)?", "weight": 5.0},
+                    {"value": "monorepo.*?(build|cache|task|pipeline)", "weight": 4.0},
+                    {"value": "(build|cache|task).*?monorepo", "weight": 4.0},
+                    {"value": "workspace.*?(caching|pipeline|orchestration)", "weight": 3.8},
+                    {"value": "turbo\\.(json|run|build|prune)", "weight": 5.0}
                 ]
             }
         },
@@ -1277,22 +1648,41 @@
             "description": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.",
             "promptTriggers": {
                 "keywords": [
-                    "pdf",
+                    {"value": "pdf", "weight": 4.5},
+                    {"value": "pdf2text", "weight": 5.0},
+                    {"value": "ocr pdf", "weight": 5.0},
+                    {"value": "merge pdf", "weight": 4.5},
+                    {"value": "split pdf", "weight": 4.5},
                     "pdf file",
                     "pdf document",
                     "extract pdf",
                     "create pdf",
-                    "merge pdf",
-                    "split pdf",
                     "pdf form",
                     "fill pdf",
                     "pdf table",
-                    "pdf text"
+                    "pdf text",
+                    "pdf to text",
+                    "pdf ocr",
+                    "sign pdf",
+                    "pdf signature",
+                    "compress pdf",
+                    "pdf compress",
+                    "pdf password",
+                    "encrypt pdf",
+                    "decrypt pdf",
+                    "pdf watermark",
+                    "pdf annotation",
+                    "annotate pdf",
+                    "pdf pages",
+                    "rotate pdf",
+                    "pdf metadata"
                 ],
                 "intentPatterns": [
-                    "pdf.*?(extract|create|merge|split|form|fill|table|text)",
-                    "(extract|create|merge|split|fill).*?pdf",
-                    "pdf.*?manipulation"
+                    "pdf.*?(extract|create|merge|split|form|fill|table|text|ocr|sign|compress|encrypt|decrypt|watermark|annotate|rotate)",
+                    "(extract|create|merge|split|fill|sign|compress|encrypt|decrypt|annotate|rotate).*?pdf",
+                    "pdf.*?(manipulation|processing)",
+                    "(pdf2text|ocr).*?pdf",
+                    "pdf.*?(password|metadata|pages)"
                 ]
             }
         },
@@ -1303,21 +1693,48 @@
             "description": "Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for creating, reading, analyzing, or modifying spreadsheets.",
             "promptTriggers": {
                 "keywords": [
-                    "xlsx",
-                    "excel",
-                    "spreadsheet",
+                    {"value": "xlsx", "weight": 5.0},
+                    {"value": "xlsm", "weight": 5.0},
+                    {"value": "excel", "weight": 4.5},
+                    {"value": "spreadsheet", "weight": 4.0},
+                    {"value": "vlookup", "weight": 5.0},
+                    {"value": "xlookup", "weight": 5.0},
+                    {"value": "pivot table", "weight": 5.0},
+                    {"value": "vba", "weight": 5.0},
+                    "xls",
                     "excel file",
                     "excel formula",
                     "excel sheet",
                     "workbook",
+                    "worksheet",
                     "csv file",
-                    "excel data"
+                    "tsv file",
+                    "excel data",
+                    "pivot",
+                    "hlookup",
+                    "sumif",
+                    "countif",
+                    "conditional formatting",
+                    "data validation",
+                    "excel macro",
+                    "cell range",
+                    "csv to excel",
+                    "excel to csv",
+                    "excel export",
+                    "excel import",
+                    "data analysis excel",
+                    "excel chart",
+                    "excel graph"
                 ],
                 "intentPatterns": [
-                    "(xlsx|excel|spreadsheet)",
-                    "excel.*?(file|formula|sheet|data)",
-                    "(create|read|analyze|modify).*?(xlsx|excel|spreadsheet)",
-                    "spreadsheet.*?(create|read|analyze|modify)"
+                    "(xlsx?m?|excel|spreadsheet)",
+                    "excel.*?(file|formula|sheet|data|chart|graph|macro)",
+                    "(create|read|analyze|modify|export|import).*?(xlsx?|excel|spreadsheet|csv)",
+                    "spreadsheet.*?(create|read|analyze|modify)",
+                    "(vlookup|hlookup|xlookup|sumif|countif|pivot)",
+                    "(workbook|worksheet).*?(create|edit|read)",
+                    "csv.*?(to|from).*?excel",
+                    "data.*?analysis.*?(excel|spreadsheet)"
                 ]
             }
         },
@@ -1328,19 +1745,41 @@
             "description": "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for creating, modifying, or working with tracked changes.",
             "promptTriggers": {
                 "keywords": [
-                    "docx",
-                    "word document",
+                    {"value": "docx", "weight": 5.0},
+                    {"value": "word document", "weight": 5.0},
+                    {"value": "ms word", "weight": 5.0},
+                    {"value": "tracked changes", "weight": 5.0},
+                    {"value": "mail merge", "weight": 4.5},
+                    "doc",
+                    "word doc",
                     "word file",
                     "doc file",
-                    "tracked changes",
+                    "microsoft word",
+                    "track changes",
                     "word comments",
-                    "document editing"
+                    "document editing",
+                    "document template",
+                    "doc template",
+                    "word table",
+                    "word header",
+                    "word footer",
+                    "page break",
+                    "section break",
+                    "table of contents",
+                    "toc",
+                    "word style",
+                    "paragraph style",
+                    "find replace word",
+                    "word formatting"
                 ],
                 "intentPatterns": [
-                    "(docx|word document|word file)",
-                    "word.*?(document|file|comments)",
-                    "(create|modify|edit).*?(docx|word document)",
-                    "tracked.*?changes"
+                    "\\b(docx|doc file|word document|word file|ms word)\\b",
+                    "\\bword\\b.*?(document|file|comments|table|header|footer|style)",
+                    "(create|modify|edit|read|export).*?\\b(docx|word document)\\b",
+                    "track(ed)?.*?changes",
+                    "mail.*?merge",
+                    "table.*?of.*?contents|\\btoc\\b",
+                    "(page|section).*?break"
                 ]
             }
         },
@@ -1351,18 +1790,36 @@
             "description": "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for creating new presentations, modifying content, working with layouts, or adding comments.",
             "promptTriggers": {
                 "keywords": [
-                    "pptx",
-                    "powerpoint",
-                    "presentation",
+                    {"value": "pptx", "weight": 5.0},
+                    {"value": "powerpoint", "weight": 5.0},
+                    {"value": "slide deck", "weight": 5.0},
+                    {"value": "presentation", "weight": 4.0},
+                    {"value": "keynote", "weight": 4.5},
+                    "ppt",
+                    "power point",
                     "slides",
+                    "slide",
                     "ppt file",
-                    "slide deck"
+                    "deck",
+                    "speaker notes",
+                    "slide master",
+                    "slide layout",
+                    "slide template",
+                    "presentation template",
+                    "slide transition",
+                    "slide animation",
+                    "bullet points",
+                    "presenter view",
+                    "slide show",
+                    "slideshow"
                 ],
                 "intentPatterns": [
-                    "(pptx|powerpoint|presentation)",
-                    "powerpoint.*?(file|slide|deck)",
-                    "(create|modify|edit).*?(pptx|powerpoint|presentation)",
-                    "slide.*?(deck|presentation)"
+                    "(pptx?|powerpoint|power point|presentation|keynote)",
+                    "powerpoint.*?(file|slide|deck|template)",
+                    "(create|modify|edit|export).*?(pptx?|powerpoint|presentation|slide|deck)",
+                    "slide.*?(deck|presentation|master|layout|template|transition|animation|show)",
+                    "speaker.*?notes",
+                    "presenter.*?view"
                 ]
             }
         },
@@ -1382,10 +1839,10 @@
                     "error investigation"
                 ],
                 "intentPatterns": [
-                    "systematic.*?debug",
-                    "root.*?cause.*?(investigation|analysis)",
-                    "(investigate|analyze).*?(error|bug)",
-                    "debugging.*?(framework|process|methodology)"
+                    {"value": "systematic.*?debug", "weight": 4.5},
+                    {"value": "root.*?cause.*?(investigation|analysis)", "weight": 4.0},
+                    {"value": "(investigate|analyze).*?(error|bug)", "weight": 4.0},
+                    {"value": "debugging.*?(framework|process|methodology)", "weight": 4.0}
                 ]
             }
         },
@@ -1402,9 +1859,9 @@
                     "validation layers"
                 ],
                 "intentPatterns": [
-                    "defense.*?in.*?depth",
-                    "(layered|multiple).*?validation",
-                    "validation.*?layers"
+                    {"value": "defense.*?in.*?depth", "weight": 4.0},
+                    {"value": "(layered|multiple).*?validation", "weight": 4.0},
+                    {"value": "validation.*?layers", "weight": 4.0}
                 ]
             }
         },
@@ -1421,9 +1878,9 @@
                     "trace error"
                 ],
                 "intentPatterns": [
-                    "trace.*?root.*?cause",
-                    "root.*?cause.*?tracing",
-                    "(trace|find|identify).*?underlying.*?cause"
+                    {"value": "trace.*?root.*?cause", "weight": 4.0},
+                    {"value": "root.*?cause.*?tracing", "weight": 4.0},
+                    {"value": "(trace|find|identify).*?underlying.*?cause", "weight": 4.0}
                 ]
             }
         },
@@ -1440,9 +1897,9 @@
                     "validate completion"
                 ],
                 "intentPatterns": [
-                    "verif(y|ication).*?before.*?(complete|done)",
-                    "(check|validate).*?before.*?(complete|done|finish)",
-                    "verification.*?strategy"
+                    {"value": "verif(y|ication).*?before.*?(complete|done)", "weight": 4.0},
+                    {"value": "(check|validate).*?before.*?(complete|done|finish)", "weight": 4.0},
+                    {"value": "verification.*?strategy", "weight": 4.0}
                 ]
             }
         },
@@ -1459,10 +1916,10 @@
                     "innovative thinking"
                 ],
                 "intentPatterns": [
-                    "collision.*?zone",
-                    "force.*?metaphor",
-                    "unrelated.*?domain.*?(thinking|approach)",
-                    "innovative.*?(thinking|approach|solution)"
+                    {"value": "collision.*?zone", "weight": 4.0},
+                    {"value": "force.*?metaphor", "weight": 4.0},
+                    {"value": "unrelated.*?domain.*?(thinking|approach)", "weight": 4.0},
+                    {"value": "innovative.*?(thinking|approach|solution)", "weight": 3.0}
                 ]
             }
         },
@@ -1479,10 +1936,10 @@
                     "question premise"
                 ],
                 "intentPatterns": [
-                    "inversion.*?exercise",
-                    "invert.*?(assumption|constraint|premise)",
-                    "reverse.*?thinking",
-                    "question.*?premise"
+                    {"value": "inversion.*?exercise", "weight": 4.0},
+                    {"value": "invert.*?(assumption|constraint|premise)", "weight": 4.0},
+                    {"value": "reverse.*?thinking", "weight": 3.5},
+                    {"value": "question.*?premise", "weight": 3.5}
                 ]
             }
         },
@@ -1499,10 +1956,10 @@
                     "pattern recognition"
                 ],
                 "intentPatterns": [
-                    "meta.*?pattern",
-                    "recurring.*?pattern",
-                    "pattern.*?across.*?domains",
-                    "pattern.*?recognition.*?(cross|across)"
+                    {"value": "meta.*?pattern", "weight": 4.0},
+                    {"value": "recurring.*?pattern", "weight": 4.0},
+                    {"value": "pattern.*?across.*?domains", "weight": 4.0},
+                    {"value": "pattern.*?recognition.*?(cross|across)", "weight": 3.5}
                 ]
             }
         },
@@ -1520,11 +1977,11 @@
                     "edge cases scale"
                 ],
                 "intentPatterns": [
-                    "scale.*?game",
-                    "extreme.*?scale",
-                    "(test|check).*?at.*?scale",
-                    "production.*?scale",
-                    "edge.*?cases.*?scale"
+                    {"value": "scale.*?game", "weight": 4.0},
+                    {"value": "extreme.*?scale", "weight": 4.0},
+                    {"value": "(test|check).*?at.*?scale", "weight": 3.5},
+                    {"value": "production.*?scale", "weight": 3.5},
+                    {"value": "edge.*?cases.*?scale", "weight": 3.5}
                 ]
             }
         },
@@ -1541,10 +1998,10 @@
                     "eliminate complexity"
                 ],
                 "intentPatterns": [
-                    "simplification.*?cascade",
-                    "reduce.*?complexity",
-                    "simplif(y|ication).*?(code|solution|implementation)",
-                    "eliminate.*?complexity"
+                    {"value": "simplification.*?cascade", "weight": 4.0},
+                    {"value": "reduce.*?complexity", "weight": 3.5},
+                    {"value": "simplif(y|ication).*?(code|solution|implementation)", "weight": 3.5},
+                    {"value": "eliminate.*?complexity", "weight": 3.5}
                 ]
             }
         },
@@ -1562,10 +2019,10 @@
                     "need help"
                 ],
                 "intentPatterns": [
-                    "stuck",
-                    "(don't|dont|unsure).*?know.*?how",
-                    "problem.*?solving.*?(dispatch|technique)",
-                    "which.*?(technique|approach|method).*?use"
+                    {"value": "stuck", "weight": 2.5},
+                    {"value": "(don't|dont|unsure).*?know.*?how", "weight": 2.0},
+                    {"value": "problem.*?solving.*?(dispatch|technique)", "weight": 3.5},
+                    {"value": "which.*?(technique|approach|method).*?use", "weight": 3.5}
                 ]
             }
         }

@@ -119,6 +119,116 @@ active_plan: PLAN-YYYYMMDD-HHMM-{slug}
 3. **Reversibility mandatory** - Every change must be undoable
 4. **Verification at each step** - Clear success criteria
 5. **Format consistency** - All plans follow same structure
+6. **Atomic plans** - One plan, one cohesive change (< 5 files modified, < 3 days work)
+7. **Design over code** - Plans contain notes, diagrams, data structures - NOT implementation code
+
+## Plan Decomposition Protocol (Story Point Approach)
+
+### When to Decompose
+
+**IMPORTANT: User Preference Override**
+- If user explicitly says "just one plan", "single plan", "don't split", or "keep it together" → **DO NOT DECOMPOSE**
+- Create a standalone plan regardless of complexity thresholds
+- Respect user's preference even if feature is large
+- You can warn about complexity, but honor their decision
+
+**Complexity Assessment** (evaluate before creating plan):
+
+| Indicator | Threshold | Recommendation |
+|-----------|-----------|----------------|
+| **Files Modified** | > 5 files | Suggest decomposition |
+| **Estimated Time** | > 3 days | Suggest decomposition |
+| **Dependencies** | > 3 external systems | Suggest decomposition |
+| **Risk Level** | High complexity + High impact | Suggest decomposition |
+| **Cognitive Load** | Can't hold in head | Suggest decomposition |
+
+**Decomposition Triggers:**
+- Feature touches multiple domains (auth + payments + notifications)
+- Implementation requires learning new tech stack
+- Changes affect critical paths AND new features
+- Team members need to work independently on parts
+
+**Decision Flow:**
+1. Check if user explicitly requested single plan → Honor request (standalone)
+2. If not specified, assess complexity using thresholds above
+3. If 3+ thresholds exceeded → **Recommend** decomposition to user
+4. Ask: "This is a complex feature (X files, Y days). Should I decompose into smaller plans for easier tracking, or create one comprehensive plan?"
+5. Respect user's choice
+
+### Decomposition Strategy
+
+**1. Identify Bounded Contexts**
+Break feature into independent, cohesive units:
+- Each sub-plan should be independently testable
+- Each sub-plan should have clear inputs/outputs
+- Sub-plans should minimize inter-dependencies
+
+**Example: E-commerce Checkout**
+```
+Parent: PLAN-YYYYMMDD-HHMM-checkout-system
+├── Child 1: PLAN-YYYYMMDD-HHMM-cart-management
+├── Child 2: PLAN-YYYYMMDD-HHMM-payment-integration
+├── Child 3: PLAN-YYYYMMDD-HHMM-order-confirmation
+└── Child 4: PLAN-YYYYMMDD-HHMM-inventory-update
+```
+
+**2. Define Execution Order**
+- **Sequential**: Child plans must complete in order (dependencies)
+- **Parallel**: Child plans can execute concurrently (independent)
+- **Hybrid**: Some sequential, some parallel
+
+**3. Plan Hierarchy Rules**
+- **Parent plan** = Architecture overview, data structures, integration points
+- **Child plans** = Detailed implementation steps, code changes
+- **Parent plan complexity** = Low (< 1 day to create architecture)
+- **Child plan complexity** = Low-Medium (1-3 days each to implement)
+
+### Parent Plan Structure
+
+```yaml
+---
+plan_id: PLAN-YYYYMMDD-HHMM-{feature-slug}
+title: [Feature Name]
+plan_type: parent
+child_plans: [list of child plan IDs]
+complexity: high  # Why this was decomposed
+---
+```
+
+**Parent Plan Sections:**
+1. **Architecture Overview** - System design, component interaction
+2. **Data Structures** - Schemas, interfaces, types (NO implementation code)
+3. **Integration Points** - How components connect
+4. **Shared Contracts** - APIs, events, interfaces between child plans
+5. **Child Plan Dependencies** - Execution order, data flow
+6. **System-Wide Tests** - Integration tests after all children complete
+7. **Rollback Strategy** - How to revert entire feature
+
+**Parent plans should NOT contain:**
+- ❌ Detailed implementation steps
+- ❌ Code examples (except interface definitions)
+- ❌ File-level changes (that's for child plans)
+- ❌ Unit tests (child plan responsibility)
+
+### Child Plan Structure
+
+```yaml
+---
+plan_id: PLAN-YYYYMMDD-HHMM-{component-slug}
+title: [Component Name]
+plan_type: child
+parent_plan: PLAN-YYYYMMDD-HHMM-{feature-slug}
+dependencies: [list of plans that must complete first]
+complexity: low | medium  # Never high - decompose further if high
+---
+```
+
+**Child Plan Focus:**
+- Implements ONE bounded context
+- Contains specific file changes
+- Has detailed implementation steps
+- Includes unit + integration tests
+- Can be completed independently (after dependencies)
 
 ## Planning Methodology Protocol
 
@@ -327,6 +437,17 @@ Step N: [Action verb] [What]
 
 **Objective**: Structure all above findings into clear, executable plan with standard format
 
+**CRITICAL: Plans are DESIGN documents, NOT implementation code**
+
+Plans should contain:
+- ✅ **Architecture diagrams** (ASCII art, mermaid)
+- ✅ **Data structures** (interfaces, types, schemas)
+- ✅ **Critical notes** (gotchas, constraints, decisions)
+- ✅ **Logic flow** (pseudo-code, flowcharts)
+- ✅ **Integration contracts** (API shapes, event formats)
+- ❌ **NOT implementation code** (leave for actual implementation)
+- ❌ **NOT full code examples** (small snippets for clarity only)
+
 **Implementation Plan Format**:
 
 ```markdown
@@ -337,6 +458,12 @@ created: YYYY-MM-DD HH:MM
 status: draft
 author: Claude Code
 phase: planning
+plan_type: standalone | parent | child
+parent_plan: [parent plan ID if child]
+child_plans: [list of child IDs if parent]
+dependencies: [list of plan IDs that must complete first]
+complexity: low | medium | high
+estimated_duration: [X days]
 ---
 
 # 🗺️ Implementation Plan: [Feature Name]
@@ -344,47 +471,111 @@ phase: planning
 ## Summary
 [2-3 lines: what + why + approach]
 
+## 📊 Complexity Assessment
+**Files Modified**: [N] (target: < 5)
+**Estimated Time**: [N days] (target: < 3)
+**Risk Level**: [Low/Medium/High]
+**Decomposition**: [Why standalone vs decomposed]
+
+## 🏗️ Architecture Overview
+[ASCII diagram or description of component interaction]
+
+```
+┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+│  Component A │─────▶│  Component B │─────▶│  Component C │
+└──────────────┘      └──────────────┘      └──────────────┘
+       │                     │                      │
+       └─────────────────────┴──────────────────────┘
+                             │
+                      ┌──────▼──────┐
+                      │ Shared Data │
+                      └─────────────┘
+```
+
+## 📐 Data Structures
+
+### Interface Definitions
+```typescript
+// INTERFACE ONLY - not implementation
+interface UserProfile {
+  id: string
+  email: string
+  // ... core fields only
+}
+```
+
+### Schema Notes
+- **Database**: [Table changes, indices, migrations]
+- **API**: [Request/response shapes]
+- **Events**: [Event payloads, topics]
+
+## 🔗 Integration Points
+1. **Point 1**: [Where this connects to existing code]
+   - **Contract**: [What format/interface]
+   - **Impact**: [What depends on this]
+
 ## 📁 File Changes
-**New:** [N files with purposes]
-**Modified:** [N files with purposes]
-**Deleted:** [N files - prefer 0]
+
+**New:** [N] files
+**Modified:** [N] files
+**Deleted:** [N] files (prefer 0)
 
 ### New Files
 1. `path/to/file.ts` (~LOC lines)
-   - Purpose: [What this file does]
-   - Exports: [What it exports]
-   - Dependencies: [What it depends on]
+   - **Purpose**: [What this file does]
+   - **Responsibility**: [Single responsibility]
+   - **Exports**: [Key exports]
+   - **Dependencies**: [What it imports]
 
 ### Modified Files
 1. `path/to/existing.ts`
-   - Changes: [What will change]
-   - Impact: [What this affects]
+   - **Changes**: [High-level: add method, update interface]
+   - **Lines**: [Approximate line range]
+   - **Impact**: [What depends on this]
 
 ## 🔢 Implementation Steps
 
 ### Step 1: [Action Verb] [What]
-**Task:** [Detailed description]
-**Files:** [Which files]
-**Code Example:**
-```language
-[Code snippet]
-```
-**Verification:** [How to confirm success]
-**Time Estimate:** [X minutes]
+**Task:** [Detailed description of WHAT to build, not HOW]
 
-[Repeat for each step]
+**Files:**
+- `path/to/file.ts`
+
+**Design Notes:**
+- Critical constraint: [Important consideration]
+- Gotcha: [Something to watch for]
+- Reference: [Link to docs/existing pattern]
+
+**Logic Flow:**
+```
+1. Receive input X
+2. Validate against schema Y
+3. Transform to format Z
+4. Persist to database
+5. Return success response
+```
+
+**Verification:** [How to confirm this step is complete]
+- [ ] Unit test passes: `npm test path/to/test`
+- [ ] Builds without errors
+- [ ] Manual check: [Description]
+
+**Time Estimate:** [X] minutes
+
+[Repeat for each step - keep focused on WHAT and WHY, not detailed HOW]
 
 ## 🧪 Test Plan
 
 ### Unit Tests
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
+- [ ] Test case 1: [Scenario - expected behavior]
+- [ ] Test case 2: [Edge case - expected handling]
+- [ ] Test case 3: [Error case - expected error]
 
 ### Integration Tests
-- [ ] Integration test 1: [Description]
+- [ ] Integration test 1: [End-to-end scenario]
 
 ### Manual Tests
-- [ ] Manual test 1: [Description]
+- [ ] Manual test 1: [User workflow to verify]
 
 ## ⚠️ Risks & Mitigations
 
@@ -395,8 +586,6 @@ phase: planning
 **Detection:** [How we'll know]
 **Contingency:** [What we'll do if it happens]
 
-[Repeat for each risk]
-
 ## 🔄 Rollback Plan
 
 **Method:** [Git revert / Feature flag / Config]
@@ -404,19 +593,23 @@ phase: planning
 **Procedure:**
 ```bash
 # Step-by-step rollback commands
+git reset --hard [commit-before-change]
+npm run build && npm test
 ```
 
 **Verification After Rollback:**
-- [ ] Verification step 1
-- [ ] Verification step 2
+- [ ] Application starts successfully
+- [ ] Existing features work
+- [ ] No errors in logs
 
 ## ✅ Success Criteria
 
-- [ ] Criterion 1: [Measurable]
-- [ ] Criterion 2: [Measurable]
-- [ ] All tests pass
-- [ ] Performance within SLA
-- [ ] Security review passed
+- [ ] All implementation steps completed
+- [ ] All tests pass (unit + integration)
+- [ ] Performance within acceptable range
+- [ ] No security vulnerabilities
+- [ ] Code reviewed
+- [ ] Documentation updated (if needed)
 ```
 
 **Checklist before delivering**:
@@ -491,6 +684,8 @@ phase: planning
 - Over-engineer ("we might need this someday")
 - Under-estimate time (plans should be realistic)
 - Forget to update master plan tracker
+- **Force decomposition when user explicitly wants one plan**
+- Ignore user's planning preference
 
 ✅ **Do**:
 - ALWAYS check docs/plan.md before creating new plan
@@ -503,6 +698,8 @@ phase: planning
 - Follow YAGNI (You Aren't Gonna Need It) - only what's needed now
 - Add 20% time buffer for unexpected issues
 - Validate plan format before finalizing
+- **Respect user's explicit preference for single vs multiple plans**
+- Offer recommendations, but honor user's final decision
 
 ## Continue Planning Workflow
 
