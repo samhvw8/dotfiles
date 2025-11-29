@@ -11,10 +11,69 @@ interface HookInput {
     prompt: string;
 }
 
+// Keywords can be string (auto-weight) or {value, weight} (user-defined weight)
+type WeightedKeyword = string | { value: string; weight: number };
+
 interface PromptTriggers {
-    keywords?: string[];
-    intentPatterns?: string[];
+    keywords?: WeightedKeyword[];
+    intentPatterns?: WeightedKeyword[];
 }
+
+// Confidence level configuration - easily extensible
+// Add new levels by adding to this array (order matters: highest first)
+interface ConfidenceLevelConfig {
+    level: string;
+    minScore: number;
+    enforcement: string;
+    icon: string;
+    showDesc: boolean;
+    displayLimit: number;
+    actionTemplate: string;  // Use {skill} as placeholder
+}
+
+const CONFIDENCE_LEVELS: ConfidenceLevelConfig[] = [
+    {
+        level: 'critical',
+        minScore: 12.0,
+        enforcement: 'REQUIRED',
+        icon: '🔴',
+        showDesc: true,
+        displayLimit: 5,
+        actionTemplate: '🔴 ACTION: Use Skill tool with "{skill}" NOW'
+    },
+    {
+        level: 'high',
+        minScore: 8.0,
+        enforcement: 'RECOMMENDED',
+        icon: '🟠',
+        showDesc: true,
+        displayLimit: 5,
+        actionTemplate: '🟠 RECOMMENDED: Use "{skill}" skill'
+    },
+    {
+        level: 'medium',
+        minScore: 4.0,
+        enforcement: 'SUGGESTED',
+        icon: '🟡',
+        showDesc: true,
+        displayLimit: 3,
+        actionTemplate: '🟡 SUGGESTED: Consider "{skill}" skill'
+    },
+    {
+        level: 'low',
+        minScore: 2.0,
+        enforcement: 'OPTIONAL',
+        icon: '🟢',
+        showDesc: false,
+        displayLimit: 2,
+        actionTemplate: '🟢 TIP: Skills available if needed'
+    }
+    // Add more levels here as needed:
+    // { level: 'hint', minScore: 1.0, enforcement: 'HINT', icon: '⚪', ... }
+];
+
+// Minimum score to show any skill
+const MIN_SCORE = CONFIDENCE_LEVELS[CONFIDENCE_LEVELS.length - 1].minScore;
 
 interface SkillRule {
     type: 'guardrail' | 'domain';
@@ -30,10 +89,99 @@ interface SkillRules {
     skills: Record<string, SkillRule>;
 }
 
+interface MatchDetail {
+    value: string;
+    weight: number;
+    matchType: 'keyword' | 'intent';
+}
+
 interface MatchedSkill {
     name: string;
     matchType: 'keyword' | 'intent';
     config: SkillRule;
+    matches: MatchDetail[];
+    score: number;
+    confidenceConfig: ConfidenceLevelConfig;
+}
+
+// Priority multipliers for scoring
+const PRIORITY_MULTIPLIER: Record<string, number> = {
+    critical: 4.0,
+    high: 3.0,
+    medium: 2.0,
+    low: 1.0
+};
+
+// Diminishing returns factor for multiple matches
+const DIMINISHING_FACTOR = 0.4;
+
+/**
+ * Calculate weight for a keyword based on specificity
+ * Longer, multi-word keywords are more specific = higher weight
+ */
+function calculateKeywordWeight(keyword: string): number {
+    const words = keyword.split(/\s+/).length;
+    const length = keyword.length;
+
+    // Base weight from length (normalized)
+    const lengthWeight = Math.min(length / 15, 2.0);
+
+    // Bonus for multi-word phrases (more specific)
+    const wordBonus = Math.min((words - 1) * 0.3, 1.0);
+
+    return Math.max(0.5, lengthWeight + wordBonus);
+}
+
+/**
+ * Extract value and weight from a weighted keyword
+ */
+function parseWeightedKeyword(kw: WeightedKeyword): { value: string; weight: number } {
+    if (typeof kw === 'string') {
+        return { value: kw, weight: calculateKeywordWeight(kw) };
+    }
+    return { value: kw.value, weight: kw.weight };
+}
+
+/**
+ * Calculate final score with diminishing returns
+ */
+function calculateScore(matches: MatchDetail[], priority: string): number {
+    if (matches.length === 0) return 0;
+
+    // Sort matches by weight descending
+    const sortedMatches = [...matches].sort((a, b) => b.weight - a.weight);
+
+    // Apply diminishing returns: each subsequent match contributes less
+    let totalWeight = 0;
+    sortedMatches.forEach((match, index) => {
+        const diminishingMultiplier = 1 / (1 + DIMINISHING_FACTOR * index);
+        totalWeight += match.weight * diminishingMultiplier;
+    });
+
+    // Apply priority multiplier
+    const priorityMult = PRIORITY_MULTIPLIER[priority] || 1.0;
+
+    return totalWeight * priorityMult;
+}
+
+/**
+ * Get confidence level config based on score
+ */
+function getConfidenceConfig(score: number): ConfidenceLevelConfig {
+    for (const config of CONFIDENCE_LEVELS) {
+        if (score >= config.minScore) {
+            return config;
+        }
+    }
+    // Fallback to lowest level
+    return CONFIDENCE_LEVELS[CONFIDENCE_LEVELS.length - 1];
+}
+
+/**
+ * Escape special regex characters in a string
+ */
+function escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 interface SkillRulesPaths {
@@ -118,7 +266,7 @@ async function main() {
             process.exit(0);
         }
 
-        // Track matched skills (deduplicated by name)
+        // Track matched skills with scoring
         const matchedSkillsMap = new Map<string, MatchedSkill>();
 
         // Check each skill for matches
@@ -126,42 +274,68 @@ async function main() {
             const triggers = config.promptTriggers;
             if (!triggers) continue;
 
-            let matched = false;
+            const matches: MatchDetail[] = [];
 
-            // Check keyword triggers
-            if (triggers.keywords && !matched) {
-                for (const keyword of triggers.keywords) {
-                    if (prompt.includes(keyword.toLowerCase())) {
-                        matchedSkillsMap.set(skillName, {
-                            name: skillName,
-                            matchType: 'keyword',
-                            config
+            // Check keyword triggers - collect ALL matches for scoring
+            if (triggers.keywords) {
+                for (const kw of triggers.keywords) {
+                    const { value, weight } = parseWeightedKeyword(kw);
+                    const kwLower = value.toLowerCase();
+
+                    // For short keywords (<=4 chars), use word boundary matching
+                    // to avoid false positives (e.g., "doc" matching "docker")
+                    let matched = false;
+                    if (kwLower.length <= 4) {
+                        const wordBoundaryRegex = new RegExp(`\\b${escapeRegex(kwLower)}\\b`, 'i');
+                        matched = wordBoundaryRegex.test(prompt);
+                    } else {
+                        matched = prompt.includes(kwLower);
+                    }
+
+                    if (matched) {
+                        matches.push({
+                            value,
+                            weight,
+                            matchType: 'keyword'
                         });
-                        matched = true;
-                        break;
                     }
                 }
             }
 
-            // Check intent pattern triggers
-            if (triggers.intentPatterns && !matched) {
-                for (const pattern of triggers.intentPatterns) {
+            // Check intent pattern triggers - collect ALL matches
+            if (triggers.intentPatterns) {
+                for (const pat of triggers.intentPatterns) {
+                    const { value, weight } = parseWeightedKeyword(pat);
                     try {
-                        const regex = new RegExp(pattern, 'i');
+                        const regex = new RegExp(value, 'i');
                         if (regex.test(data.prompt)) {
-                            matchedSkillsMap.set(skillName, {
-                                name: skillName,
-                                matchType: 'intent',
-                                config
+                            // Pattern matches get a slight bonus (more intentional)
+                            matches.push({
+                                value,
+                                weight: weight * 1.2,
+                                matchType: 'intent'
                             });
-                            matched = true;
-                            break;
                         }
                     } catch (err) {
                         // Skip invalid regex patterns
                         continue;
                     }
                 }
+            }
+
+            // Only add if we have matches
+            if (matches.length > 0) {
+                const score = calculateScore(matches, config.priority);
+                const confidenceConfig = getConfidenceConfig(score);
+
+                matchedSkillsMap.set(skillName, {
+                    name: skillName,
+                    matchType: matches[0].matchType,
+                    config,
+                    matches,
+                    score,
+                    confidenceConfig
+                });
             }
         }
 
@@ -170,51 +344,56 @@ async function main() {
             process.exit(0);
         }
 
-        // Group by priority
-        const matchedSkills = Array.from(matchedSkillsMap.values());
-        const byPriority = {
-            critical: matchedSkills.filter(s => s.config.priority === 'critical'),
-            high: matchedSkills.filter(s => s.config.priority === 'high'),
-            medium: matchedSkills.filter(s => s.config.priority === 'medium'),
-            low: matchedSkills.filter(s => s.config.priority === 'low')
-        };
+        // Sort all matched skills by score (descending) and filter below minimum
+        const matchedSkills = Array.from(matchedSkillsMap.values())
+            .filter(s => s.score >= MIN_SCORE)
+            .sort((a, b) => b.score - a.score);
+
+        // All matches filtered out - exit silently
+        if (matchedSkills.length === 0) {
+            process.exit(0);
+        }
+
+        // Group by confidence level
+        const byLevel = new Map<string, MatchedSkill[]>();
+        for (const levelConfig of CONFIDENCE_LEVELS) {
+            byLevel.set(levelConfig.level, matchedSkills.filter(
+                s => s.confidenceConfig.level === levelConfig.level
+            ));
+        }
 
         // Build output message
         let output = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-        output += '🎯 SKILL ACTIVATION CHECK\n';
+        output += '🎯 SKILL ACTIVATION\n';
         output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
 
-        // Add matched skills by priority
-        const priorityLabels = {
-            critical: { icon: '⚠️', label: 'CRITICAL SKILLS (REQUIRED)' },
-            high: { icon: '📚', label: 'RECOMMENDED SKILLS' },
-            medium: { icon: '💡', label: 'SUGGESTED SKILLS' },
-            low: { icon: '📌', label: 'OPTIONAL SKILLS' }
-        };
+        // Display each confidence level using config
+        for (const levelConfig of CONFIDENCE_LEVELS) {
+            const skills = byLevel.get(levelConfig.level) || [];
+            if (skills.length === 0) continue;
 
-        for (const [priority, label] of Object.entries(priorityLabels)) {
-            const skills = byPriority[priority as keyof typeof byPriority];
-            if (skills.length > 0) {
-                output += `${label.icon} ${label.label}:\n`;
-                skills.forEach(skill => {
-                    output += `  → ${skill.name}`;
-                    if (skill.config.description) {
-                        const shortDesc = skill.config.description.split('.')[0];
-                        output += ` - ${shortDesc}`;
-                    }
-                    output += '\n';
-                });
+            const displaySkills = skills.slice(0, levelConfig.displayLimit);
+
+            output += `${levelConfig.icon} ${levelConfig.enforcement}:\n`;
+            displaySkills.forEach(skill => {
+                output += `  → ${skill.name} [${skill.score.toFixed(1)}]`;
+                if (levelConfig.showDesc && skill.config.description) {
+                    const shortDesc = skill.config.description.split('.')[0];
+                    output += ` - ${shortDesc}`;
+                }
                 output += '\n';
+            });
+
+            if (skills.length > levelConfig.displayLimit) {
+                output += `  ... +${skills.length - levelConfig.displayLimit} more\n`;
             }
+            output += '\n';
         }
 
-        // Add action instruction
-        const hasHighPriority = byPriority.critical.length > 0 || byPriority.high.length > 0;
-        if (hasHighPriority) {
-            output += '⚡ ACTION: Use Skill tool BEFORE responding\n';
-        } else {
-            output += '💡 TIP: Consider using Skill tool for better results\n';
-        }
+        // Action instruction based on best match
+        const bestMatch = matchedSkills[0];
+        const actionText = bestMatch.confidenceConfig.actionTemplate.replace('{skill}', bestMatch.name);
+        output += actionText + '\n';
 
         output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
 
