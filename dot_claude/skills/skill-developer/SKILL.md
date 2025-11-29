@@ -24,6 +24,10 @@ Automatically activates when you mention:
 - Progressive disclosure
 - YAML frontmatter
 - 500-line rule
+- Keyword weights or scoring
+- Confidence levels
+- Shorthands, synonyms, abbreviations
+- Adding trigger patterns
 
 ## Context Awareness: What This Skill Covers
 
@@ -46,6 +50,9 @@ Automatically activates when you mention:
 - "UserPromptSubmit", "PreToolUse", "hook system"
 - "progressive disclosure", "500-line rule"
 - "skill metadata", "trigger conditions"
+- "keyword weight", "pattern weight", "scoring", "match score"
+- "confidence level", "diminishing returns", "priority multiplier"
+- "shorthand", "synonym", "abbreviation", "alias"
 
 ### ❌ This Skill is NOT FOR (Domain-Specific Content)
 
@@ -227,6 +234,18 @@ See [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) for complete schema.
 }
 ```
 
+**With Weighted Keywords (v2.0):**
+```json
+{
+  "keywords": [
+    {"value": "k8s", "weight": 5.0},      // High weight for specific terms
+    {"value": "kubectl", "weight": 5.0},  // User-defined weight
+    "deployment",                          // Auto-calculated weight
+    "container"                            // Based on length
+  ]
+}
+```
+
 ### Step 3: Test Triggers
 
 **Test UserPromptSubmit:**
@@ -258,6 +277,26 @@ Based on testing:
 ✅ Write detailed description with trigger keywords
 ✅ Test with 3+ real scenarios before documenting
 ✅ Iterate based on actual usage
+
+---
+
+## Scoring System (v2.0)
+
+Keywords/patterns have weights; score determines enforcement level:
+
+| Confidence | Score | Enforcement |
+|------------|-------|-------------|
+| 🔴 critical | ≥12 | REQUIRED |
+| 🟠 high | ≥8 | RECOMMENDED |
+| 🟡 medium | ≥4 | SUGGESTED |
+| 🟢 low | ≥2 | OPTIONAL |
+
+**Key concepts:**
+- **Weighted keywords**: `{"value": "k8s", "weight": 5.0}` or auto-calculated
+- **Diminishing returns**: Multiple matches contribute less each
+- **Priority multiplier**: critical=4x, high=3x, medium=2x, low=1x
+
+See [SCORING.md](SCORING.md) for complete formula, examples, and configuration.
 
 ---
 
@@ -338,212 +377,42 @@ export SKIP_ERROR_REMINDER=true
 
 ## Enhancing Existing Skills
 
-### When to Enhance Skills
+**When to Enhance:** >500 lines, poor structure, second-person voice, vague examples
 
-Enhance skills when they have:
-- Verbose content (SKILL.md >500 lines or >5k words)
-- Poor structure or unclear organization
-- Second-person voice ("you should/can/will")
-- Missing or vague examples
-- Unused files or duplicated content
-- Vague metadata or descriptions
-- Quality issues affecting effectiveness
+**Key Principles:**
+1. Move details to reference files (progressive disclosure)
+2. Use imperative voice ("Process files..." not "You should...")
+3. Organize resources: `scripts/`, `references/`, `assets/`
+4. Target <500 lines in SKILL.md
 
-### Enhancement Principles
-
-1. **Conciseness**: Move details to reference files
-2. **Direct Voice**: Use imperative/infinitive (NOT second person)
-3. **Clear Structure**: Apply consistent patterns
-4. **XML Integration**: Use tags for constraints/requirements
-5. **Resource Optimization**: Organize scripts/references/assets properly
-
-### Enhancement Process
-
-**Step 1: Analysis**
-- Read complete skill (SKILL.md + all resources)
-- Identify quality issues across all dimensions
-- Note structural problems and verbosity
-
-**Step 2: Metadata Enhancement**
-- Ensure kebab-case naming
-- Write comprehensive description (30-60 words, third-person voice)
-- Include specific trigger keywords and scenarios
-
-**Step 3: Voice Correction**
-- Eliminate "you should/can/will" phrases
-- Convert to imperative: "Use X to...", "Process files by..."
-- Remove filler words: "simply", "just", "basically"
-- Use active voice throughout
-
-**Step 4: Structural Optimization**
-Apply appropriate pattern:
-- **Workflow-based**: Sequential processes
-- **Task-based**: Multiple discrete operations
-- **Reference-based**: Standards and specifications
-- **Capabilities-based**: Integrated feature systems
-
-**Step 5: Content Refinement**
-- Add concrete before/after examples
-- Use XML tags for constraints, requirements, format
-- Keep main instructions in natural language
-- Reference bundled resources with usage instructions
-
-**Step 6: Resource Organization**
-- `scripts/` - Executable automation code
-- `references/` - Detailed documentation
-- `assets/` - Templates and boilerplate
-- Delete unused example files
-- Eliminate duplication
-
-**Step 7: Size Reduction**
-- Move comprehensive docs to references/
-- Add grep patterns for finding content
-- Implement progressive disclosure
-- Target <500 lines in SKILL.md
-
-### Enhancement Examples
-
-**Voice Correction:**
-```markdown
-# Before
-You should use this function when you need to process files.
-
-# After
-Process files using this function.
-```
-
-**Structure with XML:**
-```markdown
-# Before
-This helps with data analysis.
-
-# After
-Analyze datasets to identify key insights and patterns.
-
-<requirements>
-- Highlight statistically significant findings
-- Identify temporal trends and correlations
-- Note anomalies or outliers
-</requirements>
-```
-
-**Progressive Disclosure:**
-```markdown
-# Before (all in SKILL.md)
-## Complete API Reference
-[2000 words of documentation...]
-
-# After (SKILL.md references external file)
-## Resources
-See [API_REFERENCE.md](references/api_reference.md) for complete API documentation.
-
-To find specific endpoints:
-grep -i "endpoint_name" references/api_reference.md
-```
-
-### Enhancement Checklist
-
-**Metadata:**
-- [ ] Kebab-case naming
-- [ ] Comprehensive description (30-60 words)
-- [ ] Third-person voice
-- [ ] Specific triggers
-
-**Content:**
-- [ ] SKILL.md <500 lines
-- [ ] Imperative/infinitive voice
-- [ ] No second-person phrases
-- [ ] Concrete examples
-- [ ] XML tags for structure
-
-**Resources:**
-- [ ] Organized by type (scripts/references/assets)
-- [ ] No duplication with SKILL.md
-- [ ] Unused files deleted
-
-**Quality:**
-- [ ] Clear and actionable
-- [ ] No TODOs remaining
-- [ ] Ready for use
+**Quick Checklist:**
+- [ ] Kebab-case naming, description 30-60 words
+- [ ] Imperative voice, no "you should/can/will"
+- [ ] <500 lines, reference files for details
+- [ ] No duplication, unused files deleted
 
 ---
 
 ## Testing Checklist
 
-When creating a new skill, verify:
-
-- [ ] Skill file created in `.claude/skills/{name}/SKILL.md`
-- [ ] Proper frontmatter with name and description
-- [ ] Entry added to `skill-rules.json`
-- [ ] Keywords tested with real prompts
-- [ ] Intent patterns tested with variations
-- [ ] File path patterns tested with actual files
-- [ ] Content patterns tested against file contents
-- [ ] Block message is clear and actionable (if guardrail)
-- [ ] Skip conditions configured appropriately
-- [ ] Priority level matches importance
-- [ ] No false positives in testing
-- [ ] No false negatives in testing
-- [ ] Performance is acceptable (<100ms or <200ms)
-- [ ] JSON syntax validated: `jq . skill-rules.json`
-- [ ] **SKILL.md under 500 lines** ⭐
-- [ ] Reference files created if needed
-- [ ] Table of contents added to files > 100 lines
+- [ ] SKILL.md created with frontmatter, <500 lines
+- [ ] Entry added to `skill-rules.json` (validate: `jq . skill-rules.json`)
+- [ ] Keywords/patterns tested with real prompts
+- [ ] No false positives/negatives, performance <200ms
 
 ---
 
 ## Reference Files
 
-For detailed information on specific topics, see:
-
-### [TRIGGER_TYPES.md](TRIGGER_TYPES.md)
-Complete guide to all trigger types:
-- Keyword triggers (explicit topic matching)
-- Intent patterns (implicit action detection)
-- File path triggers (glob patterns)
-- Content patterns (regex in files)
-- Best practices and examples for each
-- Common pitfalls and testing strategies
-
-### [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md)
-Complete skill-rules.json schema:
-- Full TypeScript interface definitions
-- Field-by-field explanations
-- Complete guardrail skill example
-- Complete domain skill example
-- Validation guide and common errors
-
-### [HOOK_MECHANISMS.md](HOOK_MECHANISMS.md)
-Deep dive into hook internals:
-- UserPromptSubmit flow (detailed)
-- PreToolUse flow (detailed)
-- Exit code behavior table (CRITICAL)
-- Session state management
-- Performance considerations
-
-### [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-Comprehensive debugging guide:
-- Skill not triggering (UserPromptSubmit)
-- PreToolUse not blocking
-- False positives (too many triggers)
-- Hook not executing at all
-- Performance issues
-
-### [PATTERNS_LIBRARY.md](PATTERNS_LIBRARY.md)
-Ready-to-use pattern collection:
-- Intent pattern library (regex)
-- File path pattern library (glob)
-- Content pattern library (regex)
-- Organized by use case
-- Copy-paste ready
-
-### [ADVANCED.md](ADVANCED.md)
-Future enhancements and ideas:
-- Dynamic rule updates
-- Skill dependencies
-- Conditional enforcement
-- Skill analytics
-- Skill versioning
+| File | Content |
+|------|---------|
+| [SCORING.md](SCORING.md) | Weight formulas, confidence levels, examples |
+| [TRIGGER_TYPES.md](TRIGGER_TYPES.md) | Keywords, intents, file paths, content patterns |
+| [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) | Complete skill-rules.json schema |
+| [HOOK_MECHANISMS.md](HOOK_MECHANISMS.md) | Hook internals, exit codes, session state |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Debugging guide for activation issues |
+| [PATTERNS_LIBRARY.md](PATTERNS_LIBRARY.md) | Ready-to-use regex/glob patterns |
+| [ADVANCED.md](ADVANCED.md) | Future enhancements and ideas |
 
 ---
 
@@ -559,12 +428,16 @@ Future enhancements and ideas:
 
 ### Trigger Types
 
-- **Keywords**: Explicit topic mentions
-- **Intent**: Implicit action detection
+- **Keywords**: Explicit topic mentions (string or `{value, weight}`)
+- **Intent**: Implicit action detection (1.2x weight bonus)
 - **File Paths**: Location-based activation
 - **Content**: Technology-specific detection
 
 See [TRIGGER_TYPES.md](TRIGGER_TYPES.md) for complete details.
+
+### Scoring (v2.0)
+
+See [SCORING.md](SCORING.md) for weighted keywords, confidence levels, and formulas.
 
 ### Enforcement
 
@@ -621,8 +494,4 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for complete debugging guide.
 
 ---
 
-**Skill Status**: COMPLETE - Restructured following Anthropic best practices ✅
-**Line Count**: < 500 (following 500-line rule) ✅
-**Progressive Disclosure**: Reference files for detailed information ✅
-
-**Next**: Create more skills, refine patterns based on usage
+**Skill Status**: COMPLETE ✅ | **Line Count**: <500 ✅ | **Progressive Disclosure**: Reference files ✅

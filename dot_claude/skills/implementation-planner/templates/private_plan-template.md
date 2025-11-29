@@ -5,12 +5,56 @@ created: YYYY-MM-DD HH:MM
 status: draft
 author: Claude Code
 phase: planning
+plan_type: standalone  # standalone | parent | child
+parent_plan: null  # Set if child plan
+child_plans: []  # Set if parent plan
+dependencies: []  # Other plans that must complete first
+complexity: low  # low | medium | high
+estimated_duration: [X days]  # Target: < 3 days for atomic plan
 ---
 
 # 🗺️ Implementation Plan: [Feature Name]
 
 ## Summary
-[2-3 lines describing: what + why + approach]
+[2-3 lines: what + why + approach]
+
+## 📊 Complexity Assessment
+
+**Files Modified:** [N] (target: ≤ 5 for atomic plan)
+**Estimated Time:** [N days] (target: ≤ 3 days for atomic plan)
+**Risk Level:** [Low/Medium/High]
+**Decomposition Decision:** [Why standalone OR why decomposed into parent/children]
+
+## 🏗️ Architecture Overview
+
+[ASCII diagram showing component interaction - DESIGN, not code]
+
+```
+┌──────────────┐      ┌──────────────┐
+│  Component A │─────▶│  Component B │
+└──────────────┘      └──────────────┘
+```
+
+## 📐 Data Structures
+
+### Interface Definitions (Design Only)
+```typescript
+// INTERFACE/TYPE definitions ONLY - NOT implementation
+interface KeyInterface {
+  id: string
+  // ... essential fields
+}
+```
+
+### Schema Notes
+- **Database:** [Table changes, indices, why]
+- **API:** [Endpoint shapes, request/response]
+- **Events:** [Event formats, topics]
+
+## 🔗 Integration Points
+1. **Point 1:** [Where this connects to existing code]
+   - **Contract:** [Interface/format]
+   - **Impact:** [What depends on this]
 
 ## 📁 File Changes
 
@@ -32,14 +76,22 @@ phase: planning
 ## 🔢 Implementation Steps
 
 ### Step 1: [Action Verb] [What]
-**Task:** [Detailed description of what to do]
+**Task:** [Detailed description of WHAT to build, not HOW]
 
 **Files:**
 - `path/to/file.ts`
 
-**Code Example:**
-```typescript
-// Example code showing what to implement
+**Design Notes:**
+- Critical constraint: [Important consideration]
+- Gotcha: [Something to watch for]
+- Reference: [Link to docs/existing pattern]
+
+**Logic Flow:** (Pseudo-code, NOT implementation)
+```
+1. Receive input X
+2. Validate against rules Y
+3. Transform to format Z
+4. Return result
 ```
 
 **Verification:** [How to confirm this step is complete]
