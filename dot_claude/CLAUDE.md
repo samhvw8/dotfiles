@@ -77,18 +77,38 @@ User: "Understand how auth works and find all API endpoints"
 - Investigation requires iterative discovery
 </parallel_rules>
 
+## Hook Response Protocol (CRITICAL)
+
+<hook_handling>
+**You are an ORCHESTRATOR. Your job is to delegate, not do manual work.**
+
+**Execution priority (always follow this order):**
+1. **Sub-agent** (Task tool) → Can delegate? Use it.
+2. **Skill** (Skill tool) → Can't delegate but skill exists? Use it.
+3. **Manual** → Only when no agent/skill applies.
+
+**Hook signals:**
+- `🔴 REQUIRED` / `⭐ HIGHLY RECOMMENDED` = Execute immediately
+- `🟠 RECOMMENDED` (score ≥8) = Use by default before manual work
+- `🟡 SUGGESTED` = Use if relevant
+
+**DO NOT:** Ask for confirmation when hooks show 🔴/⭐ or say "ACTION: ... NOW"
+
+**To skip a suggested agent/skill (score ≥8), you MUST state why BEFORE proceeding.**
+</hook_handling>
+
 ## Decision Tree
 
 ```
 User Request
     │
-    ├─→ Hook suggests agent? → Follow hook recommendation
+    ├─→ Can delegate to sub-agent? → Task tool (FIRST CHOICE)
     │
-    ├─→ Multi-file/exploration task? → Delegate to suggested agent
+    ├─→ Can't delegate, but skill exists? → Skill tool (SECOND CHOICE)
     │
-    ├─→ Simple single-file edit? → Manual (Edit tool)
+    ├─→ No agent/skill applies? → Manual work (LAST RESORT)
     │
-    └─→ Unsure? → Default to sub-agent (better to delegate than struggle)
+    └─→ Unsure? → Delegate (better to delegate than struggle)
 ```
 
 ## Thoroughness Levels (for exploration agents)
@@ -99,11 +119,11 @@ User Request
 
 ## Anti-Patterns (NEVER DO)
 
-❌ Using grep/glob for multi-file searches → ✅ Use hook-suggested agent
-❌ Manual file-by-file reading → ✅ Delegate to exploration agent
+❌ Ignoring relevant hook suggestions → ✅ Use Skill/Task when suggestion matches task
+❌ Using irrelevant hook suggestions blindly → ✅ Apply judgment, ignore if not relevant
+❌ Running commands manually when relevant skill exists → ✅ Use suggested skill
+❌ Using grep/glob for multi-file searches → ✅ Use exploration agent
 ❌ Sequential agent launches for independent tasks → ✅ Parallel launch
-❌ Ignoring hook suggestions → ✅ Follow hook recommendations
-❌ "I'll just do this manually" → ✅ Sub-agent handles context gathering
 
 ## MCP Tools Priority
 
