@@ -193,7 +193,7 @@ Defines:
 ```markdown
 ---
 name: my-new-skill
-description: Brief description including keywords that trigger this skill. Mention topics, file types, and use cases. Be explicit about trigger terms.
+description: Brief description including keywords for discoverability. Mention topics, file types, and use cases.
 ---
 
 # My New Skill
@@ -208,14 +208,21 @@ Specific scenarios and conditions
 The actual guidance, documentation, patterns, examples
 ```
 
+**YAML Frontmatter fields:**
+- `name` (required): Skill identifier
+- `description` (required): Brief description for discoverability (max 1024 chars)
+- `license` (optional): License reference
+
+**⚠️ IMPORTANT:** Triggers are NOT defined in YAML frontmatter. Configure triggers in `skill-rules.json`.
+
 **Best Practices:**
 - ✅ **Name**: Lowercase, hyphens, gerund form (verb + -ing) preferred
-- ✅ **Description**: Include ALL trigger keywords/phrases (max 1024 chars)
+- ✅ **Description**: Include keywords for discoverability (max 1024 chars)
 - ✅ **Content**: Under 500 lines - use reference files for details
 - ✅ **Examples**: Real code examples
 - ✅ **Structure**: Clear headings, lists, code blocks
 
-### Step 2: Add to skill-rules.json
+### Step 2: Add to skill-rules.json (REQUIRED for activation)
 
 See [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) for complete schema.
 
