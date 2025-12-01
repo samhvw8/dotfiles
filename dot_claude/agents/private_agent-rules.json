@@ -1,6 +1,6 @@
 {
-    "version": "1.0",
-    "description": "Agent activation triggers for Claude Code sub-agents. Controls when agents automatically suggest or activate.",
+    "version": "2.0",
+    "description": "Agent activation triggers with weighted scoring. Higher weights = more specific matches.",
     "agents": {
         "codebase-explorer": {
             "type": "exploration",
@@ -10,34 +10,35 @@
             "description": "Lightning-fast codebase exploration using ast-grep for structural code search, ripgrep for text search, and fzf for fuzzy matching",
             "promptTriggers": {
                 "keywords": [
-                    "explore codebase",
+                    {"value": "explore codebase", "weight": 3.0},
+                    {"value": "search codebase", "weight": 3.0},
+                    {"value": "codebase structure", "weight": 2.5},
+                    {"value": "project structure", "weight": 2.5},
+                    {"value": "architecture overview", "weight": 2.5},
+                    {"value": "map dependencies", "weight": 2.5},
+                    {"value": "trace dependencies", "weight": 2.5},
+                    {"value": "show architecture", "weight": 2.0},
                     "find files",
                     "find code",
                     "locate file",
                     "locate code",
                     "where is",
-                    "search codebase",
                     "search for",
-                    "show architecture",
-                    "map dependencies",
                     "trace how",
-                    "trace dependencies",
                     "find class",
                     "find function",
                     "find method",
                     "find interface",
                     "find type",
-                    "find component",
-                    "codebase structure",
-                    "project structure",
-                    "architecture overview"
+                    "find component"
                 ],
                 "intentPatterns": [
-                    "(explore|search|find|locate|where is).*?(codebase|code|file|class|function|method|component)",
+                    {"value": "(explore|search).*?codebase", "weight": 3.0},
+                    {"value": "architecture.*?(overview|mapping|analysis)", "weight": 2.5},
                     "(show|map|trace|visualize).*?(architecture|dependencies|structure)",
+                    "(explore|search|find|locate|where is).*?(codebase|code|file|class|function|method|component)",
                     "where.*?(is|are|can i find)",
-                    "find.*?(files|code|implementation).*?(related to|for|about)",
-                    "architecture.*?(overview|mapping|analysis)"
+                    "find.*?(files|code|implementation).*?(related to|for|about)"
                 ]
             }
         },
@@ -49,24 +50,25 @@
             "description": "Systematic bug investigation, hypothesis testing, evidence-based debugging",
             "promptTriggers": {
                 "keywords": [
-                    "investigate error",
+                    {"value": "root cause analysis", "weight": 4.0},
+                    {"value": "systematic debugging", "weight": 3.5},
+                    {"value": "hypothesis testing", "weight": 3.0},
+                    {"value": "investigate error", "weight": 2.5},
+                    {"value": "diagnose problem", "weight": 2.5},
+                    {"value": "root cause", "weight": 2.5},
                     "debug issue",
-                    "root cause",
                     "why is failing",
                     "why doesn't work",
                     "why is broken",
                     "troubleshoot",
-                    "diagnose problem",
                     "analyze bug",
-                    "analyze error",
-                    "systematic debugging",
-                    "hypothesis testing"
+                    "analyze error"
                 ],
                 "intentPatterns": [
+                    {"value": "root.*?cause.*?(analysis|investigation)", "weight": 3.5},
+                    {"value": "systematic.*?(debug|investigation)", "weight": 3.0},
+                    {"value": "why.*?(failing|broken|not working|doesn't work)", "weight": 2.5},
                     "(investigate|debug|diagnose|analyze).*?(error|bug|issue|problem|failure)",
-                    "why.*?(failing|broken|not working|doesn't work)",
-                    "root.*?cause.*?(analysis|investigation)",
-                    "systematic.*?(debug|investigation)",
                     "(troubleshoot|diagnose).*?(issue|problem|error)"
                 ]
             }
@@ -79,11 +81,15 @@
             "description": "API design, database schema, SOLID principles, DI/IoC, security, reliability",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "backend architecture", "weight": 3.5},
+                    {"value": "api architecture", "weight": 3.5},
+                    {"value": "database schema design", "weight": 3.0},
+                    {"value": "design rest api", "weight": 3.0},
+                    {"value": "design graphql", "weight": 3.0},
+                    {"value": "design microservice", "weight": 3.0},
+                    {"value": "dependency injection", "weight": 2.5},
+                    {"value": "solid principles backend", "weight": 2.5},
                     "design api",
-                    "design rest api",
-                    "design graphql",
-                    "api architecture",
-                    "backend architecture",
                     "database schema",
                     "database design",
                     "implement auth flow",
@@ -91,16 +97,14 @@
                     "authorization design",
                     "api security",
                     "backend security",
-                    "dependency injection",
-                    "solid principles backend",
-                    "design microservice",
                     "service design",
                     "endpoint design"
                 ],
                 "intentPatterns": [
+                    {"value": "(backend|api).*?architecture", "weight": 3.0},
+                    {"value": "database.*?(schema|design|architecture)", "weight": 2.5},
                     "design.*?(api|rest|graphql|backend|service|microservice|endpoint)",
                     "(api|backend|service).*?(architecture|design|structure|pattern)",
-                    "database.*?(schema|design|architecture|model)",
                     "(implement|design|create).*?(auth|authentication|authorization).*?(flow|system)",
                     "(dependency injection|di|ioc|solid).*?(backend|api|service)",
                     "(security|reliability).*?(backend|api|service)"
@@ -115,23 +119,24 @@
             "description": "System design, scalability planning, architectural decisions",
             "promptTriggers": {
                 "keywords": [
-                    "system design",
-                    "system architecture",
+                    {"value": "system architecture", "weight": 3.5},
+                    {"value": "system design", "weight": 3.5},
+                    {"value": "distributed system", "weight": 3.0},
+                    {"value": "microservices architecture", "weight": 3.0},
+                    {"value": "architectural decision", "weight": 2.5},
+                    {"value": "high-level design", "weight": 2.5},
+                    {"value": "architecture planning", "weight": 2.5},
                     "scalability",
-                    "architectural decision",
                     "design system",
-                    "architecture planning",
-                    "high-level design",
-                    "system structure",
-                    "distributed system",
-                    "microservices architecture"
+                    "system structure"
                 ],
                 "intentPatterns": [
-                    "system.*?(design|architecture|structure)",
+                    {"value": "system.*?architecture", "weight": 3.0},
+                    {"value": "(distributed|microservices).*?(system|architecture)", "weight": 2.5},
+                    "system.*?(design|structure)",
                     "(design|architect|plan).*?system",
                     "scalability.*?(design|planning|architecture)",
-                    "architectural.*?(decision|pattern|choice)",
-                    "(distributed|microservices).*?(system|architecture)"
+                    "architectural.*?(decision|pattern|choice)"
                 ]
             }
         },
@@ -143,17 +148,17 @@
             "description": "Requirements gathering, spec creation, ambiguity resolution",
             "promptTriggers": {
                 "keywords": [
-                    "gather requirements",
-                    "requirements analysis",
+                    {"value": "requirements analysis", "weight": 3.0},
+                    {"value": "gather requirements", "weight": 2.5},
+                    {"value": "requirements document", "weight": 2.5},
+                    {"value": "ambiguity resolution", "weight": 2.5},
                     "create spec",
                     "specification",
-                    "clarify requirements",
-                    "ambiguity resolution",
-                    "requirements document"
+                    "clarify requirements"
                 ],
                 "intentPatterns": [
+                    {"value": "requirements.*?(analysis|gathering|documentation)", "weight": 2.5},
                     "(gather|collect|analyze).*?requirements",
-                    "requirements.*?(analysis|gathering|documentation)",
                     "(create|write|develop).*?(spec|specification)",
                     "(clarify|resolve).*?(ambiguity|requirements)"
                 ]
@@ -167,23 +172,26 @@
             "description": "Production Python, FastAPI/Django, async patterns, DI, testing, security",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "python implementation", "weight": 3.0},
+                    {"value": "python best practices", "weight": 3.0},
+                    {"value": "fastapi implementation", "weight": 3.0},
+                    {"value": "django implementation", "weight": 3.0},
+                    {"value": "python async", "weight": 2.5},
+                    {"value": "python testing", "weight": 2.5},
+                    {"value": "python patterns", "weight": 2.5},
                     "python code",
-                    "python implementation",
                     "fastapi",
                     "django",
-                    "python async",
                     "asyncio",
-                    "python testing",
                     "pytest",
-                    "python security",
-                    "python best practices",
-                    "python patterns"
+                    "python security"
                 ],
                 "intentPatterns": [
-                    "python.*?(code|implementation|service|api|application)",
-                    "(fastapi|django|flask).*?(implementation|service|endpoint)",
+                    {"value": "python.*?(implementation|best practice|pattern)", "weight": 2.5},
+                    {"value": "(fastapi|django).*?(implementation|service)", "weight": 2.5},
+                    "python.*?(code|service|api|application)",
                     "(async|asyncio).*?python",
-                    "python.*?(async|testing|security|pattern|best practice)"
+                    "python.*?(async|testing|security)"
                 ]
             }
         },
@@ -195,22 +203,25 @@
             "description": "React/Next.js, App Router, state management, performance optimization",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "react architecture", "weight": 3.5},
+                    {"value": "nextjs architecture", "weight": 3.5},
+                    {"value": "next.js architecture", "weight": 3.5},
+                    {"value": "server components", "weight": 3.0},
+                    {"value": "client components", "weight": 3.0},
+                    {"value": "app router", "weight": 3.0},
+                    {"value": "react performance", "weight": 2.5},
+                    {"value": "react hooks", "weight": 2.0},
                     "react component",
                     "next.js",
                     "nextjs",
-                    "app router",
-                    "server components",
-                    "client components",
                     "react state",
-                    "react hooks",
-                    "react performance",
-                    "optimize react",
-                    "react architecture"
+                    "optimize react"
                 ],
                 "intentPatterns": [
-                    "react.*?(component|architecture|pattern|state|hook|performance)",
-                    "(next\\.js|nextjs).*?(component|route|page|api|architecture)",
-                    "(app router|server component|client component)",
+                    {"value": "(react|nextjs|next\\.js).*?architecture", "weight": 3.0},
+                    {"value": "(server|client).*?component", "weight": 2.5},
+                    "react.*?(component|pattern|state|hook|performance)",
+                    "(next\\.js|nextjs).*?(component|route|page|api)",
                     "(optimize|improve).*?react"
                 ]
             }
@@ -223,15 +234,16 @@
             "description": "SvelteKit, reactive patterns, full-stack Svelte applications",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "sveltekit application", "weight": 3.0},
+                    {"value": "svelte component", "weight": 2.5},
+                    {"value": "reactive store", "weight": 2.5},
                     "sveltekit",
-                    "svelte component",
                     "svelte store",
-                    "reactive store",
                     "svelte routing",
                     "svelte form"
                 ],
                 "intentPatterns": [
-                    "sveltekit.*?(component|route|page|store|form)",
+                    {"value": "sveltekit.*?(component|route|page|store)", "weight": 2.5},
                     "svelte.*?(component|store|reactive|pattern)"
                 ]
             }
@@ -244,22 +256,22 @@
             "description": "Code quality, SOLID principles, complexity reduction, technical debt",
             "promptTriggers": {
                 "keywords": [
-                    "refactor code",
+                    {"value": "reduce complexity", "weight": 3.0},
+                    {"value": "solid principles", "weight": 3.0},
+                    {"value": "technical debt", "weight": 3.0},
+                    {"value": "refactor code", "weight": 2.5},
+                    {"value": "clean code", "weight": 2.5},
+                    {"value": "code quality", "weight": 2.5},
+                    {"value": "code smell", "weight": 2.5},
                     "refactoring",
-                    "reduce complexity",
                     "apply solid",
-                    "solid principles",
-                    "clean code",
-                    "code quality",
-                    "technical debt",
-                    "code smell",
                     "improve code",
                     "simplify code"
                 ],
                 "intentPatterns": [
+                    {"value": "(reduce|decrease).*?(complexity|technical debt)", "weight": 3.0},
+                    {"value": "apply.*?(solid|dry|kiss|design pattern)", "weight": 2.5},
                     "refactor(ing)?.*?(code|implementation|function|class)",
-                    "(reduce|decrease).*?(complexity|technical debt)",
-                    "apply.*?(solid|dry|kiss|design pattern)",
                     "(clean|improve|simplify).*?code",
                     "code.*?(quality|smell|debt)",
                     "technical.*?debt"
@@ -274,23 +286,23 @@
             "description": "Automated codebase refactoring, ast-grep transformations, pattern replacement at scale",
             "promptTriggers": {
                 "keywords": [
-                    "rename across codebase",
+                    {"value": "codebase-wide refactor", "weight": 4.0},
+                    {"value": "batch refactor", "weight": 3.5},
+                    {"value": "mass refactor", "weight": 3.5},
+                    {"value": "rename across codebase", "weight": 3.5},
+                    {"value": "ast-grep refactor", "weight": 3.0},
+                    {"value": "transform codebase", "weight": 3.0},
+                    {"value": "replace pattern codebase", "weight": 3.0},
                     "rename class codebase",
                     "rename function codebase",
                     "modernize patterns",
-                    "batch refactor",
-                    "mass refactor",
-                    "codebase-wide refactor",
-                    "ast-grep refactor",
-                    "transform codebase",
-                    "replace pattern codebase",
                     "update all files"
                 ],
                 "intentPatterns": [
-                    "(rename|replace|transform).*?(across|throughout|codebase|all files)",
-                    "(batch|mass|codebase-wide).*?(refactor|rename|transform|replace)",
+                    {"value": "(batch|mass|codebase-wide).*?(refactor|rename|transform)", "weight": 3.5},
+                    {"value": "(rename|replace|transform).*?(across|throughout|codebase|all files)", "weight": 3.0},
+                    {"value": "(ast-grep|sed|ripgrep).*?(refactor|transform|replace)", "weight": 2.5},
                     "modernize.*?(pattern|syntax|code).*?(codebase|all files)",
-                    "(ast-grep|sed|ripgrep).*?(refactor|transform|replace)",
                     "replace.*?pattern.*?(codebase|everywhere)"
                 ]
             }
@@ -303,18 +315,18 @@
             "description": "Testing strategy, test coverage, edge case detection",
             "promptTriggers": {
                 "keywords": [
-                    "test coverage",
-                    "testing strategy",
-                    "edge cases",
+                    {"value": "testing strategy", "weight": 3.0},
+                    {"value": "test coverage", "weight": 2.5},
+                    {"value": "edge cases", "weight": 2.5},
+                    {"value": "test plan", "weight": 2.5},
                     "unit tests",
                     "integration tests",
-                    "test plan",
                     "improve tests",
                     "add tests"
                 ],
                 "intentPatterns": [
-                    "(test|testing).*?(coverage|strategy|plan)",
-                    "(edge case|boundary condition).*?(test|detection)",
+                    {"value": "(test|testing).*?(coverage|strategy|plan)", "weight": 2.5},
+                    {"value": "(edge case|boundary condition).*?(test|detection)", "weight": 2.5},
                     "(unit|integration|e2e).*?test",
                     "(improve|add|create).*?tests"
                 ]
@@ -328,18 +340,19 @@
             "description": "Security audits, OWASP compliance, threat modeling, vulnerability scanning",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "security audit", "weight": 3.5},
+                    {"value": "threat model", "weight": 3.5},
+                    {"value": "vulnerability scan", "weight": 3.0},
+                    {"value": "owasp check", "weight": 3.0},
+                    {"value": "penetration test", "weight": 3.0},
+                    {"value": "security assessment", "weight": 2.5},
                     "security review",
-                    "security audit",
-                    "owasp check",
-                    "vulnerability scan",
-                    "threat model",
-                    "security assessment",
-                    "penetration test",
                     "security analysis"
                 ],
                 "intentPatterns": [
-                    "security.*?(review|audit|check|assessment|analysis)",
-                    "(owasp|vulnerability|threat).*?(check|scan|model|analysis)",
+                    {"value": "security.*?(audit|assessment)", "weight": 3.0},
+                    {"value": "(owasp|vulnerability|threat).*?(check|scan|model|analysis)", "weight": 2.5},
+                    "security.*?(review|check|analysis)",
                     "(penetration|security).*?test"
                 ]
             }
@@ -352,22 +365,22 @@
             "description": "CI/CD, Docker, Kubernetes, infrastructure automation, monitoring",
             "promptTriggers": {
                 "keywords": [
-                    "docker setup",
-                    "k8s deployment",
-                    "kubernetes deployment",
-                    "ci/cd pipeline",
-                    "github actions",
+                    {"value": "kubernetes deployment", "weight": 3.0},
+                    {"value": "k8s deployment", "weight": 3.0},
+                    {"value": "ci/cd pipeline", "weight": 3.0},
+                    {"value": "infrastructure automation", "weight": 3.0},
+                    {"value": "deployment pipeline", "weight": 2.5},
+                    {"value": "github actions", "weight": 2.5},
+                    {"value": "docker setup", "weight": 2.5},
                     "gitlab ci",
                     "jenkins pipeline",
-                    "infrastructure automation",
-                    "monitoring setup",
-                    "deployment pipeline"
+                    "monitoring setup"
                 ],
                 "intentPatterns": [
+                    {"value": "(k8s|kubernetes).*?(deployment|setup|configuration)", "weight": 2.5},
+                    {"value": "(ci/cd|cicd|pipeline).*?(setup|configuration|automation)", "weight": 2.5},
+                    {"value": "infrastructure.*?(automation|as code)", "weight": 2.5},
                     "(docker|container).*?(setup|configuration|deployment)",
-                    "(k8s|kubernetes).*?(deployment|setup|configuration)",
-                    "(ci/cd|cicd|pipeline).*?(setup|configuration|automation)",
-                    "infrastructure.*?(automation|as code|setup)",
                     "monitoring.*?(setup|configuration|implementation)"
                 ]
             }
@@ -380,22 +393,22 @@
             "description": "Interface design, wireframes, accessibility, user research",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "design system", "weight": 3.0},
+                    {"value": "accessibility design", "weight": 3.0},
+                    {"value": "user experience", "weight": 2.5},
+                    {"value": "ui design", "weight": 2.5},
+                    {"value": "ux design", "weight": 2.5},
                     "design dashboard",
                     "design interface",
                     "wireframe",
-                    "ui design",
-                    "ux design",
-                    "user interface",
-                    "user experience",
-                    "accessibility design",
-                    "design system"
+                    "user interface"
                 ],
                 "intentPatterns": [
+                    {"value": "design system.*?(create|implement)", "weight": 2.5},
+                    {"value": "accessibility.*?(design|implementation)", "weight": 2.5},
                     "design.*?(dashboard|interface|ui|ux|wireframe)",
                     "(ui|ux|interface|user experience).*?design",
-                    "(wireframe|mockup|prototype).*?(design|create)",
-                    "accessibility.*?(design|implementation)",
-                    "design system.*?(create|implement)"
+                    "(wireframe|mockup|prototype).*?(design|create)"
                 ]
             }
         },
@@ -407,19 +420,97 @@
             "description": "Concept explanation, progressive learning, practical examples",
             "promptTriggers": {
                 "keywords": [
+                    {"value": "explain concept", "weight": 2.5},
+                    {"value": "teach me", "weight": 2.0},
+                    {"value": "help understand", "weight": 2.0},
                     "explain async/await",
                     "teach tdd",
                     "how does work",
-                    "what is",
-                    "explain concept",
-                    "teach me",
-                    "help understand"
+                    "what is"
                 ],
                 "intentPatterns": [
-                    "(explain|teach|describe).*?(concept|pattern|principle|technique)",
+                    {"value": "(explain|teach|describe).*?(concept|pattern|principle|technique)", "weight": 2.0},
                     "(how does|what is|help understand).*?work",
                     "teach.*?(me|about)",
                     "explain.*?(async|await|promise|closure|hoisting|concept)"
+                ]
+            }
+        },
+        "agent-creator": {
+            "type": "design",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Create and optimize Claude Code sub-agents following Anthropic best practices",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "create agent", "weight": 4.0},
+                    {"value": "create subagent", "weight": 4.0},
+                    {"value": "create sub-agent", "weight": 4.0},
+                    {"value": "optimize agent", "weight": 3.5},
+                    {"value": "design agent", "weight": 3.5},
+                    {"value": "agent metadata", "weight": 3.0},
+                    {"value": "agent prompt engineering", "weight": 3.0},
+                    "new agent",
+                    "agent yaml",
+                    "agent system prompt"
+                ],
+                "intentPatterns": [
+                    {"value": "(create|design|build|optimize).*?(agent|subagent|sub-agent)", "weight": 3.5},
+                    {"value": "agent.*?(metadata|yaml|prompt|configuration)", "weight": 2.5},
+                    "(new|custom).*?agent"
+                ]
+            }
+        },
+        "gemini-orchestrator": {
+            "type": "exploration",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Orchestrate Gemini CLI for second opinions, web research, codebase analysis, and parallel code generation",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "gemini", "weight": 5.0},
+                    {"value": "gem cli", "weight": 5.0},
+                    {"value": "gsearch", "weight": 4.5},
+                    {"value": "xcheck", "weight": 4.5},
+                    {"value": "2nd opinion", "weight": 4.0},
+                    {"value": "second opinion", "weight": 4.0},
+                    {"value": "sanity check code", "weight": 3.5},
+                    {"value": "fresh eyes", "weight": 3.5},
+                    {"value": "external review", "weight": 3.5},
+                    {"value": "another look", "weight": 3.0},
+                    {"value": "cross validate", "weight": 3.0},
+                    {"value": "double check this", "weight": 3.0},
+                    {"value": "verify with ai", "weight": 3.0},
+                    {"value": "what's new in", "weight": 2.5},
+                    {"value": "latest version of", "weight": 2.5},
+                    {"value": "current docs for", "weight": 2.5},
+                    {"value": "up to date", "weight": 2.0},
+                    {"value": "recent changes", "weight": 2.0},
+                    "gemi",
+                    "use gemini",
+                    "ask gemini",
+                    "different perspective",
+                    "alternative view",
+                    "google search",
+                    "web research",
+                    "codebase investigator",
+                    "parallel generation",
+                    "background task",
+                    "offload to"
+                ],
+                "intentPatterns": [
+                    {"value": "(use|ask|run).*?gem(ini)?", "weight": 4.0},
+                    {"value": "(2nd|second).*?(opinion|perspective|look)", "weight": 3.5},
+                    {"value": "(another|different|fresh|external).*?(eyes|look|perspective|review)", "weight": 3.0},
+                    {"value": "(cross|sanity|double).*?(check|validate|verify)", "weight": 3.0},
+                    {"value": "(what'?s|whats).*?(new|latest|current).*?in", "weight": 2.5},
+                    {"value": "(latest|current|recent|updated?).*?(version|docs|api|changelog)", "weight": 2.5},
+                    {"value": "(web|google|internet).*?(search|research|lookup)", "weight": 2.5},
+                    {"value": "(offload|parallel|background).*?(task|generation|process)", "weight": 2.0},
+                    "alternative.*?(ai|model|view)",
+                    "verify.*?(code|implementation|solution)"
                 ]
             }
         }
@@ -431,10 +522,10 @@
             "warn": "Shows warning but allows proceeding"
         },
         "priority_levels": {
-            "critical": "Highest - Always trigger when matched",
-            "high": "Important - Trigger for most matches",
-            "medium": "Moderate - Trigger for clear matches",
-            "low": "Optional - Trigger only for explicit matches"
+            "critical": "Highest - Always trigger when matched (4x multiplier)",
+            "high": "Important - Trigger for most matches (3x multiplier)",
+            "medium": "Moderate - Trigger for clear matches (2x multiplier)",
+            "low": "Optional - Trigger only for explicit matches (1x multiplier)"
         },
         "types": {
             "exploration": "Codebase exploration and analysis agents",
@@ -443,6 +534,18 @@
             "quality": "Code quality and refactoring agents",
             "infrastructure": "DevOps and infrastructure agents",
             "design": "UI/UX and educational agents"
+        },
+        "weighting": {
+            "format": "Keywords/patterns can be string (auto-weight) or {value, weight}",
+            "auto_weight": "Calculated from: min(length/15, 2.0) + wordBonus",
+            "intent_bonus": "Intent patterns get 1.2x multiplier",
+            "diminishing_returns": "Multiple matches apply 1/(1 + 0.4*index) factor",
+            "confidence_thresholds": {
+                "critical": "score >= 12.0",
+                "high": "score >= 8.0",
+                "medium": "score >= 4.0",
+                "low": "score >= 2.0"
+            }
         }
     }
 }
