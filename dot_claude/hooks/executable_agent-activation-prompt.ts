@@ -11,10 +11,65 @@ interface HookInput {
     prompt: string;
 }
 
+// Keywords can be string (auto-weight) or {value, weight} (user-defined weight)
+type WeightedKeyword = string | { value: string; weight: number };
+
 interface PromptTriggers {
-    keywords?: string[];
-    intentPatterns?: string[];
+    keywords?: WeightedKeyword[];
+    intentPatterns?: WeightedKeyword[];
 }
+
+// Confidence level configuration - easily extensible
+interface ConfidenceLevelConfig {
+    level: string;
+    minScore: number;
+    enforcement: string;
+    icon: string;
+    showDesc: boolean;
+    displayLimit: number;
+    actionTemplate: string;
+}
+
+const CONFIDENCE_LEVELS: ConfidenceLevelConfig[] = [
+    {
+        level: 'critical',
+        minScore: 12.0,
+        enforcement: 'HIGHLY RECOMMENDED',
+        icon: '⭐',
+        showDesc: true,
+        displayLimit: 5,
+        actionTemplate: '🎯 ACTION: Use Task(subagent_type="{agent}") NOW'
+    },
+    {
+        level: 'high',
+        minScore: 8.0,
+        enforcement: 'RECOMMENDED',
+        icon: '💎',
+        showDesc: true,
+        displayLimit: 5,
+        actionTemplate: '💎 RECOMMENDED: Use "{agent}" agent'
+    },
+    {
+        level: 'medium',
+        minScore: 4.0,
+        enforcement: 'SUGGESTED',
+        icon: '💡',
+        showDesc: true,
+        displayLimit: 3,
+        actionTemplate: '💡 SUGGESTED: Consider "{agent}" agent'
+    },
+    {
+        level: 'low',
+        minScore: 2.0,
+        enforcement: 'AVAILABLE',
+        icon: '📌',
+        showDesc: false,
+        displayLimit: 2,
+        actionTemplate: '📌 TIP: Agents available if needed'
+    }
+];
+
+const MIN_SCORE = CONFIDENCE_LEVELS[CONFIDENCE_LEVELS.length - 1].minScore;
 
 interface AgentRule {
     type: 'exploration' | 'architecture' | 'language' | 'quality' | 'infrastructure' | 'design';
@@ -31,16 +86,104 @@ interface AgentRules {
     agents: Record<string, AgentRule>;
 }
 
+interface MatchDetail {
+    value: string;
+    weight: number;
+    matchType: 'keyword' | 'intent';
+}
+
 interface MatchedAgent {
     name: string;
     matchType: 'keyword' | 'intent';
     config: AgentRule;
+    matches: MatchDetail[];
+    score: number;
+    confidenceConfig: ConfidenceLevelConfig;
 }
 
 interface AgentRulesPaths {
     global: string | null;
     project: string | null;
 }
+
+// Priority multipliers for scoring
+const PRIORITY_MULTIPLIER: Record<string, number> = {
+    critical: 4.0,
+    high: 3.0,
+    medium: 2.0,
+    low: 1.0
+};
+
+// Diminishing returns factor for multiple matches
+const DIMINISHING_FACTOR = 0.4;
+
+/**
+ * Calculate weight for a keyword based on specificity
+ */
+function calculateKeywordWeight(keyword: string): number {
+    const words = keyword.split(/\s+/).length;
+    const length = keyword.length;
+    const lengthWeight = Math.min(length / 15, 2.0);
+    const wordBonus = Math.min((words - 1) * 0.3, 1.0);
+    return Math.max(0.5, lengthWeight + wordBonus);
+}
+
+/**
+ * Extract value and weight from a weighted keyword
+ */
+function parseWeightedKeyword(kw: WeightedKeyword): { value: string; weight: number } {
+    if (typeof kw === 'string') {
+        return { value: kw, weight: calculateKeywordWeight(kw) };
+    }
+    return { value: kw.value, weight: kw.weight };
+}
+
+/**
+ * Calculate final score with diminishing returns
+ */
+function calculateScore(matches: MatchDetail[], priority: string): number {
+    if (matches.length === 0) return 0;
+    const sortedMatches = [...matches].sort((a, b) => b.weight - a.weight);
+    let totalWeight = 0;
+    sortedMatches.forEach((match, index) => {
+        const diminishingMultiplier = 1 / (1 + DIMINISHING_FACTOR * index);
+        totalWeight += match.weight * diminishingMultiplier;
+    });
+    const priorityMult = PRIORITY_MULTIPLIER[priority] || 1.0;
+    return totalWeight * priorityMult;
+}
+
+/**
+ * Get confidence level config based on score
+ */
+function getConfidenceConfig(score: number): ConfidenceLevelConfig {
+    for (const config of CONFIDENCE_LEVELS) {
+        if (score >= config.minScore) {
+            return config;
+        }
+    }
+    return CONFIDENCE_LEVELS[CONFIDENCE_LEVELS.length - 1];
+}
+
+/**
+ * Escape special regex characters
+ */
+function escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Orchestration guidance for subagent delegation
+ * Inspired by: https://github.com/PaulRBerg/ai-flags
+ */
+const ORCHESTRATION_GUIDANCE = `
+📋 DELEGATION STRATEGY:
+  • Independent tasks → Spawn multiple subagents in PARALLEL (single message, multiple Task calls)
+  • Dependent tasks → Use single subagent for entire sequential workflow
+  • Hybrid workflows → Handle prerequisites first, then parallelize independent work
+
+⚡ ORCHESTRATE, DON'T IMPLEMENT: Delegate all implementation to subagents. Review their work at the end.
+`;
 
 /**
  * Find both global and project-level agent-rules.json paths
@@ -119,7 +262,7 @@ async function main() {
             process.exit(0);
         }
 
-        // Track matched agents (deduplicated by name)
+        // Track matched agents with scoring
         const matchedAgentsMap = new Map<string, MatchedAgent>();
 
         // Check each agent for matches
@@ -127,42 +270,58 @@ async function main() {
             const triggers = config.promptTriggers;
             if (!triggers) continue;
 
-            let matched = false;
+            const matches: MatchDetail[] = [];
 
-            // Check keyword triggers
-            if (triggers.keywords && !matched) {
-                for (const keyword of triggers.keywords) {
-                    if (prompt.includes(keyword.toLowerCase())) {
-                        matchedAgentsMap.set(agentName, {
-                            name: agentName,
-                            matchType: 'keyword',
-                            config
-                        });
-                        matched = true;
-                        break;
+            // Check keyword triggers - collect ALL matches for scoring
+            if (triggers.keywords) {
+                for (const kw of triggers.keywords) {
+                    const { value, weight } = parseWeightedKeyword(kw);
+                    const kwLower = value.toLowerCase();
+
+                    // For short keywords (<=4 chars), use word boundary matching
+                    let matched = false;
+                    if (kwLower.length <= 4) {
+                        const wordBoundaryRegex = new RegExp(`\\b${escapeRegex(kwLower)}\\b`, 'i');
+                        matched = wordBoundaryRegex.test(prompt);
+                    } else {
+                        matched = prompt.includes(kwLower);
+                    }
+
+                    if (matched) {
+                        matches.push({ value, weight, matchType: 'keyword' });
                     }
                 }
             }
 
-            // Check intent pattern triggers
-            if (triggers.intentPatterns && !matched) {
-                for (const pattern of triggers.intentPatterns) {
+            // Check intent pattern triggers - collect ALL matches
+            if (triggers.intentPatterns) {
+                for (const pat of triggers.intentPatterns) {
+                    const { value, weight } = parseWeightedKeyword(pat);
                     try {
-                        const regex = new RegExp(pattern, 'i');
+                        const regex = new RegExp(value, 'i');
                         if (regex.test(data.prompt)) {
-                            matchedAgentsMap.set(agentName, {
-                                name: agentName,
-                                matchType: 'intent',
-                                config
-                            });
-                            matched = true;
-                            break;
+                            // Pattern matches get a slight bonus (more intentional)
+                            matches.push({ value, weight: weight * 1.2, matchType: 'intent' });
                         }
                     } catch (err) {
-                        // Skip invalid regex patterns
                         continue;
                     }
                 }
+            }
+
+            // Only add if we have matches
+            if (matches.length > 0) {
+                const score = calculateScore(matches, config.priority);
+                const confidenceConfig = getConfidenceConfig(score);
+
+                matchedAgentsMap.set(agentName, {
+                    name: agentName,
+                    matchType: matches[0].matchType,
+                    config,
+                    matches,
+                    score,
+                    confidenceConfig
+                });
             }
         }
 
@@ -171,55 +330,68 @@ async function main() {
             process.exit(0);
         }
 
-        // Group by priority
-        const matchedAgents = Array.from(matchedAgentsMap.values());
-        const byPriority = {
-            critical: matchedAgents.filter(a => a.config.priority === 'critical'),
-            high: matchedAgents.filter(a => a.config.priority === 'high'),
-            medium: matchedAgents.filter(a => a.config.priority === 'medium'),
-            low: matchedAgents.filter(a => a.config.priority === 'low')
-        };
+        // Sort by score and filter below minimum
+        const matchedAgents = Array.from(matchedAgentsMap.values())
+            .filter(a => a.score >= MIN_SCORE)
+            .sort((a, b) => b.score - a.score);
+
+        if (matchedAgents.length === 0) {
+            process.exit(0);
+        }
+
+        // Group by confidence level
+        const byLevel = new Map<string, MatchedAgent[]>();
+        for (const levelConfig of CONFIDENCE_LEVELS) {
+            byLevel.set(levelConfig.level, matchedAgents.filter(
+                a => a.confidenceConfig.level === levelConfig.level
+            ));
+        }
+
+        // Check permission mode for orchestration guidance
+        const isPlanMode = data.permission_mode === 'plan';
+        const isMultiAgentTask = matchedAgents.length > 1;
 
         // Build output message
         let output = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
         output += '💡 SPECIALIZED AGENTS AVAILABLE\n';
         output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
 
-        // Add matched agents by priority
-        const priorityLabels = {
-            critical: { icon: '⭐', label: 'HIGHLY RECOMMENDED' },
-            high: { icon: '💎', label: 'RECOMMENDED' },
-            medium: { icon: '💡', label: 'SUGGESTED' },
-            low: { icon: '📌', label: 'AVAILABLE' }
-        };
+        // Display each confidence level using config
+        for (const levelConfig of CONFIDENCE_LEVELS) {
+            const agents = byLevel.get(levelConfig.level) || [];
+            if (agents.length === 0) continue;
 
-        for (const [priority, label] of Object.entries(priorityLabels)) {
-            const agents = byPriority[priority as keyof typeof byPriority];
-            if (agents.length > 0) {
-                output += `${label.icon} ${label.label}:\n`;
-                agents.forEach(agent => {
-                    output += `  → ${agent.name}`;
-                    if (agent.config.model) {
-                        output += ` (${agent.config.model})`;
-                    }
-                    if (agent.config.description) {
-                        const shortDesc = agent.config.description.split('.')[0];
-                        output += ` - ${shortDesc}`;
-                    }
-                    output += '\n';
-                });
+            const displayAgents = agents.slice(0, levelConfig.displayLimit);
+
+            output += `${levelConfig.icon} ${levelConfig.enforcement}:\n`;
+            displayAgents.forEach(agent => {
+                output += `  → ${agent.name} [${agent.score.toFixed(1)}]`;
+                if (agent.config.model) {
+                    output += ` (${agent.config.model})`;
+                }
+                if (levelConfig.showDesc && agent.config.description) {
+                    const shortDesc = agent.config.description.split('.')[0];
+                    output += ` - ${shortDesc}`;
+                }
                 output += '\n';
+            });
+
+            if (agents.length > levelConfig.displayLimit) {
+                output += `  ... +${agents.length - levelConfig.displayLimit} more\n`;
             }
+            output += '\n';
         }
 
-        // Add suggestion instruction
-        const hasHighPriority = byPriority.critical.length > 0 || byPriority.high.length > 0;
-        if (hasHighPriority) {
-            output += '💡 Consider using: Task tool with subagent_type parameter\n';
-            output += '   Example: Task(subagent_type="agent-name", prompt="your task")\n';
-        } else {
-            output += '💡 Optional: These agents may help with specialized tasks\n';
+        // Add orchestration guidance for plan mode or multi-agent scenarios
+        if (isPlanMode || isMultiAgentTask) {
+            output += ORCHESTRATION_GUIDANCE;
+            output += '\n';
         }
+
+        // Action instruction based on best match
+        const bestMatch = matchedAgents[0];
+        const actionText = bestMatch.confidenceConfig.actionTemplate.replace('{agent}', bestMatch.name);
+        output += actionText + '\n';
 
         output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
 
