@@ -224,9 +224,24 @@ The actual guidance, documentation, patterns, examples
 
 ### Step 2: Add to skill-rules.json (REQUIRED for activation)
 
+**RECOMMENDED: Use the jq-based CRUD script for faster operations:**
+
+```bash
+# Create new skill entry
+./scripts/skill-rules-crud.sh create-minimal my-skill "Description here" high
+
+# Add keywords
+./scripts/skill-rules-crud.sh add-keyword my-skill "keyword1"
+./scripts/skill-rules-crud.sh add-keyword my-skill "specific-term" 5.0  # with weight
+
+# Add intent patterns
+./scripts/skill-rules-crud.sh add-pattern my-skill "(create|add).*?something"
+./scripts/skill-rules-crud.sh add-pattern my-skill "pattern-here" 4.0  # with weight
+```
+
 See [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) for complete schema.
 
-**Basic Template:**
+**Manual JSON Template (alternative):**
 ```json
 {
   "my-new-skill": {
@@ -238,18 +253,6 @@ See [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) for complete schema.
       "intentPatterns": ["(create|add).*?something"]
     }
   }
-}
-```
-
-**With Weighted Keywords (v2.0):**
-```json
-{
-  "keywords": [
-    {"value": "k8s", "weight": 5.0},      // High weight for specific terms
-    {"value": "kubectl", "weight": 5.0},  // User-defined weight
-    "deployment",                          // Auto-calculated weight
-    "container"                            // Based on length
-  ]
 }
 ```
 
@@ -409,10 +412,37 @@ export SKIP_ERROR_REMINDER=true
 
 ---
 
+## skill-rules-crud.sh Quick Reference
+
+**Location:** `scripts/skill-rules-crud.sh`
+
+Fast jq-based CRUD operations for skill-rules.json. Use instead of manual JSON editing.
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `list` | `./scripts/skill-rules-crud.sh list` | List all skill names |
+| `get` | `./scripts/skill-rules-crud.sh get docker` | Get full skill config |
+| `get-keywords` | `./scripts/skill-rules-crud.sh get-keywords docker` | List keywords |
+| `create-minimal` | `./scripts/skill-rules-crud.sh create-minimal name "desc" high` | Create new skill |
+| `add-keyword` | `./scripts/skill-rules-crud.sh add-keyword skill "kw" [weight]` | Add keyword |
+| `add-pattern` | `./scripts/skill-rules-crud.sh add-pattern skill "regex" [weight]` | Add pattern |
+| `remove-keyword` | `./scripts/skill-rules-crud.sh remove-keyword skill "kw"` | Remove keyword |
+| `remove-pattern` | `./scripts/skill-rules-crud.sh remove-pattern skill "regex"` | Remove pattern |
+| `update-priority` | `./scripts/skill-rules-crud.sh update-priority skill critical` | Set priority |
+| `update-enforcement` | `./scripts/skill-rules-crud.sh update-enforcement skill block` | Set enforcement |
+| `delete` | `./scripts/skill-rules-crud.sh delete skill-name` | Delete skill |
+| `search` | `./scripts/skill-rules-crud.sh search "term"` | Search all skills |
+| `validate` | `./scripts/skill-rules-crud.sh validate` | Validate JSON |
+| `stats` | `./scripts/skill-rules-crud.sh stats` | Show statistics |
+| `backup` | `./scripts/skill-rules-crud.sh backup` | Create backup |
+
+---
+
 ## Reference Files
 
 | File | Content |
 |------|---------|
+| [scripts/skill-rules-crud.sh](scripts/skill-rules-crud.sh) | jq-based CRUD for skill-rules.json |
 | [SCORING.md](SCORING.md) | Weight formulas, confidence levels, examples |
 | [TRIGGER_TYPES.md](TRIGGER_TYPES.md) | Keywords, intents, file paths, content patterns |
 | [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) | Complete skill-rules.json schema |
