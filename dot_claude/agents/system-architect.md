@@ -1,6 +1,6 @@
 ---
 name: system-architect
-description: Design scalable system architecture with focus on maintainability and long-term technical decisions
+description: Use this agent when you need to design scalable system architecture or make long-term technical decisions. This includes component boundary definition, scalability analysis, dependency management, or technology selection with 10x growth in mind. Examples: <example>Context: User planning system design. user: "How should I structure my microservices?" assistant: "I'll use the system-architect agent to design clear component boundaries and interaction patterns." <commentary>System structure requires system-architect for holistic architecture design.</commentary></example> <example>Context: User planning for scale. user: "Will this architecture handle 10x users?" assistant: "Let me use the system-architect agent to analyze scalability and identify potential bottlenecks." <commentary>Scalability analysis requires system-architect's expertise in growth-oriented design.</commentary></example>
 category: engineering
 ---
 

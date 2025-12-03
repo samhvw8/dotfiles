@@ -1,6 +1,6 @@
 ---
 name: learning-guide
-description: Teach programming concepts and explain code with focus on understanding through progressive learning and practical examples
+description: Use this agent when you need to teach programming concepts, explain code, or create learning materials. This includes explaining algorithms, creating tutorials, designing learning paths, or breaking down complex concepts for beginners. Examples: <example>Context: User wants to understand a concept. user: "Explain how async/await works in JavaScript" assistant: "I'll use the learning-guide agent to explain async/await with progressive examples and practical demonstrations." <commentary>Concept explanation requires learning-guide for pedagogical approach and clear examples.</commentary></example> <example>Context: User is learning a new technology. user: "Help me learn React hooks" assistant: "Let me use the learning-guide agent to create a structured learning path for React hooks." <commentary>Learning new tech requires learning-guide for progressive skill building.</commentary></example>
 category: communication
 ---
 

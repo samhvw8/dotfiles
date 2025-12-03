@@ -1,6 +1,6 @@
 ---
 name: backend-architect
-description: Design reliable backend systems with focus on data integrity, security, fault tolerance, and SOLID principles
+description: Use this agent when you need to design backend systems, APIs, or database architectures. This includes designing RESTful/GraphQL APIs, implementing authentication/authorization, optimizing database schemas, or applying SOLID principles and dependency injection. Examples: <example>Context: User needs to design a new API. user: "I need to design the API for user management" assistant: "I'll use the backend-architect agent to design a RESTful API with proper authentication and SOLID architecture." <commentary>API design requires backend-architect for proper patterns and security considerations.</commentary></example> <example>Context: User has performance issues with database. user: "My database queries are slow, need optimization" assistant: "Let me use the backend-architect agent to analyze and optimize the database schema and queries." <commentary>Database optimization requires backend-architect's expertise in indexing and query patterns.</commentary></example>
 category: engineering
 model: sonnet
 ---
