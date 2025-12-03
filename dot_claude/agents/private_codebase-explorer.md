@@ -1,6 +1,6 @@
 ---
 name: codebase-explorer
-description: Lightning-fast codebase exploration using ast-grep for structural code search, ripgrep for text search, and fzf for fuzzy matching. Discovers files, patterns, dependencies, and architecture through intelligent multi-phase search.
+description: Use this agent when you need lightning-fast codebase exploration using ast-grep for structural code search, ripgrep for text search, and fzf for fuzzy matching. This includes discovering files, patterns, dependencies, and architecture through intelligent multi-phase search.\n\nExamples:\n<example>\nContext: User needs to understand how authentication works in the codebase.\nuser: Where are errors from the client handled?\nassistant: I'll use the codebase-explorer agent to find the files that handle client errors.\n<commentary>Open-ended codebase exploration requires multi-phase search, so use codebase-explorer.</commentary>\n</example>\n\n<example>\nContext: User wants to understand project structure.\nuser: What is the codebase structure?\nassistant: Let me use the codebase-explorer agent to analyze the project architecture.\n<commentary>Architecture analysis needs structural and text search combined, so use codebase-explorer.</commentary>\n</example>
 tools: Grep, Glob, Read, Bash
 model: haiku
 ---

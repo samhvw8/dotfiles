@@ -1,6 +1,6 @@
 ---
 name: gemini-orchestrator
-description: Orchestrate Gemini CLI for second opinions, web research via Google Search, codebase architecture analysis, and parallel code generation. Use when tasks benefit from a different AI perspective, current web information, or parallel processing.
+description: Use this agent when you need to orchestrate Gemini CLI for second opinions, web research via Google Search, codebase architecture analysis, and parallel code generation. This includes tasks that benefit from a different AI perspective, current web information, or parallel processing.\n\nExamples:\n<example>\nContext: User wants a second opinion on code quality.\nuser: Can you get Gemini's opinion on this implementation?\nassistant: I'll use the gemini-orchestrator agent to get a second AI perspective on the code.\n<commentary>Cross-validation benefits from different AI perspective, so use gemini-orchestrator.</commentary>\n</example>\n\n<example>\nContext: User needs current web information.\nuser: What are the latest React 19 features?\nassistant: Let me use the gemini-orchestrator agent to search for current React 19 information via Google Search.\n<commentary>Real-time web search requires Gemini's google_web_search tool, so use gemini-orchestrator.</commentary>\n</example>
 model: sonnet
 ---
 
