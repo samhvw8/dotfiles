@@ -113,15 +113,6 @@ Automatically activates when you mention:
 - **Method**: Injects formatted reminder as context (stdout → Claude's input)
 - **Use Cases**: Topic-based skills, implicit work detection
 
-**2. Stop Hook - Error Handling Reminder** (Gentle Reminders)
-- **File**: `.claude/hooks/error-handling-reminder.ts`
-- **Trigger**: AFTER Claude finishes responding
-- **Purpose**: Gentle reminder to self-assess error handling in code written
-- **Method**: Analyzes edited files for risky patterns, displays reminder if needed
-- **Use Cases**: Error handling awareness without blocking friction
-
-**Philosophy Change (2025-10-27):** We moved away from blocking PreToolUse for Sentry/error handling. Instead, use gentle post-response reminders that don't block workflow but maintain code quality awareness.
-
 ### Configuration File
 
 **Location**: `.claude/skills/skill-rules.json`
@@ -445,11 +436,6 @@ Fast jq-based CRUD operations for skill-rules.json. Use instead of manual JSON e
 | [scripts/skill-rules-crud.sh](scripts/skill-rules-crud.sh) | jq-based CRUD for skill-rules.json |
 | [SCORING.md](SCORING.md) | Weight formulas, confidence levels, examples |
 | [TRIGGER_TYPES.md](TRIGGER_TYPES.md) | Keywords, intents, file paths, content patterns |
-| [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) | Complete skill-rules.json schema |
-| [HOOK_MECHANISMS.md](HOOK_MECHANISMS.md) | Hook internals, exit codes, session state |
-| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Debugging guide for activation issues |
-| [PATTERNS_LIBRARY.md](PATTERNS_LIBRARY.md) | Ready-to-use regex/glob patterns |
-| [ADVANCED.md](ADVANCED.md) | Future enhancements and ideas |
 
 ---
 
@@ -510,8 +496,6 @@ cat <<'EOF' | npx tsx .claude/hooks/skill-verification-guard.ts
 {"tool_name":"Edit","tool_input":{"file_path":"test.ts"}}
 EOF
 ```
-
-See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for complete debugging guide.
 
 ---
 

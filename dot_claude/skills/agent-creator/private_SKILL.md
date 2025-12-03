@@ -24,7 +24,7 @@ Design production-ready Claude Code sub-agents following Anthropic's official be
 ```yaml
 ---
 name: agent-name-lowercase-hyphens
-description: Natural language purpose and invocation guidance. Include trigger examples and key capabilities.
+description: Use this agent when you need to [primary use case]. This includes [secondary use cases].\n\nExamples:\n<example>\nContext: [situation].\nuser: [request]\nassistant: [response]\n<commentary>[reasoning]</commentary>\n</example>\n\n<example>\nContext: [another situation].\nuser: [request]\nassistant: [response]\n<commentary>[reasoning]</commentary>\n</example>
 tools: Grep, Glob, Read, Bash  # Comma-separated, limit to necessary only
 model: haiku  # or sonnet, opus, inherit
 ---
@@ -38,10 +38,13 @@ model: haiku  # or sonnet, opus, inherit
 - Examples: `codebase-explorer`, `code-reviewer`, `debugger`
 
 **description** (required)
-- Natural language explanation of purpose
-- Include trigger phrases: "Use when...", "Triggers on..."
-- List key capabilities and use cases
-- Max ~200 words for efficiency
+- **MUST be a single line** - use `\n` for newlines (no quotes needed)
+- Start with "Use this agent when..." followed by use cases
+- Include 2-3 inline `<example>` blocks with Context, user, assistant, commentary
+- Format: `<example>\nContext: ...\nuser: ...\nassistant: ...\n<commentary>...</commentary>\n</example>`
+- Each example shows: situation → user request → assistant response → reasoning
+- Max ~300 words for efficiency (examples add value)
+- **Do NOT use YAML multiline syntax** (`>-`, `|`, `>`) - these cause parsing issues
 
 **tools** (optional)
 - Comma-separated list of allowed tools
@@ -309,7 +312,7 @@ Task(
 ```yaml
 ---
 name: file-finder
-description: Find files using ripgrep and fzf. Triggers on "find files", "locate X", "search codebase".
+description: Use this agent when you need to quickly locate files across a codebase. This includes finding files by name patterns, searching for specific code structures, or discovering related files for a feature.\n\nExamples:\n<example>\nContext: User needs to find all authentication-related files.\nuser: Find all files related to authentication\nassistant: I'll use the file-finder agent to locate authentication files across the codebase.\n<commentary>The user needs file discovery, so use file-finder to search with multiple strategies in parallel.</commentary>\n</example>\n\n<example>\nContext: User wants to locate configuration files.\nuser: Where are the database config files?\nassistant: Let me use the file-finder agent to search for database configuration files.\n<commentary>Configuration file lookup requires pattern matching, so use file-finder.</commentary>\n</example>
 tools: Grep, Glob, Read, Bash
 model: haiku
 ---
@@ -336,7 +339,7 @@ MEDIUM: path/file2.ts - Name match
 ```yaml
 ---
 name: code-reviewer
-description: Review code for quality, security, and best practices. Triggers on "review code", "check quality", "security audit".
+description: Use this agent when you need comprehensive code review and quality assessment. This includes reviewing new implementations, checking for security vulnerabilities, evaluating code quality, or assessing technical debt.\n\nExamples:\n<example>\nContext: User has implemented a new feature.\nuser: I've finished the payment integration\nassistant: I'll use the code-reviewer agent to review the payment integration for quality and security.\n<commentary>New code needs review, so use code-reviewer for comprehensive assessment.</commentary>\n</example>\n\n<example>\nContext: User wants security audit.\nuser: Check my API endpoints for security issues\nassistant: Let me use the code-reviewer agent to audit the API security.\n<commentary>Security review requires code-reviewer's vulnerability detection capabilities.</commentary>\n</example>
 tools: Grep, Read, Bash
 model: sonnet
 ---
@@ -365,7 +368,7 @@ Analyze code for quality, security, and maintainability issues.
 ```yaml
 ---
 name: architecture-analyst
-description: Analyze system architecture and design patterns. Triggers on "analyze architecture", "design review", "system overview".
+description: Use this agent when you need to analyze system architecture, evaluate design patterns, or understand complex codebases at a high level. This includes architectural reviews, dependency analysis, and design decision evaluation.\n\nExamples:\n<example>\nContext: User wants to understand codebase structure.\nuser: How is the authentication system architected?\nassistant: I'll use the architecture-analyst agent to analyze the authentication system design.\n<commentary>Architectural understanding requires high-level analysis, so use architecture-analyst.</commentary>\n</example>\n\n<example>\nContext: User considering major refactoring.\nuser: Should we migrate to microservices?\nassistant: Let me use the architecture-analyst to evaluate the current architecture and migration implications.\n<commentary>Architectural decisions require opus-level reasoning, so use architecture-analyst.</commentary>\n</example>
 tools: Grep, Glob, Read, Bash
 model: opus
 ---

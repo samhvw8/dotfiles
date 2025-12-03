@@ -2025,6 +2025,924 @@
           }
         ]
       }
+    },
+    "databases": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Work with MongoDB (document database, BSON documents, aggregation pipelines, Atlas cloud) and PostgreSQL (relational database, SQL queries, psql CLI, pgAdmin). Use when designing database schemas, writing queries and aggregations, optimizing indexes for performance, performing database migrations, configuring replication and sharding, implementing backup and restore strategies, managing database users and permissions, analyzing query performance, or administering production databases.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "mongodb",
+            "weight": 5
+          },
+          {
+            "value": "mongo",
+            "weight": 5
+          },
+          {
+            "value": "mongoose",
+            "weight": 5
+          },
+          {
+            "value": "atlas",
+            "weight": 4
+          },
+          {
+            "value": "bson",
+            "weight": 5
+          },
+          {
+            "value": "aggregation pipeline",
+            "weight": 5
+          },
+          {
+            "value": "mongosh",
+            "weight": 5
+          },
+          {
+            "value": "nosql",
+            "weight": 4
+          },
+          "database schema",
+          "database design",
+          "database migration",
+          "database backup",
+          "database restore",
+          "database replication",
+          "database sharding",
+          "database user",
+          "database permissions",
+          "query optimization",
+          "slow query",
+          "database admin",
+          "dba",
+          "collection",
+          "document database",
+          "replica set"
+        ],
+        "intentPatterns": [
+          "(mongodb|mongo|mongoose|atlas)",
+          "(design|create|optimize).*?(database|schema|collection)",
+          "(aggregation|aggregate).*?(pipeline|query)",
+          "database.*?(migration|backup|restore|replication|sharding)",
+          "(query|index).*?(optimization|performance)",
+          "database.*?(user|permission|admin)"
+        ]
+      }
+    },
+    "debugging": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Systematic debugging framework ensuring root cause investigation before fixes. Includes four-phase debugging process, backward call stack tracing, multi-layer validation, and verification protocols. Use when encountering bugs, test failures, unexpected behavior, performance issues, or before claiming work complete.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "debug",
+            "weight": 4
+          },
+          {
+            "value": "debugging",
+            "weight": 4.5
+          },
+          {
+            "value": "bug",
+            "weight": 4
+          },
+          {
+            "value": "error",
+            "weight": 3.5
+          },
+          {
+            "value": "exception",
+            "weight": 4
+          },
+          {
+            "value": "crash",
+            "weight": 4
+          },
+          {
+            "value": "stack trace",
+            "weight": 5
+          },
+          {
+            "value": "traceback",
+            "weight": 5
+          },
+          "test failure",
+          "test failing",
+          "not working",
+          "broken",
+          "fails",
+          "unexpected behavior",
+          "performance issue",
+          "call stack",
+          "root cause",
+          "investigate",
+          "fix bug",
+          "fix error",
+          "diagnose",
+          "troubleshoot"
+        ],
+        "intentPatterns": [
+          "(debug|debugging|diagnose|troubleshoot)",
+          "(fix|investigate|analyze).*?(bug|error|issue|problem)",
+          "(bug|error|exception|crash).*?(fix|investigate|analyze)",
+          "(not working|broken|fails|failing)",
+          "(stack trace|traceback|call stack)",
+          "test.*?(fail|failing|failure)",
+          "unexpected.*?behavior",
+          "performance.*?(issue|problem)"
+        ]
+      }
+    },
+    "devops": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Deploy and manage cloud infrastructure on Cloudflare (Workers, R2, D1, KV, Pages, Durable Objects, Browser Rendering), Docker containers, and Google Cloud Platform (Compute Engine, GKE, Cloud Run, App Engine, Cloud Storage). Use when deploying serverless functions to the edge, configuring edge computing solutions, managing Docker containers and images, setting up CI/CD pipelines, optimizing cloud infrastructure costs, implementing global caching strategies, working with cloud databases, or building cloud-native applications.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "docker",
+            "weight": 5
+          },
+          {
+            "value": "dockerfile",
+            "weight": 5
+          },
+          {
+            "value": "docker-compose",
+            "weight": 5
+          },
+          {
+            "value": "container",
+            "weight": 4
+          },
+          {
+            "value": "kubernetes",
+            "weight": 5
+          },
+          {
+            "value": "k8s",
+            "weight": 5
+          },
+          {
+            "value": "ci/cd",
+            "weight": 5
+          },
+          {
+            "value": "cicd",
+            "weight": 5
+          },
+          {
+            "value": "deployment",
+            "weight": 3.5
+          },
+          {
+            "value": "infrastructure",
+            "weight": 3.5
+          },
+          "devops",
+          "cloud infrastructure",
+          "deploy",
+          "containerize",
+          "orchestration",
+          "pipeline",
+          "github actions",
+          "gitlab ci",
+          "jenkins",
+          "terraform",
+          "ansible",
+          "helm",
+          "image",
+          "registry",
+          "build pipeline",
+          "release pipeline",
+          "multi-stage build",
+          "docker network",
+          "docker volume"
+        ],
+        "intentPatterns": [
+          "(docker|dockerfile|docker-compose|container)",
+          "(kubernetes|k8s|helm|orchestration)",
+          "(ci\\/cd|cicd|pipeline).*?(setup|configure|build)",
+          "(deploy|deployment).*?(application|service|container)",
+          "(infrastructure|cloud).*?(setup|configure|manage)",
+          "(github actions|gitlab ci|jenkins).*?(setup|configure|workflow)"
+        ]
+      }
+    },
+    "media-processing": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "description": "Process multimedia files with FFmpeg (video/audio encoding, conversion, streaming, filtering, hardware acceleration) and ImageMagick (image manipulation, format conversion, batch processing, effects, composition). Use when converting media formats, encoding videos with specific codecs (H.264, H.265, VP9), resizing/cropping images, extracting audio from video, applying filters and effects, optimizing file sizes, creating streaming manifests (HLS/DASH), generating thumbnails, batch processing images, creating composite images, or implementing media processing pipelines.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "ffmpeg",
+            "weight": 5
+          },
+          {
+            "value": "imagemagick",
+            "weight": 5
+          },
+          {
+            "value": "magick",
+            "weight": 5
+          },
+          {
+            "value": "h264",
+            "weight": 5
+          },
+          {
+            "value": "h265",
+            "weight": 5
+          },
+          {
+            "value": "hevc",
+            "weight": 5
+          },
+          {
+            "value": "transcode",
+            "weight": 4.5
+          },
+          {
+            "value": "codec",
+            "weight": 4
+          },
+          "video conversion",
+          "video convert",
+          "audio processing",
+          "media encoding",
+          "image processing",
+          "image resize",
+          "image crop",
+          "video compress",
+          "compress video",
+          "extract audio",
+          "video to gif",
+          "gif convert",
+          "streaming",
+          "hls",
+          "dash",
+          "thumbnail",
+          "batch image",
+          "watermark",
+          "video filter",
+          "image effects"
+        ],
+        "intentPatterns": [
+          "(ffmpeg|imagemagick|magick)",
+          "video.*?(convert|encoding|processing|compress|trim|cut|merge|scale)",
+          "audio.*?(processing|encoding|extract)",
+          "image.*?(processing|resize|crop|effect|compress|optimize)",
+          "(h264|h265|hevc|codec)",
+          "(mp4|mkv|avi|webm|png|jpg|jpeg|gif|webp).*?(convert|to)",
+          "(thumbnail|montage|collage|watermark)"
+        ]
+      }
+    },
+    "mobile-development": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Build modern mobile applications with React Native, Flutter, Swift/SwiftUI, and Kotlin/Jetpack Compose. Covers mobile-first design principles, performance optimization (battery, memory, network), offline-first architecture, platform-specific guidelines (iOS HIG, Material Design), testing strategies, security best practices, accessibility, app store deployment, and mobile development mindset.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "react native",
+            "weight": 5
+          },
+          {
+            "value": "flutter",
+            "weight": 5
+          },
+          {
+            "value": "swiftui",
+            "weight": 5
+          },
+          {
+            "value": "swift",
+            "weight": 4
+          },
+          {
+            "value": "kotlin",
+            "weight": 4.5
+          },
+          {
+            "value": "jetpack compose",
+            "weight": 5
+          },
+          {
+            "value": "ios app",
+            "weight": 4.5
+          },
+          {
+            "value": "android app",
+            "weight": 4.5
+          },
+          {
+            "value": "mobile app",
+            "weight": 4.5
+          },
+          "mobile development",
+          "app store",
+          "play store",
+          "cross-platform",
+          "native app",
+          "expo",
+          "xcode",
+          "android studio",
+          "ios hig",
+          "material design",
+          "offline-first",
+          "mobile performance",
+          "mobile security",
+          "mobile testing",
+          "fastlane",
+          "cocoapods",
+          "gradle"
+        ],
+        "intentPatterns": [
+          "(react native|flutter|swiftui|swift|kotlin|jetpack compose)",
+          "(ios|android|mobile).*?(app|application|development)",
+          "(build|create|develop).*?(ios|android|mobile).*?app",
+          "(app store|play store).*?(deploy|publish|submit)",
+          "(cross-platform|native).*?(app|development)",
+          "mobile.*?(performance|security|testing|design)"
+        ]
+      }
+    },
+    "planning": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Use when you need to plan technical solutions that are scalable, secure, and maintainable. Create detailed technical implementation plans through research, codebase analysis, solution design, and comprehensive documentation.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "implementation plan",
+            "weight": 5
+          },
+          {
+            "value": "technical plan",
+            "weight": 5
+          },
+          {
+            "value": "architecture plan",
+            "weight": 5
+          },
+          {
+            "value": "design plan",
+            "weight": 4.5
+          },
+          {
+            "value": "system design",
+            "weight": 4
+          },
+          "plan implementation",
+          "plan feature",
+          "plan architecture",
+          "implementation roadmap",
+          "technical roadmap",
+          "feature planning",
+          "solution design",
+          "plan system",
+          "implementation strategy",
+          "technical approach",
+          "architecture design",
+          "plan breakdown",
+          "task breakdown"
+        ],
+        "intentPatterns": [
+          "(implementation|technical|architecture|design).*?plan",
+          "plan.*?(implementation|feature|architecture|system)",
+          "(create|write|design).*?(implementation|technical).*?plan",
+          "solution.*?design",
+          "(implementation|technical).*?(roadmap|strategy|approach)"
+        ]
+      }
+    },
+    "problem-solving": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "description": "Apply systematic problem-solving techniques for complexity spirals (simplification cascades), innovation blocks (collision-zone thinking), recurring patterns (meta-pattern recognition), assumption constraints (inversion exercise), scale uncertainty (scale game), and dispatch when stuck.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "problem solving",
+            "weight": 4.5
+          },
+          {
+            "value": "stuck",
+            "weight": 3.5
+          },
+          {
+            "value": "complexity spiral",
+            "weight": 5
+          },
+          {
+            "value": "simplification cascade",
+            "weight": 5
+          },
+          {
+            "value": "collision-zone",
+            "weight": 5
+          },
+          {
+            "value": "meta-pattern",
+            "weight": 5
+          },
+          {
+            "value": "inversion exercise",
+            "weight": 5
+          },
+          {
+            "value": "scale game",
+            "weight": 5
+          },
+          "innovation block",
+          "breakthrough thinking",
+          "recurring pattern",
+          "assumption constraint",
+          "scale uncertainty",
+          "special cases",
+          "growing complexity",
+          "unconventional solution",
+          "flip assumption",
+          "extreme scale"
+        ],
+        "intentPatterns": [
+          "problem.*?solving",
+          "(stuck|blocked).*?(on|with)",
+          "complexity.*?(spiral|growing|increasing)",
+          "(simplification|simplify).*?(cascade|approach)",
+          "innovation.*?(block|breakthrough)",
+          "(meta|recurring).*?pattern",
+          "(inversion|invert|flip).*?(assumption|exercise)",
+          "scale.*?(game|uncertainty|test)"
+        ]
+      }
+    },
+    "research": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Use when you need to research, analyze, and plan technical solutions that are scalable, secure, and maintainable. Systematic research methodology with scope definition, multi-source information gathering, analysis and synthesis, and comprehensive report generation.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "research",
+            "weight": 4
+          },
+          {
+            "value": "investigate",
+            "weight": 3.5
+          },
+          {
+            "value": "analyze",
+            "weight": 3
+          },
+          {
+            "value": "compare",
+            "weight": 3
+          },
+          {
+            "value": "evaluate",
+            "weight": 3
+          },
+          "technical research",
+          "technology research",
+          "best practices research",
+          "research topic",
+          "research report",
+          "gather information",
+          "comparative analysis",
+          "pros and cons",
+          "trade-offs",
+          "technology evaluation",
+          "solution research",
+          "research approach",
+          "research methodology"
+        ],
+        "intentPatterns": [
+          "research.*?(topic|technology|approach|solution)",
+          "(investigate|analyze|compare|evaluate).*?(technology|approach|solution|option)",
+          "(best practices|trade-offs|pros and cons).*?research",
+          "technology.*?(research|evaluation|comparison)",
+          "(gather|collect).*?information"
+        ]
+      }
+    },
+    "threejs": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "description": "Build immersive 3D web experiences with Three.js - WebGL/WebGPU library for scenes, cameras, geometries, materials, lights, animations, loaders, post-processing, shaders (including node-based TSL), compute, physics, VR/XR, and advanced rendering.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "three.js",
+            "weight": 5
+          },
+          {
+            "value": "threejs",
+            "weight": 5
+          },
+          {
+            "value": "webgl",
+            "weight": 5
+          },
+          {
+            "value": "webgpu",
+            "weight": 5
+          },
+          {
+            "value": "3d scene",
+            "weight": 4.5
+          },
+          {
+            "value": "3d graphics",
+            "weight": 4.5
+          },
+          {
+            "value": "3d visualization",
+            "weight": 4.5
+          },
+          {
+            "value": "gltf",
+            "weight": 5
+          },
+          {
+            "value": "fbx",
+            "weight": 4
+          },
+          {
+            "value": "shader",
+            "weight": 4
+          },
+          "3d model",
+          "3d animation",
+          "orbit controls",
+          "raycasting",
+          "pbr material",
+          "post-processing",
+          "bloom effect",
+          "ssao",
+          "shadow mapping",
+          "instancing",
+          "lod",
+          "vr xr",
+          "webxr",
+          "geometry",
+          "mesh",
+          "camera",
+          "scene"
+        ],
+        "intentPatterns": [
+          "(three\\.?js|threejs)",
+          "(webgl|webgpu).*?(render|graphics|scene)",
+          "3d.*?(scene|model|animation|visualization|graphics|game)",
+          "(gltf|fbx|obj).*?(load|import)",
+          "(shader|material|texture).*?(3d|webgl)",
+          "(post-processing|bloom|ssao|shadow)",
+          "(vr|xr|webxr).*?(experience|application)"
+        ]
+      }
+    },
+    "ui-styling": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Create beautiful, accessible user interfaces with shadcn/ui components (built on Radix UI + Tailwind), Tailwind CSS utility-first styling, and canvas-based visual designs. Use when building user interfaces, implementing design systems, creating responsive layouts, adding accessible components (dialogs, dropdowns, forms, tables), customizing themes and colors, implementing dark mode, generating visual designs and posters, or establishing consistent styling patterns across applications.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "shadcn",
+            "weight": 5
+          },
+          {
+            "value": "shadcn/ui",
+            "weight": 5
+          },
+          {
+            "value": "tailwind",
+            "weight": 5
+          },
+          {
+            "value": "tailwindcss",
+            "weight": 5
+          },
+          {
+            "value": "radix ui",
+            "weight": 5
+          },
+          {
+            "value": "radix",
+            "weight": 4
+          },
+          {
+            "value": "utility-first",
+            "weight": 4
+          },
+          "ui component",
+          "ui styling",
+          "responsive layout",
+          "dark mode",
+          "theme customization",
+          "design tokens",
+          "accessible component",
+          "dialog component",
+          "dropdown component",
+          "form component",
+          "table component",
+          "command palette",
+          "component library",
+          "css utilities",
+          "class utilities"
+        ],
+        "intentPatterns": [
+          "(shadcn|shadcn\\/ui|tailwind|tailwindcss|radix)",
+          "(ui|component).*?(styling|style|design)",
+          "(responsive|mobile-first).*?(layout|design)",
+          "(dark mode|theme).*?(implement|customize)",
+          "(design tokens|design system).*?(implement|create)",
+          "(accessible|a11y).*?(component|ui)",
+          "utility.*?(first|class|css)"
+        ]
+      }
+    },
+    "web-frameworks": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Build modern full-stack web applications with Next.js (App Router, Server Components, RSC, PPR, SSR, SSG, ISR), Turborepo (monorepo management, task pipelines, remote caching, parallel execution), and RemixIcon (3100+ SVG icons in outlined/filled styles). Use when creating React applications, implementing server-side rendering, setting up monorepos with multiple packages, optimizing build performance and caching strategies, adding icon libraries, managing shared dependencies, or working with TypeScript full-stack projects.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "next.js",
+            "weight": 5
+          },
+          {
+            "value": "nextjs",
+            "weight": 5
+          },
+          {
+            "value": "turborepo",
+            "weight": 5
+          },
+          {
+            "value": "turbo",
+            "weight": 4
+          },
+          {
+            "value": "app router",
+            "weight": 5
+          },
+          {
+            "value": "server components",
+            "weight": 5
+          },
+          {
+            "value": "rsc",
+            "weight": 5
+          },
+          {
+            "value": "ssr",
+            "weight": 4.5
+          },
+          {
+            "value": "ssg",
+            "weight": 4.5
+          },
+          {
+            "value": "isr",
+            "weight": 5
+          },
+          {
+            "value": "monorepo",
+            "weight": 4.5
+          },
+          "remixicon",
+          "server-side rendering",
+          "static generation",
+          "incremental static",
+          "react framework",
+          "full-stack react",
+          "workspace",
+          "task pipeline",
+          "remote caching",
+          "parallel execution",
+          "shared packages",
+          "ppr",
+          "partial prerendering"
+        ],
+        "intentPatterns": [
+          "(next\\.?js|nextjs)",
+          "(turborepo|turbo).*?(setup|configure|monorepo)",
+          "(app router|server components|rsc)",
+          "(ssr|ssg|isr).*?(implement|configure)",
+          "monorepo.*?(setup|configure|manage)",
+          "(full-stack|fullstack).*?(react|next)",
+          "(workspace|shared).*?(package|dependency)"
+        ]
+      }
+    },
+    "claude-code": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Use when users ask about Claude Code features, setup, configuration, troubleshooting, slash commands, MCP servers, Agent Skills, hooks, plugins, CI/CD integration, or enterprise deployment.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "claude code",
+            "weight": 5
+          },
+          {
+            "value": "claude-code",
+            "weight": 5
+          },
+          {
+            "value": "slash command",
+            "weight": 5
+          },
+          {
+            "value": "mcp server",
+            "weight": 5
+          },
+          {
+            "value": "agent skill",
+            "weight": 5
+          },
+          {
+            "value": "hook system",
+            "weight": 4.5
+          },
+          {
+            "value": "plugin",
+            "weight": 3.5
+          },
+          "claude code setup",
+          "claude code config",
+          "claude code troubleshoot",
+          "claude code feature",
+          "claude code install",
+          "claude code authentication",
+          "claude code enterprise",
+          "claude code ide",
+          "claude code vscode",
+          "claude code jetbrains",
+          "claude code github actions",
+          "claude code ci/cd",
+          "extended thinking",
+          "prompt caching",
+          "checkpointing",
+          "subagent",
+          "code-reviewer",
+          "planner agent",
+          "debugger agent"
+        ],
+        "intentPatterns": [
+          "claude.*?code.*?(setup|config|install|feature|troubleshoot|help)",
+          "(how|what).*?claude.*?code",
+          "(slash|mcp|hook|plugin).*?(command|server|system)",
+          "agent.*?(skill|subagent)",
+          "claude.*?code.*?(enterprise|ide|vscode|jetbrains)",
+          "(ci\\/cd|github actions|gitlab).*?claude.*?code"
+        ]
+      }
+    },
+    "code-review": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Use when receiving code review feedback (especially if unclear or technically questionable), when completing tasks or major features requiring review before proceeding, or before making any completion/success claims. Covers receiving feedback with technical rigor, requesting reviews via code-reviewer subagent, and verification gates requiring evidence before any status claims.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "code review",
+            "weight": 5
+          },
+          {
+            "value": "review feedback",
+            "weight": 5
+          },
+          {
+            "value": "pr review",
+            "weight": 5
+          },
+          {
+            "value": "pull request review",
+            "weight": 5
+          },
+          {
+            "value": "review comments",
+            "weight": 4.5
+          },
+          {
+            "value": "verification gate",
+            "weight": 5
+          },
+          "review code",
+          "request review",
+          "code feedback",
+          "review my code",
+          "check my code",
+          "before merge",
+          "review before",
+          "completion claim",
+          "verify before",
+          "technical review",
+          "peer review",
+          "review protocol",
+          "review process"
+        ],
+        "intentPatterns": [
+          "code.*?review",
+          "review.*?(code|pr|pull request|feedback|comment)",
+          "(request|need|want).*?review",
+          "(before|prior).*?(merge|commit|push)",
+          "verify.*?(before|completion|claim)",
+          "(check|review).*?my.*?code",
+          "peer.*?review"
+        ]
+      }
+    },
+    "frontend-development": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "description": "Frontend development guidelines for React/TypeScript applications. Modern patterns including Suspense, lazy loading, useSuspenseQuery, file organization with features directory, MUI v7 styling, TanStack Router, performance optimization, and TypeScript best practices.",
+      "promptTriggers": {
+        "keywords": [
+          {
+            "value": "react component",
+            "weight": 4.5
+          },
+          {
+            "value": "tanstack query",
+            "weight": 5
+          },
+          {
+            "value": "tanstack router",
+            "weight": 5
+          },
+          {
+            "value": "useSuspenseQuery",
+            "weight": 5
+          },
+          {
+            "value": "suspense",
+            "weight": 4.5
+          },
+          {
+            "value": "lazy loading",
+            "weight": 4
+          },
+          {
+            "value": "mui",
+            "weight": 4.5
+          },
+          {
+            "value": "material ui",
+            "weight": 4.5
+          },
+          "react typescript",
+          "create component",
+          "create page",
+          "create feature",
+          "frontend component",
+          "frontend page",
+          "react suspense",
+          "react lazy",
+          "data fetching react",
+          "react query",
+          "feature directory",
+          "frontend structure",
+          "react performance",
+          "react optimization",
+          "useCallback",
+          "useMemo",
+          "react hooks",
+          "tsx component"
+        ],
+        "intentPatterns": [
+          "(create|build|make).*?(component|page|feature).*?(react|frontend)",
+          "(react|frontend).*?(component|page|feature)",
+          "(tanstack|react).*?(query|router)",
+          "(suspense|lazy).*?(loading|load|component)",
+          "(mui|material ui).*?(component|styling|style)",
+          "data.*?fetch.*?(react|component)",
+          "(frontend|react).*?(performance|optimization)",
+          "use(Callback|Memo|Effect|State).*?(react|component)"
+        ]
+      }
     }
   },
   "notes": {
