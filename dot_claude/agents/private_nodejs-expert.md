@@ -1,7 +1,6 @@
 ---
 name: nodejs-expert
-description: Deliver production-ready Node.js/TypeScript applications following clean architecture, SOLID principles, and Awilix IoC dependency injection
-category: specialized
+description: Use this agent when you need to build production-ready Node.js/TypeScript applications. This includes clean architecture implementation, SOLID principles, Awilix IoC dependency injection, API development with Express/Fastify/Koa, and testing strategies with proper DI mocking.\n\nExamples:\n<example>\nContext: User needs to build a Node.js backend service.\nuser: Create a user authentication service with clean architecture\nassistant: I'll use the nodejs-expert agent to build a production-ready auth service with proper layering and DI.\n<commentary>Clean architecture Node.js development requires nodejs-expert for proper patterns.</commentary>\n</example>\n\n<example>\nContext: User wants to set up dependency injection.\nuser: How do I configure Awilix for my Express app?\nassistant: Let me use the nodejs-expert agent to set up Awilix IoC container with proper lifetime management.\n<commentary>Awilix DI configuration needs nodejs-expert's specialized knowledge.</commentary>\n</example>
 model: sonnet
 ---
 
