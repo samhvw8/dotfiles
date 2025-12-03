@@ -1,6 +1,6 @@
 ---
 name: quality-engineer
-description: Ensure software quality through comprehensive testing strategies and systematic edge case detection
+description: Use this agent when you need to design testing strategies, detect edge cases, or ensure software quality. This includes creating test plans, setting up automated testing frameworks, analyzing test coverage, or implementing QA processes. Examples: <example>Context: User needs a testing strategy. user: "How should I test this payment module?" assistant: "I'll use the quality-engineer agent to design a comprehensive testing strategy including edge cases and failure scenarios." <commentary>Testing strategy design requires quality-engineer for systematic coverage analysis.</commentary></example> <example>Context: User wants to improve test coverage. user: "My test coverage is only 40%, help me improve it" assistant: "Let me use the quality-engineer agent to identify coverage gaps and prioritize test cases." <commentary>Coverage improvement requires quality-engineer's expertise in risk-based testing prioritization.</commentary></example>
 category: quality
 ---
 

@@ -47,7 +47,7 @@
             "enforcement": "suggest",
             "priority": "high",
             "model": "sonnet",
-            "description": "Systematic bug investigation, hypothesis testing, evidence-based debugging",
+            "description": "Use this agent when you need to systematically investigate complex problems and identify underlying causes. This includes debugging multi-component failures, analyzing recurring issues, or conducting evidence-based investigations with hypothesis testing.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "root cause analysis", "weight": 4.0},
@@ -78,7 +78,7 @@
             "enforcement": "suggest",
             "priority": "high",
             "model": "sonnet",
-            "description": "API design, database schema, SOLID principles, DI/IoC, security, reliability",
+            "description": "Use this agent when you need to design backend systems, APIs, or database architectures. This includes designing RESTful/GraphQL APIs, implementing authentication/authorization, optimizing database schemas, or applying SOLID principles and dependency injection.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "backend architecture", "weight": 3.5},
@@ -116,7 +116,7 @@
             "enforcement": "suggest",
             "priority": "high",
             "model": "sonnet",
-            "description": "System design, scalability planning, architectural decisions",
+            "description": "Use this agent when you need to design scalable system architecture or make long-term technical decisions. This includes component boundary definition, scalability analysis, dependency management, or technology selection with 10x growth in mind.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "system architecture", "weight": 3.5},
@@ -145,7 +145,7 @@
             "enforcement": "suggest",
             "priority": "medium",
             "model": "sonnet",
-            "description": "Requirements gathering, spec creation, ambiguity resolution",
+            "description": "Use this agent when you need to transform ambiguous project ideas into concrete specifications. This includes creating PRDs, gathering requirements, defining user stories, or establishing success criteria.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "requirements analysis", "weight": 3.0},
@@ -192,6 +192,51 @@
                     "python.*?(code|service|api|application)",
                     "(async|asyncio).*?python",
                     "python.*?(async|testing|security)"
+                ]
+            }
+        },
+        "nodejs-expert": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Production Node.js/TypeScript, clean architecture, Awilix IoC, Express/Fastify, testing, security",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "nodejs implementation", "weight": 3.0},
+                    {"value": "node.js implementation", "weight": 3.0},
+                    {"value": "nodejs best practices", "weight": 3.0},
+                    {"value": "typescript backend", "weight": 3.0},
+                    {"value": "awilix", "weight": 4.0},
+                    {"value": "awilix ioc", "weight": 4.5},
+                    {"value": "clean architecture node", "weight": 3.5},
+                    {"value": "express typescript", "weight": 3.0},
+                    {"value": "fastify typescript", "weight": 3.0},
+                    {"value": "nodejs di", "weight": 3.0},
+                    {"value": "node dependency injection", "weight": 3.5},
+                    {"value": "nodejs testing", "weight": 2.5},
+                    {"value": "nodejs async", "weight": 2.5},
+                    "nodejs code",
+                    "node.js code",
+                    "express api",
+                    "fastify api",
+                    "koa api",
+                    "nestjs",
+                    "vitest",
+                    "jest nodejs",
+                    "pnpm",
+                    "nodejs security",
+                    "typescript api"
+                ],
+                "intentPatterns": [
+                    {"value": "(nodejs|node\\.js).*?(implementation|best practice|pattern|architecture)", "weight": 3.0},
+                    {"value": "awilix.*?(container|ioc|di|injection)", "weight": 3.5},
+                    {"value": "clean.*?architecture.*?(node|typescript|express|fastify)", "weight": 3.0},
+                    {"value": "(express|fastify|koa).*?(typescript|implementation|api)", "weight": 2.5},
+                    {"value": "dependency.*?injection.*?(node|typescript)", "weight": 3.0},
+                    "(nodejs|node\\.js).*?(code|service|api|application|backend)",
+                    "(async|await).*?(nodejs|node\\.js|typescript)",
+                    "(nodejs|node\\.js).*?(async|testing|security)"
                 ]
             }
         },
@@ -253,7 +298,7 @@
             "enforcement": "suggest",
             "priority": "high",
             "model": "sonnet",
-            "description": "Code quality, SOLID principles, complexity reduction, technical debt",
+            "description": "Use this agent when you need to improve code quality, reduce technical debt, or apply clean code principles. This includes code complexity reduction, SOLID principles implementation, design pattern application, or legacy code modernization.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "reduce complexity", "weight": 3.0},
@@ -312,7 +357,7 @@
             "enforcement": "suggest",
             "priority": "medium",
             "model": "sonnet",
-            "description": "Testing strategy, test coverage, edge case detection",
+            "description": "Use this agent when you need to design testing strategies, detect edge cases, or ensure software quality. This includes creating test plans, setting up automated testing frameworks, analyzing test coverage, or implementing QA processes.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "testing strategy", "weight": 3.0},
@@ -337,7 +382,7 @@
             "enforcement": "suggest",
             "priority": "high",
             "model": "sonnet",
-            "description": "Security audits, OWASP compliance, threat modeling, vulnerability scanning",
+            "description": "Use this agent when you need to identify security vulnerabilities, conduct security audits, or ensure compliance with security standards. This includes OWASP vulnerability assessment, threat modeling, authentication/authorization review, or security compliance verification.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "security audit", "weight": 3.5},
@@ -362,7 +407,7 @@
             "enforcement": "suggest",
             "priority": "medium",
             "model": "sonnet",
-            "description": "CI/CD, Docker, Kubernetes, infrastructure automation, monitoring",
+            "description": "Use this agent when you need to automate infrastructure, set up CI/CD pipelines, or implement observability. This includes deployment strategies, infrastructure as code, container orchestration, monitoring setup, or cloud automation.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "kubernetes deployment", "weight": 3.0},
@@ -390,7 +435,7 @@
             "enforcement": "suggest",
             "priority": "medium",
             "model": "sonnet",
-            "description": "Interface design, wireframes, accessibility, user research",
+            "description": "Use this agent when you need to create interface designs, wireframes, or design systems. This includes user research, accessibility audits (WCAG), design system creation, user journey mapping, or design-to-development handoff.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "design system", "weight": 3.0},
@@ -417,7 +462,7 @@
             "enforcement": "suggest",
             "priority": "low",
             "model": "sonnet",
-            "description": "Concept explanation, progressive learning, practical examples",
+            "description": "Use this agent when you need to teach programming concepts, explain code, or create learning materials. This includes explaining algorithms, creating tutorials, designing learning paths, or breaking down complex concepts for beginners.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "explain concept", "weight": 2.5},
@@ -441,7 +486,7 @@
             "enforcement": "suggest",
             "priority": "high",
             "model": "sonnet",
-            "description": "Create and optimize Claude Code sub-agents following Anthropic best practices",
+            "description": "Use this agent when you need to create, design, or optimize Claude Code sub-agents. This includes designing agent YAML metadata, crafting system prompts, selecting appropriate tools, and configuring model settings following Anthropic best practices.",
             "promptTriggers": {
                 "keywords": [
                     {"value": "create agent", "weight": 4.0},

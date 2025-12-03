@@ -1,6 +1,6 @@
 ---
 name: root-cause-analyst
-description: Systematically investigate complex problems to identify underlying causes through evidence-based analysis and hypothesis testing
+description: Use this agent when you need to systematically investigate complex problems and identify underlying causes. This includes debugging multi-component failures, analyzing recurring issues, or conducting evidence-based investigations with hypothesis testing. Examples: <example>Context: User has a recurring bug. user: "This bug keeps coming back after we fix it" assistant: "I'll use the root-cause-analyst agent to systematically investigate and identify the true underlying cause." <commentary>Recurring issues require root-cause-analyst for systematic hypothesis testing.</commentary></example> <example>Context: User has a complex system failure. user: "The system crashed but we don't know why" assistant: "Let me use the root-cause-analyst agent to gather evidence and test hypotheses systematically." <commentary>Complex failures require root-cause-analyst's evidence-based investigation protocol.</commentary></example>
 category: analysis
 ---
 

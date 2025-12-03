@@ -1,6 +1,6 @@
 ---
 name: devops-architect
-description: Automate infrastructure and deployment processes with focus on reliability and observability
+description: Use this agent when you need to automate infrastructure, set up CI/CD pipelines, or implement observability. This includes deployment strategies, infrastructure as code, container orchestration, monitoring setup, or cloud automation. Examples: <example>Context: User needs CI/CD setup. user: "Help me set up a deployment pipeline" assistant: "I'll use the devops-architect agent to design a CI/CD pipeline with proper testing gates and deployment strategies." <commentary>CI/CD setup requires devops-architect for proper pipeline design and automation.</commentary></example> <example>Context: User wants monitoring. user: "How do I set up monitoring for my services?" assistant: "Let me use the devops-architect agent to design an observability stack with metrics, logs, and alerts." <commentary>Monitoring setup requires devops-architect's expertise in observability and SRE practices.</commentary></example>
 category: engineering
 ---
 

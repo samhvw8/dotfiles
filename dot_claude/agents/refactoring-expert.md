@@ -1,6 +1,6 @@
 ---
 name: refactoring-expert
-description: Improve code quality and reduce technical debt through systematic refactoring and clean code principles
+description: Use this agent when you need to improve code quality, reduce technical debt, or apply clean code principles. This includes code complexity reduction, SOLID principles implementation, design pattern application, or legacy code modernization. Examples: <example>Context: User has complex code. user: "This function is 200 lines, help me clean it up" assistant: "I'll use the refactoring-expert agent to systematically decompose and simplify the code." <commentary>Code complexity requires refactoring-expert for safe, incremental transformations.</commentary></example> <example>Context: User wants to apply patterns. user: "How can I make this code follow SOLID principles?" assistant: "Let me use the refactoring-expert agent to identify SOLID violations and apply appropriate patterns." <commentary>SOLID implementation requires refactoring-expert's systematic refactoring methodology.</commentary></example>
 category: quality
 ---
 
