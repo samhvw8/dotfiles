@@ -1,0 +1,87 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npm run)",
+      "Read(~/.zshrc)",
+      "mcp__chrome-mcp-server",
+      "mcp__context7",
+      "mcp__chrome-mcp-server__chrome_navigate",
+      "mcp__chrome-mcp-server__chrome_get_web_content",
+      "Read(//Users/samhv/.claude/)",
+      "WebFetch(domain:pincc.ai)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(mkdir:*)",
+      "Read(//private/tmp/**)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(chmod:*)",
+      "Bash(cat:*)",
+      "Bash(.claude/hooks/skill-activation-prompt.sh)",
+      "Bash(./hooks/skill-activation-prompt.sh:*)",
+      "Bash(npx:*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:api.github.com)",
+      "WebSearch",
+      "Skill(prompt-enhancer)",
+      "Skill(skill-developer)",
+      "Bash(mkdir:*)",
+      "Bash(go:*)",
+      "Write(*)",
+      "Bash(ls:*)",
+      "Bash(git:*)",
+      "Update(*:*)",
+      "Bash(mv:*)",
+      "Bash(echo:*)",
+      "Bash(sed:*)",
+      "Bash(source:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(pkill:*)",
+      "Bash(touch:*)",
+      "Bash(grep:*)",
+      "Bash(deadcode:*)",
+      "Bash(sqlite3:*)",
+      "Bash(curl:*)",
+      "Bash(rg:*)",
+      "Bash(chmod:*)",
+      "Bash(lsof:*)",
+      "Bash(make:*)",
+      "Bash(PORT=:*)",
+      "Bash(find:*)",
+      "Bash(docker:*)",
+      "Bash(poetry:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Update(*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      // {
+        // "hooks": [
+        //   {
+        //     "type": "command",
+        //     "command": "bash `$HOME/.claude/hooks/force-skills-eval.sh`"
+        //   }
+        // ]
+      // }
+      //  {
+      //   "hooks": [
+      //     {
+      //       "type": "command",
+      //       "command": "$HOME/.claude/hooks/skill-activation-prompt.sh"
+      //     },
+      //     {
+      //       "type": "command",
+      //       "command": "$HOME/.claude/hooks/agent-activation-prompt.sh"
+      //     }
+      //   ]
+      // }
+    ]
+  },
+  "alwaysThinkingEnabled": false
+}
