@@ -1,6 +1,6 @@
 ---
 name: skill-developer
-description: Skill system infrastructure manager. Create/modify skills, configure skill-rules.json, design trigger patterns, debug activation, implement hooks (UserPromptSubmit/PreToolUse). Scope: meta-level operations only - NOT domain content (UI/backend/workflows). Covers: YAML frontmatter, keyword/intent patterns, enforcement levels, progressive disclosure, 500-line rule, Anthropic best practices.
+description: Skill system infrastructure manager. Create/modify skills, design trigger patterns, debug activation, implement hooks (UserPromptSubmit/PreToolUse). Scope: meta-level operations only - NOT domain content (UI/backend/workflows). Covers: YAML frontmatter, keyword/intent patterns, enforcement levels, progressive disclosure, 500-line rule, Anthropic best practices.
 ---
 
 # Skill Developer Guide
@@ -18,7 +18,6 @@ Automatically activates when you mention:
 - Modifying skill triggers or rules
 - Understanding how skill activation works
 - Debugging skill activation issues
-- Working with skill-rules.json
 - Hook system mechanics
 - Claude Code best practices
 - Progressive disclosure
@@ -35,7 +34,6 @@ Automatically activates when you mention:
 
 **Skill System Management:**
 - Creating/modifying `.claude/skills/` directory contents
-- Editing `skill-rules.json` configuration
 - Writing/updating `SKILL.md` files
 - Designing trigger patterns (keywords, intent patterns)
 - Understanding hook mechanisms (UserPromptSubmit, PreToolUse)
@@ -46,7 +44,7 @@ Automatically activates when you mention:
 **Keywords That Trigger This Skill:**
 - "skill triggers", "skill activation", "skill keywords"
 - "intent patterns", "promptTriggers", "enforcement levels"
-- "skill-rules.json", "SKILL.md", "skill frontmatter"
+- "SKILL.md", "skill frontmatter"
 - "UserPromptSubmit", "PreToolUse", "hook system"
 - "progressive disclosure", "500-line rule"
 - "skill metadata", "trigger conditions"
@@ -81,7 +79,7 @@ Automatically activates when you mention:
 | "How to use OKLCH colors?" | ❌ ui-design-system | UI/frontend topic |
 | "Create a new skill for Docker" | ✅ skill-developer | Creating skill infrastructure |
 | "How to containerize app?" | ❌ docker skill | Domain content |
-| "Update skill-rules.json keywords" | ✅ skill-developer | Skill system configuration |
+| "Update skill keywords" | ✅ skill-developer | Skill system configuration |
 | "What are naming conventions for design tokens?" | ❌ ui-design-system | UI design content |
 
 ### 🔍 Context-Aware Trigger Strategy
@@ -112,17 +110,6 @@ Automatically activates when you mention:
 - **Purpose**: Suggest relevant skills based on keywords + intent patterns
 - **Method**: Injects formatted reminder as context (stdout → Claude's input)
 - **Use Cases**: Topic-based skills, implicit work detection
-
-### Configuration File
-
-**Location**: `.claude/skills/skill-rules.json`
-
-Defines:
-- All skills and their trigger conditions
-- Enforcement levels (block, suggest, warn)
-- File path patterns (glob)
-- Content detection patterns (regex)
-- Skip conditions (session tracking, file markers, env vars)
 
 ---
 
@@ -204,7 +191,7 @@ The actual guidance, documentation, patterns, examples
 - `description` (required): Brief description for discoverability (max 1024 chars)
 - `license` (optional): License reference
 
-**⚠️ IMPORTANT:** Triggers are NOT defined in YAML frontmatter. Configure triggers in `skill-rules.json`.
+**⚠️ IMPORTANT:** Triggers are configured via hooks or YAML frontmatter description keywords.
 
 **Best Practices:**
 - ✅ **Name**: Lowercase, hyphens, gerund form (verb + -ing) preferred
@@ -213,41 +200,7 @@ The actual guidance, documentation, patterns, examples
 - ✅ **Examples**: Real code examples
 - ✅ **Structure**: Clear headings, lists, code blocks
 
-### Step 2: Add to skill-rules.json (REQUIRED for activation)
-
-**RECOMMENDED: Use the jq-based CRUD script for faster operations:**
-
-```bash
-# Create new skill entry
-./scripts/skill-rules-crud.sh create-minimal my-skill "Description here" high
-
-# Add keywords
-./scripts/skill-rules-crud.sh add-keyword my-skill "keyword1"
-./scripts/skill-rules-crud.sh add-keyword my-skill "specific-term" 5.0  # with weight
-
-# Add intent patterns
-./scripts/skill-rules-crud.sh add-pattern my-skill "(create|add).*?something"
-./scripts/skill-rules-crud.sh add-pattern my-skill "pattern-here" 4.0  # with weight
-```
-
-See [SKILL_RULES_REFERENCE.md](SKILL_RULES_REFERENCE.md) for complete schema.
-
-**Manual JSON Template (alternative):**
-```json
-{
-  "my-new-skill": {
-    "type": "domain",
-    "enforcement": "suggest",
-    "priority": "medium",
-    "promptTriggers": {
-      "keywords": ["keyword1", "keyword2"],
-      "intentPatterns": ["(create|add).*?something"]
-    }
-  }
-}
-```
-
-### Step 3: Test Triggers
+### Step 2: Test Triggers
 
 **Test UserPromptSubmit:**
 ```bash
@@ -262,7 +215,7 @@ cat <<'EOF' | npx tsx .claude/hooks/skill-verification-guard.ts
 EOF
 ```
 
-### Step 4: Refine Patterns
+### Step 3: Refine Patterns
 
 Based on testing:
 - Add missing keywords
@@ -270,7 +223,7 @@ Based on testing:
 - Adjust file path patterns
 - Test content patterns against actual files
 
-### Step 5: Follow Anthropic Best Practices
+### Step 4: Follow Anthropic Best Practices
 
 ✅ Keep SKILL.md under 500 lines
 ✅ Use progressive disclosure with reference files
@@ -297,7 +250,6 @@ Keywords/patterns have weights; score determines enforcement level:
 - **Diminishing returns**: Multiple matches contribute less each
 - **Priority multiplier**: critical=4x, high=3x, medium=2x, low=1x
 
-See [SCORING.md](SCORING.md) for complete formula, examples, and configuration.
 
 ---
 
@@ -397,57 +349,20 @@ export SKIP_ERROR_REMINDER=true
 ## Testing Checklist
 
 - [ ] SKILL.md created with frontmatter, <500 lines
-- [ ] Entry added to `skill-rules.json` (validate: `jq . skill-rules.json`)
+- [ ] Entry added with proper trigger patterns
 - [ ] Keywords/patterns tested with real prompts
 - [ ] No false positives/negatives, performance <200ms
 
 ---
 
-## skill-rules-crud.sh Quick Reference
-
-**Location:** `scripts/skill-rules-crud.sh`
-
-Fast jq-based CRUD operations for skill-rules.json. Use instead of manual JSON editing.
-
-| Command | Usage | Description |
-|---------|-------|-------------|
-| `list` | `./scripts/skill-rules-crud.sh list` | List all skill names |
-| `get` | `./scripts/skill-rules-crud.sh get docker` | Get full skill config |
-| `get-keywords` | `./scripts/skill-rules-crud.sh get-keywords docker` | List keywords |
-| `create-minimal` | `./scripts/skill-rules-crud.sh create-minimal name "desc" high` | Create new skill |
-| `add-keyword` | `./scripts/skill-rules-crud.sh add-keyword skill "kw" [weight]` | Add keyword |
-| `add-pattern` | `./scripts/skill-rules-crud.sh add-pattern skill "regex" [weight]` | Add pattern |
-| `remove-keyword` | `./scripts/skill-rules-crud.sh remove-keyword skill "kw"` | Remove keyword |
-| `remove-pattern` | `./scripts/skill-rules-crud.sh remove-pattern skill "regex"` | Remove pattern |
-| `update-priority` | `./scripts/skill-rules-crud.sh update-priority skill critical` | Set priority |
-| `update-enforcement` | `./scripts/skill-rules-crud.sh update-enforcement skill block` | Set enforcement |
-| `delete` | `./scripts/skill-rules-crud.sh delete skill-name` | Delete skill |
-| `search` | `./scripts/skill-rules-crud.sh search "term"` | Search all skills |
-| `validate` | `./scripts/skill-rules-crud.sh validate` | Validate JSON |
-| `stats` | `./scripts/skill-rules-crud.sh stats` | Show statistics |
-| `backup` | `./scripts/skill-rules-crud.sh backup` | Create backup |
-
----
-
-## Reference Files
-
-| File | Content |
-|------|---------|
-| [scripts/skill-rules-crud.sh](scripts/skill-rules-crud.sh) | jq-based CRUD for skill-rules.json |
-| [SCORING.md](SCORING.md) | Weight formulas, confidence levels, examples |
-| [TRIGGER_TYPES.md](TRIGGER_TYPES.md) | Keywords, intents, file paths, content patterns |
-
----
-
 ## Quick Reference Summary
 
-### Create New Skill (5 Steps)
+### Create New Skill (4 Steps)
 
 1. Create `.claude/skills/{name}/SKILL.md` with frontmatter
-2. Add entry to `.claude/skills/skill-rules.json`
-3. Test with `npx tsx` commands
-4. Refine patterns based on testing
-5. Keep SKILL.md under 500 lines
+2. Test with `npx tsx` commands
+3. Refine patterns based on testing
+4. Keep SKILL.md under 500 lines
 
 ### Trigger Types
 
@@ -456,11 +371,10 @@ Fast jq-based CRUD operations for skill-rules.json. Use instead of manual JSON e
 - **File Paths**: Location-based activation
 - **Content**: Technology-specific detection
 
-See [TRIGGER_TYPES.md](TRIGGER_TYPES.md) for complete details.
 
 ### Scoring (v2.0)
 
-See [SCORING.md](SCORING.md) for weighted keywords, confidence levels, and formulas.
+Keywords/patterns have weights; score determines enforcement level (critical ≥12, high ≥8, medium ≥4, low ≥2).
 
 ### Enforcement
 
@@ -502,7 +416,6 @@ EOF
 ## Related Files
 
 **Configuration:**
-- `.claude/skills/skill-rules.json` - Master configuration
 - `.claude/hooks/state/` - Session tracking
 - `.claude/settings.json` - Hook registration
 
