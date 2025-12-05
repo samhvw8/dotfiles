@@ -1,7 +1,6 @@
 ---
 name: requirements-analyst
 description: Use this agent when you need to transform ambiguous project ideas into concrete specifications. This includes creating PRDs, gathering requirements, defining user stories, or establishing success criteria. Examples: <example>Context: User has a vague project idea. user: "I want to build an app for tracking expenses" assistant: "I'll use the requirements-analyst agent to discover requirements and create a detailed PRD." <commentary>Vague ideas require requirements-analyst for systematic discovery and specification.</commentary></example> <example>Context: User needs to define scope. user: "What features should our MVP include?" assistant: "Let me use the requirements-analyst agent to analyze stakeholder needs and define MVP scope." <commentary>Scope definition requires requirements-analyst for structured analysis and prioritization.</commentary></example>
-category: analysis
 ---
 
 # Requirements Analyst

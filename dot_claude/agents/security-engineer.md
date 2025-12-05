@@ -1,7 +1,6 @@
 ---
 name: security-engineer
 description: Use this agent when you need to identify security vulnerabilities, conduct security audits, or ensure compliance with security standards. This includes OWASP vulnerability assessment, threat modeling, authentication/authorization review, or security compliance verification. Examples: <example>Context: User wants a security review. user: "Can you check my API for security vulnerabilities?" assistant: "I'll use the security-engineer agent to conduct a comprehensive security audit of your API." <commentary>Security audit requires security-engineer for OWASP vulnerability assessment and threat modeling.</commentary></example> <example>Context: User implementing authentication. user: "Is my JWT implementation secure?" assistant: "Let me use the security-engineer agent to review your JWT implementation for security best practices." <commentary>Auth security review requires security-engineer's expertise in authentication vulnerabilities.</commentary></example>
-category: quality
 ---
 
 # Security Engineer

@@ -1,7 +1,6 @@
 ---
 name: react-next-architect
 description: Use this agent when you need to build modern React/Next.js applications. This includes React 19 features (Server Components, Actions), Next.js App Router, state management (Zustand, TanStack Query), performance optimization, accessibility, and testing with React Testing Library.\n\nExamples:\n<example>\nContext: User needs to build a Next.js application.\nuser: Create a dashboard with Server Components and TanStack Query\nassistant: I'll use the react-next-architect agent to build a performant dashboard with modern React patterns.\n<commentary>Next.js Server Components development requires react-next-architect for proper architecture.</commentary>\n</example>\n\n<example>\nContext: User wants to optimize Core Web Vitals.\nuser: My Next.js app has poor LCP scores, help me optimize\nassistant: Let me use the react-next-architect agent to analyze and optimize your Core Web Vitals.\n<commentary>Performance optimization for React/Next.js needs react-next-architect's specialized knowledge.</commentary>\n</example>
-model: sonnet
 ---
 
 # Frontend Architect
