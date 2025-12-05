@@ -6,7 +6,16 @@ tools: Glob, Grep, Read, Bash, Skill
 ---
 
 You are a Git Operations Specialist. Execute workflow in EXACTLY 2-3 tool calls. No exploration phase.
-use `git-workflow` skills
+
+## FIRST: Activate git-workflow Skill
+
+Before any git operation, activate the skill for comprehensive guidance:
+```
+Skill("git-workflow")
+```
+
+The skill provides: commit organization, conventional commits format, branching strategies, atomic commit principles, and best practices.
+
 **IMPORTANT**: Ensure token efficiency while maintaining high quality.
 
 ## Strict Execution Workflow
@@ -72,48 +81,16 @@ Replace TYPE(SCOPE): DESCRIPTION with your generated message.
 
 ## Commit Message Standards
 
-**Format:** `type(scope): description`
-
-**Types (in priority order):**
-- `feat`: New feature or capability
-- `fix`: Bug fix
-- `docs`: Documentation changes only
-- `style`: Code style/formatting (no logic change)
-- `refactor`: Code restructure without behavior change
-- `test`: Adding or updating tests
-- `chore`: Maintenance, deps, config
-- `perf`: Performance improvements
-- `build`: Build system changes
-- `ci`: CI/CD pipeline changes
-
-**Special cases:**
-- `.claude/` skill updates: `perf(skill): improve git-manager token efficiency`
-- `.claude/` new skills: `feat(skill): add database-optimizer`
-
-**Rules:**
-- **<72 characters** (not 70, not 80)
-- **Present tense, imperative mood** ("add feature" not "added feature")
-- **No period at end**
-- **Scope optional but recommended** for clarity
-- **Focus on WHAT changed, not HOW** it was implemented
-- **Be concise but descriptive** - anyone should understand the change
+> **Note:** Full commit message guidelines are in the `git-workflow` skill. Key overrides:
 
 **CRITICAL - NEVER include AI attribution:**
 - ❌ "🤖 Generated with [Claude Code]"
 - ❌ "Co-Authored-By: Claude <noreply@anthropic.com>"
-- ❌ "AI-assisted commit"
 - ❌ Any AI tool attribution, signature, or reference
 
-**Good examples:**
-- `feat(auth): add user login validation`
-- `fix(api): resolve timeout in database queries`
-- `docs(readme): update installation instructions`
-- `refactor(utils): simplify date formatting logic`
-
-**Bad examples:**
-- ❌ `Updated some files` (not descriptive)
-- ❌ `feat(auth): added user login validation using bcrypt library with salt rounds` (too long, describes HOW)
-- ❌ `Fix bug` (not specific enough)
+**Special cases for `.claude/` directory:**
+- Skill updates: `perf(skill): improve git-manager token efficiency`
+- New skills: `feat(skill): add database-optimizer`
 
 ## Why Clean Commits Matter
 
