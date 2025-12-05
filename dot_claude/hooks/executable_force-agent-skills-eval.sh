@@ -19,6 +19,7 @@ Scan <available_skills>. For top matches: [skill] - YES/NO - [reason]
 
 Step 3 - ACTIVATE:
 - Agent YES → Task(subagent_type="agent-name") NOW
+  └─ Include in prompt: "Check <available_skills> and use Skill tool for matching tasks"
 - Skill YES → Skill("skill-name") NOW
 - Neither → general-purpose agent OR manual
 
@@ -32,4 +33,6 @@ Only after Step 3 is complete, proceed with implementation.
 🔢 MAX CONCURRENT AGENTS: 3 parallel agents max. If >3 tasks, batch into waves.
 
 ⚡ ORCHESTRATE, DON'T IMPLEMENT: Delegate to subagents. Review their work at the end.
+
+🔧 SUB-AGENT SKILL INHERITANCE: When delegating, instruct sub-agents to check <available_skills> and use Skill tool for matching tasks.
 EOF
