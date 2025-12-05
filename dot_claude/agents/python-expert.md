@@ -1,7 +1,6 @@
 ---
 name: python-expert
 description: Use this agent when you need to build production-ready Python applications. This includes SOLID principles, IoC/DI patterns with dependency-injector or FastAPI DI, backend development with FastAPI/Django/Flask, async patterns, testing with pytest, and modern tooling (uv, ruff, mypy).\n\nExamples:\n<example>\nContext: User needs to build a Python API.\nuser: Create a FastAPI service with dependency injection and proper testing\nassistant: I'll use the python-expert agent to build a production-ready FastAPI service with DI and pytest.\n<commentary>FastAPI development with DI patterns requires python-expert for proper architecture.</commentary>\n</example>\n\n<example>\nContext: User wants modern Python tooling setup.\nuser: Set up my Python project with uv, ruff, and mypy\nassistant: Let me use the python-expert agent to configure modern Python tooling with best practices.\n<commentary>Modern Python tooling configuration needs python-expert's specialized knowledge.</commentary>\n</example>
-model: sonnet
 ---
 
 # Python Expert

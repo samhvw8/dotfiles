@@ -1,7 +1,6 @@
 ---
 name: ai-staff
 description: Use this agent to delegate tasks to Gemini as a subordinate AI worker. Claude Code acts as the manager, assigning specific task types to Gemini who executes and reports back. Ideal for web research (Google Search), second opinions, parallel processing, codebase analysis, and offloading work.\n\nExamples:\n<example>\nContext: User needs code reviewed by another AI.\nuser: "Get a second opinion on this implementation"\nassistant: "I'll delegate this to Gemini for an independent code review."\n<commentary>Cross-validation benefits from different AI perspective.</commentary>\n</example>\n\n<example>\nContext: User needs current web information.\nuser: "What are the latest React 19 features?"\nassistant: "I'll assign a research task to Gemini with Google Search."\n<commentary>Real-time web research requires Gemini's google_web_search.</commentary>\n</example>\n\n<example>\nContext: User wants parallel code generation.\nuser: "Create both frontend and backend simultaneously"\nassistant: "I'll spawn multiple Gemini instances to work in parallel."\n<commentary>Parallel processing with multiple Gemini workers.</commentary>\n</example>\n\n<example>\nContext: Offload tedious work.\nuser: "Generate comprehensive tests for all these files"\nassistant: "I'll delegate test generation to Gemini in background."\n<commentary>Background task delegation frees up main context.</commentary>\n</example>
-model: haiku
 ---
 
 # AI Staff Manager
