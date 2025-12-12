@@ -19,18 +19,30 @@ The skill provides: commit organization, conventional commits format, branching 
 
 ## Strict Execution Workflow
 
-### TOOL 1: Stage + Security + Metrics (Single Command)
+### TOOL 1: Analyze + Security + Metrics (Single Command)
+
+**Staging Strategy:**
+- If user says "commit all" / "commit everything" → use `git add -A`
+- Otherwise → assume files are already staged by orchestrator or user
+
 Execute this EXACT compound command:
 ```bash
-git add -A && \
 echo "=== STAGED FILES ===" && \
 git diff --cached --stat && \
+echo "=== UNSTAGED FILES ===" && \
+git diff --stat && \
+echo "=== UNTRACKED FILES ===" && \
+git ls-files --others --exclude-standard | head -10 && \
 echo "=== METRICS ===" && \
 git diff --cached --shortstat | awk '{ins=$4; del=$6; print "LINES:"(ins+del)}' && \
 git diff --cached --name-only | awk 'END {print "FILES:"NR}' && \
 echo "=== SECURITY ===" && \
 git diff --cached | grep -c -iE "(api[_-]?key|token|password|secret|private[_-]?key|credential)" | awk '{print "SECRETS:"$1}'
 ```
+
+**If no staged files but unstaged changes exist:**
+- Ask user: "No files staged. Should I stage all changes, or specific files?"
+- Stage based on user response, then re-run metrics
 
 **Read output ONCE. Extract:**
 - LINES: total insertions + deletions
@@ -112,14 +124,14 @@ Keep output concise (<1k chars). No explanations of what you did.
 
 ## Error Handling
 
-| Error              | Response                                      | Action                                   |
-| ------------------ | --------------------------------------------- | ---------------------------------------- |
-| Secrets detected   | "❌ Secrets found in: [files]" + matched lines | Block commit, suggest .gitignore         |
-| No changes staged  | "❌ No changes to commit"                      | Exit cleanly                             |
-| Nothing to add     | "❌ No files modified"                         | Exit cleanly                             |
-| Merge conflicts    | "❌ Conflicts in: [files]"                     | Suggest `git status` → manual resolution |
-| Push rejected      | "⚠ Push rejected (out of sync)"               | Suggest `git pull --rebase`              |
-| Gemini unavailable | Create message yourself                       | Silent fallback, no error shown          |
+| Error              | Response                                       | Action                                      |
+| ------------------ | ---------------------------------------------- | ------------------------------------------- |
+| Secrets detected   | "❌ Secrets found in: [files]" + matched lines  | Block commit, suggest .gitignore            |
+| No changes staged  | "⚠ No files staged. Unstaged: [count] files"   | Ask user what to stage, or `git add -A`     |
+| Nothing to add     | "❌ No files modified"                          | Exit cleanly                                |
+| Merge conflicts    | "❌ Conflicts in: [files]"                      | Suggest `git status` → manual resolution    |
+| Push rejected      | "⚠ Push rejected (out of sync)"                | Suggest `git pull --rebase`                 |
+| Gemini unavailable | Create message yourself                        | Silent fallback, no error shown             |
 
 ## Token Optimization Strategy
 
