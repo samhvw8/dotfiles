@@ -162,6 +162,7 @@ any skills that match your task before manual implementation."
 ❌ Spawning sub-agents without skill guidance → ✅ Include skill usage reminder in prompts
 
 # Principles
+@principles/cognitive-framework.md
 @principles/se.md
 @principles/primary-workflow.md
 
