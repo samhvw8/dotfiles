@@ -62,25 +62,10 @@ fbd() {
 }
 
 # =============================================================================
-# Prompt - Starship
+# Prompt - Starship (installed via mise)
 # =============================================================================
 
-# Platform-specific binary selection
-case $(uname) in
-    Darwin) 
-        STARSHIP_BINARY='*apple-darwin.tar.gz' ;;
-    *)
-        case $(uname -m) in
-            aarch64) STARSHIP_BINARY='*aarch64-unknown-linux*' ;;
-            *) STARSHIP_BINARY='*unknown-linux-gnu*' ;;
-        esac ;;
-esac
-
-zi lucid for \
-    as"command" from"gh-r" \
-    atload'eval "$(starship init zsh)"' \
-    bpick"$STARSHIP_BINARY" \
-    starship/starship
+command_exists starship && eval "$(starship init zsh)"
 
 # =============================================================================
 # Tool Completions
@@ -167,26 +152,12 @@ if command_exists docker; then
     zi snippet https://github.com/docker/compose/blob/v1/contrib/completion/zsh/_docker-compose
 fi
 
-# Zoxide (better cd)
-zi ice wait"2" as"command" from"gh-r" lucid \
-    mv"*zoxide* -> zoxide" \
-    atclone"./zoxide init --cmd j zsh > init.zsh" \
-    atpull"%atclone" src"init.zsh" nocompile'!'
-zi light ajeetdsouza/zoxide
-
-# Console tools collection (full installation only)
-zi light-mode for z-shell/z-a-meta-plugins @console-tools
-
-# Delta (better diff)
-zi ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
-zi light dandavison/delta
+# Zoxide (installed via mise)
+command_exists zoxide && eval "$(zoxide init --cmd j zsh)"
 
 # Additional completions
 zi ice lucid wait as'completion' blockf
 zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
-
-zi ice lucid wait as'completion' blockf mv'youtube-dl.zsh -> _youtube-dl'
-zi snippet https://github.com/ytdl-org/youtube-dl/blob/master/youtube-dl.plugin.zsh
 
 # =============================================================================
 # ZSH Enhancements
@@ -299,3 +270,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
