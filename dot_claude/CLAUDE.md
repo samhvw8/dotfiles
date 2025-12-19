@@ -2,8 +2,31 @@
 
 **Execution priority (always follow this order):**
 1. **Specialized sub-agent** (Task tool) → Can delegate? Use it.
-2. **Skill** (Skill tool) → Can't delegate but skill exists? Use it.
-3. **General-purpose agent OR manual** → Only when no specialized agent/skill applies.
+2. **Manual with Skill enhancement** → Can't delegate? Use Skills for context, then do it yourself.
+3. **Manual without Skill** → Only when no agent/skill applies.
+
+# 🔑 KEY DISTINCTION: Agents vs Skills
+
+<critical_understanding>
+## Agents (Task tool) = DELEGATION
+- Sub-agents do the work AUTONOMOUSLY
+- You hand off the task completely
+- Agent returns results when done
+- Example: `Task(subagent_type="git-manager")` → agent commits for you
+- **IMPORTANT**: When delegating, pass relevant skills in prompt so agent can use them
+
+## Skills (Skill tool) = CONTEXT ENHANCEMENT
+- Skills provide INSTRUCTIONS/WORKFLOW to YOU
+- You still do the work yourself
+- Skills make YOU more effective
+- Example: `Skill("git-workflow")` → you get workflow guide, then YOU commit
+
+**NEVER confuse these:**
+- ❌ Wrong: "Skill matched, so delegate to skill" (skills don't do work)
+- ✅ Right: "Skill matched, invoke it for guidance, then I execute"
+- ❌ Wrong: "Agent matched but let me invoke skill instead" (use agent for delegation)
+- ✅ Right: "Agent matched, delegate via Task tool"
+</critical_understanding>
 
 **Independence Rule**: Each task MUST be self-contained—no dependencies on other concurrent tasks.
 
@@ -61,7 +84,7 @@ Or would you prefer I [option A] or [option B]?"
 ```
 </mental_model>
 
-# 🔥 CRITICAL: Sub-Agent First Architecture
+# CRITICAL: Sub-Agent First Architecture
 
 <delegation_principle>
 **Default behavior**: Delegate to specialized sub-agents. Manual work is the EXCEPTION.
@@ -121,14 +144,19 @@ User: "Understand how auth works and find all API endpoints"
 ```
 User Request
     │
-    ├─→ Specialized sub-agent exists? → Task tool (FIRST CHOICE)
+    ├─→ Specialized sub-agent exists? → Task tool (DELEGATE to agent)
     │
-    ├─→ No specialized agent, but skill exists? → Skill tool (SECOND CHOICE)
+    ├─→ No agent, but skill exists? → Skill tool (GET context) → YOU execute
     │
-    ├─→ No agent/skill applies? → general-purpose agent OR manual (THIRD CHOICE)
+    ├─→ No agent/skill applies? → Manual work (justify why)
     │
-    └─→ Unsure? → Delegate (better to delegate than struggle)
+    └─→ Unsure? → Delegate to agent (better to delegate than struggle)
 ```
+
+**Remember:**
+- Agent match → DELEGATE (agent does work)
+- Skill match → ENHANCE (you do work with better context)
+- Skills are NOT delegation, they're workflow enhancement
 
 **Independence Rule**: Each task MUST be self-contained. Never create tasks that depend on outputs from other concurrent tasks.
 
@@ -142,21 +170,36 @@ User Request
 
 ## Skill-Aware Sub-Agent Prompting
 
-When delegating to sub-agents, append skill guidance to prompts:
+When delegating to sub-agents, ALWAYS pass relevant skills in the prompt:
 
 ```
 "[Task description]
 
-SKILL USAGE: You have access to skills via the Skill tool.
-Check <available_skills> in your system context and activate
-any skills that match your task before manual implementation."
+RECOMMENDED SKILLS: [list relevant skills for this task]
+- skill-name-1: [brief description of when to use]
+- skill-name-2: [brief description of when to use]
+
+Use Skill tool to invoke these skills for enhanced workflow guidance."
+```
+
+**Example - Delegating git commit to git-manager:**
+```
+Task(subagent_type="git-manager", prompt="""
+Commit the staged changes with conventional commit format.
+
+RECOMMENDED SKILLS:
+- git-workflow: Use for commit message conventions and git best practices
+
+Use Skill("git-workflow") for guidance before executing git commands.
+""")
 ```
 
 ## Anti-Patterns (NEVER DO)
 
+❌ Confusing Skills with Agents → ✅ Agents DELEGATE, Skills ENHANCE your workflow
+❌ Treating Skill as delegation → ✅ Invoke Skill for context, then YOU execute
+❌ Skipping Agent when it matches → ✅ Agent match = DELEGATE via Task tool
 ❌ Ignoring relevant hook suggestions → ✅ Use Skill/Task when suggestion matches task
-❌ Using irrelevant hook suggestions blindly → ✅ Apply judgment, ignore if not relevant
-❌ Running commands manually when relevant skill exists → ✅ Use suggested skill
 ❌ Using grep/glob for multi-file searches → ✅ Use exploration agent
 ❌ Sequential agent launches for independent tasks → ✅ Parallel launch
 ❌ Spawning sub-agents without skill guidance → ✅ Include skill usage reminder in prompts
@@ -169,6 +212,7 @@ any skills that match your task before manual implementation."
 ## MCP Tools Priority
 
 - **context7**: Library/framework documentation (React, Next.js, Prisma, etc.)
+@MCP_Context7.md
 
 # MISE
 - mise is a polyglot tool version manager. It replaces tools like asdf, nvm, pyenv, rbenv, etc.
@@ -176,5 +220,4 @@ any skills that match your task before manual implementation."
 - mise is a task runner that can replace make, or npm scripts.
 
 
-# MCP Documentation
-@MCP_Context7.md
+
