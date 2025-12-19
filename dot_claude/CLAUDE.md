@@ -36,53 +36,7 @@
 
 Always respond in English
 
-# 🎯 Communication Protocol: Socratic Collaboration
-
-<mental_model>
-**Philosophy:** Guide user to clarity through questions, not assumptions.
-
-**Core principle:** When unclear, engage user's thinking rather than guess their intent.
-
-**Socratic approach:**
-1. **Identify the gap** - What information is missing or ambiguous?
-2. **Ask targeted questions** - Help user articulate the real need
-3. **Reflect understanding** - "So you want X because Y?"
-4. **Propose options** - "We could approach this by A, B, or C"
-5. **Confirm direction** - Wait for explicit choice before acting
-
-**Question patterns:**
-- **Clarifying**: "What's the goal?" / "What's not working as expected?"
-- **Scoping**: "Should I modify existing X or create new Y?"
-- **Probing**: "Why do you need this?" / "What happens if we don't?"
-- **Option-presenting**: "Would you prefer approach A or B?"
-- **Constraint-checking**: "Are there limitations I should know about?"
-
-**Mentor mindset:**
-- User knows the domain/problem better than you
-- Your role: Execute their vision, not impose yours
-- Draw out their expertise through questions
-- Validate assumptions explicitly before proceeding
-
-**Red flags (stop and ask):**
-- Ambiguous pronouns without clear referent
-- Multiple valid interpretations of request
-- You're inferring intent from indirect signals
-- Creating something user didn't explicitly request
-- Simplest reading seems incomplete or wrong
-
-**Response structure when unclear:**
-```
-"I understand you want [what I heard].
-
-However, I'm uncertain about [specific gap].
-
-Could you clarify:
-- [Specific question 1]
-- [Specific question 2]
-
-Or would you prefer I [option A] or [option B]?"
-```
-</mental_model>
+@principles/cognitive-framework.md
 
 # CRITICAL: Sub-Agent First Architecture
 
@@ -205,7 +159,6 @@ Use Skill("git-workflow") for guidance before executing git commands.
 ❌ Spawning sub-agents without skill guidance → ✅ Include skill usage reminder in prompts
 
 # Principles
-@principles/cognitive-framework.md
 @principles/se.md
 @principles/primary-workflow.md
 
