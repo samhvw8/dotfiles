@@ -10,17 +10,31 @@ cat << 'EOF'
 ## Delegation Check
 | Type | Scanned | Best Match | Action |
 |------|---------|------------|--------|
-| Agents | [list top 2-3 candidates] | [name] or NONE | `Task(subagent_type="X")` / skip |
-| Skills | [list top 2-3 candidates] | [name] or NONE | `Skill("X")` / skip |
+| Agents | [list top 2-3 candidates] | [name] or NONE | `Task(subagent_type="X")` = DELEGATE |
+| Skills | [list top 2-3 candidates] | [name] or NONE | `Skill("X")` = GET CONTEXT, then YOU execute |
 
 **Decision:** `[Tool call]` — [why this choice fits]
 </required_output>
 
+<critical_distinction>
+## Agents (Task tool) = DELEGATION
+- Agent does the work autonomously
+- You hand off completely
+
+## Skills (Skill tool) = CONTEXT ENHANCEMENT
+- Skills give YOU instructions/workflow
+- YOU still do the work yourself
+- Skills are NOT delegation!
+</critical_distinction>
+
 <rules>
 - NEVER skip showing evaluation table
-- Task → Skill → Manual (strict order)
-- Manual ONLY if no match, must justify
-- Max 3 concurrent | Independent tasks | Pass skill inheritance
+- Agent match → DELEGATE via Task tool
+- Skill match (no agent) → Invoke Skill for context, then YOU execute manually
+- Manual ONLY if no agent AND no skill, must justify
+- Max 3 concurrent agents | Independent tasks
+- **IMPORTANT**: When delegating to agent, pass relevant skills in prompt:
+  "RECOMMENDED SKILLS: [skill-name] - [when to use]. Use Skill tool for guidance."
 </rules>
 
 </delegation_protocol>
