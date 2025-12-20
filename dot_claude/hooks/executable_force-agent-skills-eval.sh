@@ -35,6 +35,7 @@ cat << 'EOF'
 - Max 3 concurrent agents | Independent tasks
 - **IMPORTANT**: When delegating to agent, pass relevant skills in prompt:
   "RECOMMENDED SKILLS: [skill-name] - [when to use]. Use Skill tool for guidance."
+- **CRITICAL - SKILL INVOCATION IS MANDATORY**: When a skill matches your context, you MUST invoke it via `Skill("skill-name")`. You MAY gather context first (git status, file reads, etc.), but you CANNOT skip the skill invocation before executing. The workflow is: Delegation Check → Gather Info (optional) → Invoke Skill → Execute with guidance.
 </rules>
 
 </delegation_protocol>
