@@ -2,6 +2,19 @@
 # ZSH Configuration - Optimized & Readable
 # =============================================================================
 
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    if [ -f "$HOME/.local/bin/mise" ]; then 
+        eval "$($HOME/.local/bin/mise activate zsh)"
+        eval "$($HOME/.local/bin/mise hook-env)"
+    fi
+else
+    if [ -f "$HOME/.local/bin/mise" ]; then 
+        eval "$($HOME/.local/bin/mise activate zsh)"
+        eval "$($HOME/.local/bin/mise hook-env)"
+    fi
+fi
+
+
 # Basic ZSH Options
 setopt SHARE_HISTORY INC_APPEND_HISTORY HIST_NO_STORE
 setopt appendhistory beep nomatch promptsubst
@@ -273,3 +286,103 @@ esac
 
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
+
+# =============================================================================
+# Case Variant Search (rgv - ripgrep with case variants)
+# =============================================================================
+
+# Convert input to word array (splits on _ - . or camelCase boundaries)
+_to_words() {
+    local input="$1"
+    # Replace separators with spaces, then handle camelCase
+    echo "$input" | \
+        sed -E 's/[-_.]/ /g' | \
+        sed -E 's/([a-z])([A-Z])/\1 \2/g' | \
+        tr '[:upper:]' '[:lower:]'
+}
+
+# Generate all case variants from a variable name
+_case_variants() {
+    local input="$1"
+    local words=($(_to_words "$input"))
+
+    [[ ${#words[@]} -eq 0 ]] && return 1
+
+    local snake="" camel="" pascal="" upper="" kebab="" dot="" lower=""
+    local first=true
+
+    for word in "${words[@]}"; do
+        local lower_word="${word:l}"
+        local upper_word="${word:u}"
+        local cap_word="${(C)word}"
+
+        # snake_case
+        [[ -n "$snake" ]] && snake+="_"
+        snake+="$lower_word"
+
+        # camelCase
+        if $first; then
+            camel+="$lower_word"
+        else
+            camel+="$cap_word"
+        fi
+
+        # PascalCase
+        pascal+="$cap_word"
+
+        # UPPER_CASE
+        [[ -n "$upper" ]] && upper+="_"
+        upper+="$upper_word"
+
+        # kebab-case
+        [[ -n "$kebab" ]] && kebab+="-"
+        kebab+="$lower_word"
+
+        # dot.case
+        [[ -n "$dot" ]] && dot+="."
+        dot+="$lower_word"
+
+        # lowercase (no separator)
+        lower+="$lower_word"
+
+        first=false
+    done
+
+    # Output unique variants
+    printf '%s\n' "$snake" "$camel" "$pascal" "$upper" "$kebab" "$dot" "$lower" | sort -u
+}
+
+# ripgrep with case variants
+# Usage: rgv <variable_name> [rg_options...]
+# Example: rgv price_nego -t py
+#          rgv priceNego --type ts -l
+rgv() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: rgv <variable_name> [rg_options...]"
+        echo "Searches for all case variants: snake_case, camelCase, PascalCase, UPPER_CASE, kebab-case, dot.case"
+        echo ""
+        echo "Examples:"
+        echo "  rgv price_nego           # Search all variants"
+        echo "  rgv priceNego -t py      # Search in Python files"
+        echo "  rgv PriceNego -l         # List matching files only"
+        return 1
+    fi
+
+    local pattern="$1"
+    shift
+
+    # Generate variants and pipe to ripgrep
+    _case_variants "$pattern" | rg -f - "$@"
+}
+
+# Show what variants will be searched (for debugging)
+rgv-show() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: rgv-show <variable_name>"
+        return 1
+    fi
+    echo "Case variants for '$1':"
+    _case_variants "$1" | while read -r v; do
+        echo "  - $v"
+    done
+}
