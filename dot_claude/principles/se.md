@@ -1,70 +1,96 @@
 # Software Engineering Principles
 
-**Core Directive**: Evidence > assumptions | Working code > documentation | Action > verbosity
+Evidence over assumptions. Working code over documentation. Action over verbosity.
 
-## Workflow Philosophy
+## Workflow
 
-<task_execution_model>
-1. **Understand** → Read code, analyze context, identify constraints
-2. **Plan** → Break into minimal, testable steps (use TodoWrite for complex tasks)
-3. **Execute** → Implement one step at a time, validate incrementally
-4. **Verify** → Test, measure, confirm expectations match reality
-</task_execution_model>
+Understand → Plan → Execute → Verify
 
-<operational_principles>
-- **Evidence-Based**: All claims verifiable through tests, metrics, or authoritative sources
-- **Parallel Efficiency**: Execute independent operations concurrently (file reads, searches, API calls, sub-agents)
-- **Progressive Disclosure**: Start simple, add complexity only when requirements demand it
-- **Context Preservation**: Maintain awareness of project state, architecture, and user intent across sessions
-- **Delegation First**: Use specialized sub-agents for codebase exploration, complex searches, and multi-step analysis before manual work
-</operational_principles>
+<execution>
+1. **Understand**: Read code, analyze context, identify constraints
+2. **Plan**: Minimal testable steps; use TodoWrite for complex tasks
+3. **Execute**: One step at a time, validate incrementally
+4. **Verify**: Test, measure, confirm reality matches expectations
+</execution>
 
-## Engineering Mindset
+<operational_rules>
+- Evidence-based: Claims verified by tests, metrics, or authoritative sources
+- Parallel execution: Independent operations run concurrently (file reads, searches, API calls, Task tool)
+- Progressive disclosure: Simple first, complexity only when required
+- Context preservation: Track project state, architecture, user intent
+- Delegation first: Use Task tool with specialized sub-agents before manual work
+</operational_rules>
 
-<solid_principles>
-| Principle | Application | Benefit |
-|-----------|-------------|---------|
-| **Single Responsibility** | One clear purpose per function/class | Easier testing, modification, comprehension |
-| **Open/Closed** | Extend via composition/inheritance, not modification | Reduces regression risk |
-| **Liskov Substitution** | Subclasses honor parent contracts | Prevents subtle bugs |
-| **Interface Segregation** | Clients depend only on methods they use | Cleaner dependencies |
-| **Dependency Inversion** | Depend on abstractions (interfaces) | Enables testing, swapping implementations |
-</solid_principles>
+## SOLID
 
-<design_patterns>
-- **DRY (Don't Repeat Yourself)**: Extract shared logic into reusable functions/modules
-- **KISS (Keep It Simple)**: Solve current problem, avoid premature optimization
-- **YAGNI (You Aren't Gonna Need It)**: Build for current requirements, not hypothetical futures
-- **Composition over Inheritance**: Prefer flexible composition to rigid class hierarchies
-</design_patterns>
+| Principle | Rule | Benefit |
+|-----------|------|---------|
+| SRP | One purpose per function/class | Testable, modifiable |
+| OCP | Extend via composition, not modification | No regressions |
+| LSP | Subclasses honor parent contracts | No subtle bugs |
+| ISP | Clients use only what they need | Clean dependencies |
+| DIP | Depend on abstractions | Swappable, testable |
 
-<systems_thinking>
-- **Ripple Analysis**: Trace dependencies and side effects before changing code
-- **Temporal Trade-offs**: Fast-but-fragile vs. slow-but-maintainable → choose consciously
-- **Blast Radius**: Prefer small, reversible changes → easier rollback, faster debugging
-</systems_thinking>
+## Design Patterns
+
+<patterns>
+- **DRY**: Extract shared logic into reusable units
+- **KISS**: Solve current problem, no premature optimization
+- **YAGNI**: Build for now, not hypothetical futures
+- **Composition > Inheritance**: Flexible composition beats rigid hierarchies
+</patterns>
+
+## Systems Thinking
+
+<analysis>
+- **Ripple**: Trace dependencies and side effects before changes
+- **Temporal**: Fast-fragile vs slow-maintainable → choose consciously
+- **Blast Radius**: Small reversible changes → easier rollback, faster debug
+</analysis>
+
+## Unix Philosophy
+
+| Rule | Principle |
+|------|-----------|
+| Modularity | Simple parts, clean interfaces |
+| Clarity | Clarity > cleverness |
+| Composition | Programs connect to programs |
+| Separation | Policy ≠ mechanism; interface ≠ engine |
+| Simplicity | Add complexity only when necessary |
+| Parsimony | Big programs only when proven necessary |
+| Transparency | Visible = debuggable |
+| Robustness | Child of transparency + simplicity |
+| Representation | Knowledge in data, logic stays stupid |
+| Least Surprise | Do what users expect |
+| Silence | No output when nothing to say |
+| Repair | Fail fast, fail loud |
+| Economy | Programmer time > machine time |
+| Generation | Programs write programs |
+| Optimization | Working first, fast second |
+| Diversity | No "one true way" |
+| Extensibility | Future arrives faster than expected |
 
 ## Decision Framework
 
-<data_driven_development>
-- **Measure, Don't Guess**: Profile before optimizing, log before debugging
-- **Hypothesis-Driven**: "If I change X, Y should happen" → validate with tests/metrics
-- **Source Hierarchy**: Official docs > established patterns > blog posts > assumptions
-- **Cognitive Bias Check**: Recognize confirmation bias, anchoring, sunk cost fallacy
-</data_driven_development>
+<data_driven>
+- Measure before guess: Profile before optimize, log before debug
+- Hypothesis-driven: "Change X → Y happens" → validate
+- Source priority: Official docs > patterns > blogs > assumptions
+- Bias check: Confirmation, anchoring, sunk cost
+</data_driven>
 
-<tradeoff_analysis>
-| Dimension | Critical Questions |
-|-----------|-------------------|
-| **Temporal** | Today's problem or tomorrow's? Maintenance cost? |
-| **Reversibility** | Easy to undo? One-way door decision? |
-| **Flexibility** | Preserves options or locks in? |
-| **Risk** | Probability × Impact? Fallback available? |
-</tradeoff_analysis>
+<tradeoffs>
+| Dimension | Question |
+|-----------|----------|
+| Temporal | Today's problem or tomorrow's? Maintenance cost? |
+| Reversibility | Easy undo? One-way door? |
+| Flexibility | Preserves options or locks in? |
+| Risk | Probability × Impact? Fallback? |
+</tradeoffs>
 
 <risk_management>
-1. **Identify**: Dependencies, edge cases, external system failures
-2. **Assess**: Probability × Impact = Priority
-3. **Mitigate**: Tests, error handling, graceful degradation, monitoring
-4. **Monitor**: Logging, alerts, metrics for early detection
+1. Identify: Dependencies, edge cases, external failures
+2. Assess: Probability × Impact = Priority
+3. Mitigate: Tests, error handling, graceful degradation
+4. Monitor: Logging, alerts, metrics → early detection
 </risk_management>

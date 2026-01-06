@@ -1,45 +1,64 @@
 # Primary Workflow
 
-**IMPORTANT:** Analyze the skills catalog and activate the skills that are needed for the task during the process.
-**IMPORTANT**: Ensure token efficiency while maintaining high quality.
+Activate relevant skills. Delegate to specialized agents. Ensure token efficiency.
 
-#### 1. Code Implementation
-- Before you start, delegate to `planner` agent to create a implementation plan with TODO tasks in `./plans` directory.
-- When in planning phase, use multiple `researcher` agents in parallel to conduct research on different relevant technical topics and report back to `planner` agent to create implementation plan.
-- Write clean, readable, and maintainable code
+## 1. Implementation
+
+Delegate to `planner` agent → create plan with TODOs in `./plans`
+
+<planning>
+- Use multiple `researcher` agents in parallel for technical research
+- Feed research back to `planner` agent for implementation plan
+</planning>
+
+<rules>
+- Write clean, readable, maintainable code
 - Follow established architectural patterns
-- Implement features according to specifications
 - Handle edge cases and error scenarios
-- **DO NOT** create new enhanced files, update to the existing files directly.
-- **[IMPORTANT]** After creating or modifying code file, run compile command/script to check for any compile errors.
+- Update existing files directly — NO new "enhanced" copies
+- Run compile check after every code modification
+</rules>
 
-#### 2. Testing
-- Delegate to `tester` agent to run tests and analyze the summary report.
-  - Write comprehensive unit tests
-  - Ensure high code coverage
-  - Test error scenarios
-  - Validate performance requirements
-- Tests are critical for ensuring code quality and reliability, **DO NOT** ignore failing tests just to pass the build.
-- **IMPORTANT:** make sure you don't use fake data, mocks, cheats, tricks, temporary solutions, just to pass the build or github actions.
-- **IMPORTANT:** Always fix failing tests follow the recommendations and delegate to `tester` agent to run tests again, only finish your session when all tests pass.
+## 2. Testing
 
-#### 3. Code Quality
-- After finish implementation, delegate to `code-reviewer` agent to review code.
-- Follow coding standards and conventions
-- Write self-documenting code
-- Add meaningful comments for complex logic
+Delegate to `tester` agent → run tests, analyze report
+
+<requirements>
+- Comprehensive unit tests with high coverage
+- Test error scenarios and performance requirements
+- NO fake data, mocks, cheats, or tricks to pass build
+- Fix failing tests → re-run `tester` → repeat until all pass
+</requirements>
+
+## 3. Code Quality
+
+Delegate to `code-reviewer` agent → review implementation
+
+<standards>
+- Follow coding conventions
+- Self-documenting code
+- Meaningful comments for complex logic only
 - Optimize for performance and maintainability
+</standards>
 
-#### 4. Integration
-- Always follow the plan given by `planner` agent
-- Ensure seamless integration with existing code
-- Follow API contracts precisely
+## 4. Integration
+
+Follow `planner` agent's plan precisely
+
+<integration_rules>
+- Seamless integration with existing code
+- Follow API contracts exactly
 - Maintain backward compatibility
 - Document breaking changes
-- Delegate to `docs-manager` agent to update docs in `./docs` directory if any.
+- Delegate to `docs-manager` agent → update `./docs` if needed
+</integration_rules>
 
-#### 5. Debugging
-- When a user report bugs or issues on the server or a CI/CD pipeline, delegate to `debugger` agent to run tests and analyze the summary report.
-- Read the summary report from `debugger` agent and implement the fix.
-- Delegate to `tester` agent to run tests and analyze the summary report.
-- If the `tester` agent reports failed tests, fix them follow the recommendations and repeat from the **Step 2**.
+## 5. Debugging
+
+When user reports bugs or CI/CD issues:
+
+```
+debugger agent → analyze → implement fix → tester agent → verify
+                                              ↓
+                                         if fails → fix → repeat Step 2
+```
