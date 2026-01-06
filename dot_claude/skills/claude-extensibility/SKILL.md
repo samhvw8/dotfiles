@@ -5,7 +5,7 @@ description: "Claude Code extensibility: agents, skills, output styles. Capabili
 
 # Claude Code Extensibility
 
-CRUD operations for agents, skills, and output styles following Anthropic best practices.
+CRUD operations for agents, skills, and output styles. This skill transfers expertise in building extensions that actually activate and deliver value.
 
 ## Related Skills
 
@@ -19,8 +19,56 @@ Skill("prompt-enhancer")  → Enhance skill/agent prompt content
 
 - **Simplicity**: Direct tool calls, avoid complex abstractions
 - **Focus**: Single, clear responsibility per extension
-- **Conciseness**: Target <500 lines, use progressive disclosure
+- **Conciseness**: Target <800 lines, use progressive disclosure
 - **Efficiency**: Optimize for token usage and response time
+
+## Core Truths
+
+Every extension must embody these principles:
+
+| Truth | Meaning | Test |
+|-------|---------|------|
+| **Expertise Transfer** | Make Claude *think* like expert, not follow steps | Does it transfer patterns or just procedures? |
+| **Flow, Not Friction** | Produce output, not intermediate work | Does it help produce results or create busywork? |
+| **Voice Matches Domain** | Sound like practitioner, not documentation | Would an expert recognize this as their thinking? |
+| **Focused Beats Comprehensive** | Constrain ruthlessly | Does every section earn its place? |
+
+## Decision Heuristics
+
+| Rule | Guidance |
+|------|----------|
+| **3-File Rule** | Task touches 3+ files → agent (needs autonomy). Enhances how YOU work → skill. |
+| **Delegation Test** | "Does this run independently while I do other work?" Yes → agent. No → skill. |
+| **Expert Test** | "Would an expert do this differently than beginner?" Big difference → skill. |
+| **Activation Breadth** | Trigger on 80% of relevant requests, not 100%. Over-broad = noise. |
+| **Composition Preference** | When in doubt, 2 small focused extensions > 1 large monolith. |
+| **Tool Constraint** | Start with 2-3 essential tools. Adding is easy; removing breaks things. |
+
+## Expert Patterns
+
+### The "Everything Tool" Request
+**When you see:** User wants one agent/skill to handle auth, database, API, and testing
+**This indicates:** Scope creep that will create bloated, unfocused extension
+**Therefore:** Split into focused single-responsibility extensions; suggest composition
+**Watch out:** User may resist - explain that 3 focused skills outperform 1 swiss-army-knife
+
+### The Wrapper Trap
+**When you see:** Skill that just wraps a CLI tool with no added expertise
+**This indicates:** Missing the expertise transfer opportunity
+**Therefore:** Ask "what would an expert know that the tool doesn't tell you?"
+**Watch out:** The skill becomes redundant with just reading --help
+
+### Activation Keyword Starvation
+**When you see:** Frontmatter description uses only formal/technical terms
+**This indicates:** Skill won't activate when users use casual language
+**Therefore:** Add synonyms, verbs, casual phrasings to description
+**Watch out:** Over-broad keywords cause false activations
+
+### The Procedure Manual
+**When you see:** Step 1, Step 2, Step 3... (long numbered instructions)
+**This indicates:** Procedures don't transfer judgment - expert skips steps, adapts order
+**Therefore:** Teach patterns and heuristics. Let reader apply judgment.
+**Watch out:** Some workflows genuinely need sequence - use sparingly
 
 ## Extension Types
 
@@ -30,16 +78,60 @@ Skill("prompt-enhancer")  → Enhance skill/agent prompt content
 | **Skills** | Model-invoked (autonomous) | Domain knowledge | `.claude/skills/{name}/` |
 | **Output Styles** | `/output-style` command | Modify main agent behavior | `.claude/output-styles/` |
 
+## Activation Keyword Engineering
+
+**The description field is your activation gate.** System reads ONLY frontmatter to decide loading. Brilliant skill + poor keywords = dead skill.
+
+### Keyword Categories to Include
+
+1. **Task Verbs**: create, build, debug, fix, deploy, optimize, refactor
+2. **Problem Descriptions**: slow, broken, failing, error, conflict
+3. **Artifact Types**: component, API, database, test, config
+4. **Tool/Framework Names**: React, PostgreSQL, Docker (exact + misspellings)
+5. **Casual Synonyms**: "make it faster" → optimize, performance
+
+### Description Format (WHAT + WHEN)
+
+```yaml
+# Bad - too vague, won't trigger
+description: Helps with documents
+
+# Bad - missing WHEN triggers
+description: PDF skill
+
+# Good - multiple trigger points
+description: "Extract text and tables from PDF files, fill forms, merge documents.
+  Formats: .pdf. Tools: pypdf, pdfplumber. Actions: extract, fill, merge PDFs.
+  Keywords: PDF, form, document. Use when: working with PDF files, extracting data."
+```
+
+### Frontmatter Checklist
+
+- [ ] Name is clear and descriptive (not abbreviation)
+- [ ] Description includes file types if applicable (.docx, .pdf)
+- [ ] Description includes task verbs (creating, editing, analyzing)
+- [ ] Description includes synonyms users might say
+- [ ] Description includes contexts (reports, professional documents)
+
+### Keyword Density Test
+
+Read description aloud. For every 10 words, at least 3 should be potential triggers.
+
+---
+
 ## Agent Development
 
-**Reference:** `references/agent-development.md` - Full YAML structure, model/tool selection, system prompt patterns, optimization techniques.
+**Reference:** `references/agent-development.md` - Full YAML structure, system prompt patterns, optimization techniques.
 
 ### Quick Start: Agent
 
 ```yaml
 ---
 name: agent-name
+# CRITICAL: Description is the ONLY thing system reads to decide activation
+# Include: task verbs, problem descriptions, synonyms users actually say
 description: Use this agent when [use case]. Use PROACTIVELY for [triggers].\n\nExamples:\n<example>\nContext: [situation]\nuser: [request]\nassistant: [response]\n<commentary>[reasoning]</commentary>\n</example>
+# CONSTRAIN RUTHLESSLY: 3-5 tools = focused. 10+ tools = confused.
 tools: Grep, Glob, Read, Bash
 model: haiku
 permissionMode: default
@@ -54,6 +146,10 @@ Brief mission statement.
 
 ### 1. Phase Name
 Approach and techniques
+
+## What This Agent Does NOT Do
+- Does not [boundary 1] (use X agent)
+- Does not [boundary 2] (escalate to user)
 
 <format>
 Expected output structure
@@ -117,6 +213,8 @@ Continue previous conversations:
 - Transcript stored in `agent-{agentId}.jsonl`
 - Resume with previous `agentId` to continue with full context
 
+---
+
 ## Skill Development
 
 **Reference:** `references/skill-development.md` - Full structure, trigger patterns, hook system.
@@ -126,20 +224,31 @@ Continue previous conversations:
 ```yaml
 ---
 name: skill-name
-description: "[What it does]. [Technologies]. Capabilities: [list]. Actions: [verbs]. Keywords: [triggers]. Use when: [scenarios]."
+# WHAT it does + WHEN to use it (both required!)
+description: "[Core purpose]. [Technologies]. Capabilities: [list].
+  Actions: [verbs]. Keywords: [triggers]. Use when: [scenarios]."
 allowed-tools: Read, Grep, Glob
 ---
 
 # Skill Name
 
 ## Purpose
-What this skill helps with
+What this skill helps with - in practitioner voice.
 
-## When to Use
-Specific scenarios and conditions
+## Patterns
 
-## Key Information
-Guidance, patterns, examples
+### [Pattern Name]
+**When you see:** [Observable trigger]
+**This indicates:** [Expert insight]
+**Therefore:** [Action to take]
+**Watch out for:** [Common pitfall]
+
+## Heuristics
+- **[Rule of thumb]**: [When/why it applies]
+
+## When to Use Something Else
+- For X → use `other-skill`
+- For Y → escalate to user
 ```
 
 ### YAML Fields
@@ -149,24 +258,6 @@ Guidance, patterns, examples
 | `name` | Yes | Lowercase, hyphens, max 64 chars |
 | `description` | Yes | WHAT + WHEN format, max 1024 chars, quoted |
 | `allowed-tools` | No | Restrict tool access (security) |
-
-### Description Format (WHAT + WHEN)
-
-**Structure:**
-```
-"[Core purpose]. [Technologies/Stack]. Capabilities: [list]. Actions: [verbs]. Keywords: [triggers]. Use when: [scenarios]."
-```
-
-**Good example:**
-```yaml
-description: "Extract text and tables from PDF files, fill forms, merge documents. Formats: .pdf. Tools: pypdf, pdfplumber. Capabilities: text extraction, form filling, document merging. Actions: extract, fill, merge PDFs. Keywords: PDF, form, document, pypdf, pdfplumber. Use when: working with PDF files, extracting data from documents, filling PDF forms."
-```
-
-**Bad examples:**
-```yaml
-description: Helps with documents  # Too vague
-description: PDF skill  # Missing WHEN triggers
-```
 
 ### Tool Access Control
 
@@ -192,11 +283,28 @@ allowed-tools: Read, Grep, Glob
 
 ```
 my-skill/
-├── SKILL.md (required)
+├── SKILL.md (required, <800 lines)
 ├── references/ (optional - detailed docs)
 ├── scripts/ (optional - utilities)
 └── templates/ (optional - templates)
 ```
+
+### Core Sections (Include What's Needed)
+
+| Section | Purpose | Include When |
+|---------|---------|--------------|
+| **Frontmatter** | Activation trigger | **Always - required** |
+| **When to Use** | Detailed activation | When frontmatter needs expansion |
+| **Context** | Domain framing | When domain context helps |
+| **Patterns** | Expert recognition | Core - almost always |
+| **Heuristics** | Decision guidance | When judgment needed |
+| **Anti-Patterns** | What to avoid | When mistakes are common/costly |
+| **Workflow** | Process guidance | When sequence matters |
+| **Quality Signals** | How to verify good work | When quality is hard to assess |
+| **Tools/Commands** | Technical specifics | When implementation details matter |
+| **Output Spec** | Expected format | When format is specific |
+
+---
 
 ## Output Styles
 
@@ -245,6 +353,165 @@ You are an interactive CLI tool that helps users...
 /output-style explanatory  # Switch directly
 ```
 
+---
+
+## Writing Principles
+
+### Voice
+- Sound like a practitioner, not documentation
+- Direct and confident, not hedging
+- Specific and concrete, not abstract
+
+**Before (documentation voice):**
+> It is recommended that users consider implementing appropriate error handling mechanisms.
+
+**After (practitioner voice):**
+> Always handle errors explicitly. Silent failures are debugging nightmares.
+
+### Density
+- Every sentence should transfer knowledge
+- No filler, no redundancy
+- If it doesn't change behavior, cut it
+
+### Scannability
+- Claude reads this during tasks
+- Headers help Claude find relevant sections
+- Patterns are scannable by name
+- Bold key terms
+
+### Patterns Over Procedures
+
+Transform procedures to patterns when expertise matters:
+
+**Before (procedure):**
+```
+1. Open the file
+2. Check the format
+3. Validate the data
+4. Process the content
+```
+
+**After (pattern):**
+```markdown
+### Format Recognition
+**When you see:** File extension and initial bytes
+**This indicates:** Expected structure and parsing approach
+**Therefore:** Choose parser before reading content
+**Watch out for:** Extension doesn't always match actual format
+```
+
+---
+
+## Anti-Patterns
+
+### The Kitchen Sink Agent
+**Looks like:** Agent with 10+ tools, handles "everything related to X"
+**Why wrong:** Broad agents make poor decisions, consume tokens exploring options
+**Instead:** Constrain to 3-5 core tools. Create sibling agents for related domains.
+
+### The Echo Skill
+**Looks like:** Skill that restates tool documentation without adding insight
+**Why wrong:** No expertise transfer. User could just read the docs.
+**Instead:** Add the "expert layer" - pitfalls, non-obvious combos, when NOT to use.
+
+### The Invisible Trigger
+**Looks like:** Description uses only official tool/framework name
+**Why wrong:** Users say "help me deploy" not "invoke kubernetes-orchestrator"
+**Instead:** Include task verbs, user-language synonyms, problem descriptions.
+
+### Missing Boundaries
+**Looks like:** No explicit "what this does NOT do" section
+**Why wrong:** Scope creep, incorrect expectations, overlapping extensions
+**Instead:** Every extension needs 3+ explicit out-of-scope declarations.
+
+### Vague Descriptions
+**Looks like:** `description: Helps with documents`
+**Why wrong:** Too vague to trigger on relevant requests
+**Instead:** Include file types, task verbs, problem descriptions, synonyms.
+
+---
+
+## Quality Signals
+
+### Good Signs
+- Frontmatter reads like "when to use" guide, not feature list
+- First 10 lines provide immediate actionable guidance
+- Expert reading it would nod and say "yes, that's how I think"
+- Explicit constraints on what it does NOT handle
+- Examples show judgment calls, not just syntax
+- Has named patterns with insights, not just steps
+
+### Warning Signs
+- More than 50% content is reference tables or field definitions
+- No mention of tradeoffs or "when NOT to use"
+- Generic language that could apply to any domain
+- Activation keywords are all nouns, no verbs or problem descriptions
+- Body exceeds 600 lines (probably doing too much)
+- Second-person voice ("you should...")
+
+---
+
+## Validation Checklist
+
+Before outputting, verify against Core Truths:
+
+### Frontmatter (Most Critical)
+- [ ] Has YAML frontmatter with name and description?
+- [ ] Name is clear and searchable (not abbreviation)?
+- [ ] Description includes trigger keywords?
+- [ ] Description includes file types if applicable?
+- [ ] Description includes task verbs (creating, editing, etc.)?
+- [ ] Description includes synonyms users might use?
+
+### Expertise Transfer
+- [ ] Has named patterns with insights, not just steps?
+- [ ] Transfers HOW to think, not just WHAT to do?
+- [ ] Would an expert recognize their thinking here?
+
+### Flow
+- [ ] Helps produce output, not create busywork?
+- [ ] No unnecessary intermediate steps?
+- [ ] Actionable immediately?
+
+### Focus
+- [ ] Every section earns its place?
+- [ ] No bloat?
+- [ ] Ruthlessly constrained to what matters?
+
+---
+
+## Common Workflows
+
+### Create Agent
+
+1. Create `.claude/agents/{name}.md`
+2. Write YAML frontmatter (name, description, tools, model)
+3. Write system prompt (<800 lines)
+4. **Use `Skill("prompt-enhancer")` to improve prompt**
+5. Test with Task tool
+6. Optimize based on performance
+
+### Create Skill
+
+1. Create `.claude/skills/{name}/SKILL.md`
+2. Write YAML frontmatter with WHAT + WHEN description
+3. Write content with patterns, not procedures
+4. **Use `Skill("prompt-enhancer")` to improve prompt**
+5. Add reference files for detailed content
+6. Test: Does it activate when expected?
+
+### Optimize Extension
+
+1. Measure baseline (lines, token usage, response time)
+2. Move details to reference files
+3. **Use `Skill("prompt-enhancer")` to improve prompts**
+4. Remove second-person voice
+5. Use code blocks over prose
+6. Add XML structure
+7. Test and verify improvements
+
+---
+
 ## Testing
 
 ### Key Question: Does it activate when expected?
@@ -263,53 +530,29 @@ Task(
 - Test prompts that should NOT trigger
 - Debug with: `claude --debug`
 
-## Common Workflows
-
-### Create Agent
-
-1. Create `.claude/agents/{name}.md`
-2. Write YAML frontmatter (name, description, tools, model)
-3. Write system prompt (<500 lines)
-4. Test with Task tool
-5. Optimize based on performance
-
-### Create Skill
-
-1. Create `.claude/skills/{name}/SKILL.md`
-2. Write YAML frontmatter with WHAT + WHEN description
-3. Write content (<500 lines)
-4. **Use `Skill("prompt-enhancer")` to improve prompt**
-5. Add reference files for detailed content
-6. Test: Does it activate when expected?
-
-### Optimize Extension
-
-1. Measure baseline (lines, token usage, response time)
-2. Move details to reference files
-3. **Use `Skill("prompt-enhancer")` to improve prompts**
-4. Remove second-person voice
-5. Use code blocks over prose
-6. Add XML structure
-7. Test and verify improvements
+---
 
 ## Best Practices
 
 ### Anthropic Guidelines
 
-✅ **500-line rule**: Keep SKILL.md and agent prompts under 500 lines
+✅ **800-line rule**: Keep SKILL.md and agent prompts under 800 lines
 ✅ **Progressive disclosure**: Use reference files for detailed content
 ✅ **Proactive language**: Include "use PROACTIVELY" in descriptions
 ✅ **WHAT + WHEN descriptions**: Both capability and triggers
 ✅ **Test first**: Build 3+ evaluations before extensive documentation
 ✅ **Least privilege**: Limit tools to necessary set
 
-### Anti-Patterns
+### Anti-Pattern Summary
 
 ❌ Vague descriptions without triggers
-❌ Over 500 lines without references
+❌ Over 800 lines without references
 ❌ Second-person voice ("you should...")
 ❌ All tools when subset suffices
 ❌ No examples in agent descriptions
+❌ Procedures without patterns
+
+---
 
 ## Quick Reference
 
@@ -330,4 +573,4 @@ Task(
 
 ---
 
-**Status**: Production Ready | **Lines**: ~200 | **Progressive Disclosure**: ✅
+**Status**: Production Ready | **Lines**: ~500 | **Progressive Disclosure**: ✅
