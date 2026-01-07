@@ -242,6 +242,18 @@ Claude intelligently selects agents based on:
 
 ## Agent Patterns
 
+### Pattern Format (When Writing Patterns)
+
+Use this structure for expert patterns in agent prompts:
+
+```markdown
+### [Pattern Name]
+**When you see:** [Observable trigger - what catches expert attention]
+**This indicates:** [Insight - what expert knows when they see this]
+**Therefore:** [Action - what expert does]
+**Watch out for:** [Pitfall - common mistake when handling this]
+```
+
 ### File Discovery Agent
 
 ```yaml
@@ -321,7 +333,7 @@ Task(
 
 ## Optimization Checklist
 
-- [ ] Reduce to <500 lines (move details to references)
+- [ ] Reduce to <800 lines (move details to references)
 - [ ] Remove second-person voice
 - [ ] Add XML tags for structure
 - [ ] Consolidate repetitive examples
@@ -340,7 +352,7 @@ Task(
 1. Clear, focused mission (single responsibility)
 2. Appropriate model selection (cost/performance balance)
 3. Minimal tool set (least privilege)
-4. Concise prompt (<500 lines or references)
+4. Concise prompt (<800 lines or references)
 5. Executable examples (tested and working)
 6. Clear response format
 7. Error recovery strategies

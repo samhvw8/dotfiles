@@ -9,10 +9,10 @@ CRUD operations for agents, skills, and output styles. This skill transfers expe
 
 ## Related Skills
 
-**IMPORTANT:** When creating or editing prompts, use `prompt-enhancer` skill to improve quality.
+**IMPORTANT:** When creating or editing prompts, use `prompt-architect` skill to improve quality.
 
 ```
-Skill("prompt-enhancer")  → Enhance skill/agent prompt content
+Skill("prompt-architect")  → Create/enhance skill/agent prompt content
 ```
 
 ## Core Principles
@@ -487,7 +487,7 @@ Before outputting, verify against Core Truths:
 1. Create `.claude/agents/{name}.md`
 2. Write YAML frontmatter (name, description, tools, model)
 3. Write system prompt (<800 lines)
-4. **Use `Skill("prompt-enhancer")` to improve prompt**
+4. **Use `Skill("prompt-architect")` to improve prompt**
 5. Test with Task tool
 6. Optimize based on performance
 
@@ -496,7 +496,7 @@ Before outputting, verify against Core Truths:
 1. Create `.claude/skills/{name}/SKILL.md`
 2. Write YAML frontmatter with WHAT + WHEN description
 3. Write content with patterns, not procedures
-4. **Use `Skill("prompt-enhancer")` to improve prompt**
+4. **Use `Skill("prompt-architect")` to improve prompt**
 5. Add reference files for detailed content
 6. Test: Does it activate when expected?
 
@@ -504,7 +504,7 @@ Before outputting, verify against Core Truths:
 
 1. Measure baseline (lines, token usage, response time)
 2. Move details to reference files
-3. **Use `Skill("prompt-enhancer")` to improve prompts**
+3. **Use `Skill("prompt-architect")` to improve prompts**
 4. Remove second-person voice
 5. Use code blocks over prose
 6. Add XML structure

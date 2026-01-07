@@ -173,7 +173,7 @@ pip install pypdf pdfplumber
 
 ### Guidelines
 
-- **Main SKILL.md**: <500 lines, core guidance
+- **Main SKILL.md**: <800 lines, core guidance
 - **Reference files**: Detailed documentation, examples, edge cases
 - **Table of contents**: Add to reference files > 100 lines
 - **One level deep**: Don't nest references deeply
@@ -254,10 +254,58 @@ Shows skill loading and activation decisions.
 - [ ] Name is lowercase with hyphens only
 - [ ] Description is quoted and < 1024 chars
 - [ ] Description includes WHAT + WHEN
-- [ ] Content is < 500 lines
+- [ ] Content is < 800 lines
 - [ ] No tab characters (use spaces)
 
+## Writing Principles
+
+### Voice
+- Sound like a practitioner, not documentation
+- Direct and confident, not hedging
+- Specific and concrete, not abstract
+
+**Before (documentation voice):**
+> It is recommended that users consider implementing appropriate error handling.
+
+**After (practitioner voice):**
+> Always handle errors explicitly. Silent failures are debugging nightmares.
+
+### Density
+- Every sentence should transfer knowledge
+- No filler, no redundancy
+- If it doesn't change behavior, cut it
+
+### Patterns Over Procedures
+
+Transform procedures to patterns when expertise matters:
+
+**Before (procedure):**
+```
+1. Open the file
+2. Check the format
+3. Validate the data
+```
+
+**After (pattern):**
+```markdown
+### Format Recognition
+**When you see:** File extension and initial bytes
+**This indicates:** Expected structure and parsing approach
+**Therefore:** Choose parser before reading content
+**Watch out for:** Extension doesn't always match actual format
+```
+
 ## Common Patterns
+
+### Pattern Format (Use in Skills)
+
+```markdown
+### [Pattern Name]
+**When you see:** [Observable trigger]
+**This indicates:** [Expert insight]
+**Therefore:** [Action to take]
+**Watch out for:** [Common pitfall]
+```
 
 ### Simple Skill (Single File)
 
@@ -333,7 +381,7 @@ pip install pypdf pdfplumber
 ### Do
 
 ✅ Include WHAT + WHEN in description
-✅ Keep SKILL.md under 500 lines
+✅ Keep SKILL.md under 800 lines
 ✅ Use reference files for detailed content
 ✅ Include specific keywords for discovery
 ✅ Test with real prompts before finalizing
@@ -343,7 +391,7 @@ pip install pypdf pdfplumber
 ### Don't
 
 ❌ Write vague descriptions
-❌ Exceed 500 lines without references
+❌ Exceed 800 lines without references
 ❌ Use generic terms that overlap with other skills
 ❌ Skip testing activation triggers
 ❌ Forget "Use when" scenarios
