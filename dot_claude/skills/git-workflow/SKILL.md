@@ -37,6 +37,15 @@ Activate for any git operation:
 
 **Why:** Makes history reviewable, revertable, and maintainable.
 
+### ⛔ MANDATORY Gate Before Commit
+
+**Ask yourself:** "If I need to revert ONLY ONE of these changes tomorrow, can I?"
+
+- **NO** → You have multiple concerns → **MUST split into separate commits**
+- **YES** → Proceed with single commit
+
+**Common trap:** "All files are related to the same feature request" is NOT a valid reason to bundle. Each independently revertable change = separate commit.
+
 ---
 
 ## Commit Organization
@@ -686,6 +695,7 @@ logs/
 ### Before Committing
 
 - [ ] Run `git status` to analyze staged files
+- [ ] **⛔ GATE:** "Can I revert ONLY ONE change independently?" If NO → split commits
 - [ ] Group changes by single responsibility
 - [ ] Unstage unrelated files
 - [ ] Stage only related files together
@@ -734,6 +744,28 @@ git commit -m "various changes"
 **Problem:** Impossible to review, revert, or understand
 
 **Fix:** Divide into atomic commits by concern
+
+### ❌ "Related" Bundling
+```bash
+# Multiple features bundled because "they're all for the same task"
+git add src/components/Form.tsx src/components/PDFExport.tsx src/types/ src/config/
+git commit -m "feat: add form and PDF export with new field types"
+```
+**Problem:** "Related to same request" ≠ "Same commit". Cannot revert PDF without losing Form.
+
+**Test:** Can you revert just ONE of these features independently? No? Split it.
+
+**Fix:**
+```bash
+git add src/config/ src/types/
+git commit -m "feat: add field mapping configuration"
+
+git add src/components/Form.tsx
+git commit -m "feat: add editable form component"
+
+git add src/components/PDFExport.tsx
+git commit -m "feat: add PDF export with bank-style layout"
+```
 
 ### ❌ Committing Directly to Main
 ```bash
