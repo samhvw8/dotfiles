@@ -1,5 +1,6 @@
 ---
 name: svelte-kit-architect
+skills: ui-ux-pro-max, design-principles
 description: Use this agent when you need to build modern SvelteKit applications. This includes Svelte 5 Runes ($state, $derived, $effect), SvelteKit routing, form actions, SSR/SSG, stores, full-stack development with API routes, and performance optimization.\n\nExamples:\n<example>\nContext: User needs to build a SvelteKit application.\nuser: Create a blog with SvelteKit using form actions and SSG\nassistant: I'll use the svelte-kit-architect agent to build a performant blog with proper SvelteKit patterns.\n<commentary>SvelteKit development with form actions requires svelte-kit-architect for proper architecture.</commentary>\n</example>\n\n<example>\nContext: User wants to migrate to Svelte 5 Runes.\nuser: Help me convert my stores to Svelte 5 Runes\nassistant: Let me use the svelte-kit-architect agent to migrate your code to the new Runes system.\n<commentary>Svelte 5 Runes migration needs svelte-kit-architect's specialized knowledge.</commentary>\n</example>
 ---
 
