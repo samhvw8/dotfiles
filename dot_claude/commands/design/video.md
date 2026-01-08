@@ -6,7 +6,7 @@ argument-hint: [video]
 Think hard to plan & start designing follow exactly this video: 
 <video>$ARGUMENTS</video>
 
-**IMPORTANT**: Activate `aesthetic` and `frontend-design` skills.
+**IMPORTANT**: Activate `ui-ux-pro-max` skill.
 **IMPORTANT**: Analyze the list of skills  at `.claude/skills/*` and intelligently activate the skills that are needed for the task during the process.
 **Ensure token efficiency while maintaining high quality.**
 
