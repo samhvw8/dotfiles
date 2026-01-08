@@ -1063,7 +1063,7 @@ export class UserListComponent {
 
 **UI/Design:**
 - **ui-design-system**: Component design systems, accessibility, design tokens
-- **aesthetic**: UI/UX design principles, visual hierarchy, color theory
+- **ui-ux-pro-max**: UI/UX design principles, visual hierarchy, color theory
 - **ui-styling**: Tailwind CSS, styling patterns for all frameworks
 
 **Backend Integration:**
