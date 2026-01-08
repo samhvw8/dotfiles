@@ -1,96 +1,93 @@
 # Software Engineering Principles
 
-Evidence over assumptions. Working code over documentation. Action over verbosity.
+Evidence over assumptions. Working code over documentation. Simplicity over cleverness.
 
-## Workflow
+## Core Loop
 
-Understand → Plan → Execute → Verify
+```
+Understand → Plan → Execute → Verify → Iterate
+```
 
-<execution>
-1. **Understand**: Read code, analyze context, identify constraints
-2. **Plan**: Minimal testable steps; use TodoWrite for complex tasks
-3. **Execute**: One step at a time, validate incrementally
-4. **Verify**: Test, measure, confirm reality matches expectations
-</execution>
+| Phase | Action |
+|-------|--------|
+| Understand | Read code, trace dependencies, identify constraints |
+| Plan | Minimal testable steps; TodoWrite for complex tasks |
+| Execute | One change at a time, validate incrementally |
+| Verify | Test, measure, confirm behavior matches intent |
 
-<operational_rules>
-- Evidence-based: Claims verified by tests, metrics, or authoritative sources
-- Parallel execution: Independent operations run concurrently (file reads, searches, API calls, Task tool)
-- Progressive disclosure: Simple first, complexity only when required
-- Context preservation: Track project state, architecture, user intent
-- Delegation first: Use Task tool with specialized sub-agents before manual work
-</operational_rules>
+## Unix Philosophy (17 Laws)
 
-## SOLID
+### Build
 
-| Principle | Rule | Benefit |
-|-----------|------|---------|
-| SRP | One purpose per function/class | Testable, modifiable |
-| OCP | Extend via composition, not modification | No regressions |
-| LSP | Subclasses honor parent contracts | No subtle bugs |
-| ISP | Clients use only what they need | Clean dependencies |
-| DIP | Depend on abstractions | Swappable, testable |
+| Law | Rule | Apply |
+|-----|------|-------|
+| Modularity | Simple parts, clean interfaces | One function = one job |
+| Composition | Programs connect to programs | stdin/stdout, pipes, APIs |
+| Separation | Policy ≠ mechanism | Config separate from logic |
+| Parsimony | Small programs preferred | Split when >300 LOC |
 
-## Design Patterns
+### Design
 
-<patterns>
-- **DRY**: Extract shared logic into reusable units
-- **KISS**: Solve current problem, no premature optimization
-- **YAGNI**: Build for now, not hypothetical futures
-- **Composition > Inheritance**: Flexible composition beats rigid hierarchies
-</patterns>
+| Law | Rule | Apply |
+|-----|------|-------|
+| Clarity | Clarity > cleverness | Readable beats elegant |
+| Simplicity | Complexity only when proven necessary | YAGNI by default |
+| Transparency | Visible = debuggable | Log state transitions |
+| Representation | Smart data, dumb code | Data structures over algorithms |
 
-## Systems Thinking
+### Behave
 
-<analysis>
-- **Ripple**: Trace dependencies and side effects before changes
-- **Temporal**: Fast-fragile vs slow-maintainable → choose consciously
-- **Blast Radius**: Small reversible changes → easier rollback, faster debug
-</analysis>
+| Law | Rule | Apply |
+|-----|------|-------|
+| Least Surprise | Do what users expect | Follow conventions |
+| Silence | No output when nothing to say | Errors only on stderr |
+| Repair | Fail fast, fail loud | Crash > corrupt state |
+| Robustness | Transparency + simplicity | Handle known failures gracefully |
 
-## Unix Philosophy
+### Evolve
 
-| Rule | Principle |
-|------|-----------|
-| Modularity | Simple parts, clean interfaces |
-| Clarity | Clarity > cleverness |
-| Composition | Programs connect to programs |
-| Separation | Policy ≠ mechanism; interface ≠ engine |
-| Simplicity | Add complexity only when necessary |
-| Parsimony | Big programs only when proven necessary |
-| Transparency | Visible = debuggable |
-| Robustness | Child of transparency + simplicity |
-| Representation | Knowledge in data, logic stays stupid |
-| Least Surprise | Do what users expect |
-| Silence | No output when nothing to say |
-| Repair | Fail fast, fail loud |
-| Economy | Programmer time > machine time |
-| Generation | Programs write programs |
-| Optimization | Working first, fast second |
-| Diversity | No "one true way" |
-| Extensibility | Future arrives faster than expected |
+| Law | Rule | Apply |
+|-----|------|-------|
+| Economy | Programmer time > machine time | Optimize for humans first |
+| Generation | Programs write programs | Codegen, scaffolds, macros |
+| Optimization | Working first, fast second | Profile before optimize |
+| Diversity | No "one true way" | Right tool for the job |
+| Extensibility | Future arrives fast | Design for extension points |
 
-## Decision Framework
+## SOLID (OOP)
 
-<data_driven>
-- Measure before guess: Profile before optimize, log before debug
-- Hypothesis-driven: "Change X → Y happens" → validate
-- Source priority: Official docs > patterns > blogs > assumptions
-- Bias check: Confirmation, anchoring, sunk cost
-</data_driven>
+| Principle | Rule |
+|-----------|------|
+| SRP | One reason to change per class |
+| OCP | Extend via composition, not modification |
+| LSP | Subtypes honor parent contracts |
+| ISP | Clients depend only on what they use |
+| DIP | Depend on abstractions, not concretions |
 
-<tradeoffs>
+## Design Heuristics
+
+```
+DRY   → Extract when pattern repeats 3+ times
+KISS  → Solve today's problem, not tomorrow's
+YAGNI → Delete speculative code
+Composition > Inheritance → Prefer has-a over is-a
+```
+
+## Decision Making
+
 | Dimension | Question |
 |-----------|----------|
-| Temporal | Today's problem or tomorrow's? Maintenance cost? |
-| Reversibility | Easy undo? One-way door? |
-| Flexibility | Preserves options or locks in? |
-| Risk | Probability × Impact? Fallback? |
-</tradeoffs>
+| Reversibility | One-way door? Get more data first |
+| Blast Radius | Can rollback quickly? Ship small |
+| Temporal | Tech debt now vs maintenance later? |
+| Evidence | Measured or assumed? Profile first |
 
-<risk_management>
-1. Identify: Dependencies, edge cases, external failures
-2. Assess: Probability × Impact = Priority
-3. Mitigate: Tests, error handling, graceful degradation
-4. Monitor: Logging, alerts, metrics → early detection
-</risk_management>
+## Risk Protocol
+
+```
+Identify → Assess (P × I) → Mitigate → Monitor
+```
+
+- **Identify**: Dependencies, edge cases, external failures
+- **Mitigate**: Tests, error handling, graceful degradation
+- **Monitor**: Logs, alerts, metrics for early detection

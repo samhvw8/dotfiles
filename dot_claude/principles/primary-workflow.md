@@ -1,64 +1,92 @@
 # Primary Workflow
 
-Activate relevant skills. Delegate to specialized agents. Ensure token efficiency.
+Delegate first. Skills for context. Manual only when no match.
 
-## 1. Implementation
+## Execution Flow
 
-Delegate to `planner` agent → create plan with TODOs in `./plans`
+```
+Task → Agent exists? → DELEGATE (Task tool)
+         ↓ No
+      Skill exists? → INVOKE (Skill tool) → YOU execute
+         ↓ No
+      Manual (justify why)
+```
 
-<planning>
-- Use multiple `researcher` agents in parallel for technical research
-- Feed research back to `planner` agent for implementation plan
-</planning>
+## Phase Pipeline
 
-<rules>
-- Write clean, readable, maintainable code
-- Follow established architectural patterns
+| Phase | Agent | Output |
+|-------|-------|--------|
+| 1. Plan | `planner` | Implementation plan in `./plans` |
+| 2. Research | `researcher` (parallel) | Technical findings |
+| 3. Implement | YOU or specialist | Working code |
+| 4. Test | `tester` | Test report, coverage |
+| 5. Review | `code-reviewer` | Quality assessment |
+| 6. Document | `docs-manager` | Updated `./docs` |
+
+## Implementation
+
+<always>
+- Edit existing files directly — never create "enhanced" copies
+- Run compile check after every modification
 - Handle edge cases and error scenarios
-- Update existing files directly — NO new "enhanced" copies
-- Run compile check after every code modification
-</rules>
+- Follow established architectural patterns
+</always>
 
-## 2. Testing
+<never>
+- Skip compilation verification
+- Leave unhandled error paths
+- Create new files when editing existing works
+</never>
 
-Delegate to `tester` agent → run tests, analyze report
+## Testing
 
-<requirements>
+<patterns>
+**Test Failure Loop**
+When you see: Tests failing after implementation
+Action: Fix → re-run `tester` → repeat until green
+Watch out for: Fake data, mocks, or tricks to force pass
+
+**Coverage Gap**
+When you see: Coverage below threshold
+Action: Add tests for uncovered paths
+Watch out for: Testing implementation, not behavior
+</patterns>
+
+<always>
 - Comprehensive unit tests with high coverage
-- Test error scenarios and performance requirements
-- NO fake data, mocks, cheats, or tricks to pass build
-- Fix failing tests → re-run `tester` → repeat until all pass
-</requirements>
+- Test error scenarios explicitly
+- Test performance requirements
+</always>
 
-## 3. Code Quality
+## Integration
 
-Delegate to `code-reviewer` agent → review implementation
-
-<standards>
-- Follow coding conventions
-- Self-documenting code
-- Meaningful comments for complex logic only
-- Optimize for performance and maintainability
-</standards>
-
-## 4. Integration
-
-Follow `planner` agent's plan precisely
-
-<integration_rules>
-- Seamless integration with existing code
+<always>
 - Follow API contracts exactly
 - Maintain backward compatibility
-- Document breaking changes
-- Delegate to `docs-manager` agent → update `./docs` if needed
-</integration_rules>
+- Document breaking changes in changelog
+</always>
 
-## 5. Debugging
+<when>
+- API contract changes: Notify `docs-manager` agent
+- Breaking changes: Version bump, migration guide
+</when>
 
-When user reports bugs or CI/CD issues:
+## Debugging
 
 ```
-debugger agent → analyze → implement fix → tester agent → verify
-                                              ↓
-                                         if fails → fix → repeat Step 2
+Bug report → debugger agent → analyze → fix → tester agent → verify
+                                                    ↓
+                                              if fails → repeat
 ```
+
+<patterns>
+**Root Cause Hunt**
+When you see: Bug report or CI failure
+Action: Trace backward from symptom, don't guess forward
+Watch out for: Fixing symptoms instead of cause
+
+**Regression Prevention**
+When you see: Bug fixed
+Action: Add regression test before closing
+Watch out for: Same bug returning later
+</patterns>
