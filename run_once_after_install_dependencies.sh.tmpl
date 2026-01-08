@@ -84,24 +84,6 @@ setup_folder() {
     log_success "Folder setup completed successfully"
 }
 
-setup_gitconfig() {
-    local gitconfig="$HOME/.gitconfig"
-    if grep -q "path = ~/.base.gitconfig" "$gitconfig" 2>/dev/null; then
-        log_info "Git config already set up, skipping"
-        return 0
-    fi
-
-    {
-        echo '[include]'
-        echo 'path = ~/.base.gitconfig'
-    } >> "$gitconfig" || {
-        log_error "Failed to update git config"
-        return 1
-    }
-
-    log_success "Git config setup completed successfully"
-}
-
 setup_font_linux() {
     local font_path="$HOME/.fonts/FiraCode Nerd Font Mono.ttf"
     if [[ -f "$font_path" ]]; then
@@ -277,7 +259,6 @@ main() {
     fi
 {{- end }}
 
-    setup_gitconfig
     setup_mise
     setup_fzf
 

@@ -72,33 +72,13 @@ main() {
         log_info "chezmoi already installed"
     fi
 
-    # Configure chezmoi data based on installation type
-    local chezmoi_config_dir="$HOME/.config/chezmoi"
-    mkdir -p "$chezmoi_config_dir"
-    
-    # Create chezmoi configuration with data variables
-    cat > "$chezmoi_config_dir/chezmoi.toml" << EOF
-[data]
-    minimal = ${MINIMAL}
-    
-[git]
-    autoPush = false
-    autoCommit = true
-
-[edit]
-    command = "nvim"
-
-[merge]
-    command = "nvim"
-    args = ["-d"]
-EOF
-
     # Initialize and apply dotfiles from repository
-    # This will automatically run the run_once_before_setup.sh.tmpl script
+    # Chezmoi will prompt for name/email via .chezmoi.toml.tmpl
     if [[ ! -d "$HOME/.local/share/chezmoi/.git" ]]; then
         log_info "Initializing chezmoi with dotfiles repository..."
+        log_info "You will be prompted for your git name and email..."
         log_info "This will automatically install all required tools and dependencies..."
-        if ! chezmoi init --apply https://github.com/samhvw8/dotfiles.git; then
+        if ! chezmoi init --apply --data "minimal=${MINIMAL}" https://github.com/samhvw8/dotfiles.git; then
             log_error "Failed to initialize chezmoi with dotfiles repository"
             exit 1
         fi

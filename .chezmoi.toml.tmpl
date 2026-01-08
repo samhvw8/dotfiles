@@ -1,0 +1,22 @@
+{{- $name := promptStringOnce . "name" "Git user name" -}}
+{{- $email := promptStringOnce . "email" "Git email address" -}}
+{{- $minimal := false -}}
+{{- if hasKey . "minimal" -}}
+{{-   $minimal = .minimal -}}
+{{- end -}}
+
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    minimal = {{ $minimal }}
+
+[git]
+    autoPush = false
+    autoCommit = true
+
+[edit]
+    command = "nvim"
+
+[merge]
+    command = "nvim"
+    args = ["-d"]
