@@ -1,11 +1,21 @@
 ---
 name: design-principles
-description: Enforce a precise, minimal design system inspired by Linear, Notion, and Stripe. Use this skill when building dashboards, admin interfaces, or any UI that needs Jony Ive-level precision - clean, modern, minimalist with taste. Every pixel matters.
+description: "UI/UX design system for dashboards, admin panels, SaaS interfaces, and web apps. Stack: React, Tailwind, CSS, styled-components. Capabilities: spacing systems (4px grid), color palettes, typography hierarchy, shadows/elevation, card layouts, dark mode, component styling. Actions: design, style, beautify, fix, improve, refactor UI components. Keywords: ugly, inconsistent, cluttered, unprofessional, spacing, padding, margin, colors, fonts, shadows, cards, buttons, forms, navigation, sidebar, layout. Use when: building new UI, fixing ugly interfaces, making things look professional/modern/clean, implementing design systems, styling components, choosing colors/fonts/spacing."
 ---
 
 # Design Principles
 
-This skill enforces precise, crafted design for enterprise software, SaaS dashboards, admin interfaces, and web applications. The philosophy is Jony Ive-level precision with intentional personality — every interface is polished, and each is designed for its specific context.
+Precise, crafted design for enterprise software, SaaS dashboards, admin interfaces, and web apps. Jony Ive-level precision with intentional personality.
+
+## Quick Reference
+
+| Element | Values |
+|---------|--------|
+| **Spacing** | 4, 8, 12, 16, 24, 32px (4px grid) |
+| **Font sizes** | 11, 12, 13, 14 (base), 16, 18, 24, 32px |
+| **Border radius** | Sharp: 4, 6, 8px / Soft: 8, 12px |
+| **Animation** | 150ms micro, 200-250ms transitions |
+| **Icons** | Phosphor Icons (`@phosphor-icons/react`) |
 
 ## Design Direction (REQUIRED)
 

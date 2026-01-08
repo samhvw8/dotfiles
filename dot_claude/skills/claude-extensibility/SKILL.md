@@ -294,7 +294,6 @@ my-skill/
 | Section | Purpose | Include When |
 |---------|---------|--------------|
 | **Frontmatter** | Activation trigger | **Always - required** |
-| **When to Use** | Detailed activation | When frontmatter needs expansion |
 | **Context** | Domain framing | When domain context helps |
 | **Patterns** | Expert recognition | Core - almost always |
 | **Heuristics** | Decision guidance | When judgment needed |
