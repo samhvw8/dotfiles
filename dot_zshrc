@@ -1,3 +1,10 @@
+# OPENSPEC:START
+# OpenSpec shell completions configuration
+fpath=("/home/samhoang/.zsh/completions" $fpath)
+autoload -Uz compinit
+compinit
+# OPENSPEC:END
+
 # =============================================================================
 # ZSH Configuration - Optimized & Readable
 # =============================================================================
@@ -129,8 +136,10 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
 # File operations
-alias ls='ls -G'
-alias ll='ls -lh'
+alias ls='ls --color=auto'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 
 # Kubernetes shortcuts
 if command_exists kubectl; then
