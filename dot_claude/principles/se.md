@@ -21,38 +21,49 @@ Understand → Plan → Execute → Verify → Iterate
 
 | Law | Rule | Apply |
 |-----|------|-------|
-| Modularity | Simple parts, clean interfaces | One function = one job |
-| Composition | Programs connect to programs | stdin/stdout, pipes, APIs |
-| Separation | Policy ≠ mechanism | Config separate from logic |
-| Parsimony | Small programs preferred | Split when >300 LOC |
+| Modularity | Simple parts, clean interfaces | <500 LOC per unit; AI-safe modification scope |
+| Composition | Programs connect to programs | APIs, pipes; AI chains tools same way |
+| Separation | Policy ≠ mechanism | Spec/config separate; change spec → regenerate code |
+| Parsimony | Small programs preferred | Intent clarity > line count; AI navigates if structure clear |
 
 ### Design
 
 | Law | Rule | Apply |
 |-----|------|-------|
-| Clarity | Clarity > cleverness | Readable beats elegant |
-| Simplicity | Complexity only when proven necessary | YAGNI by default |
-| Transparency | Visible = debuggable | Log state transitions |
-| Representation | Smart data, dumb code | Data structures over algorithms |
+| Clarity | Clarity > cleverness | Explicit intent; AI parses readable, fails on clever |
+| Simplicity | Complexity only when proven | YAGNI; AI regenerates simple faster |
+| Transparency | Visible = debuggable | Expose state; AI reasons on visible decision points |
+| Representation | Smart data, dumb code | Types as spec; AI reads schema, ignores comments |
 
 ### Behave
 
 | Law | Rule | Apply |
 |-----|------|-------|
-| Least Surprise | Do what users expect | Follow conventions |
-| Silence | No output when nothing to say | Errors only on stderr |
-| Repair | Fail fast, fail loud | Crash > corrupt state |
-| Robustness | Transparency + simplicity | Handle known failures gracefully |
+| Least Surprise | Do what users expect | Conventions; AI learns patterns, not exceptions |
+| Silence | No output unless meaningful | Errors on stderr; clean signal for AI parsing |
+| Repair | Fail fast, fail loud | Crash > corrupt; AI detects explicit failures |
+| Robustness | Transparency + simplicity | Handle known failures; AI predicts from visible paths |
 
 ### Evolve
 
 | Law | Rule | Apply |
 |-----|------|-------|
-| Economy | Programmer time > machine time | Optimize for humans first |
-| Generation | Programs write programs | Codegen, scaffolds, macros |
-| Optimization | Working first, fast second | Profile before optimize |
-| Diversity | No "one true way" | Right tool for the job |
-| Extensibility | Future arrives fast | Design for extension points |
+| Economy | Iteration speed > polish | Spec clarity matters; regeneration cost → 0 |
+| Generation | AI generates from spec | Spec = source of truth; code = disposable artifact |
+| Optimization | Generate variants, measure | AI explores options in parallel |
+| Diversity | Right tool for the job | AI adapts to any stack |
+| Extensibility | Design for replaceability | AI can rewrite modules if isolated |
+
+### AI-Era Heuristics
+
+| Check | Action |
+|-------|--------|
+| AI can't parse intent | Refactor for explicitness |
+| AI can't modify in isolation | Reduce coupling |
+| Spec unclear | Invest in spec before code |
+| Clever one-liners | Replace with explicit branching |
+| Implicit conventions | Document in types/spec |
+| Comments as spec | Use types + tests instead |
 
 ## SOLID (OOP)
 
