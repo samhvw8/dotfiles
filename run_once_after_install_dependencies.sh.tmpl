@@ -142,7 +142,7 @@ setup_tpm() {
     log_success "tmux plugin manager setup completed successfully"
 }
 
-{{- if not .minimal }}
+{{- if .conda }}
 setup_miniconda() {
     if command_exists conda; then
         log_info "Miniconda already installed, skipping"
@@ -264,12 +264,16 @@ main() {
 
 {{- if not .minimal }}
     # Additional setups for full installation
-    setup_miniconda
     setup_tpm
-    
+
 {{- if eq .chezmoi.os "linux" }}
     setup_font_linux
 {{- end }}
+{{- end }}
+
+{{- if .conda }}
+    # Optional: Install miniconda when --conda flag is passed
+    setup_miniconda
 {{- end }}
 
     # Final OS-specific configurations

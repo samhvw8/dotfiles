@@ -4,11 +4,16 @@
 {{- if hasKey . "minimal" -}}
 {{-   $minimal = .minimal -}}
 {{- end -}}
+{{- $conda := false -}}
+{{- if hasKey . "conda" -}}
+{{-   $conda = .conda -}}
+{{- end -}}
 
 [data]
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     minimal = {{ $minimal }}
+    conda = {{ $conda }}
 
 [git]
     autoPush = false

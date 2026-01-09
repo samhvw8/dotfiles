@@ -24,6 +24,7 @@ print_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "Options:"
     echo "  -m, --minimal     Minimal installation (fewer packages and tools)"
+    echo "  -c, --conda       Install Miniconda (not installed by default)"
     echo "  -h, --help        Display this help message"
     echo ""
     echo "This script now uses chezmoi to automatically set up your dotfiles."
@@ -38,11 +39,16 @@ command_exists() {
 
 # Parse command line arguments
 MINIMAL=false
+CONDA=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         -m|--minimal)
             MINIMAL=true
+            shift
+            ;;
+        -c|--conda)
+            CONDA=true
             shift
             ;;
         -h|--help)
@@ -78,7 +84,7 @@ main() {
         log_info "Initializing chezmoi with dotfiles repository..."
         log_info "You will be prompted for your git name and email..."
         log_info "This will automatically install all required tools and dependencies..."
-        if ! chezmoi init --apply --data "minimal=${MINIMAL}" https://github.com/samhvw8/dotfiles.git; then
+        if ! chezmoi init --apply --data "minimal=${MINIMAL}" --data "conda=${CONDA}" https://github.com/samhvw8/dotfiles.git; then
             log_error "Failed to initialize chezmoi with dotfiles repository"
             exit 1
         fi
