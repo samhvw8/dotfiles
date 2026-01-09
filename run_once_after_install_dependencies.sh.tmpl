@@ -219,11 +219,13 @@ main() {
     # macOS setup
 {{- if eq .chezmoi.os "darwin" }}
     log_info "Setting up macOS"
+    local brew_freshly_installed=false
     if ! command_exists brew; then
         if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
             log_error "Failed to install Homebrew"
             exit 1
         fi
+        brew_freshly_installed=true
     else
         log_info "Homebrew already installed, skipping"
     fi
@@ -251,11 +253,15 @@ main() {
 
     setup_folder
 
-    # Install packages on macOS
+    # Install packages on macOS (only if Homebrew was freshly installed)
 {{- if eq .chezmoi.os "darwin" }}
-    if ! brew bundle install --file="$HOME/Brewfile.setup"; then
-        log_error "Failed to install brew packages"
-        exit 1
+    if [[ "$brew_freshly_installed" == "true" ]]; then
+        if ! brew bundle install --file="$HOME/Brewfile.setup"; then
+            log_error "Failed to install brew packages"
+            exit 1
+        fi
+    else
+        log_info "Homebrew packages already managed, skipping brew bundle"
     fi
 {{- end }}
 
