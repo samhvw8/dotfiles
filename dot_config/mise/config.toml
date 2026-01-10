@@ -3,6 +3,9 @@ experimental = true
 legacy_version_file_disable_tools = ['java']
 idiomatic_version_file_enable_tools = ["node"]
 
+[settings.npm]
+package_manager = "bun"
+
 [tools]
 chezmoi = "latest"
 direnv = "latest"
@@ -40,3 +43,5 @@ delta = "latest"
 usage = "latest"
 "forgejo:mergiraf/mergiraf" = "latest"
 "npm:memvid-cli" = "latest"
+"github:Skardyy/mcat" = "latest"
+bun = "latest"
