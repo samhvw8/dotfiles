@@ -1,25 +1,18 @@
-# OPENSPEC:START
-# OpenSpec shell completions configuration
-fpath=("/home/samhoang/.zsh/completions" $fpath)
-autoload -Uz compinit
-compinit
-# OPENSPEC:END
-
 # =============================================================================
 # ZSH Configuration - Optimized & Readable
 # =============================================================================
 
-if [[ "$TERM_PROGRAM" == "vscode" ]]; then
-    if [ -f "$HOME/.local/bin/mise" ]; then 
-        eval "$($HOME/.local/bin/mise activate zsh)"
-        eval "$($HOME/.local/bin/mise hook-env)"
-    fi
-else
-    if [ -f "$HOME/.local/bin/mise" ]; then 
-        eval "$($HOME/.local/bin/mise activate zsh)"
-        eval "$($HOME/.local/bin/mise hook-env)"
-    fi
+# if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+#     if [ -f "$HOME/.local/bin/mise" ]; then 
+#         eval "$($HOME/.local/bin/mise activate zsh)"
+#         eval "$($HOME/.local/bin/mise hook-env)"
+#     fi
+# else
+if [ -f "$HOME/.local/bin/mise" ]; then 
+    eval "$($HOME/.local/bin/mise activate zsh)"
+    eval "$($HOME/.local/bin/mise hook-env)"
 fi
+# fi
 
 
 # Basic ZSH Options
