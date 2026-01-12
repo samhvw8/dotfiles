@@ -22,12 +22,12 @@ Create and enhance production-ready prompts. Diagnose what's needed, output only
 
 | Type | Signs | Needs |
 |------|-------|-------|
-| **Agent** | Autonomous, tool use, multi-step, decisions | Role essential, judgment heuristics, boundaries |
+| **Agent** | Autonomous, tool use, multi-step, decisions | Role essential, mental models for judgment, boundaries |
 | **Task** | Clear deliverable, input→output | Objective, constraints, output spec (role often optional) |
 | **Persona** | Character, voice, conversation style | Role essential, voice details, behavioral specifics |
-| **Workflow** | Steps, process, pipeline | Sequence (or patterns if insight needed) |
+| **Workflow** | Steps, process, pipeline | Sequence (or mental models if expertise needed) |
 | **Rules** | Constraints, guardrails, compliance | Clear rules, edge cases, exceptions |
-| **Skill/Expert** | Domain knowledge, judgment | Patterns, heuristics, anti-patterns |
+| **Skill/Expert** | Domain knowledge, judgment | Mental models, thinking approaches, anti-patterns |
 | **Hybrid** | Multiple types | Combine minimal necessary elements |
 
 ### 2.2 Assess Complexity
@@ -65,9 +65,11 @@ Apply techniques only when triggered:
 
 | Technique | When to Apply | Skip When |
 |-----------|---------------|-----------|
-| **Expert Patterns** | Domain expertise matters, judgment needed | Mechanical task |
+| **Mental Models** | Deep expertise, judgment-heavy, transferable reasoning | Mechanical/procedural task |
+| **Thinking Approaches** | Generative questions needed, complex reasoning | Simple rule-based decisions |
+| **Patterns** (legacy) | Procedural checklists, specific triggers→actions | Expertise needs to transfer |
+| **Heuristics** | Simple rules of thumb sufficient | Complex domain reasoning |
 | **Anti-Patterns** | High-stakes, common failures exist | Low-risk task |
-| **Heuristics** | Decisions required, no clear rules | Rule-based task |
 | **Chain-of-Thought** | Complex reasoning | Simple task |
 | **Few-Shot Examples** | Format unusual/unclear | Obvious format |
 | **Constraint Spec** | Boundaries unclear | Well-bounded |
@@ -102,8 +104,10 @@ Apply techniques only when triggered:
 | **Role** | Agent, persona, expert; OR identity matters; OR input has role |
 | **Voice** | How it communicates matters; OR persona prompt |
 | **Objective** | Clear deliverable; OR task-focused |
-| **Patterns** | Domain expertise needed; OR judgment required |
-| **Heuristics** | Decision-making guidance needed |
+| **Mental Models** | Deep expertise, transferable reasoning, judgment-heavy |
+| **Thinking Approaches** | Generative questions guide better decisions |
+| **Patterns** (legacy) | Procedural checklists, mechanical triggers |
+| **Heuristics** | Simple rules of thumb sufficient |
 | **Rules (always/never)** | Behavioral boundaries matter |
 | **Conditions (when)** | Edge cases; OR situational behavior |
 | **Anti-patterns** | High-stakes; OR mistakes costly |
@@ -140,7 +144,23 @@ Boundaries: [what this voice won't do]
 </success_criteria>
 ```
 
-**Patterns Block** - When expertise matters:
+**Mental Models Block** - When expertise matters (PREFERRED over Patterns):
+```
+<mental_models>
+**[Lens Name]**
+Experts think in terms of: [conceptual framework - the abstraction they use]
+Questions they ask: [generative questions that surface insights in ANY scenario]
+Core tension: [underlying tradeoff or dynamic that defines the domain]
+This lens reveals: [what becomes visible through this frame]
+</mental_models>
+```
+
+**Why Mental Models > Patterns:**
+- **Patterns are prescriptive**: Your examples become the ceiling of what the agent can do
+- **Mental Models are generative**: Your lenses become the floor from which the agent reasons upward
+- Mental Models let agents handle situations you never anticipated by asking the right *questions*, not matching against your *answers*
+
+**Patterns Block** (Legacy - Only for procedural checklists):
 ```
 <patterns>
 **[Pattern Name]**
@@ -151,13 +171,32 @@ Watch out for: [pitfall]
 </patterns>
 ```
 
-**Heuristics Block** - When judgment matters:
+**When to use Mental Models vs Patterns:**
+- **Mental Models**: Deep expertise, judgment-heavy domains (security, architecture, strategy, legal, consulting)
+- **Patterns**: Procedural knowledge where triggers → actions (compliance checklists, linting rules, mechanical validations)
+
+**Heuristics Block** - When judgment matters (simple rules):
 ```
 <heuristics>
 - [Rule of thumb]: [when/why it applies]
 - [Rule of thumb]: [when/why it applies]
 </heuristics>
 ```
+
+**Thinking Approaches Block** - When reasoning matters (PREFERRED over Heuristics for complex domains):
+```
+<thinking_approaches>
+**[Approach Name]**
+The question experts ask: [generative question that guides reasoning]
+What this surfaces: [insights the question reveals]
+Apply when: [context for this approach]
+</thinking_approaches>
+```
+
+**Why Thinking Approaches > Heuristics:**
+- **Heuristics constrain conclusions**: "If X, then Y"
+- **Thinking Approaches guide reasoning**: "Ask this question to discover Y"
+- Thinking Approaches transfer across scenarios; heuristics only match specific cases
 
 **Rules Block** - When boundaries matter:
 ```
@@ -193,9 +232,37 @@ Instead: [correct approach]
 
 ## Phase 5: Key Transformations
 
-### Procedure → Patterns
+### Patterns → Mental Models (Prescriptive → Generative)
 
-Transform when expertise matters and steps lack insight.
+Transform when expertise needs to transfer, not just specific scenarios.
+
+**Before (Prescriptive - Patterns):**
+```
+<patterns>
+**Auth Bypass**
+When you see: Login, session, password reset flows
+This indicates: Identity establishment - where can it be forged?
+Therefore: Check race conditions, token predictability, session fixation
+Watch out for: "Secure" libraries used incorrectly
+</patterns>
+```
+*Problem: Agent can only handle login/session/password scenarios you listed.*
+
+**After (Generative - Mental Models):**
+```
+<mental_models>
+**Trust Boundaries**
+Experts think in terms of: Where does trust transition happen? (user→system, service→service, stored→executed)
+Questions they ask: "What proves identity here? Can that proof be forged, replayed, or bypassed?"
+Core tension: Convenience vs. verification rigor
+This lens reveals: Attack surfaces at every trust transition, not just obvious auth endpoints
+</mental_models>
+```
+*Result: Agent applies this lens to ANY scenario - OAuth, API keys, service accounts, file uploads with embedded scripts - including ones you never anticipated.*
+
+### Procedure → Patterns (still useful for checklists)
+
+Transform when you need procedural knowledge but with expert insight.
 
 **Before:**
 ```
@@ -311,6 +378,11 @@ Before output, verify:
 - [ ] Sounds like practitioner
 - [ ] Patterns have insight (not just steps)
 
+### Expertise Transfer (Critical for Expert/Skill prompts)
+- [ ] **The Expert Test**: Could an expert in this domain look at your prompt and say "yes, that's how I think" - or would they say "that's a checklist someone made about my field"?
+- [ ] Mental Models give *lenses* not *answers*
+- [ ] Questions are generative (apply to unseen scenarios), not just triggers for known patterns
+
 ### Preservation (Enhance mode)
 - [ ] If input had role → output has role
 - [ ] Original intent preserved
@@ -372,11 +444,11 @@ Your approach: Verify across sources, prioritize authoritative sources, distingu
 </never>
 ```
 
-### Example 2: Enhance - Agent Prompt (Keep Role)
+### Example 2: Enhance - Agent Prompt with Mental Models
 
 **Input:** "Improve this: You are a code review assistant. Review code and find bugs."
 
-**Mode:** Enhance | **Type:** Agent | **Gaps:** Vague role, no patterns, no judgment
+**Mode:** Enhance | **Type:** Agent | **Gaps:** Vague role, no mental models, no judgment
 
 **Output:**
 ```
@@ -386,34 +458,44 @@ You are a code review assistant focused on quality, security, and maintainabilit
 Your approach: Find issues that matter, not style nitpicks. Think like a maintainer who'll debug this at 2am.
 </role>
 
-<patterns>
-**Complexity Smell**
-When you see: Function >30 lines, >3 nesting levels
-This indicates: Probably doing too much, hard to test
-Therefore: Check single responsibility, suggest extraction
-Watch out for: Don't demand extraction for naturally sequential code
+<mental_models>
+**Cognitive Load**
+Experts think in terms of: How much must someone hold in their head to understand this code?
+Questions they ask: "If I'm debugging this at 2am, what will trip me up?"
+Core tension: Abstraction (hiding complexity) vs. explicitness (seeing what happens)
+This lens reveals: Functions doing too much, unclear naming, hidden control flow, magic values
 
-**Silent Failure**
-When you see: Empty catch blocks, ignored returns
-This indicates: Errors swallowed, debugging nightmare
-Therefore: Require explicit handling or documented reason
+**Trust Boundaries**
+Experts think in terms of: Where does data cross from untrusted to trusted contexts?
+Questions they ask: "What assumptions am I making about this input? Can those assumptions be violated?"
+Core tension: Defensive coding vs. code simplicity
+This lens reveals: Injection risks, validation gaps, assumption violations
 
-**Trust Boundary**
-When you see: External input used without validation
-This indicates: Injection risk
-Therefore: Trace input flow, verify sanitization at boundary
-</patterns>
+**Failure Modes**
+Experts think in terms of: What happens when things go wrong, not just when they go right?
+Questions they ask: "If this fails, will anyone know? Will they know why?"
+Core tension: Happy path clarity vs. error path robustness
+This lens reveals: Silent failures, swallowed exceptions, missing error context
+</mental_models>
 
-<heuristics>
-- Hard to name = probably doing too much
-- Complex test setup = too coupled
-- Prioritize: security > correctness > maintainability > style
-</heuristics>
+<thinking_approaches>
+**The Naming Test**
+Question experts ask: "Can I name this thing in 3 words without 'and'?"
+What this surfaces: Violated single responsibility, unclear purpose
+Apply when: Reviewing functions, classes, modules
+
+**The Test Setup Test**
+Question experts ask: "How much scaffolding do I need to test this in isolation?"
+What this surfaces: Coupling problems, hidden dependencies
+Apply when: Evaluating testability and architecture
+</thinking_approaches>
 
 <o>
-Each issue: location, pattern, severity (critical/major/minor), specific fix
+Each issue: location, mental model applied, severity (critical/major/minor), specific fix
 </o>
 ```
+
+**Why this works:** The agent can now identify issues in code patterns you never listed—because it's asking the right *questions* about cognitive load, trust, and failure modes, not just matching against your specific triggers.
 
 ### Example 3: Create - Simple Task (No Role)
 
@@ -521,15 +603,21 @@ No role added - this is a formatting rule, not a persona.
    - Agent/Persona → Role essential
    - Task → Role often optional
    - Rules → No role needed
-   - Expert/Skill → Patterns needed
+   - Expert/Skill → Mental models needed (not just patterns)
 
 3. What's needed?
    - Only include sections that serve the task
+   - Prefer Mental Models over Patterns for expertise transfer
+   - Prefer Thinking Approaches over Heuristics for reasoning
 
 4. What's working? (Enhance mode)
    - Preserve it, don't replace
 
-5. Output
+5. Validate expertise transfer
+   - The Expert Test: Would an expert say "that's how I think"?
+   - Lenses generate insights; checklists constrain them
+
+6. Output
    - Dynamic structure based on above
    - No fixed template
 ```
