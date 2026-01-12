@@ -6,6 +6,12 @@ idiomatic_version_file_enable_tools = ["node"]
 [settings.npm]
 package_manager = "bun"
 
+[settings.pipx]
+uvx = true
+
+[settings.cargo]
+binstall = true
+
 [tools]
 chezmoi = "latest"
 direnv = "latest"
@@ -26,7 +32,6 @@ yq = "latest"
 neovim = "0.11.4"
 lazygit = "latest"
 "github:github/github-mcp-server" = "latest"
-"npm:@anthropic-ai/claude-code" = "latest"
 dasel = "latest"
 "github:jj-vcs/jj" = "latest"
 hurl = "latest"
@@ -45,3 +50,8 @@ usage = "latest"
 "npm:memvid-cli" = "latest"
 "github:Skardyy/mcat" = "latest"
 bun = "latest"
+"npm:@anthropic-ai/claude-code" = "latest"
+doggo = "latest"
+jnv = "latest"
+"github:asyrjasalo/dynamic-mcp" = "latest"
+"github:ouch-org/ouch" = "latest"
