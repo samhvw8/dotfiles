@@ -78,6 +78,7 @@ fbd() {
 # Prompt - Starship (installed via mise)
 # =============================================================================
 
+# Load synchronously - prompt must be available immediately
 command_exists starship && eval "$(starship init zsh)"
 
 # =============================================================================
@@ -154,43 +155,55 @@ fi
 
 # FZF integration
 if [[ -f "$HOME/.fzf.zsh" ]]; then
-    zi ice wait"0" lucid
+    zi ice wait"0b" lucid
     zi snippet "$HOME/.fzf.zsh"
-    zi light Aloxaf/fzf-tab
+    zi ice wait"0c" lucid
     zi light wfxr/forgit
 fi
 
 # Docker completions (full installation only)
 if command_exists docker; then
-    zi ice as"completion"
-    zi snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
-    zi snippet https://github.com/docker/compose/blob/v1/contrib/completion/zsh/_docker-compose
+    zi ice wait"1a" lucid as"completion"
+    zi snippet https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
+
+    zi ice wait"1b" lucid as"completion"
+    zi snippet https://raw.githubusercontent.com/docker/compose/main/contrib/completion/zsh/_docker-compose
 fi
 
 # Zoxide (installed via mise)
-command_exists zoxide && eval "$(zoxide init --cmd j zsh)"
+if command_exists zoxide; then
+    zi ice wait"0d" lucid atload'eval "$(zoxide init --cmd j zsh)"'
+    zi light zdharma-continuum/null
+fi
 
 # Additional completions
-zi ice lucid wait as'completion' blockf
-zi snippet https://github.com/rust-lang/cargo/blob/master/src/etc/_cargo
+zi ice wait"1c" lucid as'completion' blockf
+zi snippet https://raw.githubusercontent.com/rust-lang/cargo/master/src/etc/_cargo
 
 # =============================================================================
 # ZSH Enhancements
 # =============================================================================
 
-# Syntax highlighting, completions, and autosuggestions
-zi wait lucid for \
-    atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-        z-shell/fast-syntax-highlighting \
+# Load completions, autosuggestions, fzf-tab, then syntax highlighting (MUST be last)
+zi wait"2a" lucid for \
     blockf \
-        zsh-users/zsh-completions \
+        zsh-users/zsh-completions
+
+zi wait"2b" lucid for \
     atload"!_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions
+
+zi wait"2c" lucid for \
+        Aloxaf/fzf-tab
+
+zi wait"2d" lucid for \
+    atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+        z-shell/fast-syntax-highlighting
 
 # Optional tools
 # Note: Now using chezmoi for dotfile management instead of dotbare
 
-zi ice wait lucid
+zi ice wait"2e" lucid
 zi light "MichaelAquilina/zsh-you-should-use"
 
 # =============================================================================
