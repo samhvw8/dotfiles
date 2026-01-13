@@ -185,21 +185,17 @@ zi snippet https://raw.githubusercontent.com/rust-lang/cargo/master/src/etc/_car
 # =============================================================================
 
 # Load completions, autosuggestions, fzf-tab, then syntax highlighting (MUST be last)
-zi wait"2a" lucid for \
+zi wait lucid for \
+    atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+        z-shell/fast-syntax-highlighting \
     blockf \
-        zsh-users/zsh-completions
-
-zi wait"2b" lucid for \
+        zsh-users/zsh-completions \
     atload"!_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions
 
+
 zi wait"2c" lucid for \
         Aloxaf/fzf-tab
-
-zi wait"2d" lucid for \
-    atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-        z-shell/fast-syntax-highlighting
-
 # Optional tools
 # Note: Now using chezmoi for dotfile management instead of dotbare
 
