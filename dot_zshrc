@@ -208,7 +208,6 @@ zi light "MichaelAquilina/zsh-you-should-use"
 
 add_to_path "$HOME/.local/bin"
 add_to_path "$HOME/bin"
-add_to_path "${KREW_ROOT:-$HOME/.krew}/bin"
 
 # =============================================================================
 # OS-specific Configuration
