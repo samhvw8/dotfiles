@@ -223,8 +223,6 @@ if [[ $(uname) == "Darwin" ]]; then
 else
     # Linux specific
     alias open=xdg-open
-    [[ -f "$HOME/idea/idea-IC-203.8084.24/bin/idea.sh" ]] && \
-        alias idea="$HOME/idea/idea-IC-203.8084.24/bin/idea.sh"
 fi
 
 # =============================================================================
