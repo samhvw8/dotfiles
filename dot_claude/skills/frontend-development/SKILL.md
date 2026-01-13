@@ -1061,9 +1061,14 @@ export class UserListComponent {
 
 ## Related Skills
 
+**IMPORTANT: For UI/UX design work, invoke the specialized skill:**
+```
+Skill("ui-ux-pro-max")  → UI/UX design, visual hierarchy, color theory, spacing, typography
+```
+
 **UI/Design:**
+- **ui-ux-pro-max**: UI/UX design principles, visual hierarchy, color theory, spacing systems, typography. **USE THIS** for design decisions, beautifying UIs, choosing colors/fonts, layout design.
 - **ui-design-system**: Component design systems, accessibility, design tokens
-- **ui-ux-pro-max**: UI/UX design principles, visual hierarchy, color theory
 - **ui-styling**: Tailwind CSS, styling patterns for all frameworks
 
 **Backend Integration:**
@@ -1077,6 +1082,16 @@ export class UserListComponent {
 - **debugging**: Framework-agnostic debugging strategies
 - **refactoring-expert**: Code quality and refactoring patterns
 - **chrome-devtools**: Browser debugging, performance profiling
+
+## When to Invoke ui-ux-pro-max
+
+Call `Skill("ui-ux-pro-max")` when:
+- Designing new UI components or pages
+- Choosing color palettes, typography, or spacing
+- Improving visual hierarchy or layout
+- Making interfaces look professional/modern/clean
+- User mentions: ugly, inconsistent, cluttered, needs design help
+- Building dashboards, admin panels, or SaaS interfaces
 
 ---
 
