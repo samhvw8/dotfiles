@@ -171,6 +171,8 @@ Use Skill("git-workflow") for guidance before executing git commands.
 - **context7**: Library/framework documentation (React, Next.js, Prisma, etc.)
 @MCP_Context7.md
 
+when use chrome mcp tool capture screen shoot, don't use store base64, use save png, because base64 is string will bloat context window 
+
 # MISE
 - mise is a polyglot tool version manager. It replaces tools like asdf, nvm, pyenv, rbenv, etc.
 - mise allows you to switch sets of env vars in different project directories. It can replace direnv.
