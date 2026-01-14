@@ -1,6 +1,7 @@
 {
   "alwaysThinkingEnabled": true,
   "enabledPlugins": {
+    "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
     "mind@memvid": true
   },
@@ -45,6 +46,10 @@
     ]
   },
   "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
+  },
   "permissions": {
     "allow": [
       "Bash(cat:*)",
