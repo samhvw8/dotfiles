@@ -1,8 +1,53 @@
 {
+  "alwaysThinkingEnabled": true,
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "mind@memvid": true
+  },
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "proxypal-local",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "gemini-claude-sonnet-4-5",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "gemini-claude-opus-4-5-thinking",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "gemini-claude-sonnet-4-5-thinking",
+    "ANTHROPIC_MODEL": "gemini-claude-opus-4-5-thinking"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "node $HOME/.claude/web_search/index.cjs",
+            "type": "command"
+          }
+        ],
+        "matcher": "WebSearch"
+      },
+      {
+        "hooks": [
+          {
+            "command": "node $HOME/.claude/web_fetch/index.cjs",
+            "type": "command"
+          }
+        ],
+        "matcher": "WebFetch"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "bash $HOME/.claude/hooks/force-agent-skills-eval.sh",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "opus",
   "permissions": {
     "allow": [
       "Bash(cat:*)",
-      "Bash(chmod:*)",
       "Bash(chmod:*)",
       "Bash(curl:*)",
       "Bash(echo:*)",
@@ -12,12 +57,9 @@
       "Bash(ls:*)",
       "Bash(lsof:*)",
       "Bash(mkdir:*)",
-      "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(npm run)",
       "Bash(npm run:*)",
       "Bash(npm:*)",
-      "Bash(npx:*)",
       "Bash(npx:*)",
       "Bash(python3:*)",
       "Bash(rg:*)",
@@ -28,31 +70,12 @@
       "Skill(prompt-enhancer)",
       "Skill(skill-developer)",
       "Update(*:*)",
-      "WebFetch(domain:api.github.com)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:pincc.ai)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:*)",
       "WebSearch",
       "Write(*)",
       "mcp__chrome-mcp-server",
-      "mcp__chrome-mcp-server__chrome_get_web_content",
-      "mcp__chrome-mcp-server__chrome_navigate",
       "mcp__context7"
     ],
     "deny": []
-  },
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.claude/hooks/force-agent-skills-eval.sh"
-          }
-        ]
-      }
-    ]
-  },
-  "alwaysThinkingEnabled": true
+  }
 }
