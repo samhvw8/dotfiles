@@ -19,7 +19,8 @@
         "hooks": [
           {
             "command": "node $HOME/.claude/web_search/index.cjs",
-            "type": "command"
+            "type": "command",
+            "timeout": 300
           }
         ],
         "matcher": "WebSearch"
