@@ -23,15 +23,6 @@
           }
         ],
         "matcher": "WebSearch"
-      },
-      {
-        "hooks": [
-          {
-            "command": "node $HOME/.claude/web_fetch/index.cjs",
-            "type": "command"
-          }
-        ],
-        "matcher": "WebFetch"
       }
     ],
     "UserPromptSubmit": [
