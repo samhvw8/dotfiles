@@ -33,7 +33,7 @@ const { spawnSync } = require('child_process');
 
 const CONFIG = {
   minResponseLength: 20,
-  defaultTimeoutSec: 55,
+  defaultTimeoutSec: 100,
   defaultRetries: 2,
   defaultProvider: 'gemini',
 };
@@ -136,7 +136,7 @@ const PROVIDERS = {
   gemini: {
     name: 'Gemini CLI',
     cmd: 'gemini',
-    defaultModel: 'gemini-3-flash-preview',
+    defaultModel: 'gemini-3-flash-preview', // gemini-2.5-flash or gemini-3-flash-preview 
     modelEnvVar: 'P_WEBSEARCH_GEMINI_MODEL',
     toolInstruction: 'Use the google_web_search tool to find current information.',
     quirks: null,
@@ -437,7 +437,6 @@ async function processHook() {
     }
 
     const timeout = parseInt(process.env.P_WEBSEARCH_TIMEOUT || CONFIG.defaultTimeoutSec, 10);
-
     const enabledProviders = Object.entries(PROVIDERS)
       .filter(([id]) => {
         const enabled = isProviderEnabled(id);
