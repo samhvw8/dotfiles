@@ -1,10 +1,4 @@
 {
-  "alwaysThinkingEnabled": true,
-  "enabledPlugins": {
-    "claude-hud@claude-hud": true,
-    "context7@claude-plugins-official": true,
-    "mind@memvid": true
-  },
   "env": {
     "ANTHROPIC_AUTH_TOKEN": "proxypal-local",
     "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317",
@@ -12,35 +6,6 @@
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "gemini-claude-opus-4-5-thinking",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "gemini-claude-sonnet-4-5-thinking",
     "ANTHROPIC_MODEL": "gemini-claude-opus-4-5-thinking"
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "node $HOME/.claude/web_search/index.cjs",
-            "type": "command",
-            "timeout": 300
-          }
-        ],
-        "matcher": "WebSearch"
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.claude/hooks/force-agent-skills-eval.sh",
-            "type": "command"
-          }
-        ]
-      }
-    ]
-  },
-  "model": "opus",
-  "statusLine": {
-    "type": "command",
-    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
   },
   "permissions": {
     "allow": [
@@ -74,5 +39,40 @@
       "mcp__context7"
     ],
     "deny": []
-  }
+  },
+  "model": "opus",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "WebSearch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node $HOME/.claude/web_search/index.cjs",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/force-agent-skills-eval.sh",
+            "timeout": 60000
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
+  },
+  "enabledPlugins": {
+    "claude-hud@claude-hud": true,
+    "context7@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true
 }
