@@ -59,8 +59,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $HOME/.claude/hooks/force-agent-skills-eval.sh",
-            "timeout": 60000
+            "command": "node $HOME/.claude/hooks/find-delegation.cjs",
+            "timeout": 120
           }
         ]
       }
