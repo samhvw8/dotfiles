@@ -8,12 +8,12 @@ const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Debug logging - always enabled for now
-const DEBUG = true; // Set to false or use env var when done debugging
+// Debug logging via env var
+const DEBUG = process.env.DELEGATION_DEBUG === '1';
 
 function log(message, data = null) {
     if (!DEBUG) return;
-    console.log(`[DEBUG] ${message}${data ? ': ' + JSON.stringify(data) : ''}`);
+    console.error(`[Delegation] ${message}${data ? ': ' + JSON.stringify(data) : ''}`);
 }
 
 // Global (home) directories
