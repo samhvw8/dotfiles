@@ -162,12 +162,10 @@ if [[ -f "$HOME/.fzf.zsh" ]]; then
 fi
 
 # Docker completions (full installation only)
+# Note: docker compose is now a CLI plugin, completions included in _docker
 if command_exists docker; then
     zi ice wait"1a" lucid as"completion"
     zi snippet https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
-
-    zi ice wait"1b" lucid as"completion"
-    zi snippet https://raw.githubusercontent.com/docker/compose/main/contrib/completion/zsh/_docker-compose
 fi
 
 # Zoxide (installed via mise)
