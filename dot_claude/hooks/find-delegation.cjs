@@ -326,7 +326,7 @@ async function main() {
     log('Final matches', matches);
 
     // Output the delegation protocol
-    console.log(`<delegation_protocol>
+    console.log(`<delegation_protocol mandatory="true">
 <analysis scanned="${agents.length} agents | ${skills.length} skills">
 ${matches}
 </analysis>
