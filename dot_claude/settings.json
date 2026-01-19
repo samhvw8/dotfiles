@@ -85,5 +85,9 @@
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
 }
