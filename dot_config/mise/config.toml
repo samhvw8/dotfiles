@@ -1,5 +1,3 @@
-# Mise Configuration - Full Mode
-
 [settings]
 experimental = true
 legacy_version_file_disable_tools = ['java']
@@ -15,72 +13,52 @@ uvx = true
 binstall = true
 
 [tools]
-# Essential tools
 chezmoi = "latest"
+direnv = "latest"
+go = "1.25.1"
 jq = "latest"
-ripgrep = "latest"
-yq = "latest"
-
-# Core languages
+k6 = "latest"
 node = "22"
 python = "3.11"
-go = "1.25.1"
+ripgrep = "latest"
 rust = "latest"
+sccache = "latest"
 zig = "0.11.0"
-bun = "latest"
-
-# Shell & editor
+shellcheck = "latest"
+shfmt = "latest"
+uv = "latest"
+yt-dlp = "latest"
+yq = "latest"
 neovim = "0.11.4"
+lazygit = "latest"
+"github:github/github-mcp-server" = "latest"
+dasel = "latest"
+"github:jj-vcs/jj" = "latest"
+hurl = "latest"
+rg = "latest"
+cloudflared = "latest"
+"github:router-for-me/CLIProxyAPI" = { version = "latest", exe = "cli-proxy-api" }
+ast-grep = "latest"
 starship = "latest"
 zoxide = "latest"
 delta = "latest"
-lazygit = "latest"
-shellcheck = "latest"
-shfmt = "latest"
-
-# Dev tools
-direnv = "latest"
-uv = "latest"
-sccache = "latest"
-ast-grep = "latest"
-hurl = "latest"
-dasel = "latest"
-usage = "latest"
-jnv = "latest"
-doggo = "latest"
-rclone = "latest"
-
-# Testing & benchmarking
-k6 = "latest"
-
-# Media tools
-yt-dlp = "latest"
-
-# Cloud & infra
-cloudflared = "latest"
-gcloud = "latest"
-
-# Git tools
-"github:jj-vcs/jj" = "latest"
-"forgejo:mergiraf/mergiraf" = "latest"
-
-# NPM tools
-"npm:@anthropic-ai/claude-code" = "latest"
 "npm:@kaitranntt/ccs" = "latest"
 "npm:@beads/bd" = "latest"
+usage = "latest"
+"forgejo:mergiraf/mergiraf" = "latest"
 "npm:memvid-cli" = "latest"
-"npm:ccusage" = "latest"
-
-# MCP servers
-"github:github/github-mcp-server" = "latest"
-"github:asyrjasalo/dynamic-mcp" = "latest"
-"github:memextech/ht-mcp" = "latest"
-"npm:mcp-chrome-bridge" = "latest"
-
-# Other GitHub tools
-"github:router-for-me/CLIProxyAPI" = { version = "latest", exe = "cli-proxy-api" }
 "github:Skardyy/mcat" = "latest"
+bun = "latest"
+"npm:@anthropic-ai/claude-code" = "latest"
+doggo = "latest"
+jnv = "latest"
+"github:asyrjasalo/dynamic-mcp" = "latest"
 "github:ouch-org/ouch" = "latest"
-
-# AI tools
+"npm:ccusage" = "latest"
+gcloud = "latest"
+"github:memextech/ht-mcp" = "latest"
 gemini-cli = "latest"
+"npm:mcp-chrome-bridge" = "latest"
+rclone = "latest"
+"github:bettercap/bettercap" = "latest"
+opencode = "latest"
