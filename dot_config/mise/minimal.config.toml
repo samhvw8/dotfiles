@@ -1,0 +1,18 @@
+# Mise Configuration - Minimal Mode (Server/Lightweight)
+
+[settings]
+experimental = true
+legacy_version_file_disable_tools = ['java']
+idiomatic_version_file_enable_tools = ["node"]
+
+[tools]
+# Essential tools
+chezmoi = "latest"
+jq = "latest"
+ripgrep = "latest"
+yq = "latest"
+
+# Server essentials
+node = "22"
+python = "3.11"
+uv = "latest"

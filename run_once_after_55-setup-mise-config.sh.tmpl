@@ -1,0 +1,28 @@
+#!/bin/bash
+# run_once_after_55-setup-minimal-config.sh.tmpl
+# Swap configs based on minimal mode
+
+set -e
+
+{{ if .minimal | default false }}
+echo "📦 Setting up minimal configs..."
+
+# Mise config
+MISE_CONFIG="$HOME/.config/mise/config.toml"
+MISE_MINIMAL="$HOME/.config/mise/minimal.config.toml"
+if [ -f "$MISE_MINIMAL" ]; then
+    cp "$MISE_MINIMAL" "$MISE_CONFIG"
+    echo "✅ Minimal mise config applied"
+fi
+
+# Zshrc
+ZSHRC="$HOME/.zshrc"
+ZSHRC_MINIMAL="$HOME/.zshrc_minimal"
+if [ -f "$ZSHRC_MINIMAL" ]; then
+    cp "$ZSHRC_MINIMAL" "$ZSHRC"
+    echo "✅ Minimal zshrc applied"
+fi
+
+{{ else }}
+echo "✅ Full configs already in place"
+{{ end }}

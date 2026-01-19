@@ -1,12 +1,10 @@
-# Mise Configuration
-# Mode: {{ if .minimal | default false }}MINIMAL{{ else }}FULL{{ end }}
+# Mise Configuration - Full Mode
 
 [settings]
 experimental = true
 legacy_version_file_disable_tools = ['java']
 idiomatic_version_file_enable_tools = ["node"]
 
-{{ if not (.minimal | default false) }}
 [settings.npm]
 package_manager = "bun"
 
@@ -15,26 +13,13 @@ uvx = true
 
 [settings.cargo]
 binstall = true
-{{ end }}
 
 [tools]
-# Essential tools (both minimal and full)
+# Essential tools
 chezmoi = "latest"
 jq = "latest"
 ripgrep = "latest"
 yq = "latest"
-
-{{ if .minimal | default false }}
-# =============================================================================
-# MINIMAL MODE - Server essentials only
-# =============================================================================
-node = "22"
-python = "3.11"
-uv = "latest"
-{{ else }}
-# =============================================================================
-# FULL MODE - Development environment
-# =============================================================================
 
 # Core languages
 node = "22"
@@ -99,4 +84,3 @@ gcloud = "latest"
 
 # AI tools
 gemini-cli = "latest"
-{{ end }}

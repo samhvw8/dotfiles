@@ -1,0 +1,89 @@
+# =============================================================================
+# ZSH Configuration - Minimal Mode
+# =============================================================================
+
+# Mise activation
+if [ -f "$HOME/.local/bin/mise" ]; then
+    eval "$($HOME/.local/bin/mise activate zsh)"
+    eval "$($HOME/.local/bin/mise hook-env)"
+fi
+
+# Basic ZSH Options
+setopt SHARE_HISTORY INC_APPEND_HISTORY HIST_NO_STORE
+setopt appendhistory beep nomatch promptsubst
+
+# XDG Base Directories
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+export XDG_RUNTIME_DIR="${HOME}/.local/run"
+
+# ZSH-specific directories
+export ZSH_DATA_DIR="${XDG_DATA_HOME}/zsh"
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
+export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
+
+# Create necessary directories
+for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_RUNTIME_DIR" \
+           "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR"; do
+    [[ ! -d "$dir" ]] && mkdir -p "$dir"
+done
+
+# =============================================================================
+# Helper Functions
+# =============================================================================
+
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+add_to_path() {
+    [[ -d "$1" ]] && export PATH="$1:$PATH"
+}
+
+# =============================================================================
+# PATH Configuration
+# =============================================================================
+
+add_to_path "$HOME/.local/bin"
+add_to_path "$HOME/bin"
+
+# =============================================================================
+# Simple Prompt
+# =============================================================================
+
+PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
+
+# =============================================================================
+# Aliases
+# =============================================================================
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ls='ls --color=auto'
+alias ll='ls -alF'
+alias la='ls -A'
+
+# Editor
+if command_exists nvim; then
+    alias vim=nvim
+    export EDITOR=nvim
+elif command_exists vim; then
+    export EDITOR=vim
+fi
+
+# =============================================================================
+# Environment
+# =============================================================================
+
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+
+# =============================================================================
+# Key Bindings
+# =============================================================================
+
+set -o emacs
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word

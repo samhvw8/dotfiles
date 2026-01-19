@@ -1,0 +1,20 @@
+#!/bin/bash
+# run_once_after_60-mise-install.sh.tmpl
+# Install mise tools after chezmoi apply
+
+set -e
+
+{{ if .minimal | default false }}
+echo "⏭️  Skipping mise install (minimal mode)"
+exit 0
+{{ end }}
+
+echo "📦 Installing mise tools..."
+
+if command -v mise &> /dev/null; then
+    mise install --yes
+    echo "✅ Mise tools installed"
+else
+    echo "⚠️  Mise not found, skipping tool installation"
+    echo "   Install mise first: curl https://mise.run | sh"
+fi

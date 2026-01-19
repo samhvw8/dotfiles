@@ -1,7 +1,6 @@
 # =============================================================================
-# ZSH Configuration
+# ZSH Configuration - Full Mode
 # =============================================================================
-# Mode: {{ if .minimal | default false }}MINIMAL{{ else }}FULL{{ end }}
 
 # Mise activation
 if [ -f "$HOME/.local/bin/mise" ]; then
@@ -50,41 +49,8 @@ add_to_path() {
 add_to_path "$HOME/.local/bin"
 add_to_path "$HOME/bin"
 
-{{ if .minimal | default false }}
 # =============================================================================
-# MINIMAL MODE - Simple prompt, no plugins
-# =============================================================================
-
-# Simple prompt
-PROMPT='%F{green}%n@%m%f:%F{blue}%~%f$ '
-
-# Basic aliases
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ls='ls --color=auto'
-alias ll='ls -alF'
-alias la='ls -A'
-
-# Editor
-if command_exists nvim; then
-    alias vim=nvim
-    export EDITOR=nvim
-elif command_exists vim; then
-    export EDITOR=vim
-fi
-
-# Environment
-export LC_ALL="en_US.UTF-8"
-export LANG="en_US.UTF-8"
-
-# Key bindings
-set -o emacs
-bindkey "^[[1;5C" forward-word
-bindkey "^[[1;5D" backward-word
-
-{{ else }}
-# =============================================================================
-# FULL MODE - ZI Plugin Manager
+# ZI Plugin Manager
 # =============================================================================
 
 # Install ZI if not present
@@ -262,31 +228,6 @@ export FZF_DEFAULT_OPTS='
 export FZF_DEFAULT_COMMAND='fd --type file'
 
 # =============================================================================
-# Conda Configuration
-# =============================================================================
-{{ if .conda | default false }}
-if command_exists conda; then
-    export _CONDA_BASE=$(dirname $(dirname $(which conda)))
-elif [[ $(uname) == "Darwin" ]]; then
-    export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
-else
-    export _CONDA_BASE=$HOME/miniconda3
-fi
-
-if [[ -f "$_CONDA_BASE/bin/conda" ]]; then
-    __conda_setup="$('$_CONDA_BASE/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-    if [[ $? -eq 0 ]]; then
-        eval "$__conda_setup"
-    elif [[ -f "$_CONDA_BASE/etc/profile.d/conda.sh" ]]; then
-        . "$_CONDA_BASE/etc/profile.d/conda.sh"
-    else
-        export PATH="$_CONDA_BASE/bin:$PATH"
-    fi
-    unset __conda_setup
-fi
-{{ end }}
-
-# =============================================================================
 # Additional Sources
 # =============================================================================
 
@@ -387,4 +328,3 @@ rgv-show() {
         echo "  - $v"
     done
 }
-{{ end }}
