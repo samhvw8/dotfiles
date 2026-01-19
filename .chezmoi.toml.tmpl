@@ -1,19 +1,15 @@
 {{- $name := promptStringOnce . "name" "Git user name" -}}
 {{- $email := promptStringOnce . "email" "Git email address" -}}
-{{- $minimal := false -}}
-{{- if hasKey . "minimal" -}}
-{{-   $minimal = .minimal -}}
-{{- end -}}
-{{- $conda := false -}}
-{{- if hasKey . "conda" -}}
-{{-   $conda = .conda -}}
-{{- end -}}
+{{- $minimal := .minimal | default false -}}
+{{- $conda := .conda | default false -}}
+{{- $claude_mcp := .claude_mcp | default true -}}
 
 [data]
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     minimal = {{ $minimal }}
     conda = {{ $conda }}
+    claude_mcp = {{ $claude_mcp }}
 
 [git]
     autoPush = false

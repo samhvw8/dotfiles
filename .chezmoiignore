@@ -1,0 +1,24 @@
+# Claude Code - Ignore large/session-specific files
+.claude/plugins/cache/
+.claude/plugins/marketplaces/
+.claude/projects/
+.claude/debug/
+.claude/shell-snapshots/
+.claude/telemetry/
+.claude/todos/
+.claude/file-history/
+.claude/paste-cache/
+.claude/history.jsonl
+.claude/statsig/
+.claude/session-env/
+.claude/plans/
+.claude/mind.mv2
+.claude/ccline/
+.claude/cache/
+.claude/.mcp.json
+
+# Conditional: disable claude on minimal installs (defaults to false if missing)
+{{ if .minimal | default false }}
+.claude/
+.claude.json
+{{ end }}

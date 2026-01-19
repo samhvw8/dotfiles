@@ -1,0 +1,41 @@
+#!/bin/bash
+# run_once_after_50-setup-claude-mcp.sh.tmpl
+# Runs once after chezmoi apply to set up Claude MCP servers
+# Uses defaults if variables are missing
+
+set -e
+
+echo "🔧 Setting up Claude Code..."
+
+# Skip if minimal install (defaults to false if missing)
+{{ if .minimal | default false }}
+echo "⏭️  Skipping Claude setup (minimal install)"
+exit 0
+{{ end }}
+
+# Ensure directories exist
+mkdir -p "$HOME/.claude/plugins"
+
+{{ if .claude_mcp | default true }}
+# Create .mcp.json if it doesn't exist or is empty
+MCP_FILE="$HOME/.claude/.mcp.json"
+
+if [ ! -s "$MCP_FILE" ]; then
+    echo "📦 Creating MCP configuration..."
+    cat > "$MCP_FILE" << 'EOF'
+{
+  "context7": {
+    "command": "npx",
+    "args": ["-y", "@upstash/context7-mcp"]
+  }
+}
+EOF
+    echo "✅ Created $MCP_FILE"
+else
+    echo "✅ MCP config already exists"
+fi
+{{ else }}
+echo "⏭️  Skipping MCP setup (claude_mcp = false)"
+{{ end }}
+
+echo "✅ Claude setup complete"

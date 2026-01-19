@@ -1,0 +1,102 @@
+# Mise Configuration
+# Mode: {{ if .minimal | default false }}MINIMAL{{ else }}FULL{{ end }}
+
+[settings]
+experimental = true
+legacy_version_file_disable_tools = ['java']
+idiomatic_version_file_enable_tools = ["node"]
+
+{{ if not (.minimal | default false) }}
+[settings.npm]
+package_manager = "bun"
+
+[settings.pipx]
+uvx = true
+
+[settings.cargo]
+binstall = true
+{{ end }}
+
+[tools]
+# Essential tools (both minimal and full)
+chezmoi = "latest"
+jq = "latest"
+ripgrep = "latest"
+yq = "latest"
+
+{{ if .minimal | default false }}
+# =============================================================================
+# MINIMAL MODE - Server essentials only
+# =============================================================================
+node = "22"
+python = "3.11"
+uv = "latest"
+{{ else }}
+# =============================================================================
+# FULL MODE - Development environment
+# =============================================================================
+
+# Core languages
+node = "22"
+python = "3.11"
+go = "1.25.1"
+rust = "latest"
+zig = "0.11.0"
+bun = "latest"
+
+# Shell & editor
+neovim = "0.11.4"
+starship = "latest"
+zoxide = "latest"
+delta = "latest"
+lazygit = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+
+# Dev tools
+direnv = "latest"
+uv = "latest"
+sccache = "latest"
+ast-grep = "latest"
+hurl = "latest"
+dasel = "latest"
+usage = "latest"
+jnv = "latest"
+doggo = "latest"
+rclone = "latest"
+
+# Testing & benchmarking
+k6 = "latest"
+
+# Media tools
+yt-dlp = "latest"
+
+# Cloud & infra
+cloudflared = "latest"
+gcloud = "latest"
+
+# Git tools
+"github:jj-vcs/jj" = "latest"
+"forgejo:mergiraf/mergiraf" = "latest"
+
+# NPM tools
+"npm:@anthropic-ai/claude-code" = "latest"
+"npm:@kaitranntt/ccs" = "latest"
+"npm:@beads/bd" = "latest"
+"npm:memvid-cli" = "latest"
+"npm:ccusage" = "latest"
+
+# MCP servers
+"github:github/github-mcp-server" = "latest"
+"github:asyrjasalo/dynamic-mcp" = "latest"
+"github:memextech/ht-mcp" = "latest"
+"npm:mcp-chrome-bridge" = "latest"
+
+# Other GitHub tools
+"github:router-for-me/CLIProxyAPI" = { version = "latest", exe = "cli-proxy-api" }
+"github:Skardyy/mcat" = "latest"
+"github:ouch-org/ouch" = "latest"
+
+# AI tools
+gemini-cli = "latest"
+{{ end }}
