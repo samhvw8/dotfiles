@@ -22,7 +22,6 @@ Current conversation → Project CLAUDE.md → Global CLAUDE.md → System promp
 @principles/delegation-protocol.md
 @principles/cognitive-framework.md
 @principles/se.md
-@principles/primary-workflow.md
 
 ---
 
