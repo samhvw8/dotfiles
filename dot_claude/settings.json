@@ -90,5 +90,7 @@
     "commit": "",
     "pr": ""
   },
-  "defaultMode": "plan"
+  "permissions": {
+    "defaultMode": "plan"
+  }
 }
