@@ -22,6 +22,8 @@ MCP_FILE="$HOME/.claude/.mcp.json"
 
 if [ ! -s "$MCP_FILE" ]; then
     echo "📦 Creating MCP configuration..."
+    # Handle read-only placeholder files
+    [ -f "$MCP_FILE" ] && chmod 644 "$MCP_FILE"
     cat > "$MCP_FILE" << 'EOF'
 {
   "context7": {
