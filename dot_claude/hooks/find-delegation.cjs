@@ -198,7 +198,78 @@ function collectMetadata(cwd) {
 }
 
 /**
- * Call Claude non-interactive to find best matches
+ * Find mise CLI path, returns null if not found
+ */
+function findMisePath() {
+    const possiblePaths = [
+        path.join(process.env.HOME, '.local/bin/mise'),
+        '/usr/local/bin/mise',
+    ];
+
+    for (const p of possiblePaths) {
+        if (fs.existsSync(p)) {
+            log(`Found mise at: ${p}`);
+            return p;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Find gemini CLI path directly (fallback when mise not available)
+ */
+function findGeminiPath() {
+    const possiblePaths = [
+        path.join(process.env.HOME, '.local/share/mise/shims/gemini'),
+        path.join(process.env.HOME, '.local/bin/gemini'),
+        '/usr/local/bin/gemini',
+    ];
+
+    for (const p of possiblePaths) {
+        if (fs.existsSync(p)) {
+            log(`Found gemini at: ${p}`);
+            return p;
+        }
+    }
+
+    return 'gemini'; // Fall back to PATH lookup
+}
+
+/**
+ * Build spawn arguments for gemini call
+ */
+function buildGeminiSpawnArgs(fullPrompt) {
+    const misePath = findMisePath();
+
+    if (misePath) {
+        log(`Using mise at: ${misePath}`);
+        return {
+            command: misePath,
+            args: [
+                'x', 'gemini-cli', '--',
+                'gemini',
+                '--model', 'gemini-3-flash-preview',
+                '--yolo',
+                '-p', fullPrompt
+            ]
+        };
+    }
+
+    const geminiPath = findGeminiPath();
+    log(`Using gemini directly at: ${geminiPath}`);
+    return {
+        command: geminiPath,
+        args: [
+            '--model', 'gemini-3-flash-preview',
+            '--yolo',
+            '-p', fullPrompt
+        ]
+    };
+}
+
+/**
+ * Call Gemini non-interactive to find best matches
  */
 function findBestMatches(userPrompt, agents, skills) {
     const systemPrompt = `You are a task-to-capability matcher. Match user tasks to available agents and skills.
@@ -248,13 +319,11 @@ ${skills.map(s => `• ${s.name}: ${s.description}`).join('\n')}
         // Build full prompt with system + user message
         const fullPrompt = `${systemPrompt}\n\n---\n\n${userMessage}`;
 
-        const result = spawnSync('gemini', [
-            '--model', 'gemini-3-flash-preview',
-            '--yolo',
-            '-p', fullPrompt
-        ], {
+        const { command, args } = buildGeminiSpawnArgs(fullPrompt);
+
+        const result = spawnSync(command, args, {
             encoding: 'utf8',
-            timeout: 30000,
+            timeout: 300000,
             maxBuffer: 1024 * 1024,
             stdio: ['pipe', 'pipe', 'pipe']
         });
@@ -266,9 +335,15 @@ ${skills.map(s => `• ${s.name}: ${s.description}`).join('\n')}
             log(`Stderr: ${result.stderr}`);
         }
 
+        // Check for spawn errors first (command not found, permission denied, etc.)
+        if (result.error) {
+            log(`Spawn error: ${result.error.message}`);
+            return `Error: Failed to run gemini (${result.error.code || result.error.message}). Check mise or gemini installation.`;
+        }
+
         if (result.status !== 0) {
-            log(`Claude call failed with status ${result.status}`);
-            return `Error: Claude call failed (status: ${result.status}, signal: ${result.signal})`;
+            log(`Gemini call failed with status ${result.status}`);
+            return `Error: Gemini call failed (status: ${result.status}, signal: ${result.signal}, stderr: ${result.stderr?.slice(0, 200) || 'none'})`;
         }
 
         const output = result.stdout.trim();
