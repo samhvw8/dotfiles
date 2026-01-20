@@ -71,7 +71,7 @@
           {
             "type": "command",
             "command": "node $HOME/.claude/hooks/find-delegation.cjs",
-            "timeout": 120
+            "timeout": 220
           }
         ]
       }
@@ -89,5 +89,6 @@
   "attribution": {
     "commit": "",
     "pr": ""
-  }
+  },
+  "defaultMode": "plan"
 }
