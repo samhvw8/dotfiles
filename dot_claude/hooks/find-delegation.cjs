@@ -392,6 +392,12 @@ async function main() {
         userPrompt = 'General task';
     }
 
+    // Skip delegation finder for flash commands (starting with /)
+    if (userPrompt.trim().startsWith('/')) {
+        log('Flash command detected, skipping delegation finder');
+        return;
+    }
+
     // Collect metadata
     const { agents, skills } = collectMetadata(cwd);
 
