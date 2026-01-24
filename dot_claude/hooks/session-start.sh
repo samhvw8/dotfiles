@@ -6,34 +6,50 @@ cat <<'EOF'
 
 # Delegation Protocol
 
-## The 1% Rule
-**Even 1% chance a skill/agent applies? USE IT. Non-negotiable.**
-- Agent match → `Task(subagent_type="X")` (agent works autonomously)
-- Skill match → `Skill("X")` first, then YOU execute with guidance
-- Neither → Manual (must justify why nothing matched)
-
 ## Core Distinction
 | Tool | Type | You do work? |
 |------|------|--------------|
 | `Task` | Delegation | No - agent works autonomously |
 | `Skill` | Enhancement | Yes - skill guides you |
 
-## Skill Priority
-When multiple match: **Process first** (debugging, planning) → **Implementation second** (frontend, backend)
+## Skills: 1% Rule
+**Even 1% chance a skill applies? INVOKE IT.**
+- Skills are lightweight guidance - load freely
+- When multiple match: **Process first** (debugging, planning) → **Implementation second**
 
-## Rationalization Detection
-If thinking any of these, STOP—you're avoiding the protocol:
+## Agents: Decision Tree
 
-| Thought | Reality |
-|---------|---------|
-| "Just a simple question" | Questions are tasks. Check matches. |
-| "Need context first" | Check comes BEFORE reading files. |
-| "Let me explore first" | Skills tell you HOW to explore. |
-| "I'll do this one thing first" | Check BEFORE any action. |
-| "The skill is overkill" | Simple → complex. Use it. |
-| "I know what to do" | Knowing ≠ using the skill. Invoke it. |
-| "I remember this skill" | Skills evolve. Read current version. |
-| "This doesn't need formal skill" | If skill exists, use it. |
+### Step 1: Context Check
+Before spawning agent:
+- Is the answer already in this conversation? → USE IT
+- Did user provide the spec/target? → TRANSFORM, don't explore
+
+### Step 2: Complexity Assessment
+| Unknowns | Action |
+|----------|--------|
+| 0 (have everything) | Execute directly |
+| 1 (single lookup) | Direct tool (Glob/Grep/Read) |
+| 2-3 related | Consider 1 agent |
+| Multiple independent | Parallel agents (max 3) |
+
+### Step 3: Necessity Test
+Ask: "Can I answer this with ONE direct tool call?"
+- YES → Don't delegate
+- NO → Check if agent adds value beyond tool chaining
+
+### Step 4: Value Test
+Delegate only when agent provides:
+- Autonomous decision-making (not just sequential tools)
+- Domain expertise I lack
+- Parallel exploration of unknown scope
+
+## Agent Anti-Patterns
+| Sign | Problem | Fix |
+|------|---------|-----|
+| Agent for single file lookup | Over-delegation | Glob/Read |
+| Multiple agents for linear task | Over-division | Single agent or direct |
+| Exploring what's in the message | Context blindness | Read the conversation |
+| Agent to "understand patterns" | Skill gap | Use Skill for guidance |
 
 # DGE Loop: Decide → Gather → Execute
 
