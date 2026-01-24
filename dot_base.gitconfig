@@ -76,9 +76,5 @@
   bu = branchless undo
   review = "!sh -c 'git push origin HEAD:refs/for/master%r=$0'"
 
-[commit]
-	gpgsign = true
-[tag]
-	gpgSign = true
 [merge]
     conflictStyle = "diff3"
