@@ -21,7 +21,7 @@ Current conversation → Project CLAUDE.md → Global CLAUDE.md → System promp
 
 ---
 
-# Principles (Auto-Loaded)
+# Principles
 @principles/delegation-protocol.md
 @principles/cognitive-framework.md
 @principles/se.md
@@ -46,11 +46,33 @@ Chain when outputs become inputs:
 ## Sub-Agent Prompting
 Always pass relevant skills:
 ```
-"[Task description]
+"[Overall Objective] [What This Task to Overall Objective]
+[Task description]
 
 RECOMMENDED SKILLS: [skill-name] - [when to use]
 Use Skill tool for guidance."
 ```
+
+# Self-Maintenance
+
+When new patterns emerge or conventions change:
+1. Propose update to CLAUDE.md
+2. Wait for user approval
+3. Add pattern to appropriate section or principle file
+
+---
+
+# Anti-Patterns
+
+| Don't | Do |
+|-------|-----|
+| Confuse Skill with delegation | Skill = guidance, Task = delegation |
+| Sequential launches for independent tasks | Parallel launch |
+| Spawn agents without skill guidance | Include RECOMMENDED SKILLS |
+
+---
+
+Always respond in English.
 
 ---
 
@@ -69,26 +91,3 @@ When capturing screenshots: use `save png`, NOT base64 (bloats context)
 - Task runner (replaces make, npm scripts)
 
 ---
-
-# Self-Maintenance
-
-When new patterns emerge or conventions change:
-1. Propose update to CLAUDE.md
-2. Wait for user approval
-3. Add pattern to appropriate section or principle file
-
----
-
-# Anti-Patterns
-
-| Don't | Do |
-|-------|-----|
-| Confuse Skill with delegation | Skill = guidance, Task = delegation |
-| grep/glob for multi-file searches | Use exploration agent |
-| Sequential launches for independent tasks | Parallel launch |
-| Skip agent when it matches | Agent match = DELEGATE |
-| Spawn agents without skill guidance | Include RECOMMENDED SKILLS |
-
----
-
-Always respond in English.
