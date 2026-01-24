@@ -18,8 +18,9 @@ cat <<'EOF'
 ## Skills: 1% Rule
 **Even 1% chance a skill applies? INVOKE IT.**
 - Skills are listed in Task tool under "Available skills:"
-- Always check if skill can be triggered before any action
+- ⚠️ ALWAYS check if skill can be triggered BEFORE any action
 - When multiple match: **Process first** (debugging, planning) → **Implementation second**
+- A hook will prompt you to fill in the evaluation - DO NOT skip it
 </skills_rules>
 
 <agents_rules>
@@ -50,6 +51,16 @@ Delegate only when agent provides:
 - Parallel exploration of unknown scope
 </agents_rules>
 
+<mandatory_evaluation>
+## ⚠️ Mandatory Evaluation
+Before EVERY action, you will receive a delegation_check prompt.
+You MUST:
+1. Fill in ACTUAL skill/agent names (not placeholders)
+2. Evaluate each with Yes/No and a reason
+3. Make a decision before proceeding
+DO NOT output templates with `[name]` or `[reason]` - use real values.
+</mandatory_evaluation>
+
 <anti_patterns>
 ## Agent Anti-Patterns
 | Sign | Problem | Fix |
@@ -58,6 +69,7 @@ Delegate only when agent provides:
 | Multiple agents for linear task | Over-division | Single agent or direct |
 | Exploring what's in the message | Context blindness | Read the conversation |
 | Agent to "understand patterns" | Skill gap | Use Skill for guidance |
+| Skipping delegation_check | Protocol violation | Fill in actual evaluation |
 </anti_patterns>
 
 </delegation_protocol>

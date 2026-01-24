@@ -4,20 +4,22 @@
 cat << 'EOF'
 <delegation_check mandatory="true">
 
+⚠️ OUTPUT THIS EVALUATION before taking action. Follow DGE: Decide → Gather → Execute.
+
 <skills_check>
 ## Skills (from Task tool "Available skills:" section)
-[List 2-5 skill candidates - check if ANY can be triggered]
+[Scan available skills - fill table with 2-5 candidates]
 
 | Skill | Trigger Match? | Action |
 |-------|----------------|--------|
-| [name] | Yes/No | `Skill("name")` if Yes |
+| ... | Yes/No | ... |
 
-**Rule:** 1% match → INVOKE immediately before any other action
+**1% Rule:** Even 1% chance skill applies? → INVOKE `Skill("name")` immediately
 </skills_check>
 
 <agents_check>
 ## Agents (follow Decision Tree)
-[List 2-5 agent candidates with brief justification]
+[Fill table with 2-5 agent candidates]
 
 ### Decision Tree Evaluation
 1. **Context Check:** Is answer in conversation? Did user provide spec?
@@ -27,7 +29,7 @@ cat << 'EOF'
 
 | Agent | Passes Tree? | Justification |
 |-------|--------------|---------------|
-| [name] | Yes/No | [reason] |
+| ... | Yes/No | ... |
 </agents_check>
 
 <action_decision>
@@ -35,6 +37,8 @@ cat << 'EOF'
 - [ ] Skill: `Skill("X")` → then execute myself
 - [ ] Agent: `Task(subagent_type="X")` → delegate
 - [ ] Direct: Execute with tools myself
+
+**DGE:** State commitment → Gather (max 3 reads) → Execute immediately
 </action_decision>
 
 </delegation_check>
