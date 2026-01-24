@@ -38,7 +38,8 @@
       "mcp__chrome-mcp-server",
       "mcp__context7"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "plan"
   },
   "model": "opus",
   "hooks": {
@@ -90,7 +91,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node $HOME/.claude/hooks/find-delegation.cjs",
+            "command": "bash $HOME/.claude/hooks/force-agent-skills-eval.sh",
             "timeout": 220
           }
         ]
@@ -109,8 +110,5 @@
   "attribution": {
     "commit": "",
     "pr": ""
-  },
-  "permissions": {
-    "defaultMode": "plan"
   }
 }
