@@ -412,12 +412,12 @@ async function main() {
 ${matches}
 
 ## Quick Reference
-| Type | Best Match | Action |
-|------|------------|--------|
-| Agent | [from above] | \`Task(subagent_type="X")\` |
-| Skill | [from above] | \`Skill("X")\` → then execute |
+| Type | Rule | Action |
+|------|------|--------|
+| Skill | 1% match → INVOKE | \`Skill("X")\` → then execute |
+| Agent | Pass decision tree first | \`Task(subagent_type="X")\` |
 
-**Reminders:** 1% rule • DGE loop • Rationalization detection • Skill priority
+**Agent Decision Tree:** Context check → Complexity (unknowns) → Necessity (1 tool?) → Value test
 *(Full rules in session_rules)*
 </delegation_check>`);
 
