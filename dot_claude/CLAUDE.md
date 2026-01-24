@@ -56,10 +56,6 @@ Use Skill tool for guidance."
 
 # MCP Tools
 
-## context7
-Library/framework documentation (React, Next.js, Prisma, etc.)
-@MCP_Context7.md
-
 ## Chrome MCP
 When capturing screenshots: use `save png`, NOT base64 (bloats context)
 
