@@ -2,44 +2,41 @@
 # Delegation evaluation hook - forces explicit check and user explanation
 
 cat << 'EOF'
-<delegation_check mandatory="true">
+<delegation_check mandatory="true" non_negotiable="true">
 
-⚠️ OUTPUT THIS EVALUATION before taking action. Follow DGE: Decide → Gather → Execute.
+Before acting, you MUST complete this evaluation. No placeholders—fill every cell.
 
-<skills_check>
-## Skills (from Task tool "Available skills:" section)
-[Scan available skills - fill table with 2-5 candidates]
+<analyze>
+Task: [one sentence: what is the user asking?]
+Domain: [category]
+Tension: [what competing approaches exist? which survives and why?]
+</analyze>
 
-| Skill | Trigger Match? | Action |
-|-------|----------------|--------|
-| ... | Yes/No | ... |
+<skills required="fill">
+| Skill | Match? | Reason |
+|-------|--------|--------|
+|       |        |        |
 
-**1% Rule:** Even 1% chance skill applies? → INVOKE `Skill("name")` immediately
-</skills_check>
+1% Rule: Any chance a skill applies → `Skill("name")` before proceeding.
+</skills>
 
-<agents_check>
-## Agents (follow Decision Tree)
-[Fill table with 2-5 agent candidates]
+<agents required="fill">
+| Agent | Use? | Decision Tree Result |
+|-------|------|----------------------|
+|       |      |                      |
 
-### Decision Tree Evaluation
-1. **Context Check:** Is answer in conversation? Did user provide spec?
-2. **Complexity:** How many unknowns? (0=direct, 1=tool, 2-3=agent, 3+=parallel)
-3. **Necessity:** Can ONE direct tool call solve this?
-4. **Value:** Does agent add autonomous decision-making?
+Tree: (1) Answer in context? → use it. (2) Unknowns: 0=direct, 1=tool, 2+=agent. (3) ONE tool call solves it? → don't delegate. (4) Agent adds autonomy? → delegate.
+</agents>
 
-| Agent | Passes Tree? | Justification |
-|-------|--------------|---------------|
-| ... | Yes/No | ... |
-</agents_check>
+<decision>
+[ ] `Skill("___")` → then execute
+[ ] `Task(subagent_type="___")` → delegate
+[ ] Direct execution (justify: ___)
+</decision>
 
-<action_decision>
-## Decision
-- [ ] Skill: `Skill("X")` → then execute myself
-- [ ] Agent: `Task(subagent_type="X")` → delegate
-- [ ] Direct: Execute with tools myself
-
-**DGE:** State commitment → Gather (max 3 reads) → Execute immediately
-</action_decision>
+<commit>
+"I will ___ using ___" → Gather (≤3 reads) → Execute immediately.
+</commit>
 
 </delegation_check>
 EOF
