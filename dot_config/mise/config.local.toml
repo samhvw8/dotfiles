@@ -1,0 +1,5 @@
+[tools]
+gcloud = "latest"
+kubectl = "latest"
+k9s = "latest"
+"github:bettercap/bettercap" = "latest"
