@@ -84,7 +84,7 @@ main() {
         log_info "Initializing chezmoi with dotfiles repository..."
         log_info "You will be prompted for your git name and email..."
         log_info "This will automatically install all required tools and dependencies..."
-        if ! chezmoi init --apply --data "minimal=${MINIMAL}" --data "conda=${CONDA}" https://github.com/samhvw8/dotfiles.git; then
+        if ! chezmoi init --apply --promptBool minimal="${MINIMAL}" --promptBool conda="${CONDA}" https://github.com/samhvw8/dotfiles.git; then
             log_error "Failed to initialize chezmoi with dotfiles repository"
             exit 1
         fi
