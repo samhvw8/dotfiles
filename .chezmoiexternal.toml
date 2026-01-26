@@ -1,0 +1,4 @@
+[".claude/skills/playwriter/SKILL.md"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/remorses/playwriter/main/skills/playwriter/SKILL.md"
+    refreshPeriod = "168h"
