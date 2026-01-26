@@ -2,3 +2,25 @@
     type = "file"
     url = "https://raw.githubusercontent.com/remorses/playwriter/main/skills/playwriter/SKILL.md"
     refreshPeriod = "168h"
+
+# ui-ux-pro-max: SKILL.md from .claude/skills path
+[".claude/skills/0-ui-ux-pro-max/SKILL.md"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/nextlevelbuilder/ui-ux-pro-max-skill/main/.claude/skills/ui-ux-pro-max/SKILL.md"
+    refreshPeriod = "168h"
+
+# ui-ux-pro-max: data files from src path
+[".claude/skills/0-ui-ux-pro-max/data"]
+    type = "archive"
+    url = "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/archive/refs/heads/main.tar.gz"
+    stripComponents = 4
+    include = ["*/src/ui-ux-pro-max/data/**"]
+    refreshPeriod = "168h"
+
+# ui-ux-pro-max: scripts from src path
+[".claude/skills/0-ui-ux-pro-max/scripts"]
+    type = "archive"
+    url = "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/archive/refs/heads/main.tar.gz"
+    stripComponents = 4
+    include = ["*/src/ui-ux-pro-max/scripts/**"]
+    refreshPeriod = "168h"
