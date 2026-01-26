@@ -4,7 +4,7 @@ legacy_version_file_disable_tools = ['java']
 idiomatic_version_file_enable_tools = ["node"]
 
 [settings.npm]
-package_manager = "bun"
+package_manager = "pnpm"
 
 [settings.pipx]
 uvx = true
@@ -22,7 +22,6 @@ node = "22"
 python = "3.11"
 ripgrep = "latest"
 rust = "latest"
-sccache = "latest"
 zig = "0.11.0"
 shellcheck = "latest"
 shfmt = "latest"
@@ -31,9 +30,7 @@ yt-dlp = "latest"
 yq = "latest"
 neovim = "0.11.4"
 lazygit = "latest"
-"github:github/github-mcp-server" = "latest"
 dasel = "latest"
-"github:jj-vcs/jj" = "latest"
 hurl = "latest"
 rg = "latest"
 cloudflared = "latest"
@@ -43,11 +40,8 @@ starship = "latest"
 zoxide = "latest"
 delta = "latest"
 "npm:@kaitranntt/ccs" = "latest"
-"npm:@beads/bd" = "latest"
 usage = "latest"
 "forgejo:mergiraf/mergiraf" = "latest"
-"npm:memvid-cli" = "latest"
-"github:Skardyy/mcat" = "latest"
 bun = "latest"
 doggo = "latest"
 jnv = "latest"
