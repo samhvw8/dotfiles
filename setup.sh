@@ -37,30 +37,6 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Prompt for yes/no with default value
-prompt_yes_no() {
-    local prompt="$1"
-    local default="$2"
-    local response
-
-    if [[ "$default" == "true" ]]; then
-        prompt="$prompt [Y/n]: "
-    else
-        prompt="$prompt [y/N]: "
-    fi
-
-    read -r -p "$prompt" response
-    response="${response,,}" # lowercase
-
-    if [[ -z "$response" ]]; then
-        echo "$default"
-    elif [[ "$response" =~ ^(yes|y)$ ]]; then
-        echo "true"
-    else
-        echo "false"
-    fi
-}
-
 # Parse command line arguments
 MINIMAL=false
 CONDA=false
@@ -108,11 +84,7 @@ main() {
         log_info "Initializing chezmoi with dotfiles repository..."
         log_info "You will be prompted for your git name and email..."
         log_info "This will automatically install all required tools and dependencies..."
-
-        # Prompt for Claude MCP configuration
-        CLAUDE_MCP=$(prompt_yes_no "Enable Claude MCP configuration?" "true")
-
-        if ! chezmoi init --apply --promptBool minimal="${MINIMAL}" --promptBool conda="${CONDA}" --promptBool claude_mcp="${CLAUDE_MCP}" https://github.com/samhvw8/dotfiles.git; then
+        if ! chezmoi init --apply --data "minimal=${MINIMAL}" --data "conda=${CONDA}" https://github.com/samhvw8/dotfiles.git; then
             log_error "Failed to initialize chezmoi with dotfiles repository"
             exit 1
         fi
