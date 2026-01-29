@@ -22,7 +22,7 @@
       {
         "hooks": [
           {
-            "command": "node $HOME/.claude/web_search/index.cjs",
+            "command": "node $HOME/.claude/hooks/web_search/index.cjs",
             "timeout": 300,
             "type": "command"
           }
