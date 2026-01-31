@@ -1,0 +1,6 @@
+name: index
+type: PreToolUse
+timeout: 300
+command: index.cjs
+interpreter: node
+matcher: WebSearch

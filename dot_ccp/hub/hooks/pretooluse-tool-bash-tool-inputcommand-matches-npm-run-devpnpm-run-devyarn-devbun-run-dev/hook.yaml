@@ -1,0 +1,15 @@
+name: pretooluse-tool-bash-tool-inputcommand-matches-npm-run-devpnpm-run-devyarn-devbun-run-dev
+type: PreToolUse
+timeout: 60
+matcher: tool == "Bash" && tool_input.command matches "(npm run dev|pnpm( run)? dev|yarn dev|bun run dev)"
+inline: |-
+    #!/bin/bash
+    input=$(cat)
+    cmd=$(echo "$input" | jq -r '.tool_input.command // ""')
+
+    # Block dev servers that aren't run in tmux
+    echo '[Hook] BLOCKED: Dev server must run in tmux for log access' >&2
+    echo '[Hook] Use this command instead:' >&2
+    echo "[Hook] tmux new-session -d -s dev 'npm run dev'" >&2
+    echo '[Hook] Then: tmux attach -t dev' >&2
+    exit 1

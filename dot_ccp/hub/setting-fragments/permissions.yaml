@@ -1,0 +1,35 @@
+name: permissions
+description: Permission settings for Claude Code
+key: permissions
+value:
+    allow:
+        - Bash(cat:*)
+        - Bash(chmod:*)
+        - Bash(curl:*)
+        - Bash(echo:*)
+        - Bash(git:*)
+        - Bash(go:*)
+        - Bash(head:*)
+        - Bash(ls:*)
+        - Bash(lsof:*)
+        - Bash(mkdir:*)
+        - Bash(mv:*)
+        - Bash(npm run:*)
+        - Bash(npm:*)
+        - Bash(npx:*)
+        - Bash(python3:*)
+        - Bash(rg:*)
+        - Bash(sed:*)
+        - Bash(source:*)
+        - Bash(tail:*)
+        - Read(~/.zshrc)
+        - Skill(prompt-enhancer)
+        - Skill(skill-developer)
+        - Update(*:*)
+        - WebFetch(domain:*)
+        - WebSearch
+        - Write(*)
+        - mcp__chrome-mcp-server
+        - mcp__context7
+    defaultMode: plan
+    deny: []

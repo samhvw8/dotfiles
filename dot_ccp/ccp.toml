@@ -1,0 +1,10 @@
+default_registry = 'skills.sh'
+
+[github]
+topics = ['agent-skills', 'claude-code', 'claude-skills', 'awesome-skills', 'claude-plugin']
+keywords = []
+per_page = 10
+
+[skillssh]
+base_url = 'https://skills.sh'
+limit = 10

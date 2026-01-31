@@ -1,0 +1,5 @@
+name: force-agent-skills-eval
+type: UserPromptSubmit
+timeout: 220
+command: force-agent-skills-eval.sh
+interpreter: bash

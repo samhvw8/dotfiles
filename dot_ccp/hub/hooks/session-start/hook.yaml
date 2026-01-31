@@ -1,0 +1,5 @@
+name: session-start
+type: SessionStart
+timeout: 5
+command: session-start.sh
+interpreter: bash

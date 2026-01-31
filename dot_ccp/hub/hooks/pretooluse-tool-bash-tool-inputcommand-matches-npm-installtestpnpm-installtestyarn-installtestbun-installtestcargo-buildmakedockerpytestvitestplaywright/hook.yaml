@@ -1,0 +1,12 @@
+name: pretooluse-tool-bash-tool-inputcommand-matches-npm-installtestpnpm-installtestyarn-installtestbun-installtestcargo-buildmakedockerpytestvitestplaywright
+type: PreToolUse
+timeout: 60
+matcher: tool == "Bash" && tool_input.command matches "(npm (install|test)|pnpm (install|test)|yarn (install|test)|bun (install|test)|cargo build|make|docker|pytest|vitest|playwright)"
+inline: |-
+    #!/bin/bash
+    input=$(cat)
+    if [ -z "$TMUX" ]; then
+      echo '[Hook] Consider running in tmux for session persistence' >&2
+      echo '[Hook] tmux new -s dev  |  tmux attach -t dev' >&2
+    fi
+    echo "$input"
