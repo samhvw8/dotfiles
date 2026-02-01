@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "tool == \"Bash\" \u0026\u0026 tool_input.command matches \"(npm run dev|pnpm( run)? dev|yarn dev|bun run dev)\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "#!/bin/bash\ninput=$(cat)\ncmd=$(echo \"$input\" | jq -r '.tool_input.command // \"\"')\n\n# Block dev servers that aren't run in tmux\necho '[Hook] BLOCKED: Dev server must run in tmux for log access' \u003e\u00262\necho '[Hook] Use this command instead:' \u003e\u00262\necho \"[Hook] tmux new-session -d -s dev 'npm run dev'\" \u003e\u00262\necho '[Hook] Then: tmux attach -t dev' \u003e\u00262\nexit 1",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

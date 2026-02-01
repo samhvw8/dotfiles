@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "tool == \"Bash\" \u0026\u0026 tool_input.command matches \"(npm (install|test)|pnpm (install|test)|yarn (install|test)|bun (install|test)|cargo build|make|docker|pytest|vitest|playwright)\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "#!/bin/bash\ninput=$(cat)\nif [ -z \"$TMUX\" ]; then\n  echo '[Hook] Consider running in tmux for session persistence' \u003e\u00262\n  echo '[Hook] tmux new -s dev  |  tmux attach -t dev' \u003e\u00262\nfi\necho \"$input\"",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/force-agent-skills-eval.sh",
+            "timeout": 220
+          }
+        ]
+      }
+    ]
+  }
+}
