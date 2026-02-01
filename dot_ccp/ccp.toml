@@ -8,3 +8,41 @@ per_page = 10
 [skillssh]
 base_url = 'https://skills.sh'
 limit = 10
+
+[sources]
+[sources.'nextlevelbuilder/ui-ux-pro-max-skill']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git'
+path = 'sources/nextlevelbuilder--ui-ux-pro-max-skill'
+ref = 'main'
+commit = '2ba6ca2f1ee68f73ce4fde139f1ede1432054c51'
+updated = 2026-02-01T19:00:05.007089+07:00
+installed = ['skills/ui-ux-pro-max']
+
+[sources.'remorses/playwriter@main']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/remorses/playwriter.git'
+path = 'sources/remorses--playwriter@main'
+ref = 'main'
+commit = '2b5face36a30b370fa22ecdc1104483d972f7217'
+updated = 2026-01-31T22:07:42.324588+07:00
+
+[sources.'vercel-labs/next-skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/vercel-labs/next-skills.git'
+path = 'sources/vercel-labs--next-skills'
+ref = 'main'
+commit = '31e6ebd130eb63a0310d04c66f7e8d4f2bdd3196'
+updated = 2026-02-01T16:35:33.673551+07:00
+
+[sources.'wshobson/agents']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/wshobson/agents.git'
+path = 'sources/wshobson--agents'
+ref = 'main'
+commit = 'cbb60494b1df88ff43bff46821df5e71af6883c7'
+updated = 2026-02-01T18:57:51.309741+07:00
