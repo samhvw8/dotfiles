@@ -1,0 +1,21 @@
+version = 2
+name = 'default'
+created = 2026-02-02T22:25:02.966428+07:00
+updated = 2026-02-02T22:53:15.698219+07:00
+
+[hub]
+skills = ['0-claude', '0-planning', '0-prompt-architect', '0-research', '0-sequential-thinking', '0-ui-ux-pro-max', '3d-graphics', 'ai-tools', 'backend-development', 'browser-history', 'canvas-design', 'chrome-devtools', 'code-quality', 'databases', 'design-principles', 'docs-discovery', 'frontend-development', 'git-workflow', 'github-search', 'infra-engineer', 'media-processing', 'mise-expert', 'mobile-development', 'nextjs-turborepo', 'payment-integration', 'playwriter', 'problem-solving', 'repomix', 'shopify', 'ui-ux-pro-max']
+agents = ['ai-staff.md', 'apple-platform-architect.md', 'brainstormer.md', 'code-reviewer.md', 'copywriter.md', 'cto.md', 'database-admin.md', 'debugger.md', 'devops-architect.md', 'docs-manager.md', 'gemini-orchestrator.md', 'journal-writer.md', 'learning-guide.md', 'mcp-manager.md', 'nodejs-expert.md', 'planner.md', 'project-manager.md', 'python-expert.md', 'quality-engineer.md', 'react-next-architect.md', 'refactoring-expert.md', 'requirements-analyst.md', 'researcher.md', 'scout.md', 'security-engineer.md', 'svelte-kit-architect.md', 'system-architect.md', 'tester.md', 'ui-ux-designer.md', 'cofounder.md', 'cto-advisor.md']
+hooks = ['force-agent-skills-eval', 'index', 'pretooluse-tool-bash-tool-inputcommand-matches-npm-installtestpnpm-installtestyarn-installtestbun-installtestcargo-buildmakedockerpytestvitestplaywright', 'pretooluse-tool-bash-tool-inputcommand-matches-npm-run-devpnpm-run-devyarn-devbun-run-dev', 'session-start']
+commands = ['accessibility-compliance-accessibility-audit.md']
+setting-fragments = ['attribution', 'enabled-plugins', 'env', 'model', 'permissions', 'plans-directory', 'status-line']
+
+[data]
+tasks = 'shared'
+todos = 'shared'
+paste-cache = 'shared'
+history = 'isolated'
+file-history = 'isolated'
+session-env = 'isolated'
+projects = 'shared'
+plans = 'isolated'

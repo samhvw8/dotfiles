@@ -1,0 +1,16 @@
+version = 2
+name = 'coding'
+created = 2026-01-31T21:44:18.155857+07:00
+updated = 2026-01-31T22:05:19.504476+07:00
+
+[hub]
+
+[data]
+tasks = 'shared'
+todos = 'shared'
+paste-cache = 'shared'
+history = 'isolated'
+file-history = 'isolated'
+session-env = 'isolated'
+projects = 'shared'
+plans = 'isolated'
