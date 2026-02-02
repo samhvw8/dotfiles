@@ -1,0 +1,17 @@
+version = 2
+name = 'minimal'
+created = 2026-01-31T09:16:23.608228164+07:00
+updated = 2026-01-31T12:24:06.622373306+07:00
+
+[hub]
+setting-fragments = ['env']
+
+[data]
+tasks = 'isolated'
+todos = 'isolated'
+paste-cache = 'isolated'
+history = 'isolated'
+file-history = 'isolated'
+session-env = 'isolated'
+projects = 'isolated'
+plans = 'isolated'
