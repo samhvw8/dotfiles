@@ -283,7 +283,7 @@ zle -N edit-command-line
 bindkey '^X^E' edit-command-line  # Ctrl-X-E to edit command in editor
 
 # pnpm
-export PNPM_HOME="/Users/samhv/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
