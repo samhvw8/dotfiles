@@ -43,11 +43,13 @@ const CONFIG = {
  */
 const SHARED_INSTRUCTIONS = `Today: ${new Date().toISOString().slice(0, 10)}
 
-Run exactly 1 search. Return the top 10 most relevant results. For each result, output ONLY:
+Run exactly 1 search. If the query specifies a number of results, return that many. Otherwise return 15.
+
+For each result, output ONLY:
 [N] Title
     URL: https://...
 
-Do NOT fetch pages. Do NOT summarize. Do NOT add commentary. Do NOT run multiple searches. Just the ranked list.`;
+No fetching. No summaries. No commentary. No multiple searches. Just the ranked list.`;
 
 /**
  * UNIFIED PROVIDER DEFINITIONS
