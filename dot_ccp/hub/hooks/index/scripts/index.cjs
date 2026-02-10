@@ -46,8 +46,7 @@ const SHARED_INSTRUCTIONS = `Today: ${new Date().toISOString().slice(0, 10)}
 Run exactly 1 search. If the query specifies a number of results, return that many. Otherwise return 15.
 
 For each result, output ONLY:
-[N] Title
-    URL: https://...
+[N] Title - URL
 
 No fetching. No summaries. No commentary. No multiple searches. Just the ranked list.`;
 
@@ -205,12 +204,12 @@ function executeProvider(providerId, query, timeoutSec) {
       return { success: false, error: 'Empty or too short response', retryable: true };
     }
 
-    const lowerOutput = output.toLowerCase();
+    const stderr = (result.stderr || '').toLowerCase();
     for (const pattern of provider.errorPatterns) {
-      if (lowerOutput.includes(pattern)) {
+      if (stderr.includes(pattern)) {
         return {
           success: false,
-          error: `${provider.name} returned error: ${output.substring(0, 100)}`,
+          error: `${provider.name} returned error: ${stderr.substring(0, 100)}`,
           retryable: false,
         };
       }
@@ -261,7 +260,7 @@ function shouldSkipHook() {
   if (process.env.P_WEBSEARCH_SKIP === '1') return true;
 
   const profileType = process.env.P_PROFILE_TYPE;
-  if (profileType === 'account' || profileType === 'default') return true;
+  if (profileType === 'account') return true;
 
   if (process.env.P_WEBSEARCH_ENABLED === '0') return true;
 
