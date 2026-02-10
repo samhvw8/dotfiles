@@ -76,3 +76,5 @@ url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d
 pnpm = "latest"
 "github:samhvw8/claude-code-profile" = "latest"
 "npm:playwriter" = "latest"
+vhs = "latest"
+zellij = "latest"
