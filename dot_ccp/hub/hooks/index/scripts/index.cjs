@@ -33,71 +33,21 @@ const { spawnSync } = require('child_process');
 
 const CONFIG = {
   minResponseLength: 20,
-  defaultTimeoutSec: 100,
-  defaultRetries: 2,
+  defaultTimeoutSec: 60,
+  defaultRetries: 1,
   defaultProvider: 'gemini',
 };
 
 /**
- * SHARED INSTRUCTIONS - Accuracy-focused with smart fetching
+ * SHARED INSTRUCTIONS - Fast link retrieval only
  */
-const SHARED_INSTRUCTIONS = `Today: ${(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })()}
+const SHARED_INSTRUCTIONS = `Today: ${new Date().toISOString().slice(0, 10)}
 
-<search_strategy>
-1. Run multiple search queries if needed (rephrase, add context)
-2. Collect top 10 results
-3. FETCH the 2-3 most authoritative sources (official docs, primary sources)
-4. Cross-verify facts across multiple sources
-</search_strategy>
+Run exactly 1 search. Return the top 10 most relevant results. For each result, output ONLY:
+[N] Title
+    URL: https://...
 
-<source_ranking>
-Tier 1 (FETCH): Primary sources, official sites, .gov/.edu, original reporting
-Tier 2: Major publications, verified experts, established institutions
-Tier 3: Community consensus, aggregated reviews, professional forums
-Tier 4 (verify first): Personal content, social media, anonymous/sponsored
-</source_ranking>
-
-<accuracy_rules>
-- FETCH before claiming - don't trust snippets for technical details
-- Version-sensitive topics: Always note version numbers
-- Date-sensitive topics: Prefer sources < 6 months old, flag older content
-- Conflicting info: Cite both, explain the disagreement
-- Uncertainty: Say "unclear" or "multiple interpretations" rather than guessing
-</accuracy_rules>
-
-<output>
-## Answer
-[Direct answer with confidence level: HIGH/MEDIUM/LOW]
-[If MEDIUM/LOW, explain what's uncertain]
-
-## Key Sources (Fetched)
-[1] **Title** - Source (Date) ⭐ Primary
-    URL: ...
-    Key insight: [what this source definitively answers]
-
-[2] **Title** - Source (Date)
-    URL: ...
-    Key insight: [supporting/contrasting information]
-
-## Additional Results
-[3-10] Title - Source (Date)
-    URL | Brief: [one-line from snippet]
-
-## Confidence Notes
-- [Any caveats, version dependencies, or areas needing verification]
-
-## Suggested Follow-ups
-1. [more specific query]
-2. [alternative approach query]
-3. [related topic query]
-</output>
-
-<quality_checks>
-- Did I fetch authoritative sources, not just read snippets?
-- Did I cross-verify critical facts?
-- Did I note versions/dates where relevant?
-- Did I flag any uncertainty honestly?
-</quality_checks>`;
+Do NOT fetch pages. Do NOT summarize. Do NOT add commentary. Do NOT run multiple searches. Just the ranked list.`;
 
 /**
  * UNIFIED PROVIDER DEFINITIONS
@@ -109,7 +59,7 @@ const PROVIDERS = {
     cmd: 'gemini',
     defaultModel: 'gemini-3-flash-preview', // gemini-2.5-flash or gemini-3-flash-preview 
     modelEnvVar: 'P_WEBSEARCH_GEMINI_MODEL',
-    toolInstruction: 'Use the google_web_search tool to find current information.',
+    toolInstruction: 'Call google_web_search exactly ONCE with the query. Do NOT make multiple searches.',
     quirks: null,
     buildArgs: (prompt, model) => ['--model', model, '--yolo', '-p', prompt],
     errorPatterns: ['error:', 'failed to', 'authentication required'],
@@ -119,7 +69,7 @@ const PROVIDERS = {
     cmd: 'opencode',
     defaultModel: 'opencode/grok-code',
     modelEnvVar: 'P_WEBSEARCH_OPENCODE_MODEL',
-    toolInstruction: 'Search the web using your built-in capabilities.',
+    toolInstruction: 'Search the web exactly ONCE. Do NOT make multiple searches.',
     quirks: null,
     buildArgs: (prompt, model) => ['run', prompt, '--model', model],
     errorPatterns: ['error:', 'failed to', 'authentication required'],
@@ -129,7 +79,7 @@ const PROVIDERS = {
     cmd: 'grok',
     defaultModel: 'grok-3',
     modelEnvVar: null,
-    toolInstruction: 'Use your web search capabilities to find information.',
+    toolInstruction: 'Search the web exactly ONCE. Do NOT make multiple searches.',
     quirks: 'For breaking news or real-time events, also check X/Twitter if relevant.',
     buildArgs: (prompt) => [prompt],
     errorPatterns: ['error:', 'failed to', 'api key'],
@@ -321,14 +271,9 @@ function shouldSkipHook() {
  */
 function formatSearchResults(query, content, providerName) {
   return [
-    `[WebSearch Result via ${providerName}]`,
-    '',
-    `Query: "${query}"`,
+    `[WebSearch via ${providerName}] Query: "${query}"`,
     '',
     content,
-    '',
-    '---',
-    'Use this information to answer the user.',
   ].join('\n');
 }
 
