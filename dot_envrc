@@ -1,3 +1,1 @@
 use asdf
-export CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD="1"
-export CLAUDE_CONFIG_DIR="/Users/samhv/.ccp/profiles/default"
