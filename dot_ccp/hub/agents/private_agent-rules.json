@@ -1,0 +1,596 @@
+{
+    "version": "2.0",
+    "description": "Agent activation triggers with weighted scoring. Higher weights = more specific matches.",
+    "agents": {
+        "codebase-explorer": {
+            "type": "exploration",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "haiku",
+            "description": "Lightning-fast codebase exploration using ast-grep for structural code search, ripgrep for text search, and fzf for fuzzy matching",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "explore codebase", "weight": 3.0},
+                    {"value": "search codebase", "weight": 3.0},
+                    {"value": "codebase structure", "weight": 2.5},
+                    {"value": "project structure", "weight": 2.5},
+                    {"value": "architecture overview", "weight": 2.5},
+                    {"value": "map dependencies", "weight": 2.5},
+                    {"value": "trace dependencies", "weight": 2.5},
+                    {"value": "show architecture", "weight": 2.0},
+                    "find files",
+                    "find code",
+                    "locate file",
+                    "locate code",
+                    "where is",
+                    "search for",
+                    "trace how",
+                    "find class",
+                    "find function",
+                    "find method",
+                    "find interface",
+                    "find type",
+                    "find component"
+                ],
+                "intentPatterns": [
+                    {"value": "(explore|search).*?codebase", "weight": 3.0},
+                    {"value": "architecture.*?(overview|mapping|analysis)", "weight": 2.5},
+                    "(show|map|trace|visualize).*?(architecture|dependencies|structure)",
+                    "(explore|search|find|locate|where is).*?(codebase|code|file|class|function|method|component)",
+                    "where.*?(is|are|can i find)",
+                    "find.*?(files|code|implementation).*?(related to|for|about)"
+                ]
+            }
+        },
+        "root-cause-analyst": {
+            "type": "exploration",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Use this agent when you need to systematically investigate complex problems and identify underlying causes. This includes debugging multi-component failures, analyzing recurring issues, or conducting evidence-based investigations with hypothesis testing.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "root cause analysis", "weight": 4.0},
+                    {"value": "systematic debugging", "weight": 3.5},
+                    {"value": "hypothesis testing", "weight": 3.0},
+                    {"value": "investigate error", "weight": 2.5},
+                    {"value": "diagnose problem", "weight": 2.5},
+                    {"value": "root cause", "weight": 2.5},
+                    "debug issue",
+                    "why is failing",
+                    "why doesn't work",
+                    "why is broken",
+                    "troubleshoot",
+                    "analyze bug",
+                    "analyze error"
+                ],
+                "intentPatterns": [
+                    {"value": "root.*?cause.*?(analysis|investigation)", "weight": 3.5},
+                    {"value": "systematic.*?(debug|investigation)", "weight": 3.0},
+                    {"value": "why.*?(failing|broken|not working|doesn't work)", "weight": 2.5},
+                    "(investigate|debug|diagnose|analyze).*?(error|bug|issue|problem|failure)",
+                    "(troubleshoot|diagnose).*?(issue|problem|error)"
+                ]
+            }
+        },
+        "backend-architect": {
+            "type": "architecture",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Use this agent when you need to design backend systems, APIs, or database architectures. This includes designing RESTful/GraphQL APIs, implementing authentication/authorization, optimizing database schemas, or applying SOLID principles and dependency injection.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "backend architecture", "weight": 3.5},
+                    {"value": "api architecture", "weight": 3.5},
+                    {"value": "database schema design", "weight": 3.0},
+                    {"value": "design rest api", "weight": 3.0},
+                    {"value": "design graphql", "weight": 3.0},
+                    {"value": "design microservice", "weight": 3.0},
+                    {"value": "dependency injection", "weight": 2.5},
+                    {"value": "solid principles backend", "weight": 2.5},
+                    "design api",
+                    "database schema",
+                    "database design",
+                    "implement auth flow",
+                    "authentication design",
+                    "authorization design",
+                    "api security",
+                    "backend security",
+                    "service design",
+                    "endpoint design"
+                ],
+                "intentPatterns": [
+                    {"value": "(backend|api).*?architecture", "weight": 3.0},
+                    {"value": "database.*?(schema|design|architecture)", "weight": 2.5},
+                    "design.*?(api|rest|graphql|backend|service|microservice|endpoint)",
+                    "(api|backend|service).*?(architecture|design|structure|pattern)",
+                    "(implement|design|create).*?(auth|authentication|authorization).*?(flow|system)",
+                    "(dependency injection|di|ioc|solid).*?(backend|api|service)",
+                    "(security|reliability).*?(backend|api|service)"
+                ]
+            }
+        },
+        "system-architect": {
+            "type": "architecture",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Use this agent when you need to design scalable system architecture or make long-term technical decisions. This includes component boundary definition, scalability analysis, dependency management, or technology selection with 10x growth in mind.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "system architecture", "weight": 3.5},
+                    {"value": "system design", "weight": 3.5},
+                    {"value": "distributed system", "weight": 3.0},
+                    {"value": "microservices architecture", "weight": 3.0},
+                    {"value": "architectural decision", "weight": 2.5},
+                    {"value": "high-level design", "weight": 2.5},
+                    {"value": "architecture planning", "weight": 2.5},
+                    "scalability",
+                    "design system",
+                    "system structure"
+                ],
+                "intentPatterns": [
+                    {"value": "system.*?architecture", "weight": 3.0},
+                    {"value": "(distributed|microservices).*?(system|architecture)", "weight": 2.5},
+                    "system.*?(design|structure)",
+                    "(design|architect|plan).*?system",
+                    "scalability.*?(design|planning|architecture)",
+                    "architectural.*?(decision|pattern|choice)"
+                ]
+            }
+        },
+        "requirements-analyst": {
+            "type": "architecture",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "Use this agent when you need to transform ambiguous project ideas into concrete specifications. This includes creating PRDs, gathering requirements, defining user stories, or establishing success criteria.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "requirements analysis", "weight": 3.0},
+                    {"value": "gather requirements", "weight": 2.5},
+                    {"value": "requirements document", "weight": 2.5},
+                    {"value": "ambiguity resolution", "weight": 2.5},
+                    "create spec",
+                    "specification",
+                    "clarify requirements"
+                ],
+                "intentPatterns": [
+                    {"value": "requirements.*?(analysis|gathering|documentation)", "weight": 2.5},
+                    "(gather|collect|analyze).*?requirements",
+                    "(create|write|develop).*?(spec|specification)",
+                    "(clarify|resolve).*?(ambiguity|requirements)"
+                ]
+            }
+        },
+        "python-expert": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Production Python, FastAPI/Django, async patterns, DI, testing, security",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "python implementation", "weight": 3.0},
+                    {"value": "python best practices", "weight": 3.0},
+                    {"value": "fastapi implementation", "weight": 3.0},
+                    {"value": "django implementation", "weight": 3.0},
+                    {"value": "python async", "weight": 2.5},
+                    {"value": "python testing", "weight": 2.5},
+                    {"value": "python patterns", "weight": 2.5},
+                    "python code",
+                    "fastapi",
+                    "django",
+                    "asyncio",
+                    "pytest",
+                    "python security"
+                ],
+                "intentPatterns": [
+                    {"value": "python.*?(implementation|best practice|pattern)", "weight": 2.5},
+                    {"value": "(fastapi|django).*?(implementation|service)", "weight": 2.5},
+                    "python.*?(code|service|api|application)",
+                    "(async|asyncio).*?python",
+                    "python.*?(async|testing|security)"
+                ]
+            }
+        },
+        "nodejs-expert": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Production Node.js/TypeScript, clean architecture, Awilix IoC, Express/Fastify, testing, security",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "nodejs implementation", "weight": 3.0},
+                    {"value": "node.js implementation", "weight": 3.0},
+                    {"value": "nodejs best practices", "weight": 3.0},
+                    {"value": "typescript backend", "weight": 3.0},
+                    {"value": "awilix", "weight": 4.0},
+                    {"value": "awilix ioc", "weight": 4.5},
+                    {"value": "clean architecture node", "weight": 3.5},
+                    {"value": "express typescript", "weight": 3.0},
+                    {"value": "fastify typescript", "weight": 3.0},
+                    {"value": "nodejs di", "weight": 3.0},
+                    {"value": "node dependency injection", "weight": 3.5},
+                    {"value": "nodejs testing", "weight": 2.5},
+                    {"value": "nodejs async", "weight": 2.5},
+                    "nodejs code",
+                    "node.js code",
+                    "express api",
+                    "fastify api",
+                    "koa api",
+                    "nestjs",
+                    "vitest",
+                    "jest nodejs",
+                    "pnpm",
+                    "nodejs security",
+                    "typescript api"
+                ],
+                "intentPatterns": [
+                    {"value": "(nodejs|node\\.js).*?(implementation|best practice|pattern|architecture)", "weight": 3.0},
+                    {"value": "awilix.*?(container|ioc|di|injection)", "weight": 3.5},
+                    {"value": "clean.*?architecture.*?(node|typescript|express|fastify)", "weight": 3.0},
+                    {"value": "(express|fastify|koa).*?(typescript|implementation|api)", "weight": 2.5},
+                    {"value": "dependency.*?injection.*?(node|typescript)", "weight": 3.0},
+                    "(nodejs|node\\.js).*?(code|service|api|application|backend)",
+                    "(async|await).*?(nodejs|node\\.js|typescript)",
+                    "(nodejs|node\\.js).*?(async|testing|security)"
+                ]
+            }
+        },
+        "react-next-architect": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "React/Next.js, App Router, state management, performance optimization",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "react architecture", "weight": 3.5},
+                    {"value": "nextjs architecture", "weight": 3.5},
+                    {"value": "next.js architecture", "weight": 3.5},
+                    {"value": "server components", "weight": 3.0},
+                    {"value": "client components", "weight": 3.0},
+                    {"value": "app router", "weight": 3.0},
+                    {"value": "react performance", "weight": 2.5},
+                    {"value": "react hooks", "weight": 2.0},
+                    "react component",
+                    "next.js",
+                    "nextjs",
+                    "react state",
+                    "optimize react"
+                ],
+                "intentPatterns": [
+                    {"value": "(react|nextjs|next\\.js).*?architecture", "weight": 3.0},
+                    {"value": "(server|client).*?component", "weight": 2.5},
+                    "react.*?(component|pattern|state|hook|performance)",
+                    "(next\\.js|nextjs).*?(component|route|page|api)",
+                    "(optimize|improve).*?react"
+                ]
+            }
+        },
+        "svelte-kit-architect": {
+            "type": "language",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "SvelteKit, reactive patterns, full-stack Svelte applications",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "sveltekit application", "weight": 3.0},
+                    {"value": "svelte component", "weight": 2.5},
+                    {"value": "reactive store", "weight": 2.5},
+                    "sveltekit",
+                    "svelte store",
+                    "svelte routing",
+                    "svelte form"
+                ],
+                "intentPatterns": [
+                    {"value": "sveltekit.*?(component|route|page|store)", "weight": 2.5},
+                    "svelte.*?(component|store|reactive|pattern)"
+                ]
+            }
+        },
+        "refactoring-expert": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Use this agent when you need to improve code quality, reduce technical debt, or apply clean code principles. This includes code complexity reduction, SOLID principles implementation, design pattern application, or legacy code modernization.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "reduce complexity", "weight": 3.0},
+                    {"value": "solid principles", "weight": 3.0},
+                    {"value": "technical debt", "weight": 3.0},
+                    {"value": "refactor code", "weight": 2.5},
+                    {"value": "clean code", "weight": 2.5},
+                    {"value": "code quality", "weight": 2.5},
+                    {"value": "code smell", "weight": 2.5},
+                    "refactoring",
+                    "apply solid",
+                    "improve code",
+                    "simplify code"
+                ],
+                "intentPatterns": [
+                    {"value": "(reduce|decrease).*?(complexity|technical debt)", "weight": 3.0},
+                    {"value": "apply.*?(solid|dry|kiss|design pattern)", "weight": 2.5},
+                    "refactor(ing)?.*?(code|implementation|function|class)",
+                    "(clean|improve|simplify).*?code",
+                    "code.*?(quality|smell|debt)",
+                    "technical.*?debt"
+                ]
+            }
+        },
+        "batch-refactorer": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Automated codebase refactoring, ast-grep transformations, pattern replacement at scale",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "codebase-wide refactor", "weight": 4.0},
+                    {"value": "batch refactor", "weight": 3.5},
+                    {"value": "mass refactor", "weight": 3.5},
+                    {"value": "rename across codebase", "weight": 3.5},
+                    {"value": "ast-grep refactor", "weight": 3.0},
+                    {"value": "transform codebase", "weight": 3.0},
+                    {"value": "replace pattern codebase", "weight": 3.0},
+                    "rename class codebase",
+                    "rename function codebase",
+                    "modernize patterns",
+                    "update all files"
+                ],
+                "intentPatterns": [
+                    {"value": "(batch|mass|codebase-wide).*?(refactor|rename|transform)", "weight": 3.5},
+                    {"value": "(rename|replace|transform).*?(across|throughout|codebase|all files)", "weight": 3.0},
+                    {"value": "(ast-grep|sed|ripgrep).*?(refactor|transform|replace)", "weight": 2.5},
+                    "modernize.*?(pattern|syntax|code).*?(codebase|all files)",
+                    "replace.*?pattern.*?(codebase|everywhere)"
+                ]
+            }
+        },
+        "quality-engineer": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "Use this agent when you need to design testing strategies, detect edge cases, or ensure software quality. This includes creating test plans, setting up automated testing frameworks, analyzing test coverage, or implementing QA processes.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "testing strategy", "weight": 3.0},
+                    {"value": "test coverage", "weight": 2.5},
+                    {"value": "edge cases", "weight": 2.5},
+                    {"value": "test plan", "weight": 2.5},
+                    "unit tests",
+                    "integration tests",
+                    "improve tests",
+                    "add tests"
+                ],
+                "intentPatterns": [
+                    {"value": "(test|testing).*?(coverage|strategy|plan)", "weight": 2.5},
+                    {"value": "(edge case|boundary condition).*?(test|detection)", "weight": 2.5},
+                    "(unit|integration|e2e).*?test",
+                    "(improve|add|create).*?tests"
+                ]
+            }
+        },
+        "security-engineer": {
+            "type": "quality",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Use this agent when you need to identify security vulnerabilities, conduct security audits, or ensure compliance with security standards. This includes OWASP vulnerability assessment, threat modeling, authentication/authorization review, or security compliance verification.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "security audit", "weight": 3.5},
+                    {"value": "threat model", "weight": 3.5},
+                    {"value": "vulnerability scan", "weight": 3.0},
+                    {"value": "owasp check", "weight": 3.0},
+                    {"value": "penetration test", "weight": 3.0},
+                    {"value": "security assessment", "weight": 2.5},
+                    "security review",
+                    "security analysis"
+                ],
+                "intentPatterns": [
+                    {"value": "security.*?(audit|assessment)", "weight": 3.0},
+                    {"value": "(owasp|vulnerability|threat).*?(check|scan|model|analysis)", "weight": 2.5},
+                    "security.*?(review|check|analysis)",
+                    "(penetration|security).*?test"
+                ]
+            }
+        },
+        "devops-architect": {
+            "type": "infrastructure",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "Use this agent when you need to automate infrastructure, set up CI/CD pipelines, or implement observability. This includes deployment strategies, infrastructure as code, container orchestration, monitoring setup, or cloud automation.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "kubernetes deployment", "weight": 3.0},
+                    {"value": "k8s deployment", "weight": 3.0},
+                    {"value": "ci/cd pipeline", "weight": 3.0},
+                    {"value": "infrastructure automation", "weight": 3.0},
+                    {"value": "deployment pipeline", "weight": 2.5},
+                    {"value": "github actions", "weight": 2.5},
+                    {"value": "docker setup", "weight": 2.5},
+                    "gitlab ci",
+                    "jenkins pipeline",
+                    "monitoring setup"
+                ],
+                "intentPatterns": [
+                    {"value": "(k8s|kubernetes).*?(deployment|setup|configuration)", "weight": 2.5},
+                    {"value": "(ci/cd|cicd|pipeline).*?(setup|configuration|automation)", "weight": 2.5},
+                    {"value": "infrastructure.*?(automation|as code)", "weight": 2.5},
+                    "(docker|container).*?(setup|configuration|deployment)",
+                    "monitoring.*?(setup|configuration|implementation)"
+                ]
+            }
+        },
+        "ui-ux-designer": {
+            "type": "design",
+            "enforcement": "suggest",
+            "priority": "medium",
+            "model": "sonnet",
+            "description": "Use this agent when you need to create interface designs, wireframes, or design systems. This includes user research, accessibility audits (WCAG), design system creation, user journey mapping, or design-to-development handoff.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "design system", "weight": 3.0},
+                    {"value": "accessibility design", "weight": 3.0},
+                    {"value": "user experience", "weight": 2.5},
+                    {"value": "ui design", "weight": 2.5},
+                    {"value": "ux design", "weight": 2.5},
+                    "design dashboard",
+                    "design interface",
+                    "wireframe",
+                    "user interface"
+                ],
+                "intentPatterns": [
+                    {"value": "design system.*?(create|implement)", "weight": 2.5},
+                    {"value": "accessibility.*?(design|implementation)", "weight": 2.5},
+                    "design.*?(dashboard|interface|ui|ux|wireframe)",
+                    "(ui|ux|interface|user experience).*?design",
+                    "(wireframe|mockup|prototype).*?(design|create)"
+                ]
+            }
+        },
+        "learning-guide": {
+            "type": "design",
+            "enforcement": "suggest",
+            "priority": "low",
+            "model": "sonnet",
+            "description": "Use this agent when you need to teach programming concepts, explain code, or create learning materials. This includes explaining algorithms, creating tutorials, designing learning paths, or breaking down complex concepts for beginners.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "explain concept", "weight": 2.5},
+                    {"value": "teach me", "weight": 2.0},
+                    {"value": "help understand", "weight": 2.0},
+                    "explain async/await",
+                    "teach tdd",
+                    "how does work",
+                    "what is"
+                ],
+                "intentPatterns": [
+                    {"value": "(explain|teach|describe).*?(concept|pattern|principle|technique)", "weight": 2.0},
+                    "(how does|what is|help understand).*?work",
+                    "teach.*?(me|about)",
+                    "explain.*?(async|await|promise|closure|hoisting|concept)"
+                ]
+            }
+        },
+        "agent-creator": {
+            "type": "design",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Use this agent when you need to create, design, or optimize Claude Code sub-agents. This includes designing agent YAML metadata, crafting system prompts, selecting appropriate tools, and configuring model settings following Anthropic best practices.",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "create agent", "weight": 4.0},
+                    {"value": "create subagent", "weight": 4.0},
+                    {"value": "create sub-agent", "weight": 4.0},
+                    {"value": "optimize agent", "weight": 3.5},
+                    {"value": "design agent", "weight": 3.5},
+                    {"value": "agent metadata", "weight": 3.0},
+                    {"value": "agent prompt engineering", "weight": 3.0},
+                    "new agent",
+                    "agent yaml",
+                    "agent system prompt"
+                ],
+                "intentPatterns": [
+                    {"value": "(create|design|build|optimize).*?(agent|subagent|sub-agent)", "weight": 3.5},
+                    {"value": "agent.*?(metadata|yaml|prompt|configuration)", "weight": 2.5},
+                    "(new|custom).*?agent"
+                ]
+            }
+        },
+        "gemini-orchestrator": {
+            "type": "exploration",
+            "enforcement": "suggest",
+            "priority": "high",
+            "model": "sonnet",
+            "description": "Orchestrate Gemini CLI for second opinions, web research, codebase analysis, and parallel code generation",
+            "promptTriggers": {
+                "keywords": [
+                    {"value": "gemini", "weight": 5.0},
+                    {"value": "gem cli", "weight": 5.0},
+                    {"value": "gsearch", "weight": 4.5},
+                    {"value": "xcheck", "weight": 4.5},
+                    {"value": "2nd opinion", "weight": 4.0},
+                    {"value": "second opinion", "weight": 4.0},
+                    {"value": "sanity check code", "weight": 3.5},
+                    {"value": "fresh eyes", "weight": 3.5},
+                    {"value": "external review", "weight": 3.5},
+                    {"value": "another look", "weight": 3.0},
+                    {"value": "cross validate", "weight": 3.0},
+                    {"value": "double check this", "weight": 3.0},
+                    {"value": "verify with ai", "weight": 3.0},
+                    {"value": "what's new in", "weight": 2.5},
+                    {"value": "latest version of", "weight": 2.5},
+                    {"value": "current docs for", "weight": 2.5},
+                    {"value": "up to date", "weight": 2.0},
+                    {"value": "recent changes", "weight": 2.0},
+                    "gemi",
+                    "use gemini",
+                    "ask gemini",
+                    "different perspective",
+                    "alternative view",
+                    "google search",
+                    "web research",
+                    "codebase investigator",
+                    "parallel generation",
+                    "background task",
+                    "offload to"
+                ],
+                "intentPatterns": [
+                    {"value": "(use|ask|run).*?gem(ini)?", "weight": 4.0},
+                    {"value": "(2nd|second).*?(opinion|perspective|look)", "weight": 3.5},
+                    {"value": "(another|different|fresh|external).*?(eyes|look|perspective|review)", "weight": 3.0},
+                    {"value": "(cross|sanity|double).*?(check|validate|verify)", "weight": 3.0},
+                    {"value": "(what'?s|whats).*?(new|latest|current).*?in", "weight": 2.5},
+                    {"value": "(latest|current|recent|updated?).*?(version|docs|api|changelog)", "weight": 2.5},
+                    {"value": "(web|google|internet).*?(search|research|lookup)", "weight": 2.5},
+                    {"value": "(offload|parallel|background).*?(task|generation|process)", "weight": 2.0},
+                    "alternative.*?(ai|model|view)",
+                    "verify.*?(code|implementation|solution)"
+                ]
+            }
+        }
+    },
+    "notes": {
+        "enforcement_types": {
+            "suggest": "Agent suggestion appears but doesn't block execution",
+            "block": "Requires agent to be used before proceeding",
+            "warn": "Shows warning but allows proceeding"
+        },
+        "priority_levels": {
+            "critical": "Highest - Always trigger when matched (4x multiplier)",
+            "high": "Important - Trigger for most matches (3x multiplier)",
+            "medium": "Moderate - Trigger for clear matches (2x multiplier)",
+            "low": "Optional - Trigger only for explicit matches (1x multiplier)"
+        },
+        "types": {
+            "exploration": "Codebase exploration and analysis agents",
+            "architecture": "System and API design agents",
+            "language": "Language and framework specialists",
+            "quality": "Code quality and refactoring agents",
+            "infrastructure": "DevOps and infrastructure agents",
+            "design": "UI/UX and educational agents"
+        },
+        "weighting": {
+            "format": "Keywords/patterns can be string (auto-weight) or {value, weight}",
+            "auto_weight": "Calculated from: min(length/15, 2.0) + wordBonus",
+            "intent_bonus": "Intent patterns get 1.2x multiplier",
+            "diminishing_returns": "Multiple matches apply 1/(1 + 0.4*index) factor",
+            "confidence_thresholds": {
+                "critical": "score >= 12.0",
+                "high": "score >= 8.0",
+                "medium": "score >= 4.0",
+                "low": "score >= 2.0"
+            }
+        }
+    }
+}
