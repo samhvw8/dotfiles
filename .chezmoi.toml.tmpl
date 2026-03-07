@@ -1,8 +1,8 @@
 {{- $name := promptStringOnce . "name" "Git user name" -}}
 {{- $email := promptStringOnce . "email" "Git email address" -}}
-{{- $minimal := .minimal | default false -}}
-{{- $conda := .conda | default false -}}
-{{- $claude_mcp := .claude_mcp | default true -}}
+{{- $minimal := promptBoolOnce . "minimal" "Minimal installation" false -}}
+{{- $conda := promptBoolOnce . "conda" "Install Conda" false -}}
+{{- $claude_mcp := promptBoolOnce . "claude_mcp" "Setup Claude MCP" true -}}
 
 [data]
     name = {{ $name | quote }}
