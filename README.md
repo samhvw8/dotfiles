@@ -46,6 +46,7 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bas
 - [fzf](https://github.com/junegunn/fzf) for fuzzy finding
 - [mise](https://mise.run) for runtime version management
 - [tmux](https://github.com/tmux/tmux) with plugin manager (full installation)
+- [Miniconda](https://docs.conda.io/en/latest/miniconda.html) for Python environment management (full installation)
 
 ### Additional Features in Full Installation
 - Development tools and build essentials
