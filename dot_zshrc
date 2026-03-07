@@ -242,6 +242,31 @@ export FZF_DEFAULT_OPTS='
 export FZF_DEFAULT_COMMAND='fd --type file'
 
 # =============================================================================
+# Conda Configuration
+# =============================================================================
+# Determine Conda base directory (full installation only)
+if command_exists conda; then
+    export _CONDA_BASE=$(dirname $(dirname $(which conda)))
+elif [[ $(uname) == "Darwin" ]]; then
+    export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
+else
+    export _CONDA_BASE=$HOME/miniconda3
+fi
+
+# Initialize Conda if available
+if [[ -f "$_CONDA_BASE/bin/conda" ]]; then
+    __conda_setup="$('$_CONDA_BASE/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+    if [[ $? -eq 0 ]]; then
+        eval "$__conda_setup"
+    elif [[ -f "$_CONDA_BASE/etc/profile.d/conda.sh" ]]; then
+        . "$_CONDA_BASE/etc/profile.d/conda.sh"
+    else
+        export PATH="$_CONDA_BASE/bin:$PATH"
+    fi
+    unset __conda_setup
+fi
+
+# =============================================================================
 # Additional Sources
 # =============================================================================
 
