@@ -1,6 +1,6 @@
 {
   "env": {
-    "ENABLE_EXPERIMENTAL_MCP_CLI": "true"
+    "ENABLE_EXPERIMENTAL_MCP_CLI": "true",
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "true"
   },
   "attribution": {
