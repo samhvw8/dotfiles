@@ -3,26 +3,11 @@ experimental = true
 legacy_version_file_disable_tools = ['java']
 idiomatic_version_file_enable_tools = ["node"]
 
-[settings.npm]
-package_manager = "pnpm"
-
-[settings.pipx]
-uvx = true
-
-[settings.cargo]
-binstall = true
-
 [tools]
 chezmoi = "latest"
-direnv = "latest"
-go = "1.25.1"
+jq = "latest"
+ripgrep = "latest"
+yq = "latest"
 node = "22"
 python = "3.11"
-ripgrep = "latest"
-rust = "latest"
 uv = "latest"
-neovim = "0.11.4"
-starship = "latest"
-zoxide = "latest"
-delta = "latest"
-pnpm = "latest"
