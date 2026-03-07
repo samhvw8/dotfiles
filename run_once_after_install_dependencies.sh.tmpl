@@ -142,37 +142,6 @@ setup_tpm() {
     log_success "tmux plugin manager setup completed successfully"
 }
 
-{{- if .conda }}
-setup_miniconda() {
-    if command_exists conda; then
-        log_info "Miniconda already installed, skipping"
-        return 0
-    fi
-
-    if [[ $(uname) == "Darwin" ]]; then
-        if ! brew install miniconda; then
-            log_error "Failed to install miniconda via brew"
-            return 1
-        fi
-    else
-        local miniconda_script="$HOME/miniconda.sh"
-        if ! wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "$miniconda_script"; then
-            log_error "Failed to download miniconda installer"
-            return 1
-        fi
-
-        if ! bash "$miniconda_script" -b -p "$HOME/miniconda3"; then
-            log_error "Failed to install miniconda"
-            rm -f "$miniconda_script"
-            return 1
-        fi
-        rm -f "$miniconda_script"
-    fi
-
-    log_success "Miniconda setup completed successfully"
-}
-{{- end }}
-
 setup_mise() {
     if command_exists mise; then
         log_info "mise already installed, skipping"
@@ -275,11 +244,6 @@ main() {
 {{- if eq .chezmoi.os "linux" }}
     setup_font_linux
 {{- end }}
-{{- end }}
-
-{{- if .conda }}
-    # Optional: Install miniconda when --conda flag is passed
-    setup_miniconda
 {{- end }}
 
     # Final OS-specific configurations
