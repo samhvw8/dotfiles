@@ -73,8 +73,10 @@
   "enabledPlugins": {
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true
+    "gopls-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   },
   "plansDirectory": ".claude/plans",
+  "autoMemoryDirectory": ".claude/memory",
   "skipDangerousModePermissionPrompt": true
 }
