@@ -32,7 +32,7 @@
       "Read(~/.zshrc)",
       "WebFetch(domain:*)",
       "WebSearch",
-      "Write(*)",
+      "Write",
       "mcp__context7"
     ],
     "deny": [],
@@ -105,5 +105,6 @@
   "plansDirectory": ".claude/plans",
   "autoDreamEnabled": true,
   "showThinkingSummaries": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "autoMemoryEnabled": true
 }
