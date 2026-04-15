@@ -1,8 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "false",
-    "ENABLE_EXPERIMENTAL_MCP_CLI": "true"
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
+    "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "attribution": {
     "commit": "",
@@ -39,28 +40,6 @@
     "defaultMode": "plan"
   },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "tool == \"Bash\" && tool_input.command matches \"(npm (install|test)|pnpm (install|test)|yarn (install|test)|bun (install|test)|cargo build|make|docker|pytest|vitest|playwright)\"",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "#!/bin/bash\ninput=$(cat)\nif [ -z \"$TMUX\" ]; then\n  echo '[Hook] Consider running in tmux for session persistence' >&2\n  echo '[Hook] tmux new -s dev  |  tmux attach -t dev' >&2\nfi\necho \"$input\"",
-            "timeout": 60
-          }
-        ]
-      },
-      {
-        "matcher": "tool == \"Bash\" && tool_input.command matches \"(npm run dev|pnpm( run)? dev|yarn dev|bun run dev)\"",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "#!/bin/bash\ninput=$(cat)\ncmd=$(echo \"$input\" | jq -r '.tool_input.command // \"\"')\n\n# Block dev servers that aren't run in tmux\necho '[Hook] BLOCKED: Dev server must run in tmux for log access' >&2\necho '[Hook] Use this command instead:' >&2\necho \"[Hook] tmux new-session -d -s dev 'npm run dev'\" >&2\necho '[Hook] Then: tmux attach -t dev' >&2\nexit 1",
-            "timeout": 60
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "hooks": [
