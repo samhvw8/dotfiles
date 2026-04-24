@@ -398,7 +398,7 @@ rgv-show() {
 # Only load if ccp is installed
 if command -v ccp &> /dev/null; then
   # Claude alias - loads profile's CLAUDE.md and rules
-  alias claude='CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --add-dir "${CLAUDE_CONFIG_DIR:-$(ccp which --path 2>/dev/null)}"'
+  alias claude='CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --thinking-display summarized --add-dir "${CLAUDE_CONFIG_DIR:-$(ccp which --path 2>/dev/null)}"'
 
   # Quick profile switch (optional)
   ccp-use() {
@@ -408,5 +408,7 @@ if command -v ccp &> /dev/null; then
       eval "$(mise env)"
     fi
   }
+else 
+  alias claude="claude claude --thinking-display summarized"
 fi
 
