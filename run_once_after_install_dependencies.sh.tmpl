@@ -202,10 +202,7 @@ main() {
 {{- else }}
     # Linux setup
     log_info "Setting up Linux"
-    if ! sudo apt update; then
-        log_error "Failed to update apt"
-        exit 1
-    fi
+    sudo apt update || log_info "apt update had errors (non-fatal, continuing)"
 
     local packages=(tmux vim git zsh wget curl net-tools unzip aptitude apt-transport-https)
 {{- if not .minimal }}
