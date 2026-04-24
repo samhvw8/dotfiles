@@ -4,7 +4,7 @@ legacy_version_file_disable_tools = ['java']
 idiomatic_version_file_enable_tools = ["node"]
 
 [settings.npm]
-package_manager = "pnpm"
+package_manager = "aube"
 
 [settings.pipx]
 uvx = true
@@ -28,7 +28,7 @@ shfmt = "latest"
 uv = "latest"
 yt-dlp = { version = "latest", rename_exe = "yt-dlp" }
 yq = "latest"
-"aqua:neovim/neovim" = "0.11.4"
+neovim = "0.11.4"
 lazygit = "latest"
 dasel = "latest"
 hurl = "latest"
@@ -65,3 +65,7 @@ wrangler = "latest"
 "pipx:it2" = "latest"
 "npm:cf" = "latest"
 claude = "latest"
+gcloud = "latest"
+"pipx:code-review-graph" = "latest"
+rtk = "latest"
+aube = "latest"
