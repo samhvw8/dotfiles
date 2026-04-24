@@ -62,6 +62,17 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -71,7 +82,8 @@
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "claude-hud@claude-hud": true
+    "claude-hud@claude-hud": true,
+    "understand-anything@understand-anything": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -79,13 +91,23 @@
         "source": "git",
         "url": "https://github.com/jarrodwatts/claude-hud.git"
       }
+    },
+    "understand-anything": {
+      "source": {
+        "source": "github",
+        "repo": "Lum1104/Understand-Anything"
+      }
     }
   },
   "effortLevel": "xhigh",
   "plansDirectory": ".claude/plans",
+  "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "autoDreamEnabled": true,
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
-  "tui": "fullscreen"
+  "verbose": true,
+  "teammateMode": "auto",
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": false
 }
