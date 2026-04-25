@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
+  },
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "claude-hud@claude-hud": true,
+    "understand-anything@understand-anything": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-hud": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/jarrodwatts/claude-hud.git"
+      }
+    },
+    "understand-anything": {
+      "source": {
+        "source": "github",
+        "repo": "Lum1104/Understand-Anything"
+      }
+    }
+  }
+}
