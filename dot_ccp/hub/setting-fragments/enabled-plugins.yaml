@@ -1,5 +1,0 @@
-name: enabled-plugins
-key: enabledPlugins
-value:
-    claude-hud@claude-hud: true
-    context7@claude-plugins-official: true
