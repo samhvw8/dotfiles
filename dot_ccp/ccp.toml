@@ -29,6 +29,16 @@ ref = 'main'
 commit = 'e9918fcadc2462576dc0afb5942d77317d8b593d'
 updated = 2026-04-24T21:08:28.896724236+07:00
 
+[sources.'samhvw8/claude-code-profile']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/samhvw8/claude-code-profile.git'
+path = 'sources/samhvw8--claude-code-profile'
+ref = 'main'
+commit = 'c39af15ce30e2b3130a0b53382213da646462f70'
+updated = 2026-05-02T21:45:06.427979+07:00
+installed = ['skills/ccp-dev', 'skills/ccp']
+
 [sources.'vercel-labs/next-skills']
 registry = 'github'
 provider = 'git'
