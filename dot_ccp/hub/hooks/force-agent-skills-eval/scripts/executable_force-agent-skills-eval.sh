@@ -17,7 +17,7 @@ Fresh conversation? [Yes/No — if Yes, research protocol is MANDATORY]
 <research_check>
 If this is a new feature/brainstorm/unfamiliar problem:
 [ ] Read local files + git first
-[ ] Research (prefer `research` agent, fall back to WebSearch) in correct language (English + Chinese 中文, optionally Russian русский) + official docs
+[ ] Research (prefer `researcher` agent, fall back to WebSearch) in correct language (English + Chinese 中文, optionally Russian русский) + official docs
 [ ] GitHub search via `gh`
 [ ] Synthesize findings
 Skip ONLY if: simple bug fix | user said "don't research" | purely mechanical task

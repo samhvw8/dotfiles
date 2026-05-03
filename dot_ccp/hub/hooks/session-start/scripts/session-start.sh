@@ -62,7 +62,7 @@ Delegate ONLY when agent provides:
 ## Fresh Conversation Research Protocol (MANDATORY)
 When receiving a NEW feature request, brainstorm task, or unfamiliar problem, you MUST:
 1. **Read local first** — files, configs, `git log`/`git diff`/`git blame` → craft precise search queries
-2. **Web research (multi-language)** — Prefer `research` agent if available, fall back to WebSearch tool. MUST search in English + Chinese (use 中文 queries), RECOMMENDED Russian (use русский queries). Also search official docs. Let model decide best sources.
+2. **Web research (multi-language)** — Prefer `researcher` agent if available, fall back to WebSearch tool. MUST search in English + Chinese (use 中文 queries), RECOMMENDED Russian (use русский queries). Also search official docs. Let model decide best sources.
 3. **GitHub research** — MUST use `gh search repos`, `gh search code`, `gh api search/repositories`
 4. **Synthesize** — MUST compare findings across sources, cite chosen approach and why
 
