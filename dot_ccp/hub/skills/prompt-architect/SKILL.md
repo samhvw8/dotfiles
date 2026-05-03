@@ -75,6 +75,8 @@ Every prompt task moves through three phases. Phase depth scales to complexity.
 
 For research targets and synthesis strategy, read `references/research-guide.md`.
 
+**Execution (MANDATORY):** Reading the research guide is NOT completing this phase. You MUST produce research results before proceeding to Phase 3. Use the `research` skill or `researcher` agent to execute the research — do not attempt to substitute training knowledge for current findings. Phase 3 is gated on having actual research output.
+
 ### Phase 3: Build & Apply
 
 Detect mode, classify type, assess complexity, select techniques, assemble, validate.

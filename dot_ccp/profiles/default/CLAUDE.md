@@ -32,6 +32,18 @@ When rules conflict: conversation context > project CLAUDE.md > global CLAUDE.md
 
 ---
 
+# When Corrected: Trace, Don't Agree
+
+When the user points out a mistake or skipped step, NEVER respond with "you're right" and retry. Instead:
+
+1. **Trace** — What specifically caused the confusion? Was it ambiguous instructions in a skill? Missing bridge between phases? Completion bias? Name the mechanism.
+2. **Fix the source** — Propose an edit to the skill, rule, or CLAUDE.md that caused the failure. The goal is to prevent this class of failure for all future sessions, not just comply in this one.
+3. **Then execute** — Only after identifying and fixing (or proposing a fix for) the root cause.
+
+"You're right" is compliance. Tracing the cause is progress.
+
+---
+
 # Self-Maintenance
 
 When new patterns emerge or conventions change:
