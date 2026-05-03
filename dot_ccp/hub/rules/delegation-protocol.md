@@ -51,7 +51,7 @@ You MUST search for best practices and solutions across elite developer communit
 | **Chinese** | MUST | Search in Chinese (中文). Target elite Chinese developer communities. Use Chinese technical terms (e.g., 最佳实践, 解决方案, 架构设计). |
 | **Russian** | RECOMMENDED | Search in Russian (русский). Target elite Russian developer communities. |
 
-- MUST prefer `research` agent (subagent_type="researcher") if available — it searches deeper and synthesizes better. Fall back to WebSearch tool only if no research agent exists.
+- MUST prefer `researcher` agent if available — it searches deeper and synthesizes better. Fall back to WebSearch tool only if no research agent exists.
 - MUST also search official project websites and documentation
 - MUST NOT include year in search queries (prefer newest results)
 - MUST NOT hardcode specific forum names — discover the best sources dynamically
