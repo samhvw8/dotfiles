@@ -42,7 +42,7 @@ When you receive a **new feature request, brainstorm task, or unfamiliar problem
 - MUST run `git log`, `git diff`, or `git blame` if the task involves existing code
 - Use local findings to craft precise search queries
 
-### Step 2: Web Research (Multi-Language)
+### Step 2: Research (Multi-Language)
 You MUST search for best practices and solutions across elite developer communities in multiple languages. Use the correct language for each query — do NOT search in English for Chinese/Russian results.
 
 | Language | Priority | Guidance |
@@ -51,7 +51,7 @@ You MUST search for best practices and solutions across elite developer communit
 | **Chinese** | MUST | Search in Chinese (中文). Target elite Chinese developer communities. Use Chinese technical terms (e.g., 最佳实践, 解决方案, 架构设计). |
 | **Russian** | RECOMMENDED | Search in Russian (русский). Target elite Russian developer communities. |
 
-- MUST prefer `researcher` agent if available — it searches deeper and synthesizes better. Fall back to WebSearch tool only if no research agent exists.
+- MUST delegate to `researcher` agent for all research — it searches deeper, covers multiple languages, and synthesizes across sources. Use direct WebSearch tool ONLY for quick single-fact lookups (e.g., "what version is X") where spawning an agent would be overkill.
 - MUST also search official project websites and documentation
 - MUST NOT include year in search queries (prefer newest results)
 - MUST NOT hardcode specific forum names — discover the best sources dynamically

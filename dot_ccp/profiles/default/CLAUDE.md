@@ -28,7 +28,7 @@ When rules conflict: conversation context > project CLAUDE.md > global CLAUDE.md
 
 - `rules/delegation-protocol.md` is **non-negotiable**. Every rule marked MUST/NEVER in that file MUST be followed exactly. No exceptions, no "I already know how."
 - Skills MUST be invoked at even 1% relevance — your memory was wiped, you do NOT know how.
-- Fresh conversations receiving new features/brainstorm/tasks MUST run the Research Protocol (web search + GitHub search) before implementation. See `delegation-protocol.md` for full protocol.
+- Fresh conversations receiving new features/brainstorm/tasks MUST run the Research Protocol (researcher agent + GitHub search) before implementation. See `delegation-protocol.md` for full protocol.
 
 ---
 
