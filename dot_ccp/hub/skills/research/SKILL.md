@@ -1,164 +1,131 @@
 ---
 name: research
-description: "Technical research methodology with YAGNI/KISS/DRY principles. Phases: scope definition, information gathering, analysis, synthesis, recommendation. Capabilities: technology evaluation, architecture analysis, best practices research, trade-off assessment, solution design. Actions: research, analyze, evaluate, compare, recommend technical solutions. Keywords: research, technology evaluation, best practices, architecture analysis, trade-offs, scalability, security, maintainability, YAGNI, KISS, DRY, technical analysis, solution design, competitive analysis, feasibility study. Use when: researching technologies, evaluating architectures, analyzing best practices, comparing solutions, assessing technical trade-offs, planning scalable/secure systems."
-license: MIT
+description: "Multi-language technical research across English, Chinese (中文), and Russian (русский) developer communities. Phases: scope → multi-language search → GitHub research → retrieval tools → synthesis → report. Capabilities: technology evaluation, architecture analysis, best practices research, trade-off assessment, solution design, competitive analysis. Actions: research, analyze, evaluate, compare, recommend technical solutions. Keywords: research, technology evaluation, best practices, architecture analysis, trade-offs, scalability, security, YAGNI, KISS, DRY, technical analysis, solution design, feasibility study, 最佳实践, 架构设计, лучшие практики. Use when: researching technologies, evaluating architectures, analyzing best practices, comparing solutions, assessing technical trade-offs, planning scalable/secure systems. Also use when: user asks 'what's the best way to', 'how should I approach', 'what are the options for', or any question that benefits from current external knowledge rather than training data alone."
 ---
 
 # Research
 
-## Research Methodology
+Multi-language technical research methodology. Honoring **YAGNI**, **KISS**, **DRY**.
+Be honest, be brutal, straight to the point, be concise.
 
-Always honoring **YAGNI**, **KISS**, and **DRY** principles.
-**Be honest, be brutal, straight to the point, and be concise.**
+## Phase 1: Scope Definition
 
-### Phase 1: Scope Definition
+Before searching, define:
+- Key terms and concepts to investigate
+- Recency requirements (how current must information be)
+- Evaluation criteria and research depth boundaries
+- Which languages/communities are most likely to have strong signal for this topic
 
-First, you will clearly define the research scope by:
-- Identifying key terms and concepts to investigate
-- Determining the recency requirements (how current must information be)
-- Establishing evaluation criteria for sources
-- Setting boundaries for the research depth
+## Phase 2: Multi-Language Search
 
-### Phase 2: Systematic Information Gathering
+Search across language communities using the correct language for each query. Different communities surface different signal — English has breadth, Chinese has scale-tested production patterns, Russian has systems/algorithmic depth.
 
-You will employ a multi-source research strategy:
+### Search Language Matrix
 
-1. **Search Strategy**:
-   - Craft precise search queries with relevant keywords
-   - Include terms like "best practices", "2024", "latest", "security", "performance"
-   - Search for official documentation, GitHub repositories, and authoritative blogs
-   - Prioritize results from recognized authorities (official docs, major tech companies, respected developers)
-   - **IMPORTANT:** You are allowed to perform at most **5 researches (max 5 tool calls)**, user might request less than this amount, **strictly respect it**, think carefully based on the task before performing each related research topic.
+| Language | Priority | Query Language | Guidance |
+|----------|----------|----------------|----------|
+| **English** | MUST | English | Official docs, engineering blogs, conference talks. Broadest coverage. |
+| **Chinese (中文)** | MUST | Chinese | Use Chinese technical terms. Rich in production-scale patterns, mobile/fintech, infrastructure at scale. |
+| **Russian (русский)** | RECOMMENDED | Russian | Use Russian technical terms. Strong in systems programming, algorithms, competitive programming, security. |
 
-2. **Deep Content Analysis**:
-   - Focus on official documentation, API references, and technical specifications
-   - Analyze README files from popular GitHub repositories
-   - Review changelog and release notes for version-specific information
+### Query Construction
 
-3. **Video Content Research**:
-   - Prioritize content from official channels, recognized experts, and major conferences
-   - Focus on practical demonstrations and real-world implementations
+Write queries in the target language — do not search in English expecting Chinese/Russian results.
 
-4. **Cross-Reference Validation**:
-   - Verify information across multiple independent sources
-   - Check publication dates to ensure currency
-   - Identify consensus vs. controversial approaches
-   - Note any conflicting information or debates in the community
-
-### Phase 3: Analysis and Synthesis
-
-You will analyze gathered information by:
-- Identifying common patterns and best practices
-- Evaluating pros and cons of different approaches
-- Assessing maturity and stability of technologies
-- Recognizing security implications and performance considerations
-- Determining compatibility and integration requirements
-
-### Phase 4: Report Generation
-
-**Notes:** 
-- Research reports are saved in `./plans/<plan-name>/reports/YYMMDD-<your-research-topic>.md`.
-- If you are not given a plan name, ask main agent to provide it and continue the process.
-
-You will create a comprehensive markdown report with the following structure:
-
-```markdown
-# Research Report: [Topic]
-
-## Executive Summary
-[2-3 paragraph overview of key findings and recommendations]
-
-## Research Methodology
-- Sources consulted: [number]
-- Date range of materials: [earliest to most recent]
-- Key search terms used: [list]
-
-## Key Findings
-
-### 1. Technology Overview
-[Comprehensive description of the technology/topic]
-
-### 2. Current State & Trends
-[Latest developments, version information, adoption trends]
-
-### 3. Best Practices
-[Detailed list of recommended practices with explanations]
-
-### 4. Security Considerations
-[Security implications, vulnerabilities, and mitigation strategies]
-
-### 5. Performance Insights
-[Performance characteristics, optimization techniques, benchmarks]
-
-## Comparative Analysis
-[If applicable, comparison of different solutions/approaches]
-
-## Implementation Recommendations
-
-### Quick Start Guide
-[Step-by-step getting started instructions]
-
-### Code Examples
-[Relevant code snippets with explanations]
-
-### Common Pitfalls
-[Mistakes to avoid and their solutions]
-
-## Resources & References
-
-### Official Documentation
-- [Linked list of official docs]
-
-### Recommended Tutorials
-- [Curated list with descriptions]
-
-### Community Resources
-- [Forums, Discord servers, Stack Overflow tags]
-
-### Further Reading
-- [Advanced topics and deep dives]
-
-## Appendices
-
-### A. Glossary
-[Technical terms and definitions]
-
-### B. Version Compatibility Matrix
-[If applicable]
-
-### C. Raw Research Notes
-[Optional: detailed notes from research process]
+**English queries:**
 ```
+"[topic] best practices"
+"[topic] production architecture"
+"[topic] vs [alternative] tradeoffs"
+```
+
+**Chinese queries (中文):**
+```
+"[topic] 最佳实践"          (best practices)
+"[topic] 生产环境 架构设计"   (production architecture design)
+"[topic] 解决方案 对比"      (solution comparison)
+"[topic] 踩坑 经验"          (pitfalls & experience)
+"[topic] 性能优化"           (performance optimization)
+```
+
+**Russian queries (русский):**
+```
+"[topic] лучшие практики"           (best practices)
+"[topic] архитектура решения"       (architecture solutions)
+"[topic] производительность"        (performance)
+"[topic] сравнение подходов"        (approach comparison)
+```
+
+### Search Strategy
+
+- 3-6 targeted queries per language, not broad sweeps
+- Start with `[topic] + "best practices"` or `"system prompt"` for patterns
+- Follow with `[topic] + specific sub-problems`
+- Cross-reference: if three sources across languages agree, it's robust
+- Fetch full pages when snippets are insufficient — depth over breadth
+- Search iteratively: first-round results inform second-round queries
+- Do NOT include year in queries — prefer newest results by default
+- Let the model discover the best sources dynamically — do not hardcode forum names
+
+**Max 30 search tool calls total** — think carefully before each one. User may request fewer.
+
+## Phase 3: GitHub Research
+
+Use `gh` CLI to find reference implementations and community patterns:
+
+```bash
+# Find top repos
+gh search repos "[topic]" --sort stars --limit 5
+
+# Find code patterns
+gh search code "[pattern]" --language [lang] --limit 10
+
+# Structured search with star threshold
+gh api search/repositories -f q="[query] stars:>100" \
+  --jq '.items[:5] | .[] | {name, url, description, stars: .stargazers_count}'
+```
+
+GitHub research reveals what practitioners actually build, not just what they write about. Prioritize repos with recent activity and meaningful star counts.
+
+## Phase 4: Retrieval Tools
+
+Use any available retrieval tools to gather deeper knowledge:
+
+**context7 MCP** (library/framework docs):
+- Use `resolve-library-id` to find the library, then `query-docs` for specific topics
+- Especially valuable for API syntax, version-specific behavior, and configuration
+
+**Web Fetch** — fetch full pages when search snippets are insufficient
+
+**Official documentation** — always check the official project docs, not just community content
+
+**MCP resources** — check for any domain-specific MCP servers that expose relevant data
+
+The right retrieval tool depends on the domain. Prefer primary sources (official docs, source code) over secondary (blog posts, tutorials).
+
+## Phase 5: Synthesis & Cross-Reference
+
+- Verify information across multiple independent sources and languages
+- Check publication dates for currency
+- Identify consensus vs. controversial approaches
+- Note conflicting information or community debates
+- Distinguish stable best practices from experimental approaches
+- Evaluate pros/cons, maturity, security implications, performance characteristics
+
+**When findings conflict across languages:** Present the tension — different communities optimize for different constraints. A pattern proven at Chinese scale may differ from one optimized for Russian algorithmic elegance or English ecosystem breadth.
+
+## Phase 6: Report
+
+For report structure and formatting, read `references/report-template.md`.
+
+Reports are saved to `./plans/<plan-name>/reports/YYMMDD-<topic>.md`.
+If no plan name is given, ask the caller to provide one.
 
 ## Quality Standards
 
-You will ensure all research meets these criteria:
-- **Accuracy**: Information is verified across multiple sources
-- **Currency**: Prioritize information from the last 12 months unless historical context is needed
-- **Completeness**: Cover all aspects requested by the user
-- **Actionability**: Provide practical, implementable recommendations
-- **Clarity**: Use clear language, define technical terms, provide examples
-- **Attribution**: Always cite sources and provide links for verification
-
-## Special Considerations
-
-- When researching security topics, always check for recent CVEs and security advisories
-- For performance-related research, look for benchmarks and real-world case studies
-- When investigating new technologies, assess community adoption and support levels
-- For API documentation, verify endpoint availability and authentication requirements
-- Always note deprecation warnings and migration paths for older technologies
-
-## Output Requirements
-
-Your final report must:
-1. Be saved as a markdown file with a descriptive filename in `./plans/<plan-name>/reports/YYMMDD-<your-research-topic>.md`
-2. Include a timestamp of when the research was conducted
-3. Provide clear section navigation with a table of contents for longer reports
-4. Use code blocks with appropriate syntax highlighting
-5. Include diagrams or architecture descriptions where helpful (in mermaid or ASCII art)
-6. Conclude with specific, actionable next steps
-
-**IMPORTANT:** Sacrifice grammar for the sake of concision when writing reports.
-**IMPORTANT:** In reports, list any unresolved questions at the end, if any.
-
-**Remember:** You are not just collecting information, but providing strategic technical intelligence that enables informed decision-making. Your research should anticipate follow-up questions and provide comprehensive coverage of the topic while remaining focused and practical.
+- **Accuracy**: Verified across multiple sources and languages
+- **Currency**: Prioritize last 12 months unless historical context needed
+- **Completeness**: Cover all requested aspects
+- **Actionability**: Practical, implementable recommendations
+- **Attribution**: Cite sources, provide links, note source language
+- **Concision**: Sacrifice grammar for brevity. List unresolved questions at end.
