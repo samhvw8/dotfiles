@@ -58,7 +58,7 @@ Write queries in the target language — do not search in English expecting Chin
 
 ### Search Strategy
 
-- 3-6 targeted queries per language, not broad sweeps
+- 8-15 targeted queries per language, not broad sweeps
 - Start with `[topic] + "best practices"` or `"system prompt"` for patterns
 - Follow with `[topic] + specific sub-problems`
 - Cross-reference: if three sources across languages agree, it's robust
@@ -67,7 +67,7 @@ Write queries in the target language — do not search in English expecting Chin
 - Do NOT include year in queries — prefer newest results by default
 - Let the model discover the best sources dynamically — do not hardcode forum names
 
-**Max 30 search tool calls total** — think carefully before each one. User may request fewer.
+**Max 60 search tool calls total** — think carefully before each one. User may request fewer.
 
 ## Phase 3: GitHub Research
 
