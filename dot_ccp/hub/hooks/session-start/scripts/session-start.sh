@@ -1,12 +1,17 @@
 #!/bin/bash
-# Session start hook - loads delegation rules on startup/resume
+# Session start hook - loads mandatory delegation rules on startup/resume
 
 cat <<'EOF'
 <session_rules>
 
+<memory_loss_warning>
+⚠️ YOUR MEMORY WAS WIPED. You retain NOTHING from prior conversations.
+Files, skills, and agents are your ONLY persistence. Skipping them = operating blind.
+</memory_loss_warning>
+
 <delegation_protocol>
 
-# Delegation Protocol
+# Delegation Protocol (MANDATORY)
 
 ## Core Distinction
 | Tool | Type | You do work? |
@@ -15,41 +20,54 @@ cat <<'EOF'
 | `Skill` | Enhancement | Yes - skill guides you |
 
 <skills_rules>
-## Skills: 1% Rule
-**Even 1% chance a skill applies? INVOKE IT.**
-- Skills are listed in Task tool under "Available skills:"
-- ⚠️ ALWAYS check if skill can be triggered BEFORE any action
+## Skills: 1% Rule (MANDATORY — NO EXCEPTIONS)
+**Even 1% chance a skill applies? You MUST invoke it.**
+- Skills encode process knowledge that survives your memory loss — they are NOT optional
+- You MUST check available skills BEFORE taking any action
 - When multiple match: **Process first** (debugging, planning) → **Implementation second**
-- A hook will prompt you to fill in the evaluation - DO NOT skip it
+- A hook will prompt you to fill in the evaluation — DO NOT skip it
+- You MUST NEVER justify skipping with "I already know how" — you don't, your memory was wiped
+- Skipping a skill = discarding expertise the user already configured for you
 </skills_rules>
 
 <agents_rules>
 ## Agents: Decision Tree
 
 ### Step 1: Context Check
-Before spawning agent:
-- Is the answer already in this conversation? → USE IT
-- Did user provide the spec/target? → TRANSFORM, don't explore
+Before spawning agent, you MUST verify:
+- Is the answer already in this conversation? → MUST use it
+- Did user provide the spec/target? → MUST transform, NEVER explore
 
 ### Step 2: Complexity Assessment
 | Unknowns | Action |
 |----------|--------|
-| 0 (have everything) | Execute directly |
-| 1 (single lookup) | Direct tool (Glob/Grep/Read) |
-| 2-3 related | Consider 1 agent |
-| Multiple independent | Parallel agents (max 3) |
+| 0 (have everything) | MUST execute directly |
+| 1 (single lookup) | MUST use direct tool (Glob/Grep/Read) |
+| 2-3 related | MUST consider 1 agent |
+| Multiple independent | MUST use parallel agents (max 3) |
 
 ### Step 3: Necessity Test
 Ask: "Can I answer this with ONE direct tool call?"
-- YES → Don't delegate
-- NO → Check if agent adds value beyond tool chaining
+- YES → MUST NOT delegate
+- NO → MUST check if agent adds value beyond tool chaining
 
 ### Step 4: Value Test
-Delegate only when agent provides:
+Delegate ONLY when agent provides:
 - Autonomous decision-making (not just sequential tools)
-- Domain expertise I lack
+- Domain expertise you lack
 - Parallel exploration of unknown scope
 </agents_rules>
+
+<research_protocol>
+## Fresh Conversation Research Protocol (MANDATORY)
+When receiving a NEW feature request, brainstorm task, or unfamiliar problem, you MUST:
+1. **Read local first** — files, configs, `git log`/`git diff`/`git blame` → craft precise search queries
+2. **Web research (multi-language)** — Prefer `research` agent if available, fall back to WebSearch tool. MUST search in English + Chinese (use 中文 queries), RECOMMENDED Russian (use русский queries). Also search official docs. Let model decide best sources.
+3. **GitHub research** — MUST use `gh search repos`, `gh search code`, `gh api search/repositories`
+4. **Synthesize** — MUST compare findings across sources, cite chosen approach and why
+
+Skip ONLY when: simple bug fix with known cause, user says "don't research", or purely mechanical task.
+</research_protocol>
 
 <mandatory_evaluation>
 ## ⚠️ Mandatory Evaluation
@@ -62,20 +80,23 @@ DO NOT output templates with `[name]` or `[reason]` - use real values.
 </mandatory_evaluation>
 
 <anti_patterns>
-## Agent Anti-Patterns
+## Anti-Patterns (MUST AVOID)
 | Sign | Problem | Fix |
 |------|---------|-----|
-| Agent for single file lookup | Over-delegation | Glob/Read |
-| Multiple agents for linear task | Over-division | Single agent or direct |
-| Exploring what's in the message | Context blindness | Read the conversation |
-| Agent to "understand patterns" | Skill gap | Use Skill for guidance |
-| Skipping delegation_check | Protocol violation | Fill in actual evaluation |
+| Agent for single file lookup | Over-delegation | MUST use Glob/Read |
+| Multiple agents for linear task | Over-division | MUST use single agent or direct |
+| Exploring what's in the message | Context blindness | MUST read the conversation |
+| Agent to "understand patterns" | Skill gap | MUST use Skill for guidance |
+| Skipping delegation_check | Protocol violation | MUST fill in actual evaluation |
+| Skip skills because "I know how" | Memory arrogance | MUST invoke — memory was wiped |
+| Skip web research on new tasks | Reinventing the wheel | MUST research first |
+| Implement before reading local code | Context blindness | MUST read local + git first |
 </anti_patterns>
 
 </delegation_protocol>
 
 <dge_loop>
-# DGE Loop: Decide → Gather → Execute
+# DGE Loop: Decide → Gather → Execute (MANDATORY)
 
 <mental_model>
 **Commitment Integrity**
@@ -85,10 +106,10 @@ Question: "What did I commit to? Has new info invalidated that, or just informed
 
 <rules>
 ## Rules
-- State commitment before gathering: "I will [Tool] after reading"
-- Max 3 reads, then execute
-- After Read/Glob/Grep → EXECUTE committed tool immediately
-- Pivoting? STATE explicitly: "Changing from X to Y because..."
+- MUST state commitment before gathering: "I will [Tool] after reading"
+- Max 3 reads, then MUST execute
+- After Read/Glob/Grep → MUST EXECUTE committed tool immediately
+- Pivoting? MUST STATE explicitly: "Changing from X to Y because..."
 </rules>
 
 <loop_anti_patterns>
@@ -104,7 +125,7 @@ Question: "What did I commit to? Has new info invalidated that, or just informed
 <sub_agent_prompting>
 # Sub-Agent Prompting
 
-When delegating, include: "RECOMMENDED SKILLS: [name] - [usage]"
+When delegating, MUST include: "RECOMMENDED SKILLS: [name] - [usage]"
 </sub_agent_prompting>
 
 <concurrency>

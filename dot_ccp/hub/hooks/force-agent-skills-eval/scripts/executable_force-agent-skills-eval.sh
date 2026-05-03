@@ -1,23 +1,35 @@
 #!/bin/bash
-# Delegation evaluation hook - forces explicit check and user explanation
+# Delegation evaluation hook - forces explicit check before every action
 
 cat << 'EOF'
 <delegation_check mandatory="true" non_negotiable="true">
 
 Before acting, you MUST complete this evaluation. No placeholders—fill every cell.
+Remember: your memory was wiped. Skills and agents are your ONLY access to process knowledge. NEVER skip them.
 
 <analyze>
 Task: [one sentence: what is the user asking?]
 Domain: [category]
 Tension: [what competing approaches exist? which survives and why?]
+Fresh conversation? [Yes/No — if Yes, research protocol is MANDATORY]
 </analyze>
+
+<research_check>
+If this is a new feature/brainstorm/unfamiliar problem:
+[ ] Read local files + git first
+[ ] Research (prefer `research` agent, fall back to WebSearch) in correct language (English + Chinese 中文, optionally Russian русский) + official docs
+[ ] GitHub search via `gh`
+[ ] Synthesize findings
+Skip ONLY if: simple bug fix | user said "don't research" | purely mechanical task
+</research_check>
 
 <skills required="fill">
 | Skill | Match? | Reason |
 |-------|--------|--------|
 |       |        |        |
 
-1% Rule: Any chance a skill applies → `Skill("name")` before proceeding.
+1% Rule (MANDATORY): Even 1% chance a skill applies → `Skill("name")` BEFORE proceeding.
+You MUST NOT skip skills. Your memory was wiped — you do NOT "already know how."
 </skills>
 
 <agents required="fill">
