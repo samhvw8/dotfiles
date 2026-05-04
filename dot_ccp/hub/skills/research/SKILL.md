@@ -1,6 +1,6 @@
 ---
 name: research
-description: "Multi-language technical research across English, Chinese (中文), and Russian (русский) developer communities. Phases: scope → multi-language search → GitHub research → retrieval tools → synthesis → report. Capabilities: technology evaluation, architecture analysis, best practices research, trade-off assessment, solution design, competitive analysis. Actions: research, analyze, evaluate, compare, recommend technical solutions. Keywords: research, technology evaluation, best practices, architecture analysis, trade-offs, scalability, security, YAGNI, KISS, DRY, technical analysis, solution design, feasibility study, 最佳实践, 架构设计, лучшие практики. Use when: researching technologies, evaluating architectures, analyzing best practices, comparing solutions, assessing technical trade-offs, planning scalable/secure systems. Also use when: user asks 'what's the best way to', 'how should I approach', 'what are the options for', or any question that benefits from current external knowledge rather than training data alone."
+description: "Single-agent technical research across English, Chinese (中文), and Russian (русский) communities. Web search + GitHub (gh CLI) + retrieval tools → synthesis → report. Use when: 'what's the best way to', 'how should I approach', 'what are the options for', evaluating a technology, or any question needing current external knowledge. For complex multi-domain research (2+ fields, 5+ sources, contradictory landscape), escalate to lead-researcher skill instead."
 ---
 
 # Research
@@ -170,8 +170,7 @@ The right retrieval tool depends on the domain. Prefer primary sources (official
 
 For report structure and formatting, read `references/report-template.md`.
 
-Reports are saved to `./plans/<plan-name>/reports/YYMMDD-<topic>.md`.
-If no plan name is given, ask the caller to provide one.
+Reports are saved to `./research/YYMMDD-<topic>.md` in the current working directory.
 
 ## Quality Standards
 
