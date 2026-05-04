@@ -71,19 +71,71 @@ Write queries in the target language — do not search in English expecting Chin
 
 ## Phase 3: GitHub Research
 
-Use `gh` CLI to find reference implementations and community patterns:
+**Prerequisite:** Check `gh` CLI exists (`which gh`). If unavailable, skip to Phase 4.
+
+Use `gh` CLI to find reference implementations and community patterns. Search in **multiple languages** — Chinese repos surface production patterns, Russian repos surface algorithmic/systems implementations.
+
+### Multi-Language GitHub Search Matrix
+
+**English queries:**
+```bash
+gh search repos "[topic]" --sort stars --limit 10
+gh search code "[topic] [pattern]" --limit 10
+gh search code "[topic]" --language python --limit 10
+gh search code "[topic]" --language typescript --limit 10
+gh search code "[topic]" --language go --limit 10
+gh search code "[topic]" --language java --limit 10
+gh search code "[topic]" --language rust --limit 10
+```
+
+**Chinese queries (中文):**
+```bash
+gh search repos "[topic 中文关键词]" --sort stars --limit 10
+gh search repos "[topic] 中转" --sort stars --limit 10
+gh search repos "[topic] 实现" --sort stars --limit 10
+gh search code "[中文关键词]" --limit 10
+```
+
+**Russian queries (русский):**
+```bash
+gh search repos "[topic русские термины]" --sort stars --limit 10
+gh search code "[русские термины]" --limit 10
+```
+
+### Structured API Search (with star threshold)
 
 ```bash
-# Find top repos
-gh search repos "[topic]" --sort stars --limit 5
-
-# Find code patterns
-gh search code "[pattern]" --language [lang] --limit 10
-
-# Structured search with star threshold
+# English
 gh api search/repositories -f q="[query] stars:>100" \
-  --jq '.items[:5] | .[] | {name, url, description, stars: .stargazers_count}'
+  --jq '.items[:10] | .[] | {name, url: .html_url, description, stars: .stargazers_count}'
+
+# Chinese keywords
+gh api search/repositories -f q="[中文关键词] stars:>50" \
+  --jq '.items[:10] | .[] | {name, url: .html_url, description, stars: .stargazers_count}'
 ```
+
+### Execution: Run Multiple gh Searches in Parallel
+
+**MUST batch independent `gh` searches into parallel Bash calls.** Do NOT run them one-by-one sequentially.
+
+Example — launch all these simultaneously in one message:
+```
+Bash: gh search repos "[topic]" --sort stars --limit 10; echo "---"; gh search repos "[中文]" --sort stars --limit 10
+Bash: gh search code "[topic]" --language python --limit 10; echo "---"; gh search code "[topic]" --language typescript --limit 10
+Bash: gh api search/repositories -f q="[query] stars:>100" --jq '...'
+```
+
+Group by independence: repo searches together, code searches together, API searches together. Fire all groups in a single response turn.
+
+### Search Strategy
+
+- **Parallel first** — batch all independent gh calls into simultaneous Bash tool invocations
+- Search across **multiple programming languages** (Python, TypeScript, Go, Java, Rust) — different ecosystems have different strengths
+- Use Chinese terms in repo/code search — many Chinese devs write READMEs and code comments in Chinese
+- Combine broad topic search + specific pattern search (e.g., function names, config keys, model IDs)
+- Check repo activity: prioritize repos updated within last 6 months
+- Follow leads: if a repo references another project, search for that too
+- **Max 30 gh CLI calls** — think before each one
 
 GitHub research reveals what practitioners actually build, not just what they write about. Prioritize repos with recent activity and meaningful star counts.
 
