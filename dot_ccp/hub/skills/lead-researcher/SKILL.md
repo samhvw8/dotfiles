@@ -78,8 +78,10 @@ When agents return:
 Structure the final synthesis:
 - Lead with the answer/recommendation
 - Present tensions between sources honestly
-- Cite which sub-agent/source backs each claim
+- **Every claim MUST cite its source** — inline `[text](url)` next to each claim
 - List unresolved questions at end
+- End with `## Sources` section listing all URLs used
+- No claim without a source — if you can't cite it, don't include it
 
 ## Anti-Patterns
 

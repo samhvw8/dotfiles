@@ -172,11 +172,13 @@ For report structure and formatting, read `references/report-template.md`.
 
 Reports are saved to `./research/YYMMDD-<topic>.md` in the current working directory.
 
+**MANDATORY: Every claim MUST cite its source.** Use inline links `[text](url)` next to each claim. End the report with a `## Sources` section listing all URLs used. No claim without a source — if you can't cite it, don't include it.
+
 ## Quality Standards
 
 - **Accuracy**: Verified across multiple sources and languages
 - **Currency**: Prioritize last 12 months unless historical context needed
 - **Completeness**: Cover all requested aspects
 - **Actionability**: Practical, implementable recommendations
-- **Attribution**: Cite sources, provide links, note source language
+- **Attribution**: Every claim cites source with URL. End with full Sources section.
 - **Concision**: Sacrifice grammar for brevity. List unresolved questions at end.
