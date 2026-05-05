@@ -1,6 +1,6 @@
 ---
 name: mise-expert
-description: "Mise development environment manager (asdf + direnv + make replacement). Capabilities: tool version management (node, python, go, ruby, rust), environment variables, task runners, project-local configs. Actions: install, manage, configure, run tools/tasks with mise. Keywords: mise, mise.toml, tool version, runtime version, node, python, go, ruby, rust, asdf, direnv, task runner, environment variables, version manager, .tool-versions, mise install, mise use, mise run, mise tasks, project config, global config. Use when: installing runtime versions, managing tool versions, setting up dev environments, creating task runners, replacing asdf/direnv/make, configuring project-local tools."
+description: "Mise development environment manager (asdf + direnv + make replacement). Capabilities: tool version management (node, python, go, ruby, rust), environment variables, task runners, project-local configs, backend selection (aqua, github, core, cargo, npm, pipx), security verification (cosign, SLSA, GitHub attestations, minisign). Actions: install, manage, configure, run tools/tasks with mise, troubleshoot attestation failures, migrate backends. Keywords: mise, mise.toml, tool version, runtime version, node, python, go, ruby, rust, asdf, direnv, task runner, environment variables, version manager, .tool-versions, mise install, mise use, mise run, mise tasks, project config, global config, aqua backend, github backend, ubi deprecated, MISE_AQUA_COSIGN, MISE_AQUA_GITHUB_ATTESTATIONS, attestation verification failed, cosign, SLSA, uv astral-sh. Use when: installing runtime versions, managing tool versions, setting up dev environments, creating task runners, replacing asdf/direnv/make, configuring project-local tools, troubleshooting tool installation failures, attestation/verification errors, choosing between backends."
 ---
 
 # Mise Expert Skill
@@ -69,6 +69,107 @@ Specialized skill for mise - a unified development environment manager combining
 - **Best Practices**: Apply mise patterns for modern development workflows
 - **CI/CD Integration**: Configure mise for continuous integration pipelines
 </capabilities>
+
+## Backends
+
+mise uses backends to install tools. Backend selection affects security verification, performance, and compatibility.
+
+<backends>
+**Tier 1 (Recommended)**
+
+| Backend | Syntax | Use For |
+|---------|--------|---------|
+| core | `node`, `python`, `go` | Built-in tools (node, python, bun, deno, java, go, erlang, dotnet). Rust-native, best performance. |
+| aqua | `aqua:owner/repo` | Tools in aqua-registry. Native security verification (cosign, SLSA, attestations, minisign). |
+| github | `github:owner/repo` | GitHub releases. Provenance verification, download progress. Replaced ubi. |
+
+**Tier 2 (Stable)**
+
+| Backend | Syntax | Use For |
+|---------|--------|---------|
+| cargo | `cargo:crate` | Rust tools from crates.io. Supports cargo-binstall. |
+| npm | `npm:package` | Node packages. Supports npm/pnpm/bun/aube as package managers. |
+| pipx | `pipx:package` | Python CLI tools in isolated envs. Auto-uses `uvx` if uv is on PATH. |
+| go | `go:module` | Go tools via `go install`. |
+| gem | `gem:package` | Ruby gems. |
+| conda | `conda:package` | Conda packages. Graduated from experimental in v2026.5. |
+| vfox | `vfox:plugin` | VersionFox plugins. Embedded Lua in binary for speed. |
+| http | `http:url` | Direct HTTP downloads with Tera templating. |
+| forgejo | `forgejo:owner/repo` | Forgejo/Gitea forge releases. |
+| gitlab | `gitlab:owner/repo` | GitLab releases. |
+| asdf | `asdf:plugin` | Legacy plugin system. Discouraged for new tools — runs arbitrary plugin code. |
+
+**Deprecated**
+
+| Backend | Replacement | Migration |
+|---------|-------------|-----------|
+| ubi | github | Replace `ubi:owner/repo` → `github:owner/repo`. github backend adds provenance verification, progress reports, fewer deps. |
+
+**Resolution order**: Explicit spec → `MISE_BACKENDS_<TOOL>` env var → Registry lookup → Core tools → Fallback.
+
+**Recommendation hierarchy**: core > aqua > github > language-native (npm/pipx/cargo/go/gem) > vfox > asdf
+
+**Backend override example:**
+```toml
+[tools]
+# Default (registry decides backend — usually aqua)
+uv = "latest"
+
+# Explicit backend
+"aqua:astral-sh/uv" = "latest"
+"github:astral-sh/uv" = "latest"
+```
+
+```bash
+# CLI override
+mise use "github:astral-sh/uv@latest"
+```
+</backends>
+
+## Security Verification
+
+The aqua backend verifies tool integrity via native Rust implementations — no external CLI tools (cosign, slsa-verifier, minisign, gh) needed. All methods enabled by default.
+
+<security_verification>
+**Verification Methods**
+
+| Method | Env Var | Settings Key | Default |
+|--------|---------|--------------|---------|
+| Cosign signatures | `MISE_AQUA_COSIGN` | `aqua.cosign` | true |
+| SLSA provenance | `MISE_AQUA_SLSA` | `aqua.slsa` | true |
+| GitHub Attestations | `MISE_AQUA_GITHUB_ATTESTATIONS` | `aqua.github_attestations` | true |
+| Minisign | `MISE_AQUA_MINISIGN` | `aqua.minisign` | true |
+| Checksums | Always on | N/A | Always |
+
+Global toggle across all backends: `MISE_GITHUB_ATTESTATIONS=0`
+
+Extra cosign args: `MISE_AQUA_COSIGN_EXTRA_ARGS="--key /path/to/key.pub"`
+
+**When Attestation Verification Fails**
+
+Common causes: release published manually without GH Actions (no attestations generated), sigstore library incompatibility, GitHub API format changes.
+
+```bash
+# Fix 1: Update mise first (many attestation bugs fixed in newer releases)
+mise self-update
+
+# Fix 2: Disable only the failing method
+export MISE_AQUA_GITHUB_ATTESTATIONS=false
+mise install <tool>@<version>
+
+# Fix 3: Settings-based (persistent)
+# In mise.toml or ~/.config/mise/config.toml
+[settings]
+aqua.github_attestations = false
+
+# Fix 4: Debug to identify which method fails
+MISE_DEBUG=1 mise install <tool>@<version>
+```
+
+**Known per-tool attestation issues:**
+- uv v0.9.11: manually published release, no attestations. Use a different version.
+- Some tools have releases that predate GitHub attestation support — aqua-registry PRs disable attestation requirements for those versions.
+</security_verification>
 
 ## Operational Guidelines
 
@@ -829,6 +930,42 @@ mise ls-remote node              # List available versions
 mise install node@20 --verbose   # Verbose installation
 mise cache clear                 # Clear cache and retry
 ```
+
+**Attestation / Verification Failures**
+```bash
+# Symptom: "GitHub artifact attestations verification failed"
+# or "Workflow verification failed: expected '...', found certificate: None"
+
+# Step 1: Update mise (most attestation bugs are fixed in newer releases)
+mise self-update
+
+# Step 2: If still failing, disable the specific verification method
+export MISE_AQUA_GITHUB_ATTESTATIONS=false   # GitHub attestations
+export MISE_AQUA_COSIGN=false                # Cosign signatures
+export MISE_AQUA_SLSA=false                  # SLSA provenance
+
+# Step 3: Try a different version (some releases lack attestations)
+mise install uv@0.9.13                       # Skip known-bad versions
+
+# Step 4: Switch backend as workaround
+mise use "github:owner/repo@version"         # github backend instead of aqua
+
+# Step 5: Debug for details
+MISE_DEBUG=1 mise install tool@version
+```
+
+**Using Deprecated ubi Backend**
+```bash
+# Symptom: ubi backend warnings or failures
+# Fix: Replace ubi with github backend
+# Old: ubi:owner/repo → New: github:owner/repo
+
+# In mise.toml
+# Before (deprecated):
+# "ubi:goreleaser/goreleaser" = "latest"
+# After (recommended):
+# "github:goreleaser/goreleaser" = "latest"
+```
 </common_issues>
 
 ## Best Practices Checklist
@@ -999,6 +1136,9 @@ mise dev                  # Start both services in parallel
 - ❌ Forget to version control mise.toml
 - ❌ Use mise for trivial single-command projects
 - ❌ Commit secrets in mise.toml (use .env)
+- ❌ Use `ubi:` backend (deprecated — use `github:` instead)
+- ❌ Use `MISE_AQUA_REGISTRY_COSIGN` (wrong env var — use `MISE_AQUA_COSIGN`)
+- ❌ Disable all verification globally when only one method fails
 
 **Do:**
 - ✅ Pin exact tool versions for reproducibility
@@ -1011,4 +1151,7 @@ mise dev                  # Start both services in parallel
 - ✅ Test with `mise doctor` before committing
 - ✅ Provide clear descriptions for team members
 - ✅ Load secrets from gitignored .env files
+- ✅ Prefer `github:` over `ubi:` for GitHub release tools
+- ✅ Run `mise self-update` before debugging attestation failures
+- ✅ Disable only the specific failing verification method, not all
 </anti_patterns>
