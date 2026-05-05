@@ -51,18 +51,28 @@ You MUST search for best practices and solutions across elite developer communit
 | **Chinese** | MUST | Search in Chinese (中文). Target elite Chinese developer communities. Use Chinese technical terms (e.g., 最佳实践, 解决方案, 架构设计). |
 | **Russian** | RECOMMENDED | Search in Russian (русский). Target elite Russian developer communities. |
 
-- MUST delegate to `researcher` agent for all research — it searches deeper, covers multiple languages, and synthesizes across sources. Use direct WebSearch tool ONLY for quick single-fact lookups (e.g., "what version is X") where spawning an agent would be overkill.
+**Research execution — ALWAYS delegate to agents, NEVER do searches yourself:**
+- **Single-domain research** → spawn `researcher` agent (fresh context, no bias from current conversation)
+- **Multi-domain research** (2+ domains, 5+ sources, contradictions likely) → spawn 2-3 `researcher` agents in parallel, each focused on a distinct sub-topic
+- **Complex research** (contradictory landscape, needs orchestration) → invoke `lead-researcher` skill to orchestrate
+
+**Why agents over skills for research:** Sub-agents start with fresh context — no bias from prior conversation data. They can run in parallel. Raw search results stay out of the main context window, saving tokens. The agent synthesizes and returns only findings.
+
+**Do NOT** invoke the `research` skill to do searches yourself. Use direct WebSearch ONLY for quick single-fact lookups (e.g., "what version is X").
+
 - MUST also search official project websites and documentation
 - MUST NOT include year in search queries (prefer newest results)
 - MUST NOT hardcode specific forum names — discover the best sources dynamically
 
 ### Step 3: GitHub Research
-You MUST use `gh` CLI to search for reference implementations:
+MUST use `gh` CLI with multi-language queries (English + Chinese + Russian terms). Run searches in **parallel Bash calls**, not sequentially.
 
 ```bash
-gh search repos "[topic]" --sort stars --limit 5
-gh search code "[pattern]" --language [lang] --limit 10
-gh api search/repositories -f q="[query] stars:>100" --jq '.items[:5] | .[] | {name, url, description, stars: .stargazers_count}'
+# Fire these simultaneously
+gh search repos "[topic]" --sort stars --limit 10
+gh search repos "[中文关键词]" --sort stars --limit 10
+gh search code "[pattern]" --language python --limit 10
+gh search code "[pattern]" --language typescript --limit 10
 ```
 
 ### Step 4: Synthesize
@@ -149,3 +159,4 @@ Use Skill tool for guidance."
 | Skip web research on new tasks | Reinventing the wheel | MUST research first (Step 2-3 above) |
 | Skip skills because "I know how" | Memory arrogance | MUST invoke — your memory was wiped |
 | Implement before reading local code | Context blindness | MUST read local files + git first |
+| Using research skill to do searches yourself | Context bloat + bias | MUST delegate to researcher agent — fresh context, parallel, no bias |
