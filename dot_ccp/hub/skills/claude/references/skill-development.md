@@ -65,56 +65,7 @@ Show concrete examples of using this Skill.
 
 ## Description Best Practices
 
-**Critical for discovery** - Skills are model-invoked (Claude autonomously decides when to use them). Description must include BOTH capability AND triggers.
-
-### WHAT + WHEN Format
-
-**Structure:**
-```
-"[Core purpose]. [Technologies/Stack]. Capabilities: [list]. Actions: [verbs]. Keywords: [triggers]. Use when: [scenarios]."
-```
-
-### Section Breakdown
-
-| Section | Purpose | Example |
-|---------|---------|---------|
-| Core purpose | 1-sentence what it does | "Extract text and tables from PDF files" |
-| Technologies | Tools, frameworks, formats | "Formats: .pdf. Tools: pypdf, pdfplumber" |
-| Capabilities | What it can do (noun phrases) | "text extraction, form filling, merging" |
-| Actions | Trigger verbs (imperative) | "extract, fill, merge PDFs" |
-| Keywords | Semantic triggers for discovery | "PDF, form, document, pypdf" |
-| Use when | Specific activation scenarios | "working with PDF files, extracting data" |
-
-### Good Examples
-
-```yaml
-# PDF Processing
-description: "Extract text and tables from PDF files, fill forms, merge documents. Formats: .pdf. Tools: pypdf, pdfplumber. Capabilities: text extraction, form filling, document merging. Actions: extract, fill, merge PDFs. Keywords: PDF, form, document, pypdf, pdfplumber. Use when: working with PDF files, extracting data from documents, filling PDF forms."
-
-# Excel Processing
-description: "Excel spreadsheet processing and analysis. Formats: .xlsx, .xlsm, .csv, .tsv. Capabilities: create spreadsheets, formulas (error-free), formatting, data analysis, charts, pivot tables. Actions: create, edit, analyze, visualize spreadsheets. Keywords: Excel, spreadsheet, xlsx, csv, formula, VLOOKUP, SUMIF, pivot table. Use when: creating spreadsheets, editing Excel files, analyzing tabular data."
-
-# Git Commit Messages
-description: "Generate clear commit messages from git diffs. Use when writing commit messages or reviewing staged changes."
-```
-
-### Bad Examples
-
-```yaml
-description: Helps with documents  # Too vague - no keywords, no triggers
-description: PDF skill  # Missing capabilities, actions, keywords
-description: Excel skill for spreadsheets  # Missing WHEN triggers
-```
-
-### Clear Distinction Between Similar Skills
-
-```yaml
-# Sales Analysis Skill
-description: "Analyze sales data in Excel files and CRM exports. Use for sales reports, pipeline analysis, and revenue tracking."
-
-# System Monitoring Skill
-description: "Analyze log files and system metrics data. Use for performance monitoring, debugging, and system diagnostics."
-```
+For comprehensive description optimization (directive language, trigger engineering, testing methodology), see `skill-description-guide.md`.
 
 ## Tool Access Control
 
