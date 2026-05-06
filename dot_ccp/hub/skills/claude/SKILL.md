@@ -1,6 +1,6 @@
 ---
 name: claude-ecosystem
-description: "Claude Code ecosystem expertise. Modules: CLI tool (setup, slash commands, MCP servers, hooks, plugins, CI/CD), extensibility (agents, skills, output styles creation), CLAUDE.md (project instructions, optimization). Actions: configure, troubleshoot, create, deploy, integrate, optimize Claude Code. Keywords: Claude Code, Anthropic, CLI tool, slash command, MCP server, Agent Skill, hook, plugin, CI/CD, enterprise, CLAUDE.md, agentic coding, agent, skill, output-style, SKILL.md, subagent, Task tool, project instructions, token optimization. Use when: learning Claude Code features, configuring settings, creating skills/agents/hooks, setting up MCP servers, troubleshooting issues, CI/CD integration, initializing or optimizing CLAUDE.md files."
+description: "ALWAYS invoke this skill when the user asks about Claude Code features, configuration, extensibility, or project setup. ALWAYS invoke when the user wants to create, improve, or refine a Claude Agent Skill — including 'make this a skill', 'turn this into a skill', 'create a skill for X', or asks about SKILL.md authoring, frontmatter, description optimization, progressive disclosure, or triggering strategy. Modules: CLI tool (setup, slash commands, MCP servers, hooks, plugins, CI/CD), extensibility (agents, skills, output styles), CLAUDE.md (project instructions, optimization). Keywords: Claude Code, skill, SKILL.md, agent, hook, plugin, MCP, CLAUDE.md, skill architecture, description optimization, progressive disclosure. For skill body content quality (soul, tensions, mental models), also invoke prompt-architect. Do NOT use for general prompt engineering without a Claude Code context."
 ---
 
 # Claude Ecosystem
@@ -16,7 +16,7 @@ Comprehensive guide for Claude Code CLI tool, extensibility (agents/skills/outpu
 | **MCP Servers** | CLI | `references/mcp-integration.md` |
 | **Hooks & Plugins** | CLI | `references/hooks-and-plugins.md` |
 | **Create Agents** | Extensibility | `references/agent-development.md` |
-| **Create Skills** | Extensibility | `references/skill-development.md` |
+| **Create/Refine Skills** | Extensibility | `references/skill-creation-workflow.md`, `references/skill-writing-guide.md`, `references/skill-description-guide.md` |
 | **Output Styles** | Extensibility | `references/skill-development.md` |
 | **Init CLAUDE.md** | Architecture | `references/initialization-workflow.md` |
 | **Optimize CLAUDE.md** | Architecture | `references/optimization-patterns.md` |
@@ -88,6 +88,8 @@ Comprehensive guide for Claude Code CLI tool, extensibility (agents/skills/outpu
 
 ### Create Agent
 
+For the agent's prompt content (soul, tensions, mental models, thinking approaches), invoke `Skill("prompt-architect")` — it handles expertise transfer and dialectic design. This skill handles structure and frontmatter.
+
 ```yaml
 ---
 name: agent-name
@@ -109,24 +111,47 @@ Mission statement.
 
 ### Create Skill
 
-```yaml
----
-name: skill-name
-description: "[Core purpose]. [Technologies]. Capabilities: [list].
-  Actions: [verbs]. Keywords: [triggers]. Use when: [scenarios]."
-allowed-tools: Read, Grep, Glob
----
+Each skill is a context engineering problem: what information does Claude need, when should it load, and how much freedom should the instructions leave?
 
-# Skill Name
+For body content (soul, tensions, mental models, anti-patterns), invoke `Skill("prompt-architect")` — it handles expertise transfer and dialectic design.
 
-## Patterns
+#### Key Principles
 
-### [Pattern Name]
-**When you see:** [Observable trigger]
-**This indicates:** [Expert insight]
-**Therefore:** [Action]
-**Watch out:** [Pitfall]
+1. **Claude is smart** — only add what Claude doesn't already know
+2. **Explain WHY** — reasoning beats commands; reframe ALWAYS/NEVER as consequences
+3. **Be pushy in descriptions** — Claude undertriggers by default; use directive language ("ALWAYS invoke")
+4. **Match freedom to fragility** — exact scripts for dangerous ops, principles for judgment tasks
+5. **Generalize from examples** — skills run millions of times; don't overfit
+
+#### Architecture
+
 ```
+skill-name/
+├── SKILL.md          # Required: YAML frontmatter + instructions (<500 lines)
+├── scripts/          # Optional: deterministic operations (execute without loading)
+├── references/       # Optional: domain docs loaded as needed
+└── assets/           # Optional: templates, fonts, icons for output
+```
+
+#### Creation Workflow
+
+1. **Capture Intent** — mine conversation for workflow, tools, corrections before asking questions
+2. **Research Domain** — best practices, failure modes, decision heuristics, similar skills
+3. **Draft SKILL.md** — quick orientation → core workflow → patterns → edge cases → reference routing → frontmatter (LAST)
+4. **Review** — token audit, freedom calibration, generalization, trigger check, "Rationalizations to Reject", "When NOT to Use"
+5. **Test Cases** — 2-3 realistic messy prompts as users actually type
+6. **Iterate** — generalize from feedback, keep lean, reframe don't restrict
+
+**Detailed workflow:** `references/skill-creation-workflow.md`
+**Writing principles:** `references/skill-writing-guide.md`
+**Description optimization:** `references/skill-description-guide.md`
+
+#### Deliverables
+
+1. Complete SKILL.md with frontmatter and body
+2. Directory structure with any bundled scripts/references/assets
+3. 2-3 test prompts — realistic, messy, user-style
+4. Description rationale — brief triggering strategy explanation
 
 ### Initialize CLAUDE.md
 
@@ -198,6 +223,9 @@ allowed-tools: Read, Grep, Glob
 ### Extensibility
 - `references/agent-development.md` - Full YAML structure, system prompts
 - `references/skill-development.md` - Structure, triggers, hooks
+- `references/skill-creation-workflow.md` - End-to-end skill creation process
+- `references/skill-writing-guide.md` - Writing principles and mental models
+- `references/skill-description-guide.md` - Description optimization and triggers
 
 ### CLAUDE.md
 - `references/initialization-workflow.md` - Creating new CLAUDE.md
@@ -207,13 +235,15 @@ allowed-tools: Read, Grep, Glob
 
 ---
 
-## Related Skills
+## Skill Routing
 
-**IMPORTANT:** When creating/editing prompts, use `prompt-architect` skill.
+| Task | Where | What it handles |
+|------|-------|-----------------|
+| Skill/agent **prompt content** (soul, tensions, mental models, anti-patterns) | `Skill("prompt-architect")` | Content quality, dialectic design, freedom calibration |
+| Skill **structure** (frontmatter, directory, progressive disclosure, description) | This skill | Architecture, triggering strategy, token budgeting |
+| CLAUDE.md creation/optimization | This skill | Initialization workflow, token reduction |
 
-```
-Skill("prompt-architect") → Create/enhance skill/agent prompt content
-```
+When creating or editing skills/agents: this skill for structure → `prompt-architect` for body content.
 
 ---
 
