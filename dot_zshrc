@@ -409,6 +409,6 @@ if command -v ccp &> /dev/null; then
     fi
   }
 else 
-  alias claude="claude claude --thinking-display summarized"
+  alias claude="claude --thinking-display summarized"
 fi
 
