@@ -1,19 +1,10 @@
 # =============================================================================
-# ZSH Configuration - Optimized & Readable
+# ZSH Configuration - Optimized
 # =============================================================================
 
-# if [[ "$TERM_PROGRAM" == "vscode" ]]; then
-#     if [ -f "$HOME/.local/bin/mise" ]; then 
-#         eval "$($HOME/.local/bin/mise activate zsh)"
-#         eval "$($HOME/.local/bin/mise hook-env)"
-#     fi
-# else
-if [ -f "$HOME/.local/bin/mise" ]; then 
+if [ -f "$HOME/.local/bin/mise" ]; then
     eval "$($HOME/.local/bin/mise activate zsh)"
-    eval "$($HOME/.local/bin/mise hook-env)"
 fi
-# fi
-
 
 # Basic ZSH Options
 setopt SHARE_HISTORY INC_APPEND_HISTORY HIST_NO_STORE
@@ -31,41 +22,36 @@ export ZSH_DATA_DIR="${XDG_DATA_HOME}/zsh"
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME}/zsh"
 export ZSH_COMPDUMP="${ZSH_CACHE_DIR}/zcompdump"
 
-# Create necessary directories
-for dir in "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_RUNTIME_DIR" \
-           "$ZSH_DATA_DIR" "$ZSH_CACHE_DIR" "$ZSH_CACHE_DIR/completions"; do
-    [[ ! -d "$dir" ]] && mkdir -p "$dir"
-done
-
 # =============================================================================
 # ZI Plugin Manager
 # =============================================================================
 
-# Install ZI if not present
 if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
     print -P "%F{33}Installing ZI...%f"
     command mkdir -p "$HOME/.zi" && command chmod go-rwX "$HOME/.zi"
     command git clone -q --depth=1 https://github.com/z-shell/zi "$HOME/.zi/bin" || return 1
 fi
 
-# Source ZI
 source "$HOME/.zi/bin/zi.zsh"
 autoload -Uz _zi
 (( ${+_comps} )) && _comps[zi]=_zi
 
-# Load annexes
-zi light-mode for z-shell/z-a-meta-plugins @annexes
-zicompinit
+# Load only the ZI annexes we use (readurl + patch-dl for plugin fetching)
+# Skipped: z-a-bin-gem-node, z-a-rust — mise handles all tool/binary management
+zi light-mode for \
+    z-shell/z-a-meta-plugins \
+    z-shell/z-a-readurl \
+    z-shell/z-a-patch-dl
 
 # =============================================================================
 # Helper Functions
 # =============================================================================
 
-command_exists() { 
+command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-add_to_path() { 
+add_to_path() {
     [[ -d "$1" ]] && export PATH="$1:$PATH"
 }
 
@@ -75,18 +61,16 @@ fbd() {
 }
 
 # =============================================================================
-# Prompt - Starship (installed via mise)
+# Prompt - Starship (must be synchronous)
 # =============================================================================
 
-# Load synchronously - prompt must be available immediately
 command_exists starship && eval "$(starship init zsh)"
 
 # =============================================================================
-# Tool Completions
+# Tool Completions (cached)
 # =============================================================================
 
-# Generate completions for common tools
-for tool in mise kubectl helm; do
+for tool in mise kubectl; do
     if command_exists $tool; then
         comp_file="$ZSH_CACHE_DIR/completions/_$tool"
         [[ ! -f "$comp_file" ]] && $tool completion zsh > "$comp_file" 2>/dev/null
@@ -101,10 +85,8 @@ done
 # Oh-My-Zsh Integration
 # =============================================================================
 
-# Load essential OMZ library
 zi lucid for OMZL::history.zsh
 
-# Load OMZ libraries and plugins with delay
 zi wait lucid for \
     OMZL::clipboard.zsh \
     OMZL::compfix.zsh \
@@ -123,25 +105,21 @@ zi wait lucid for \
 # Aliases
 # =============================================================================
 
-# Directory navigation
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
-# File operations
 alias ls='ls --color=auto'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Kubernetes shortcuts
 if command_exists kubectl; then
     alias k=kubectl
     alias kaf='kubectl apply -f'
 fi
 
-# Editor shortcuts
 if command_exists nvim; then
     alias vim=nvim
     alias vimo=/usr/bin/vim
@@ -161,28 +139,29 @@ if [[ -f "$HOME/.fzf.zsh" ]]; then
     zi light wfxr/forgit
 fi
 
-# Docker completions (full installation only)
-# Note: docker compose is now a CLI plugin, completions included in _docker
-if command_exists docker; then
-    zi ice wait"1a" lucid as"completion"
-    zi snippet https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
-fi
-
 # Zoxide (installed via mise)
 if command_exists zoxide; then
     zi ice wait"0d" lucid atload'eval "$(zoxide init --cmd j zsh)"'
     zi light zdharma-continuum/null
 fi
 
-# Additional completions
-zi ice wait"1c" lucid as'completion' blockf
-zi snippet https://raw.githubusercontent.com/rust-lang/cargo/master/src/etc/_cargo
+# Cargo completions (cached, not fetched remotely each time)
+if command_exists cargo; then
+    comp_file="$ZSH_CACHE_DIR/completions/_cargo"
+    if [[ ! -f "$comp_file" ]]; then
+        zi ice wait"1c" lucid as'completion' blockf
+        zi snippet https://raw.githubusercontent.com/rust-lang/cargo/master/src/etc/_cargo
+    else
+        zi ice wait"1c" lucid as"completion"
+        zi snippet "$comp_file"
+    fi
+fi
 
 # =============================================================================
 # ZSH Enhancements
 # =============================================================================
 
-# Load completions, autosuggestions, fzf-tab, then syntax highlighting (MUST be last)
+# Completions, autosuggestions, syntax highlighting (MUST be last)
 zi wait lucid for \
     atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
         z-shell/fast-syntax-highlighting \
@@ -191,11 +170,8 @@ zi wait lucid for \
     atload"!_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions
 
-
 zi wait"2c" lucid for \
         Aloxaf/fzf-tab
-# Optional tools
-# Note: Now using chezmoi for dotfile management instead of dotbare
 
 zi ice wait"2e" lucid
 zi light "MichaelAquilina/zsh-you-should-use"
@@ -212,14 +188,10 @@ add_to_path "$HOME/bin"
 # =============================================================================
 
 if [[ $(uname) == "Darwin" ]]; then
-    # macOS specific
     [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
     export HOMEBREW_NO_INSTALL_CLEANUP=1
     add_to_path "/usr/local/sbin"
-    add_to_path "/usr/local/opt/icu4c/bin"
-    add_to_path "/usr/local/opt/icu4c/sbin"
 else
-    # Linux specific
     alias open=xdg-open
 fi
 
@@ -233,7 +205,6 @@ export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 export BAT_THEME="Dracula"
 
-# FZF configuration
 export FZF_DEFAULT_OPTS='
 --color=dark
 --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
@@ -242,28 +213,34 @@ export FZF_DEFAULT_OPTS='
 export FZF_DEFAULT_COMMAND='fd --type file'
 
 # =============================================================================
-# Conda Configuration
+# Conda / Mamba - Lazy Loaded (only if installed)
 # =============================================================================
-# Determine Conda base directory (full installation only)
-if command_exists conda; then
-    export _CONDA_BASE=$(dirname $(dirname $(which conda)))
-elif [[ $(uname) == "Darwin" ]]; then
-    export _CONDA_BASE=/opt/homebrew/Caskroom/miniconda/base
-else
-    export _CONDA_BASE=$HOME/miniconda3
-fi
 
-# Initialize Conda if available
-if [[ -f "$_CONDA_BASE/bin/conda" ]]; then
-    __conda_setup="$('$_CONDA_BASE/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-    if [[ $? -eq 0 ]]; then
-        eval "$__conda_setup"
-    elif [[ -f "$_CONDA_BASE/etc/profile.d/conda.sh" ]]; then
-        . "$_CONDA_BASE/etc/profile.d/conda.sh"
-    else
-        export PATH="$_CONDA_BASE/bin:$PATH"
-    fi
-    unset __conda_setup
+if [[ -x /opt/homebrew/Caskroom/miniconda/base/bin/conda ]] || [[ -x "$HOME/miniconda3/bin/conda" ]]; then
+    conda() {
+        unfunction conda mamba 2>/dev/null
+
+        local _conda_base
+        if [[ -x /opt/homebrew/Caskroom/miniconda/base/bin/conda ]]; then
+            _conda_base=/opt/homebrew/Caskroom/miniconda/base
+        else
+            _conda_base="$HOME/miniconda3"
+        fi
+
+        __conda_setup="$("$_conda_base/bin/conda" 'shell.zsh' 'hook' 2>/dev/null)"
+        if [[ $? -eq 0 ]]; then
+            eval "$__conda_setup"
+        elif [[ -f "$_conda_base/etc/profile.d/conda.sh" ]]; then
+            . "$_conda_base/etc/profile.d/conda.sh"
+        else
+            export PATH="$_conda_base/bin:$PATH"
+        fi
+        unset __conda_setup
+
+        conda "$@"
+    }
+
+    mamba() { conda; mamba "$@"; }
 fi
 
 # =============================================================================
@@ -280,34 +257,32 @@ fi
 set -o emacs
 autoload -U edit-command-line
 zle -N edit-command-line
-bindkey '^X^E' edit-command-line  # Ctrl-X-E to edit command in editor
+bindkey '^X^E' edit-command-line
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
 
+# =============================================================================
 # pnpm
+# =============================================================================
+
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
-
-bindkey "^[[1;5C" forward-word
-bindkey "^[[1;5D" backward-word
 
 # =============================================================================
 # Case Variant Search (rgv - ripgrep with case variants)
 # =============================================================================
 
-# Convert input to word array (splits on _ - . or camelCase boundaries)
 _to_words() {
     local input="$1"
-    # Replace separators with spaces, then handle camelCase
     echo "$input" | \
         sed -E 's/[-_.]/ /g' | \
         sed -E 's/([a-z])([A-Z])/\1 \2/g' | \
         tr '[:upper:]' '[:lower:]'
 }
 
-# Generate all case variants from a variable name
 _case_variants() {
     local input="$1"
     local words=($(_to_words "$input"))
@@ -322,46 +297,34 @@ _case_variants() {
         local upper_word="${word:u}"
         local cap_word="${(C)word}"
 
-        # snake_case
         [[ -n "$snake" ]] && snake+="_"
         snake+="$lower_word"
 
-        # camelCase
         if $first; then
             camel+="$lower_word"
         else
             camel+="$cap_word"
         fi
 
-        # PascalCase
         pascal+="$cap_word"
 
-        # UPPER_CASE
         [[ -n "$upper" ]] && upper+="_"
         upper+="$upper_word"
 
-        # kebab-case
         [[ -n "$kebab" ]] && kebab+="-"
         kebab+="$lower_word"
 
-        # dot.case
         [[ -n "$dot" ]] && dot+="."
         dot+="$lower_word"
 
-        # lowercase (no separator)
         lower+="$lower_word"
 
         first=false
     done
 
-    # Output unique variants
     printf '%s\n' "$snake" "$camel" "$pascal" "$upper" "$kebab" "$dot" "$lower" | sort -u
 }
 
-# ripgrep with case variants
-# Usage: rgv <variable_name> [rg_options...]
-# Example: rgv price_nego -t py
-#          rgv priceNego --type ts -l
 rgv() {
     if [[ $# -eq 0 ]]; then
         echo "Usage: rgv <variable_name> [rg_options...]"
@@ -377,11 +340,9 @@ rgv() {
     local pattern="$1"
     shift
 
-    # Generate variants and pipe to ripgrep
     _case_variants "$pattern" | rg -f - "$@"
 }
 
-# Show what variants will be searched (for debugging)
 rgv-show() {
     if [[ $# -eq 0 ]]; then
         echo "Usage: rgv-show <variable_name>"
@@ -392,23 +353,20 @@ rgv-show() {
         echo "  - $v"
     done
 }
-# ccp shell configuration (zsh)
-# Add this to your shell config file
 
-# Only load if ccp is installed
+# =============================================================================
+# ccp (Claude Code Profile Manager)
+# =============================================================================
+
 if command -v ccp &> /dev/null; then
-  # Claude alias - loads profile's CLAUDE.md and rules
   alias claude='CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --thinking-display summarized --add-dir "${CLAUDE_CONFIG_DIR:-$(ccp which --path 2>/dev/null)}"'
 
-  # Quick profile switch (optional)
   ccp-use() {
     ccp use "$@"
-    # Reload mise env if available
     if command -v mise &> /dev/null && [[ -f mise.toml ]]; then
       eval "$(mise env)"
     fi
   }
-else 
+else
   alias claude="claude --thinking-display summarized"
 fi
-
