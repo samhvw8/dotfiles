@@ -10,6 +10,15 @@ base_url = 'https://skills.sh'
 limit = 10
 
 [sources]
+[sources.'ast-grep/agent-skill']
+registry = 'manual'
+provider = 'git'
+url = 'https://github.com/ast-grep/agent-skill'
+path = 'sources/ast-grep--agent-skill'
+commit = '577f4d4507678f2c8cee150fae25e6ce309f70b1'
+updated = 2026-05-09T23:59:02.761688+07:00
+installed = ['skills/ast-grep']
+
 [sources.'nextlevelbuilder/ui-ux-pro-max-skill']
 registry = 'github'
 provider = 'git'
