@@ -2,11 +2,11 @@ version = 3
 name = 'default'
 settings-template = 'base'
 created = 2026-02-02T22:25:02.966428+07:00
-updated = 2026-05-10T00:10:18.747479+07:00
+updated = 2026-05-11T16:59:37.342895+07:00
 
 [hub]
-skills = ['3d-graphics', 'ast-grep', 'backend-development', 'browser-history', 'canvas-design', 'ccp', 'chrome-devtools', 'code-quality', 'databases', 'design-principles', 'docs-discovery', 'frontend-development', 'git-workflow', 'github-search', 'infra-engineer', 'lead-researcher', 'media-processing', 'mise-expert', 'mobile-development', 'nextjs-turborepo', 'payment-integration', 'planning', 'playwriter', 'problem-solving', 'prompt-architect', 'repomix', 'research', 'sequential-thinking', 'shopify', 'ui-ux-pro-max']
-agents = ['apple-platform-architect.md', 'brainstormer.md', 'code-reviewer.md', 'cofounder.md', 'copywriter.md', 'cto-advisor.md', 'cto.md', 'database-admin.md', 'debugger.md', 'devops-architect.md', 'docs-manager.md', 'gemini-orchestrator.md', 'journal-writer.md', 'learning-guide.md', 'magento-architect.md', 'mcp-manager.md', 'nodejs-expert.md', 'planner.md', 'project-manager.md', 'python-expert.md', 'quality-engineer.md', 'react-next-architect.md', 'refactoring-expert.md', 'requirements-analyst.md', 'researcher.md', 'scout.md', 'security-engineer.md', 'svelte-kit-architect.md', 'system-architect.md', 'tester.md', 'ui-ux-designer.md']
+skills = ['3d-graphics', 'ast-grep', 'backend-development', 'browser-history', 'canvas-design', 'ccp', 'chrome-devtools', 'claude', 'code-quality', 'databases', 'deep-think', 'design-principles', 'docs-discovery', 'frontend-development', 'git-workflow', 'github-search', 'heavy-brainstorm', 'heavyskill', 'infra-engineer', 'lead-researcher', 'media-processing', 'mise-expert', 'mobile-development', 'nextjs-turborepo', 'payment-integration', 'planning', 'playwriter', 'problem-solving', 'prompt-architect', 'repomix', 'research', 'sequential-thinking', 'shopify', 'ui-ux-pro-max']
+agents = ['apple-platform-architect.md', 'brainstormer.md', 'code-reviewer.md', 'cofounder.md', 'copywriter.md', 'cto-advisor.md', 'cto.md', 'database-admin.md', 'debugger.md', 'deep-thinker.md', 'devops-architect.md', 'docs-manager.md', 'gemini-orchestrator.md', 'journal-writer.md', 'learning-guide.md', 'magento-architect.md', 'mcp-manager.md', 'nodejs-expert.md', 'planner.md', 'project-manager.md', 'python-expert.md', 'quality-engineer.md', 'react-next-architect.md', 'refactoring-expert.md', 'requirements-analyst.md', 'researcher.md', 'scout.md', 'security-engineer.md', 'svelte-kit-architect.md', 'system-architect.md', 'tester.md', 'ui-ux-designer.md']
 hooks = ['force-agent-skills-eval', 'session-start']
 rules = ['cognitive-framework.md', 'delegation-protocol.md', 'se.md', 'surgical-changes.md']
 commands = ['accessibility-compliance-accessibility-audit.md']
