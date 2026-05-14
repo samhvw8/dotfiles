@@ -170,7 +170,7 @@ The right retrieval tool depends on the domain. Prefer primary sources (official
 
 For report structure and formatting, read `references/report-template.md`.
 
-Reports are saved to `./research/YYMMDD-<topic>.md` in the current working directory.
+Reports are saved to `./report/YYMMDD-<topic>.md` in the current working directory.
 
 **MANDATORY: Every claim MUST cite its source.** Use inline links `[text](url)` next to each claim. End the report with a `## Sources` section listing all URLs used. No claim without a source — if you can't cite it, don't include it.
 

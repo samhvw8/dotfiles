@@ -1,6 +1,6 @@
 # Research Report Template
 
-Save reports to `./plans/<plan-name>/reports/YYMMDD-<topic>.md`.
+Save reports to `./report/YYMMDD-<topic>.md`.
 
 ## Structure
 

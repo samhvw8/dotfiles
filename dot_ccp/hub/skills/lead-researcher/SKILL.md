@@ -100,4 +100,4 @@ Before reporting to user:
 - [ ] Conflicting findings are presented as tensions, not hidden
 - [ ] Each sub-question got adequate coverage
 - [ ] Report is concise — sacrifice grammar for brevity
-- [ ] Report saved to `./research/YYMMDD-<topic>.md`
+- [ ] Report saved to `./report/YYMMDD-<topic>.md`
