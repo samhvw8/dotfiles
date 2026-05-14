@@ -370,3 +370,9 @@ if command -v ccp &> /dev/null; then
 else
   alias claude="claude --thinking-display summarized"
 fi
+
+# agentmemory
+alias am-restart='launchctl kickstart -k gui/$(id -u)/com.agentmemory'
+alias am-stop='launchctl stop com.agentmemory'
+alias am-logs='tail -f /tmp/agentmemory.log'
+alias am-status='curl -sf http://localhost:3111/agentmemory/search -X POST -H "Content-Type: application/json" -d "{\"query\":\"health\"}" >/dev/null && echo "UP" || echo "DOWN"'
