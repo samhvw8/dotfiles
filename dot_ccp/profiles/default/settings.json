@@ -5,10 +5,11 @@
     "commit": "",
     "pr": ""
   },
-  "autoDreamEnabled": true,
-  "autoMemoryEnabled": true,
+  "autoDreamEnabled": false,
+  "autoMemoryEnabled": false,
   "effortLevel": "xhigh",
   "enabledPlugins": {
+    "agentmemory@agentmemory": true,
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
@@ -21,6 +22,12 @@
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1"
   },
   "extraKnownMarketplaces": {
+    "agentmemory": {
+      "source": {
+        "repo": "rohitg00/agentmemory",
+        "source": "github"
+      }
+    },
     "claude-hud": {
       "source": {
         "source": "git",
@@ -67,7 +74,19 @@
           }
         ]
       }
-    ]
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "bash $HOME/.claude/hooks/stop-check-docs.sh",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": []
   },
   "permissions": {
     "allow": [
