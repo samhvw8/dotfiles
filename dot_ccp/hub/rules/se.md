@@ -84,35 +84,6 @@ Strong success criteria enable independent iteration. Weak criteria ("make it wo
 | Implicit conventions | Document in types/spec |
 | Comments as spec | Use types + tests instead |
 
-## SOLID (OOP)
-
-| Principle | Rule |
-|-----------|------|
-| SRP | One reason to change per class |
-| OCP | Extend via composition, not modification |
-| LSP | Subtypes honor parent contracts |
-| ISP | Clients depend only on what they use |
-| DIP | Depend on abstractions, not concretions |
-
-## Design Heuristics
-
-```
-DRY   → Extract when pattern repeats 3+ times
-KISS  → Solve today's problem, not tomorrow's
-YAGNI → Delete speculative code
-Composition > Inheritance → Prefer has-a over is-a
-```
-
-### Simplicity Test
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If 200 lines could be 50, rewrite it.
-
-Ask: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
 ## Decision Making
 
 | Dimension | Question |
