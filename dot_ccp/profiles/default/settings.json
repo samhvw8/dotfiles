@@ -84,7 +84,7 @@
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "understand-anything@understand-anything": true,
+    "understand-anything@understand-anything": false,
     "agentmemory@agentmemory": true
   },
   "extraKnownMarketplaces": {
