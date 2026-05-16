@@ -1,0 +1,6 @@
+name: surgical-changes
+type: PostToolUse
+matcher: "Write|Edit"
+timeout: 5
+command: surgical-changes-check.sh
+interpreter: bash

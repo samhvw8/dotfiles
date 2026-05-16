@@ -1,0 +1,5 @@
+name: doc-rules
+type: Stop
+timeout: 5
+command: check-doc-rules.sh
+interpreter: bash
