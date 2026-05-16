@@ -62,6 +62,15 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/session-start-pickup/scripts/session-start-pickup.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -73,8 +82,50 @@
             "timeout": 220
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-recall/scripts/memory-recall.sh",
+            "timeout": 5
+          }
+        ]
       }
-    ]
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-save/scripts/memory-save-reminder.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/doc-rules/scripts/check-doc-rules.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/session-end-save/scripts/session-end-save.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUse": []
   },
   "statusLine": {
     "type": "command",
@@ -85,7 +136,8 @@
     "context7@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "understand-anything@understand-anything": false,
-    "agentmemory@agentmemory": true
+    "agentmemory@agentmemory": true,
+    "frontend-design@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
