@@ -91,9 +91,7 @@
             "timeout": 5
           }
         ]
-      }
-    ],
-    "Stop": [
+      },
       {
         "hooks": [
           {
@@ -113,6 +111,7 @@
         ]
       }
     ],
+    "Stop": [],
     "SessionEnd": [
       {
         "hooks": [
