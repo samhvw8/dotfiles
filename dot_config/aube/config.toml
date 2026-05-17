@@ -1,0 +1,2 @@
+dangerouslyAllowAllBuilds = true
+trustPolicyExclude = ["protobufjs"]
