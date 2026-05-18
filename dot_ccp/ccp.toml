@@ -19,6 +19,16 @@ commit = '577f4d4507678f2c8cee150fae25e6ce309f70b1'
 updated = 2026-05-09T23:59:02.761688+07:00
 installed = ['skills/ast-grep']
 
+[sources.'intellectronica/agent-skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/intellectronica/agent-skills.git'
+path = 'sources/intellectronica--agent-skills'
+ref = 'main'
+commit = '9b0e00ad1b941165e2506545bbfddafa34cf2cb8'
+updated = 2026-05-18T08:52:54.36408+07:00
+installed = ['skills/ultrathink']
+
 [sources.'nextlevelbuilder/ui-ux-pro-max-skill']
 registry = 'github'
 provider = 'git'
@@ -47,6 +57,16 @@ ref = 'main'
 commit = 'c39af15ce30e2b3130a0b53382213da646462f70'
 updated = 2026-05-02T21:45:06.427979+07:00
 installed = ['skills/ccp-dev', 'skills/ccp']
+
+[sources.'tw93/waza']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/tw93/Waza.git'
+path = 'sources/tw93--waza'
+ref = 'main'
+commit = '5598a3a8eff88d52ed1a0f90b5aa1cf18837eb1b'
+updated = 2026-05-18T08:52:45.913022+07:00
+installed = ['skills/think']
 
 [sources.'vercel-labs/next-skills']
 registry = 'github'

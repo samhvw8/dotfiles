@@ -34,7 +34,6 @@ dasel = "latest"
 hurl = "latest"
 rg = "latest"
 cloudflared = "latest"
-"github:router-for-me/CLIProxyAPI" = { version = "latest", exe = "cli-proxy-api" }
 ast-grep = "latest"
 starship = "latest"
 zoxide = "latest"
