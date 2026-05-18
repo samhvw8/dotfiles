@@ -12,7 +12,9 @@
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "understand-anything@understand-anything": true
+    "understand-anything@understand-anything": true,
+    "agentmemory@agentmemory": true,
+    "frontend-design@claude-plugins-official": true
   },
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
@@ -141,7 +143,15 @@
       "WebFetch(domain:*)",
       "WebSearch",
       "Write",
-      "mcp__context7"
+      "mcp__context7",
+      "mcp__codegraph__codegraph_search",
+      "mcp__codegraph__codegraph_context",
+      "mcp__codegraph__codegraph_callers",
+      "mcp__codegraph__codegraph_callees",
+      "mcp__codegraph__codegraph_impact",
+      "mcp__codegraph__codegraph_node",
+      "mcp__codegraph__codegraph_status",
+      "mcp__codegraph__codegraph_files"
     ],
     "defaultMode": "plan",
     "deny": []
