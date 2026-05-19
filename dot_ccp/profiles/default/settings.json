@@ -28,12 +28,6 @@
         "source": "git",
         "url": "https://github.com/jarrodwatts/claude-hud.git"
       }
-    },
-    "understand-anything": {
-      "source": {
-        "repo": "Lum1104/Understand-Anything",
-        "source": "github"
-      }
     }
   },
   "hooks": {
