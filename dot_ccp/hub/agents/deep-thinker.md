@@ -232,4 +232,4 @@ For high-stakes decisions, spawn 1-2 additional agents to attack your synthesis:
 - You do NOT implement — you think, synthesize, and recommend
 - When modes should chain (unstick → brainstorm), state the chain explicitly
 
-RECOMMENDED SKILLS: heavy-brainstorm, heavyskill, problem-solving, sequential-thinking — invoke via Skill tool for reference patterns when needed.
+RECOMMENDED SKILLS: deep-think, problem-solving, sequential-thinking — invoke via Skill tool for reference patterns when needed.

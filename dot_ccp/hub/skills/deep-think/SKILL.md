@@ -1,6 +1,6 @@
 ---
 name: deep-think
-description: "Unified heavy thinking orchestrator. Classifies problem type → dispatches to the right parallel thinking pattern. Modes: brainstorm (divergent ideation), solve (verifiable answers), decompose (break complex problems), unstick (reframe blockages). All modes use parallel agents with model=opus for maximum reasoning depth, then YOU synthesize. Actions: think deeply, brainstorm, decompose, solve, unstick, analyze. Keywords: deep think, heavy thinking, think harder, brainstorm, decompose, break down, stuck, unstick, solve, parallel thinking, multi-perspective, think about this, explore deeply, reason about, analyze deeply. Use when: any problem deserving more than shallow first-pass thinking — strategic decisions, hard technical problems, complex decomposition, creative exploration, feeling stuck. Do NOT use for: simple lookups, mechanical tasks, clear next steps, tasks needing implementation not thinking."
+description: "Unified heavy thinking orchestrator (also known as 'heavy think'). Classifies problem type → dispatches to the right parallel thinking pattern. Modes: brainstorm (divergent ideation), solve (verifiable answers), decompose (break complex problems), unstick (reframe blockages). All modes use parallel agents with model=opus for maximum reasoning depth, then YOU synthesize. Actions: think deeply, brainstorm, decompose, solve, unstick, analyze. Keywords: deep think, heavy think, heavy thinking, think harder, brainstorm, decompose, break down, stuck, unstick, solve, parallel thinking, multi-perspective, think about this, explore deeply, reason about, analyze deeply, heavyskill, heavy-brainstorm. Use when: user says 'deep think', 'heavy think', 'think harder', 'brainstorm deeply', or any problem deserving more than shallow first-pass thinking — strategic decisions, hard technical problems, complex decomposition, creative exploration, feeling stuck. Do NOT use for: simple lookups, mechanical tasks, clear next steps, tasks needing implementation not thinking."
 ---
 
 # Deep Think
@@ -29,21 +29,131 @@ When modes should chain: decompose first → brainstorm on each piece, or unstic
 
 ## Mode 1: Brainstorm
 
-**Invoke skill:** `heavy-brainstorm`
-
 Parallel perspective agents explore the same problem from different worldviews. Insight emerges from collision, not consensus.
 
-See `heavy-brainstorm` skill for full protocol (frame → design perspectives → spawn → synthesize → stress test).
+### Stage 1: Frame
+
+```
+PROBLEM: [One sentence — what are we trying to figure out?]
+CONSTRAINTS: [What's fixed? Budget, timeline, team size, tech stack...]
+SUCCESS LOOKS LIKE: [How will we know a good answer when we see it?]
+MODE: scan (3 agents, breadth-first) | deep (3-5 agents, depth-first)
+```
+
+### Stage 2: Design Perspectives
+
+Choose 3-5 perspectives that **collide productively** — tension, not redundancy.
+
+| Perspective | Explores |
+|-------------|----------|
+| First Principles | What's actually true vs assumed? |
+| User Advocate | What does the person experiencing this actually need? |
+| Contrarian | What if the obvious answer is wrong? |
+| Futurist | What's true in 3 years that isn't today? |
+| Operator | What breaks at scale? Maintenance burden? |
+| Economist | Incentives? Who pays, who benefits? |
+| Minimalist | 10% effort that captures 80% value? |
+| Historian | What's been tried? Why did it fail/succeed? |
+
+Rules: MUST include ≥1 challenger. MUST span ≥2 of: user, business, technical, temporal.
+
+See `references/perspective-combinations.md` for pre-built sets by scenario.
+
+### Stage 3: Spawn Parallel Agents
+
+Launch all in **one message**, `model="opus"`. Each gets the same problem, distinct lens.
+
+See `references/brainstorm-agent-prompt.md` for full prompt. Core structure:
+
+```
+You are a brainstorming agent exploring from one specific perspective.
+
+PROBLEM: {problem} | CONSTRAINTS: {constraints}
+YOUR PERSPECTIVE: {perspective_name} — {perspective_description}
+
+Think from this perspective ONLY. Find what ONLY this lens reveals.
+
+1. Challenge 2-3 assumptions most people take for granted
+2. What is the REAL problem underneath the stated one?
+3. Generate 3-5 ideas — push past the obvious first answer
+4. Pick strongest. Stress-test: what breaks? what scales?
+5. Second-order effects: if this succeeds, then what? And then what?
+
+Output: ## Core Insight → ## The Real Problem → ## Ideas → ## Second-Order Effects → ## Hidden Risk → ## Provocation
+```
+
+### Stage 4: Synthesize (YOU — never delegate)
+
+1. **Map** — territory each perspective covered, overlap vs divergence
+2. **Collide** — where perspectives directly contradict (deepest insight lives here)
+3. **Extract surprises** — what exists in NO single output but emerges from combining
+4. **Second-order cascade** — trace strongest ideas: then what? and then what?
+5. **Converge** — landscape → key insights (ranked by surprise) → tensions worth holding → recommendation → what to kill
+
+### Stage 5 (Optional): Stress Test
+
+For high stakes, spawn 1-2 agents to attack synthesis: Red team ("find every way this fails") or Pre-mortem ("it's 1 year later and this failed — what happened?"). See `references/brainstorm-agent-prompt.md` for templates.
 
 ---
 
 ## Mode 2: Solve
 
-**Invoke skill:** `heavyskill`
+K independent agents solve the same verifiable problem from scratch. Deliberation audits reasoning chains and forges new paths from fragments — it produces correct answers absent from ALL trajectories in ~50% of cases.
 
-K independent agents solve the same verifiable problem. Deliberation audits reasoning chains and forges new paths from fragments.
+### When to use
 
-See `heavyskill` skill for full protocol (parallel reasoning → memory cache → deliberation → output).
+- Mathematical reasoning, algorithmic/competition problems, complex logical deduction
+- Any verifiable task where confidence < ~70%
+- NOT for subjective, preference-oriented, or easy (>90% confidence) tasks
+
+### Stage 1: Parallel Reasoning
+
+Spawn **K independent agents** in a **single message** (parallel). Zero sibling knowledge.
+
+| K | When |
+|---|------|
+| 3 | Standard — most problems |
+| 5 | High-stakes — competition math, critical correctness |
+
+```
+Solve this problem step by step. Show complete reasoning and arrive at a final answer.
+Use whatever approach you find most natural — algebraic, geometric, constructive, brute force, or proof by contradiction.
+
+Problem: {query}
+
+Requirements:
+- Reason from first principles, show all work
+- Final answer clearly marked
+- Math: \boxed{answer} | Code: code block
+```
+
+### Stage 2: Memory Cache
+
+1. **Collect** all K outputs
+2. **Shuffle** trajectory order (prevents position bias)
+3. **Prune** if exceeding token budget — truncate reasoning, preserve final answers
+
+### Stage 3: Sequential Deliberation (YOU — never delegate)
+
+1. **Classify** query type (math / code / logic / multi-step)
+2. **Map answer distribution** — what answers appear, how often?
+3. **Audit each chain** — logic valid? gaps? sign errors? hidden assumptions?
+4. **Cross-validate** — do independent approaches confirm the same result?
+5. **Apply critical skepticism:**
+   - Majority is signal, not proof
+   - Minority answer with tighter logic may be correct
+   - All may be wrong — re-derive from fragments if needed
+6. **Synthesize** the definitive answer
+
+### Stage 4: Output
+
+Final answer only — no meta-analysis unless asked. Math: `\boxed{answer}` | Code: code block.
+
+### Iterative Deliberation
+
+Trigger when first deliberation produces low confidence or fundamental disagreement. Concatenate deliberation as additional trajectory, re-run Stage 3. **Max 2-3 iterations** — performance degrades beyond that.
+
+See `references/compute.md` for cost analysis and K selection. See `references/tensions.md` for design tensions.
 
 ---
 
@@ -252,6 +362,12 @@ State the chain upfront: "I'll decompose first, then brainstorm on the hardest p
 
 ## References
 
+- `references/brainstorm-agent-prompt.md` — Brainstorm + stress test agent prompts
+- `references/perspective-combinations.md` — Pre-built perspective sets by scenario
+- `references/compute.md` — Cost analysis, K selection, non-monotonic performance
+- `references/tensions.md` — Design tensions: consensus vs minority, width vs depth
+- `references/landscape.md` — How Solve mode compares to Best-of-N, Self-Consistency, Forest-of-Thought
+- `references/paper-details.md` — HeavySkill paper methodology details
 - `references/decompose-prompt.md` — Full decomposition agent prompts with variants
 - `references/unstick-prompt.md` — Full unsticking agent prompts with variants
-- Related skills: `heavy-brainstorm`, `heavyskill`, `problem-solving`, `sequential-thinking`
+- Related skills: `problem-solving`, `sequential-thinking`
