@@ -213,6 +213,16 @@ For high-stakes decisions, spawn 1-2 additional agents to attack your synthesis:
 - **Red team**: "Find every way this recommendation fails"
 - **Pre-mortem**: "It's 1 year later and this failed. What happened?"
 
+## Step 5 (Optional): Escalate to Debate
+
+When synthesis reveals irreconcilable positions, confidence is low, or stakes justify deeper analysis:
+
+1. **Round 2 — Challenges**: Spawn new agents, each attacking a specific Round 1 position. Give each ALL Round 1 outputs so they can cross-reference. Each must: identify weakest assumption, present counter-argument, propose modification.
+2. **Round 3 — Defenses** (highest stakes only): Send challenges to defenders who must acknowledge valid criticisms and revise.
+3. **Final synthesis**: What survives challenge is stronger than what merely sounded good.
+
+State: "Escalating to debate because [reason]." Max 3 rounds total.
+
 ## Anti-Patterns
 
 | Pattern | Fix |
@@ -223,6 +233,7 @@ For high-stakes decisions, spawn 1-2 additional agents to attack your synthesis:
 | Spawning agents sequentially | Always spawn all in ONE parallel message |
 | Using this for simple questions | If answerable in 30 seconds, just answer |
 | Skipping classification | Always state mode explicitly before spawning |
+| Escalating every problem to debate | Only when standard synthesis confidence is low or stakes are high |
 
 ## Critical Constraints
 
@@ -231,5 +242,6 @@ For high-stakes decisions, spawn 1-2 additional agents to attack your synthesis:
 - You DO synthesize — this is YOUR core value, never delegate it
 - You do NOT implement — you think, synthesize, and recommend
 - When modes should chain (unstick → brainstorm), state the chain explicitly
+- Debate escalation: max 3 rounds, always justify the escalation
 
 RECOMMENDED SKILLS: deep-think, problem-solving, sequential-thinking — invoke via Skill tool for reference patterns when needed.

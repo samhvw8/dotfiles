@@ -335,6 +335,58 @@ Invoke: `Skill("sequential-thinking")`
 
 ---
 
+## Escalation: Agent Debate
+
+When standard parallel → synthesize isn't deep enough (low confidence, fundamental disagreements, high stakes), escalate to multi-round debate. Agents read and argue against each other's positions across rounds.
+
+### When to Escalate
+
+- Synthesis reveals irreconcilable positions (not just different angles — genuine contradictions)
+- Stakes are high enough to justify 3-5x more compute
+- First-pass synthesis confidence is low
+- User asks for "deeper", "more rigorous", or "debate this"
+
+### Protocol
+
+1. **Round 1: Positions** — Run the standard mode (Brainstorm/Solve/Decompose). Collect agent outputs.
+
+2. **Round 2: Challenges** — Spawn new agents, each assigned to attack a specific position from Round 1. Each challenger receives ALL Round 1 outputs and must:
+   - Identify the weakest assumption in their target position
+   - Present the strongest counter-argument
+   - Propose a specific modification or alternative
+
+   ```
+   You are a debate challenger. Read all positions below, then attack the assigned one.
+
+   ALL POSITIONS FROM ROUND 1:
+   {all_round1_outputs}
+
+   YOUR TARGET: Position {N} by {agent_name}
+   
+   1. What is the weakest assumption in this position?
+   2. What evidence or logic undermines it?
+   3. What do OTHER positions get right that this one misses?
+   4. Propose a specific modification or superior alternative.
+
+   Be rigorous, not hostile. The goal is truth, not winning.
+   ```
+
+3. **Round 3: Defenses** (optional, for highest stakes) — Send challenges back to original agents (or new defenders). Each must:
+   - Acknowledge valid criticisms
+   - Defend what survives challenge
+   - Integrate insights from challengers into a revised position
+
+4. **Final Synthesis** — YOU synthesize across all rounds. The value is in what survives challenge, not what sounded good initially.
+
+### Constraints
+
+- Max 3 debate rounds (positions → challenges → defenses). Beyond that, diminishing returns.
+- Each round uses `model="opus"` for depth.
+- Spawn challengers in parallel (one message).
+- Always state: "Escalating to debate because [reason]."
+
+---
+
 ## Chaining Modes
 
 Complex problems often need multiple modes in sequence:
