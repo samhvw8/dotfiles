@@ -2,11 +2,11 @@ version = 3
 name = 'default'
 settings-template = 'base'
 created = 2026-02-02T22:25:02.966428+07:00
-updated = 2026-05-18T08:57:17.730058+07:00
+updated = 2026-05-19T14:33:26.957423+07:00
 
 [hub]
 skills = ['3d-graphics', 'ast-grep', 'backend-development', 'browser-history', 'canvas-design', 'ccp', 'chrome-devtools', 'claude', 'code-quality', 'databases', 'deep-think', 'design-principles', 'docs-discovery', 'frontend-development', 'git-workflow', 'github-search', 'guizang-ppt-skill', 'heavy-brainstorm', 'heavyskill', 'infra-engineer', 'lead-researcher', 'media-processing', 'mise-expert', 'mobile-development', 'nextjs-turborepo', 'payment-integration', 'planning', 'playwriter', 'problem-solving', 'prompt-architect', 'repomix', 'research', 'sequential-thinking', 'shopify', 'ui-ux-pro-max']
 agents = ['brainstormer.md', 'code-reviewer.md', 'cofounder.md', 'copywriter.md', 'cto-advisor.md', 'cto.md', 'database-admin.md', 'debugger.md', 'deep-thinker.md', 'devops-architect.md', 'docs-manager.md', 'journal-writer.md', 'learning-guide.md', 'mcp-manager.md', 'nodejs-expert.md', 'planner.md', 'project-manager.md', 'python-expert.md', 'quality-engineer.md', 'react-next-architect.md', 'refactoring-expert.md', 'requirements-analyst.md', 'researcher.md', 'scout.md', 'security-engineer.md', 'svelte-kit-architect.md', 'system-architect.md', 'tester.md', 'ui-ux-designer.md']
 hooks = ['doc-rules', 'force-agent-skills-eval', 'memory-recall', 'memory-save', 'session-end-save', 'session-start', 'session-start-pickup']
-rules = ['cognitive-framework.md', 'delegation-protocol.md', 'documentation.md', 'se.md', 'surgical-changes.md']
+rules = ['cognitive-framework.md', 'delegation-protocol.md', 'documentation.md', 'se.md', 'surgical-changes.md', 'codegraph.md']
 commands = ['accessibility-compliance-accessibility-audit.md']
