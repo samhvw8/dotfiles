@@ -9,12 +9,11 @@
   "autoMemoryEnabled": false,
   "effortLevel": "xhigh",
   "enabledPlugins": {
+    "agentmemory@agentmemory": true,
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "understand-anything@understand-anything": true,
-    "agentmemory@agentmemory": true,
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true
   },
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
@@ -28,12 +27,6 @@
       "source": {
         "source": "git",
         "url": "https://github.com/jarrodwatts/claude-hud.git"
-      }
-    },
-    "understand-anything": {
-      "source": {
-        "repo": "Lum1104/Understand-Anything",
-        "source": "github"
       }
     }
   },
