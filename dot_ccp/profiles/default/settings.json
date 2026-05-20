@@ -9,18 +9,18 @@
   "autoMemoryEnabled": false,
   "effortLevel": "xhigh",
   "enabledPlugins": {
+    "agentmemory@agentmemory": true,
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "agentmemory@agentmemory": true,
-    "frontend-design@claude-plugins-official": true
   },
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
+    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
-    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1"
+    "ENABLE_EXPERIMENTAL_MCP_CLI": "1"
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
