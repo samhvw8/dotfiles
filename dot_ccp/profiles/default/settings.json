@@ -16,6 +16,8 @@
     "gopls-lsp@claude-plugins-official": true
   },
   "env": {
+    "AGENTMEMORY_URL": "http://localhost:3111",
+    "AGENTMEMORY_SECRET": "",
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
