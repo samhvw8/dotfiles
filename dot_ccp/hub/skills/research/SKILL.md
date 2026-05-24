@@ -22,11 +22,26 @@ Search across language communities using the correct language for each query. Di
 
 ### Search Language Matrix
 
+#### Always Search (every query)
+
 | Language | Priority | Query Language | Guidance |
 |----------|----------|----------------|----------|
 | **English** | MUST | English | Official docs, engineering blogs, conference talks. Broadest coverage. |
 | **Chinese (中文)** | MUST | Chinese | Use Chinese technical terms. Rich in production-scale patterns, mobile/fintech, infrastructure at scale. |
-| **Russian (русский)** | RECOMMENDED | Russian | Use Russian technical terms. Strong in systems programming, algorithms, competitive programming, security. |
+| **Russian (русский)** | MUST | Russian | Use Russian technical terms. Strong in systems programming, algorithms, competitive programming, security. |
+
+#### Conditional Languages (add when topic matches field matrix)
+
+| Language | Priority | When to add | Key platforms |
+|----------|----------|-------------|---------------|
+| **Japanese (JA)** | MUST (conditional) | Game dev, embedded/IoT, robotics, manufacturing, automotive | Qiita, Zenn |
+| **Korean (KO)** | RECOMMENDED | Mobile gaming, security/CTF, e-commerce | Velog, Tistory |
+| **German (DE)** | RECOMMENDED | Industry 4.0, automotive SW, embedded, robotics | Heise.de, Golem.de |
+| **Portuguese (PT-BR)** | RECOMMENDED | Fintech/payments (Brazil-specific) | TabNews, iMasters |
+| **Vietnamese (VI)** | OPTIONAL | Outsourcing patterns, CTF/security | Viblo |
+
+For full field-to-language matrix and the UNIQUE decision test for when to add a language, read `references/language-matrix.md`.
+For query templates in conditional languages, read `references/query-templates.md`.
 
 ### Query Construction
 
@@ -139,21 +154,62 @@ Group by independence: repo searches together, code searches together, API searc
 
 GitHub research reveals what practitioners actually build, not just what they write about. Prioritize repos with recent activity and meaningful star counts.
 
-## Phase 4: Retrieval Tools
+## Phase 4: Retrieval & Deep Gathering
 
-Use any available retrieval tools to gather deeper knowledge:
+Use **all available tools and MCP servers** to gather information. Do NOT limit to a fixed set.
 
-**context7 MCP** (library/framework docs):
-- Use `resolve-library-id` to find the library, then `query-docs` for specific topics
-- Especially valuable for API syntax, version-specific behavior, and configuration
+### Step 1: Discover Available Tools
 
-**Web Fetch** — fetch full pages when search snippets are insufficient
+Before fetching content, scan what's available in this session:
+- Check `<system-reminder>` for listed MCP tools and deferred tools
+- Use `ToolSearch` with queries like "web", "search", "fetch", "scrape", "crawl", "browse" to find retrieval-capable tools
+- Note all built-in tools that can retrieve external content
 
-**Official documentation** — always check the official project docs, not just community content
+### Step 2: Classify by Capability
 
-**MCP resources** — check for any domain-specific MCP servers that expose relevant data
+Group every discovered tool by what it can do:
 
-The right retrieval tool depends on the domain. Prefer primary sources (official docs, source code) over secondary (blog posts, tutorials).
+| Capability | What it does |
+|-----------|--------------|
+| **Search** | Find URLs/content by query (keyword, semantic, meta-search) |
+| **Fetch/Scrape** | Extract content from URLs (HTML→markdown, JS rendering) |
+| **Crawl** | Follow links, map sites, deep multi-page extraction |
+| **Browse** | Control a real browser (auth, interactive, JS-heavy SPAs) |
+| **Geo-target** | Route requests through specific countries/regions |
+| **Bypass** | Handle anti-bot, CAPTCHAs, rate limits |
+| **Docs** | Query library/framework documentation |
+| **Domain-specific** | Platform extractors, structured data APIs |
+
+### Step 3: Use Everything, Escalate on Failure
+
+```
+1. Use all search-capable tools to find sources
+2. Use all fetch/scrape tools to extract content
+   ↓ blocked or JS-rendered?
+3. Use browse-capable tools for interactive/JS content
+   ↓ anti-bot or geo-restricted?
+4. Use bypass/geo-targeting tools if available
+```
+
+**Key principle:** Try every available tool before concluding content is inaccessible. Different tools succeed on different sites.
+
+### Free Open Platforms (always check)
+
+| Domain | EN | ZH (中文) | RU (русский) |
+|--------|----|----|-----|
+| **Academic** | arXiv, bioRxiv, SSRN, PubMed Central, Semantic Scholar, CORE, Unpaywall, OpenAlex | CNKI (中国知网), Wanfang (万方数据), Baidu Scholar (百度学术), CQVIP (维普) | eLibrary.ru, CyberLeninka, Math-Net.ru |
+| **Code/Packages** | GitHub, GitLab, npm, PyPI, crates.io, pkg.go.dev | Gitee, OSChina (开源中国) | GitFlic |
+| **Docs/Standards** | MDN, DevDocs, W3C, IETF RFCs | Chinese national standards (GB) | GOST standards |
+| **Archives/Cache** | archive.org, Google Cache, Common Crawl | web.archive.org (works for .cn) | web.archive.org |
+| **Q&A** | Stack Overflow, Stack Exchange, Quora | Zhihu (知乎), SegmentFault, CSDN Q&A | Habr Q&A, CyberForum.ru, sql.ru |
+| **Forums/Discussion** | Reddit ⚠️, HN, Lobsters, Tildes, IndieHackers, Product Hunt | V2EX, Tieba (百度贴吧), NodeSeek, Hostloc, 52pojie (吾爱破解) | Habr, OpenNET.ru, LOR (linux.org.ru), 4PDA, iXBT |
+| **Dev Blogs** | dev.to, Medium, Hashnode | Juejin (掘金), CSDN blogs, InfoQ CN | Tproger, Habr blogs, vc.ru/dev |
+| **Data/Datasets** | Kaggle, HuggingFace, Papers With Code | Tianchi (天池), ModelScope (魔搭) | Kaggle RU community |
+| **Patents/Legal** | Google Patents, USPTO, WIPO | CNIPA (国家知识产权局) | Rospatent (ФИПС) |
+| **Competitive Prog** | LeetCode, HackerRank | LeetCode CN, Luogu (洛谷), AcWing | Codeforces, e-olymp |
+| **Cloud/Infra Docs** | AWS, GCP, Azure docs | Alibaba Cloud (阿里云), Tencent Cloud (腾讯云) docs | Yandex Cloud docs |
+
+These are freely accessible without any tools — just `WebFetch` the URL. Always check relevant platforms before escalating to paid/bypass tools.
 
 ## Phase 5: Synthesis & Cross-Reference
 

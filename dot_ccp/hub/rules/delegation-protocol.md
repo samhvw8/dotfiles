@@ -49,7 +49,8 @@ You MUST search for best practices and solutions across elite developer communit
 |----------|----------|----------|
 | **English** | MUST | Search in English. Target elite English-speaking developer communities and official documentation. |
 | **Chinese** | MUST | Search in Chinese (中文). Target elite Chinese developer communities. Use Chinese technical terms (e.g., 最佳实践, 解决方案, 架构设计). |
-| **Russian** | RECOMMENDED | Search in Russian (русский). Target elite Russian developer communities. |
+| **Russian** | MUST | Search in Russian (русский). Target elite Russian developer communities. Strong in algorithms, systems, security. |
+| **Conditional** | Topic-dependent | Add JA (game/embedded/robotics/mfg/auto), KO (gaming/security/CTF), DE (Industry 4.0/automotive), PT-BR (fintech/Brazil). See `research` skill `references/language-matrix.md`. |
 
 **Research execution — ALWAYS delegate to agents, NEVER do searches yourself:**
 - **Single-domain research** → spawn `researcher` agent (fresh context, no bias from current conversation)
