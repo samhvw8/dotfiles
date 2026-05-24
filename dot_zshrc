@@ -359,7 +359,18 @@ rgv-show() {
 # =============================================================================
 
 if command -v ccp &> /dev/null; then
-  alias claude='CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --thinking-display summarized --add-dir "${CLAUDE_CONFIG_DIR:-$(ccp which --path 2>/dev/null)}"'
+  claude() {
+    if [[ $# -gt 0 && "$1" != -* ]]; then
+      if [[ -z "$_CLAUDE_SUBCMDS" ]]; then
+        _CLAUDE_SUBCMDS=" $(command claude --help 2>/dev/null | awk '/^  Commands:/{f=1;next} f && /^  [a-z]/{split($1,a,"|"); for(i in a) print a[i]}' | xargs) "
+      fi
+      if [[ "$_CLAUDE_SUBCMDS" == *" $1 "* ]]; then
+        command claude "$@"
+        return
+      fi
+    fi
+    CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --thinking-display summarized --add-dir "${CLAUDE_CONFIG_DIR:-$(ccp which --path 2>/dev/null)}" "$@"
+  }
 
   ccp-use() {
     ccp use "$@"
