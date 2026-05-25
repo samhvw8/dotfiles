@@ -90,66 +90,80 @@ Write queries in the target language — do not search in English expecting Chin
 
 Use `gh` CLI to find reference implementations and community patterns. Search in **multiple languages** — Chinese repos surface production patterns, Russian repos surface algorithmic/systems implementations.
 
-### Multi-Language GitHub Search Matrix
+### Layered Query Strategy (MANDATORY)
 
-**English queries:**
-```bash
-gh search repos "[topic]" --sort stars --limit 10
-gh search code "[topic] [pattern]" --limit 10
-gh search code "[topic]" --language python --limit 10
-gh search code "[topic]" --language typescript --limit 10
-gh search code "[topic]" --language go --limit 10
-gh search code "[topic]" --language java --limit 10
-gh search code "[topic]" --language rust --limit 10
-```
+GitHub search matches on repo name + description + README. Compound queries (`"headless browser AI agent"`) miss repos whose descriptions use different word order or omit one term. **Always search broad-to-narrow in layers.**
 
-**Chinese queries (中文):**
-```bash
-gh search repos "[topic 中文关键词]" --sort stars --limit 10
-gh search repos "[topic] 中转" --sort stars --limit 10
-gh search repos "[topic] 实现" --sort stars --limit 10
-gh search code "[中文关键词]" --limit 10
-```
+| Layer | Purpose | EN example | ZH example | RU example |
+|-------|---------|------------|------------|------------|
+| **L1: Broad single-concept** | Catch infra tools missing niche jargon | `"headless browser"` | `"无头浏览器"` | `"безголовый браузер"` |
+| **L2: Compound topic-specific** | Narrow to domain-specific projects | `"browser agent"` | `"AI代理浏览器"` | `"браузер для ИИ агентов"` |
+| **L3: Adjacent categories** | Catch overlapping/dependent tools | `"stealth browser"` | `"反检测浏览器"` | `"скрытый браузер"` |
+| **L4: Language-filtered** | Systems-language tools (Rust/Go/Zig) | `--language rust` | same query + flag | same query + flag |
 
-**Russian queries (русский):**
+**Every layer MUST run in EN + ZH + RU.** Add conditional languages (JA/KO/DE/PT-BR/VI) per `references/language-matrix.md` when topic matches.
+
+**Why L1 matters most:** A 13k-star Rust headless browser and a 30k-star browser engine were both missed because queries started at L2. The broad query `"headless browser"` caught both immediately. Narrow queries are for precision after broad queries establish the landscape.
+
+### Query Templates
+
 ```bash
-gh search repos "[topic русские термины]" --sort stars --limit 10
-gh search code "[русские термины]" --limit 10
+# L1: Broad — EN + ZH + RU (ALWAYS start here)
+gh search repos "[broad-EN]" --sort stars --limit 15
+gh search repos "[broad-ZH 中文]" --sort stars --limit 15
+gh search repos "[broad-RU русский]" --sort stars --limit 15
+
+# L2: Compound — EN + ZH + RU
+gh search repos "[compound-EN]" --sort stars --limit 10
+gh search repos "[compound-ZH]" --sort stars --limit 10
+gh search repos "[compound-RU]" --sort stars --limit 10
+
+# L3: Adjacent — EN + ZH + RU
+gh search repos "[adjacent-EN]" --sort stars --limit 10
+gh search repos "[adjacent-ZH]" --sort stars --limit 10
+gh search repos "[adjacent-RU]" --sort stars --limit 10
+
+# L4: Language-filtered (apply to L1 broad terms)
+gh search repos "[broad]" --language rust --sort stars --limit 5
+gh search repos "[broad]" --language go --sort stars --limit 5
+gh search repos "[broad]" --language zig --sort stars --limit 5
+
+# Code search (cross-language)
+gh search code "[pattern]" --language python --limit 10
+gh search code "[pattern]" --language typescript --limit 10
 ```
 
 ### Structured API Search (with star threshold)
 
 ```bash
-# English
-gh api search/repositories -f q="[query] stars:>100" \
+gh api search/repositories -f q="[broad-query] stars:>100" \
   --jq '.items[:10] | .[] | {name, url: .html_url, description, stars: .stargazers_count}'
 
-# Chinese keywords
 gh api search/repositories -f q="[中文关键词] stars:>50" \
   --jq '.items[:10] | .[] | {name, url: .html_url, description, stars: .stargazers_count}'
 ```
 
-### Execution: Run Multiple gh Searches in Parallel
+### Execution: Parallel Batching
 
-**MUST batch independent `gh` searches into parallel Bash calls.** Do NOT run them one-by-one sequentially.
+**MUST batch independent `gh` searches into parallel Bash calls.** Do NOT run sequentially.
 
-Example — launch all these simultaneously in one message:
 ```
-Bash: gh search repos "[topic]" --sort stars --limit 10; echo "---"; gh search repos "[中文]" --sort stars --limit 10
-Bash: gh search code "[topic]" --language python --limit 10; echo "---"; gh search code "[topic]" --language typescript --limit 10
-Bash: gh api search/repositories -f q="[query] stars:>100" --jq '...'
+# Fire all layers × all languages simultaneously:
+Bash: gh search repos "[broad-EN]" --sort stars --limit 15; echo "---"; gh search repos "[broad-ZH]" --sort stars --limit 15; echo "---"; gh search repos "[broad-RU]" --sort stars --limit 15
+Bash: gh search repos "[compound-EN]" --sort stars --limit 10; echo "---"; gh search repos "[compound-ZH]" --sort stars --limit 10; echo "---"; gh search repos "[compound-RU]" --sort stars --limit 10
+Bash: gh search repos "[adjacent-EN]" --sort stars --limit 10; echo "---"; gh search repos "[broad]" --language rust --sort stars --limit 5; echo "---"; gh search repos "[broad]" --language go --sort stars --limit 5
+Bash: gh search code "[pattern]" --language python --limit 10; echo "---"; gh search code "[pattern]" --language typescript --limit 10
 ```
-
-Group by independence: repo searches together, code searches together, API searches together. Fire all groups in a single response turn.
 
 ### Search Strategy
 
-- **Parallel first** — batch all independent gh calls into simultaneous Bash tool invocations
+- **Broad first, narrow second** — L1 establishes the landscape, L2-L4 add precision
+- **Every layer in EN + ZH + RU** — different ecosystems surface different tools; Chinese/Russian repos are invisible to English-only queries
+- **Parallel always** — batch all independent gh calls into simultaneous Bash tool invocations
 - Search across **multiple programming languages** (Python, TypeScript, Go, Java, Rust) — different ecosystems have different strengths
-- Use Chinese terms in repo/code search — many Chinese devs write READMEs and code comments in Chinese
-- Combine broad topic search + specific pattern search (e.g., function names, config keys, model IDs)
-- Check repo activity: prioritize repos updated within last 6 months
+- Repos with **zero topics** only match on name + description — broad queries are the only way to find them
 - Follow leads: if a repo references another project, search for that too
+- Check repo activity: prioritize repos updated within last 6 months
 - **Max 30 gh CLI calls** — think before each one
 
 GitHub research reveals what practitioners actually build, not just what they write about. Prioritize repos with recent activity and meaningful star counts.
