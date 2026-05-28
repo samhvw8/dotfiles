@@ -42,28 +42,30 @@ When you receive a **new feature request, brainstorm task, or unfamiliar problem
 - MUST run `git log`, `git diff`, or `git blame` if the task involves existing code
 - Use local findings to craft precise search queries
 
-### Step 2: Research (Multi-Language)
-You MUST search for best practices and solutions across elite developer communities in multiple languages. Use the correct language for each query — do NOT search in English for Chinese/Russian results.
+### Step 2: Research (via lead-researcher)
 
-| Language | Priority | Guidance |
-|----------|----------|----------|
-| **English** | MUST | Search in English. Target elite English-speaking developer communities and official documentation. |
-| **Chinese** | MUST | Search in Chinese (中文). Target elite Chinese developer communities. Use Chinese technical terms (e.g., 最佳实践, 解决方案, 架构设计). |
-| **Russian** | MUST | Search in Russian (русский). Target elite Russian developer communities. Strong in algorithms, systems, security. |
-| **Conditional** | Topic-dependent | Add JA (game/embedded/robotics/mfg/auto), KO (gaming/security/CTF), DE (Industry 4.0/automotive), PT-BR (fintech/Brazil). See `research` skill `references/language-matrix.md`. |
+**ALWAYS invoke the `lead-researcher` skill** — it is the MANDATORY entry point for ALL research. Never spawn `researcher` agents directly.
 
-**Research execution — ALWAYS delegate to agents, NEVER do searches yourself:**
-- **Single-domain research** → spawn `researcher` agent (fresh context, no bias from current conversation)
-- **Multi-domain research** (2+ domains, 5+ sources, contradictions likely) → spawn 2-3 `researcher` agents in parallel, each focused on a distinct sub-topic
-- **Complex research** (contradictory landscape, needs orchestration) → invoke `lead-researcher` skill to orchestrate
+The lead-researcher skill has 4 modes that determine languages, agents, and iterations:
 
-**Why agents over skills for research:** Sub-agents start with fresh context — no bias from prior conversation data. They can run in parallel. Raw search results stay out of the main context window, saving tokens. The agent synthesizes and returns only findings.
+| Mode | Languages | Iterations/agent | When |
+|------|-----------|-----------------|------|
+| **low** | EN + ZH | 2-3 | Quick fact check, single question |
+| **medium** | EN + ZH | 3-5 | Standard evaluation, comparison |
+| **high** | EN + ZH + RU | 5-8 | Multi-domain, contradictions likely |
+| **max** | EN + ZH + RU + any relevant | 8-10 | Comprehensive landscape survey |
 
-**Do NOT** invoke the `research` skill to do searches yourself. Use direct WebSearch ONLY for quick single-fact lookups (e.g., "what version is X").
+**ZH always included.** Agent count = languages x sub-topics (1 lang + 1 sub-topic per agent). Max 3 concurrent, batch into waves.
 
-- MUST also search official project websites and documentation
-- MUST NOT include year in search queries (prefer newest results)
-- MUST NOT hardcode specific forum names — discover the best sources dynamically
+**How it works:**
+1. YOU invoke `lead-researcher` skill → it guides you to plan, decompose, assign
+2. YOU spawn `researcher` agents per the plan (each gets assigned language + topic + iteration count)
+3. Agents return findings → YOU (guided by lead-researcher) verify, deepen, synthesize
+
+**Do NOT:**
+- Invoke the `research` skill directly for research — it's methodology, not orchestration
+- Spawn `researcher` agents without going through `lead-researcher` first
+- Do WebSearch yourself — use direct WebSearch ONLY for quick single-fact lookups (e.g., "what version is X")
 
 ### Step 3: GitHub Research
 MUST use `gh` CLI with multi-language queries (English + Chinese + Russian terms). Run searches in **parallel Bash calls**, not sequentially.
