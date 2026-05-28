@@ -1,21 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "agentPushNotifEnabled": false,
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "autoDreamEnabled": false,
-  "autoMemoryEnabled": false,
-  "effortLevel": "xhigh",
-  "enabledPlugins": {
-    "agentmemory@agentmemory": true,
-    "claude-hud@claude-hud": true,
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "understand-anything@understand-anything": true
-  },
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
@@ -25,101 +9,9 @@
     "AGENTMEMORY_URL": "http://localhost:3113",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1"
   },
-  "extraKnownMarketplaces": {
-    "claude-hud": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/jarrodwatts/claude-hud.git"
-      }
-    },
-    "understand-anything": {
-      "source": {
-        "repo": "Lum1104/Understand-Anything",
-        "source": "github"
-      }
-    }
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "rtk hook claude",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/session-end-save/scripts/session-end-save.sh",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/session-start/scripts/session-start.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/session-start-pickup/scripts/session-start-pickup.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/doc-rules/scripts/check-doc-rules.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/force-agent-skills-eval/scripts/force-agent-skills-eval.sh",
-            "timeout": 220,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-recall/scripts/memory-recall.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-save/scripts/memory-save-reminder.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      }
-    ]
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
   "permissions": {
     "allow": [
@@ -156,23 +48,132 @@
       "mcp__codegraph__codegraph_status",
       "mcp__codegraph__codegraph_files"
     ],
-    "defaultMode": "plan",
-    "deny": []
+    "deny": [],
+    "defaultMode": "plan"
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/session-end-save/scripts/session-end-save.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/session-start/scripts/session-start.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/session-start-pickup/scripts/session-start-pickup.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/doc-rules/scripts/check-doc-rules.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/force-agent-skills-eval/scripts/force-agent-skills-eval.sh",
+            "timeout": 220
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-recall/scripts/memory-recall.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-save/scripts/memory-save-reminder.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
+  },
+  "enabledPlugins": {
+    "agentmemory@agentmemory": true,
+    "claude-hud@claude-hud": true,
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "understand-anything@understand-anything": false,
+    "swift-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-hud": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/jarrodwatts/claude-hud.git"
+      }
+    },
+    "understand-anything": {
+      "source": {
+        "source": "github",
+        "repo": "Lum1104/Understand-Anything"
+      }
+    }
+  },
+  "effortLevel": "xhigh",
   "plansDirectory": ".claude/plans",
-  "remoteControlAtStartup": false,
+  "tui": "fullscreen",
+  "autoMemoryEnabled": false,
+  "autoDreamEnabled": false,
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js",
-    "type": "command"
-  },
-  "teammateMode": "auto",
-  "tui": "fullscreen",
   "verbose": true,
+  "teammateMode": "auto",
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": false,
   "mcpServers": {
     "reddit": {
-      "command": "/Users/samhv/.local/bin/reddit-research",
+      "command": "$HOME/.local/bin/reddit-research",
       "args": [
         "mcp"
       ]

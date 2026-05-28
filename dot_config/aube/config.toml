@@ -1,2 +1,2 @@
 dangerouslyAllowAllBuilds = true
-trustPolicyExclude = ["protobufjs"]
+trustPolicyExclude = ["protobufjs", "@agentmemory/agentmemory"]
