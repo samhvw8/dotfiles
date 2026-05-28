@@ -1,12 +1,14 @@
 ---
 name: research
-description: "Single-agent technical research across English, Chinese (中文), and Russian (русский) communities. Web search + GitHub (gh CLI) + retrieval tools → synthesis → report. Use when: 'what's the best way to', 'how should I approach', 'what are the options for', evaluating a technology, or any question needing current external knowledge. For complex multi-domain research (2+ fields, 5+ sources, contradictory landscape), escalate to lead-researcher skill instead."
+description: "Single-agent research methodology — the search-fetch loop, query templates, GitHub patterns, and retrieval tools. Loaded by researcher agents spawned from lead-researcher. Do NOT use this skill directly for research — use lead-researcher instead, which orchestrates agents with configurable depth (low/medium/high/max). This skill is methodology, not orchestration."
 ---
 
-# Research
+# Research Methodology
 
-Multi-language technical research methodology. Honoring **YAGNI**, **KISS**, **DRY**.
-Be honest, be brutal, straight to the point, be concise.
+Search-fetch loop methodology for a single researcher agent. This skill is loaded BY researcher agents — not invoked directly.
+Honoring **YAGNI**, **KISS**, **DRY**. Be honest, be brutal, straight to the point, be concise.
+
+**Your caller (lead-researcher) assigned you:** a topic, language(s), and iteration count. Follow those assignments. Search in your assigned language(s) — don't default to English unless assigned English.
 
 ## Phase 1: Scope Definition
 
@@ -16,32 +18,15 @@ Before searching, define:
 - Evaluation criteria and research depth boundaries
 - Which languages/communities are most likely to have strong signal for this topic
 
-## Phase 2: Multi-Language Search
+## Phase 2: Search in Assigned Language(s)
 
-Search across language communities using the correct language for each query. Different communities surface different signal — English has breadth, Chinese has scale-tested production patterns, Russian has systems/algorithmic depth.
+Search in the language(s) assigned by your lead-researcher caller. Write queries in the target language — do not search in English when assigned Chinese/Russian.
 
-### Search Language Matrix
+### Language Guidelines
 
-#### Always Search (every query)
+Search in your assigned language using native technical terms. Every language community has unique perspectives — don't limit what you might find based on stereotypes about what each language "specializes in."
 
-| Language | Priority | Query Language | Guidance |
-|----------|----------|----------------|----------|
-| **English** | MUST | English | Official docs, engineering blogs, conference talks. Broadest coverage. |
-| **Chinese (中文)** | MUST | Chinese | Use Chinese technical terms. Rich in production-scale patterns, mobile/fintech, infrastructure at scale. |
-| **Russian (русский)** | MUST | Russian | Use Russian technical terms. Strong in systems programming, algorithms, competitive programming, security. |
-
-#### Conditional Languages (add when topic matches field matrix)
-
-| Language | Priority | When to add | Key platforms |
-|----------|----------|-------------|---------------|
-| **Japanese (JA)** | MUST (conditional) | Game dev, embedded/IoT, robotics, manufacturing, automotive | Qiita, Zenn |
-| **Korean (KO)** | RECOMMENDED | Mobile gaming, security/CTF, e-commerce | Velog, Tistory |
-| **German (DE)** | RECOMMENDED | Industry 4.0, automotive SW, embedded, robotics | Heise.de, Golem.de |
-| **Portuguese (PT-BR)** | RECOMMENDED | Fintech/payments (Brazil-specific) | TabNews, iMasters |
-| **Vietnamese (VI)** | OPTIONAL | Outsourcing patterns, CTF/security | Viblo |
-
-For full field-to-language matrix and the UNIQUE decision test for when to add a language, read `references/language-matrix.md`.
-For query templates in conditional languages, read `references/query-templates.md`.
+For query templates per language, read `references/query-templates.md`.
 
 ### Query Construction
 
@@ -77,51 +62,78 @@ Write queries in the target language — do not search in English expecting Chin
 - Start with `[topic] + "best practices"` or `"system prompt"` for patterns
 - Follow with `[topic] + specific sub-problems`
 - Cross-reference: if three sources across languages agree, it's robust
-- Fetch full pages when snippets are insufficient — depth over breadth
 - Search iteratively: first-round results inform second-round queries
 - Do NOT include year in queries — prefer newest results by default
 - Let the model discover the best sources dynamically — do not hardcode forum names
 
 **Max 60 search tool calls total** — think carefully before each one. User may request fewer.
 
+### Search-Fetch Loop
+
+Each iteration is a **complete cycle** — search, fetch, and use other tools together. Not search-only or fetch-only rounds.
+
+```
+┌─→ ITERATION (each one contains ALL of these):
+│   │
+│   ├─ WebSearch (up to 3 queries — different angles/languages)
+│   │       ↓
+│   ├─ WebFetch relevant results (up to 3 — only what matters to the question)
+│   │       ↓
+│   ├─ Other tools as needed (gh search, docs lookup, etc.)
+│   │       ↓
+│   ├─ Extract: ideas, data, claims, new leads
+│   │       ↓
+│   └─ Evaluate: what did I learn? what gaps remain? what new leads appeared?
+│           ↓
+│   Next iteration uses refined queries informed by what was actually read
+│       ↓
+└── Repeat (min 3, up to 10 iterations — stop when no new signal)
+```
+
+| Rule | Detail |
+|------|--------|
+| **Complete cycles** | Each iteration MUST include both search AND fetch — not one or the other |
+| **Max 3 per tool per iteration** | Up to 3 WebSearch + up to 3 WebFetch + other tools as needed per iteration |
+| **Fetch selectively** | Only fetch URLs relevant to the research question — skip generic/tangential results |
+| **Snippets can suffice** | If a snippet gives you what you need (a version, a yes/no), no fetch needed |
+| **Follow leads** | Fetched pages reveal new sources — fetch those in the same or next iteration |
+| **Refine queries** | Each iteration's searches should be sharper than the last, informed by fetched content |
+| **Fetch before citing deeply** | Substantive claims require fetching the actual page — don't argue from snippets |
+| **Parallel calls** | Batch independent WebSearch and WebFetch calls in parallel within each iteration |
+| **Escalate on failure** | If WebFetch fails (JS-rendered, anti-bot), escalate per Phase 4 retrieval tools |
+
 ## Phase 3: GitHub Research
 
 **Prerequisite:** Check `gh` CLI exists (`which gh`). If unavailable, skip to Phase 4.
 
-Use `gh` CLI to find reference implementations and community patterns. Search in **multiple languages** — Chinese repos surface production patterns, Russian repos surface algorithmic/systems implementations.
+Use `gh` CLI to find reference implementations and community patterns. Search in your **assigned language(s)** — use the correct terms for each language.
 
 ### Layered Query Strategy (MANDATORY)
 
-GitHub search matches on repo name + description + README. Compound queries (`"headless browser AI agent"`) miss repos whose descriptions use different word order or omit one term. **Always search broad-to-narrow in layers.**
+GitHub search matches on repo name + description + README. Compound queries miss repos with different word order. **Always search broad-to-narrow in layers.**
 
-| Layer | Purpose | EN example | ZH example | RU example |
-|-------|---------|------------|------------|------------|
-| **L1: Broad single-concept** | Catch infra tools missing niche jargon | `"headless browser"` | `"无头浏览器"` | `"безголовый браузер"` |
-| **L2: Compound topic-specific** | Narrow to domain-specific projects | `"browser agent"` | `"AI代理浏览器"` | `"браузер для ИИ агентов"` |
-| **L3: Adjacent categories** | Catch overlapping/dependent tools | `"stealth browser"` | `"反检测浏览器"` | `"скрытый браузер"` |
-| **L4: Language-filtered** | Systems-language tools (Rust/Go/Zig) | `--language rust` | same query + flag | same query + flag |
+| Layer | Purpose | Example |
+|-------|---------|---------|
+| **L1: Broad single-concept** | Catch infra tools missing niche jargon | `"headless browser"` / `"无头浏览器"` / `"безголовый браузер"` |
+| **L2: Compound topic-specific** | Narrow to domain-specific projects | `"browser agent"` / `"AI代理浏览器"` |
+| **L3: Adjacent categories** | Catch overlapping/dependent tools | `"stealth browser"` / `"反检测浏览器"` |
+| **L4: Language-filtered** | Systems-language tools (Rust/Go/Zig) | same query + `--language rust` |
 
-**Every layer MUST run in EN + ZH + RU.** Add conditional languages (JA/KO/DE/PT-BR/VI) per `references/language-matrix.md` when topic matches.
+**Every layer MUST run in your assigned language(s).** Use the correct technical terms for each language.
 
 **Why L1 matters most:** A 13k-star Rust headless browser and a 30k-star browser engine were both missed because queries started at L2. The broad query `"headless browser"` caught both immediately. Narrow queries are for precision after broad queries establish the landscape.
 
 ### Query Templates
 
 ```bash
-# L1: Broad — EN + ZH + RU (ALWAYS start here)
-gh search repos "[broad-EN]" --sort stars --limit 15
-gh search repos "[broad-ZH 中文]" --sort stars --limit 15
-gh search repos "[broad-RU русский]" --sort stars --limit 15
+# L1: Broad (ALWAYS start here) — in your assigned language(s)
+gh search repos "[broad-term]" --sort stars --limit 15
 
-# L2: Compound — EN + ZH + RU
-gh search repos "[compound-EN]" --sort stars --limit 10
-gh search repos "[compound-ZH]" --sort stars --limit 10
-gh search repos "[compound-RU]" --sort stars --limit 10
+# L2: Compound — narrow to domain
+gh search repos "[compound-term]" --sort stars --limit 10
 
-# L3: Adjacent — EN + ZH + RU
-gh search repos "[adjacent-EN]" --sort stars --limit 10
-gh search repos "[adjacent-ZH]" --sort stars --limit 10
-gh search repos "[adjacent-RU]" --sort stars --limit 10
+# L3: Adjacent — catch overlapping tools
+gh search repos "[adjacent-term]" --sort stars --limit 10
 
 # L4: Language-filtered (apply to L1 broad terms)
 gh search repos "[broad]" --language rust --sort stars --limit 5
@@ -147,18 +159,10 @@ gh api search/repositories -f q="[中文关键词] stars:>50" \
 
 **MUST batch independent `gh` searches into parallel Bash calls.** Do NOT run sequentially.
 
-```
-# Fire all layers × all languages simultaneously:
-Bash: gh search repos "[broad-EN]" --sort stars --limit 15; echo "---"; gh search repos "[broad-ZH]" --sort stars --limit 15; echo "---"; gh search repos "[broad-RU]" --sort stars --limit 15
-Bash: gh search repos "[compound-EN]" --sort stars --limit 10; echo "---"; gh search repos "[compound-ZH]" --sort stars --limit 10; echo "---"; gh search repos "[compound-RU]" --sort stars --limit 10
-Bash: gh search repos "[adjacent-EN]" --sort stars --limit 10; echo "---"; gh search repos "[broad]" --language rust --sort stars --limit 5; echo "---"; gh search repos "[broad]" --language go --sort stars --limit 5
-Bash: gh search code "[pattern]" --language python --limit 10; echo "---"; gh search code "[pattern]" --language typescript --limit 10
-```
-
 ### Search Strategy
 
 - **Broad first, narrow second** — L1 establishes the landscape, L2-L4 add precision
-- **Every layer in EN + ZH + RU** — different ecosystems surface different tools; Chinese/Russian repos are invisible to English-only queries
+- **Search in assigned language(s)** — use correct technical terms per language
 - **Parallel always** — batch all independent gh calls into simultaneous Bash tool invocations
 - Search across **multiple programming languages** (Python, TypeScript, Go, Java, Rust) — different ecosystems have different strengths
 - Repos with **zero topics** only match on name + description — broad queries are the only way to find them
