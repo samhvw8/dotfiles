@@ -40,13 +40,56 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 
 ## Workflow
 
+### Phase 0: Confirm Research Plan with User (MANDATORY)
+
+Before executing, you MUST present the research plan and let the user confirm or adjust. Use `AskUserQuestion` with these questions:
+
+**Question 1 — Mode selection:**
+Show the recommended mode (based on heuristic) and let user pick. Include estimated agent count and cost.
+
+```
+"Which research depth? I recommend [X] based on your query."
+Options:
+- low: 2 langs (EN+ZH), 2-3 iterations/agent, ~2-4 agents
+- medium: 2 langs (EN+ZH), 3-5 iterations/agent, ~4-6 agents
+- high: 3 langs (EN+ZH+RU), 5-8 iterations/agent, ~6-12 agents
+- max: 3+ langs, 8-10 iterations/agent, ~9-15+ agents
+```
+
+**Question 2 — Sub-topics:**
+Show the decomposed sub-topics and let user add/remove/adjust.
+
+```
+"I've broken this into [N] sub-topics. Adjust?"
+Options:
+- Looks good (Recommended)
+- [list each sub-topic so user can see what will be researched]
+- Let me customize (user types their own breakdown)
+```
+
+**Question 3 — Languages:**
+Show which languages will be searched, based on the language matrix lookup.
+
+```
+"Which languages to search?"
+Options:
+- [Recommended set based on mode + matrix, e.g. "EN + ZH + RU (Recommended)"]
+- EN + ZH only (faster, fewer agents)
+- Add [specific T2 language from matrix, e.g. "DE" or "JA"]
+- Let me specify
+```
+
+After user confirms, proceed to Phase 1 with the confirmed settings.
+
+**Skip Phase 0 ONLY when:** user explicitly specified all parameters (mode + topics) in their original message, e.g. `/lead-researcher high compare A vs B`.
+
 ### Phase 1: Plan (YOU do this — don't delegate)
 
-1. **Classify mode** — from arguments or heuristic
-2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field. This determines which languages to assign beyond the EN+ZH default.
-3. **Decompose** — break topic into sub-questions
+1. **Apply confirmed settings** — use mode, sub-topics, and languages from Phase 0
+2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 0). This determines which languages to assign beyond the EN+ZH default.
+3. **Decompose** — break topic into sub-questions (use confirmed sub-topics from Phase 0)
 4. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages in higher modes.
-5. **Set iterations** — per mode table above
+5. **Set iterations** — per confirmed mode
 6. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
 
 **Agent assignment: 1 language + 1 sub-topic per agent (atomic)**
