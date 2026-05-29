@@ -38,7 +38,44 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 | "compare A vs B vs C", multi-domain, "investigate" | **high** |
 | "deep research", "comprehensive", "landscape", "all options" | **max** |
 
-## Workflow
+## Execution Engine
+
+| Mode | Engine | Why |
+|------|--------|-----|
+| **low/medium** | Subagents (manual) | Few agents, fast, simple |
+| **high/max** | Dynamic Workflow | 16 concurrent agents, cross-checking, resumable, results stay out of context |
+
+### How to trigger a dynamic workflow
+
+After Phase 0 confirms high/max mode, tell the user:
+
+> "This is a high/max research — I'll run it as a dynamic workflow for better parallelism and cross-checking."
+
+Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, languages, iterations, output path) so the workflow script encodes them.
+
+Example trigger prompt:
+
+```
+Run a workflow to research [topic]:
+
+Phase 1 — Parallel search (per language × sub-topic):
+[list each agent assignment: language + sub-topic + iterations]
+
+Phase 2 — Cross-check:
+Have independent agents adversarially review each other's findings.
+Flag contradictions, unverified claims, and missing sources.
+
+Phase 3 — Synthesize:
+Merge verified findings into one report at [output path].
+Lead with recommendation, present cross-language tensions, cite sources.
+
+Language matrix reference: [paste relevant T1/T2 langs from matrix]
+Each agent should use the `research` skill for search-fetch loop methodology.
+```
+
+For **low/medium mode**, skip the workflow engine and use regular subagent spawning (Phase 1-4 below).
+
+## Workflow (Subagent Mode — low/medium)
 
 ### Phase 0: Confirm Research Plan with User (MANDATORY)
 
@@ -123,7 +160,9 @@ Medium mode (1-2 sub-topics, 2 langs):
   (wave 2 if needed for sub-topic B)
 ```
 
-### Phase 2: Delegate (Parallel Agents)
+### Phase 2: Delegate (Parallel Subagents — low/medium only)
+
+For high/max mode, use the workflow engine above instead of this phase.
 
 Spawn `researcher` agents. Each prompt:
 
