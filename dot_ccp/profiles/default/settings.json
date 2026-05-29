@@ -51,6 +51,7 @@
     "deny": [],
     "defaultMode": "plan"
   },
+  "model": "sonnet[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -178,5 +179,6 @@
         "mcp"
       ]
     }
-  }
+  },
+  "advisorModel": "opus"
 }

@@ -47,7 +47,7 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 
 ### How to trigger a dynamic workflow
 
-After Phase 0 confirms high/max mode, tell the user:
+After Phase 1 confirms high/max mode, tell the user:
 
 > "This is a high/max research — I'll run it as a dynamic workflow for better parallelism and cross-checking."
 
@@ -73,11 +73,45 @@ Language matrix reference: [paste relevant T1/T2 langs from matrix]
 Each agent should use the `research` skill for search-fetch loop methodology.
 ```
 
-For **low/medium mode**, skip the workflow engine and use regular subagent spawning (Phase 1-4 below).
+For **low/medium mode**, skip the workflow engine and use regular subagent spawning (Phase 2-5 below).
 
 ## Workflow (Subagent Mode — low/medium)
 
-### Phase 0: Confirm Research Plan with User (MANDATORY)
+### Phase 0: Clarity Triage (MANDATORY)
+
+Before planning research, assess whether the request is **researchable as stated**. This prevents wasting compute on poorly-scoped queries.
+
+**Triage decision:**
+
+| Signal | Verdict | Route |
+|--------|---------|-------|
+| Goal named, success criteria absent — "research auth" (for what? security vs DX vs cost?) | **NOT researchable** | → `heavy-think` |
+| "Best X" where evaluation axes are unstated and would conflict | **NOT researchable** | → `heavy-think` |
+| User asking *what* to research, not researching a known thing — "how should I approach..." | **NOT researchable** | → `heavy-think` |
+| Scope spans domains that need decomposition before search is meaningful | **NOT researchable** | → `heavy-think` |
+| Bounded question with implied criteria — "compare Postgres vs MySQL for OLTP" | **Researchable** | → Phase 1 |
+| User supplied mode + topic + sub-structure explicitly | **Researchable** | → Phase 1 |
+| Known options, user just needs to pick parameters | **Researchable** | → Phase 1 (AskUserQuestion) |
+
+**When routing to heavy-think:**
+
+1. Invoke `Skill("heavy-think")` — it will classify the thinking mode (brainstorm/decompose/unstick/analyze)
+2. After heavy-think produces a clear, bounded research question with success criteria → return here at Phase 1
+3. State: "The research question wasn't clear enough to scope. After thinking through it, the researchable question is: [X]"
+
+**Phase 0 is distinct from Phase 1's AskUserQuestion.** Phase 0 catches "the problem isn't researchable yet." Phase 1 catches "confirm my research plan parameters." Don't blur them.
+
+**Pass-through examples** (skip heavy-think, go directly to Phase 1):
+- "Compare Next.js vs Remix for SSR performance" — criteria implied (performance), scope bounded
+- "What's the latest stable version of React" — single fact, clear target
+- "Evaluate Drizzle vs Prisma for type-safe PostgreSQL ORM" — evaluation axes implicit in "type-safe PostgreSQL ORM"
+
+**Fire examples** (route to heavy-think first):
+- "Research auth" — auth for what? Security posture? Developer experience? Cost? Different criteria produce different research
+- "What's the best approach for our backend" — needs decomposition before any search is meaningful
+- "How should I think about caching" — asking for perspective, not information
+
+### Phase 1: Confirm Research Plan with User (MANDATORY)
 
 Before executing, you MUST present the research plan and let the user confirm or adjust. Use `AskUserQuestion` with these questions:
 
@@ -116,15 +150,15 @@ Options:
 - Let me specify
 ```
 
-After user confirms, proceed to Phase 1 with the confirmed settings.
+After user confirms, proceed to Phase 2 with the confirmed settings.
 
-**Skip Phase 0 ONLY when:** user explicitly specified all parameters (mode + topics) in their original message, e.g. `/lead-researcher high compare A vs B`.
+**Skip Phase 1 ONLY when:** user explicitly specified all parameters (mode + topics) in their original message, e.g. `/lead-researcher high compare A vs B`.
 
-### Phase 1: Plan (YOU do this — don't delegate)
+### Phase 2: Plan (YOU do this — don't delegate)
 
-1. **Apply confirmed settings** — use mode, sub-topics, and languages from Phase 0
-2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 0). This determines which languages to assign beyond the EN+ZH default.
-3. **Decompose** — break topic into sub-questions (use confirmed sub-topics from Phase 0)
+1. **Apply confirmed settings** — use mode, sub-topics, and languages from Phase 1
+2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 1). This determines which languages to assign beyond the EN+ZH default.
+3. **Decompose** — break topic into sub-questions (use confirmed sub-topics from Phase 1)
 4. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages in higher modes.
 5. **Set iterations** — per confirmed mode
 6. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
@@ -160,7 +194,7 @@ Medium mode (1-2 sub-topics, 2 langs):
   (wave 2 if needed for sub-topic B)
 ```
 
-### Phase 2: Delegate (Parallel Subagents — low/medium only)
+### Phase 3: Delegate (Parallel Subagents — low/medium only)
 
 For high/max mode, use the workflow engine above instead of this phase.
 
@@ -180,7 +214,7 @@ RECOMMENDED SKILLS: research - use for search-fetch loop methodology
 
 **Max 3 agents per wave.** Fire all in a single message.
 
-### Phase 3: Deepen (YOU do this after agents return)
+### Phase 4: Deepen (YOU do this after agents return)
 
 After agents return, YOU verify and deepen:
 
@@ -194,7 +228,7 @@ After agents return, YOU verify and deepen:
 
 This phase separates surface search from real research. NEVER skip.
 
-### Phase 4: Synthesize
+### Phase 5: Synthesize
 
 Merge into one report at `./research/YYMMDD-<topic>.md` (relative to cwd):
 
@@ -211,9 +245,12 @@ Merge into one report at `./research/YYMMDD-<topic>.md` (relative to cwd):
 | Agent assigned multiple languages | 1 lang per agent — atomic |
 | Agent assigned multiple sub-topics | 1 sub-topic per agent — single responsibility |
 | Spawning without plan | MUST decompose first |
-| Skipping Phase 3 | Phase 3 = real research. NEVER skip. |
+| Skipping Phase 4 | Phase 4 = real research. NEVER skip. |
 | Hardcoded output path | Use cwd-relative paths |
 | More than 3 agents per wave | Batch into waves |
+| Researching vague/unscoped requests | Route to heavy-think first (Phase 0 triage) |
+| Using heavy-think for every multi-part topic | Only fire when *framing* is contested, not when a clear topic has parts |
+| Blurring Phase 0 and Phase 1 | Phase 0 = "is this researchable?" Phase 1 = "confirm my plan parameters" |
 
 ## Related
 
