@@ -172,13 +172,5 @@
   "teammateMode": "auto",
   "remoteControlAtStartup": false,
   "agentPushNotifEnabled": false,
-  "mcpServers": {
-    "reddit": {
-      "command": "$HOME/.local/bin/reddit-research",
-      "args": [
-        "mcp"
-      ]
-    }
-  },
   "advisorModel": "opus"
 }
