@@ -1,36 +1,19 @@
 # CodeGraph
 
-CodeGraph MCP server (`codegraph_*` tools) — tree-sitter-parsed knowledge graph of every symbol, edge, and file. Sub-millisecond reads. Returns structural information grep cannot.
+Codegraph tools (`mcp__codegraph__codegraph_*`) are **deferred MCP tools**. Before first use each session, load via `ToolSearch`.
 
-## MANDATORY: Prefer codegraph over native search
-
-Use codegraph for **structural** questions. Use grep/read ONLY for **literal text** (string contents, comments, log messages).
-
-| Question | Tool |
-|---|---|
-| "Where is X defined?" / "Find symbol named X" | `codegraph_search` |
-| "What calls function Y?" | `codegraph_callers` |
-| "What does Y call?" | `codegraph_callees` |
-| "What would break if I changed Z?" | `codegraph_impact` |
-| "Show me Y's signature / source / docstring" | `codegraph_node` |
-| "Give me focused context for a task/area" | `codegraph_context` |
-| "Survey an unfamiliar module/topic" | `codegraph_explore` |
-| "What files exist under path/" | `codegraph_files` |
-| "Is the index healthy?" | `codegraph_status` |
-
-## Rules (MUST follow)
+## Rules
 
 | Rule | Detail |
 |------|--------|
-| Trust codegraph results | Full AST parse. Do NOT re-verify with grep — slower, less accurate, wastes context |
-| Don't grep first | `codegraph_search` is faster and returns kind + location + signature in one call |
-| Don't chain search + node | `codegraph_context` does both in one round-trip |
+| Prefer codegraph over grep | Use codegraph for **structural** questions. grep/read ONLY for literal text (strings, comments) |
+| Load before calling | `ToolSearch("select:mcp__codegraph__codegraph_context")` — required once per session |
+| Follow MCP server instructions | The codegraph MCP server provides its own usage guidance (under "## codegraph" in MCP Server Instructions). Those are **authoritative** — follow them |
 | Use explore via subagent | Token-heavy — spawn via Task tool to keep main context clean |
-| Respect index lag | File watcher debounces ~500ms; don't re-query immediately after editing |
 
 ## If `.codegraph/` doesn't exist
 
-MCP server returns "not initialized." Ask the user: *"I notice this project doesn't have CodeGraph initialized. Want me to run `codegraph init -i` to build the index?"*
+Ask the user: *"Want me to run `codegraph init -i` to build the index?"*
 
 ## Related
 
