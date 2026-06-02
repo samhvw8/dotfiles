@@ -1,53 +1,54 @@
 ---
 name: pug-ui
-description: Generate single-file HTML UIs, reports, dashboards, and landing pages using Pug syntax compiled client-side with daisyUI + Tailwind CDN. Reduces LLM output tokens by ~75% compared to raw HTML + Tailwind. ALWAYS invoke when the user asks to create an HTML page, report, dashboard, UI mockup, or single-file web deliverable. Also invoke when user says "make a page", "create a report", "build a dashboard", "html output", "web UI", "single-file HTML", or "pug". Do NOT use for React/Vue/Svelte component development or server-rendered templates.
-when_to_use: Triggers "make me a page", "create an html report", "build a dashboard", "landing page", "single-file", "web mockup", "html deliverable", "pug output", "token-efficient html", any request for a standalone .html file with visual UI.  Also use when the user has previously indicated preference for Pug output format.
+description: Generate single-file HTML UIs, reports, dashboards, and landing pages using Pug syntax compiled client-side. Four CSS framework presets (Pico CSS classless default, Bulma, daisyUI, Simple.css minimal) — all pre-themed with Claude Code's warm cream + terra cotta light palette. Reduces LLM output tokens by 70-85% vs raw HTML + Tailwind. ALWAYS invoke when the user asks to create an HTML page, report, dashboard, UI mockup, or single-file web deliverable. Also invoke when user says "make a page", "create a report", "build a dashboard", "html output", "web UI", "single-file HTML", or "pug". Do NOT use for React/Vue/Svelte component development or server-rendered templates.
+when_to_use: Triggers "make me a page", "create an html report", "build a dashboard", "landing page", "single-file", "web mockup", "html deliverable", "pug output", "token-efficient html", any request for a standalone .html file with visual UI. Also use when the user has previously indicated preference for Pug output format.
 ---
 
-# Pug UI Generator
+# pug-ui
 
-Output Pug syntax instead of raw HTML. The template handles client-side compilation — you only write the Pug content block.
+Output Pug syntax inside a self-compiling HTML template. Pick a framework preset based on the page type. Claude Code's light theme (warm cream `#EEECE2` + terra cotta `#DA7756`) is the default for all presets.
 
-## Why Pug
+## Preset Selection
 
-Pug eliminates closing tags, angle brackets, and `class=""` boilerplate. Combined with daisyUI semantic classes, this saves ~75% output tokens vs raw HTML + Tailwind.
+| Preset | Template | Gzip | Class Style | When |
+|--------|----------|------|-------------|------|
+| **pico** (default) | `template-pico.html` | ~10KB | Classless | Most pages — best token/capability balance |
+| **bulma** | `template-bulma.html` | ~66KB | Semantic | Complex dashboards, rich components needed |
+| **daisyui** | `template-daisyui.html` | ~57KB+Tailwind | Semantic + utility | Tabs, drawers, carousels, mobile-first |
+| **minimal** | `template-minimal.html` | ~3KB | Classless | Text-heavy reports, docs, articles |
 
-## How It Works
+**When unsure → use `pico`.** It's the new default.
 
-1. Read the template from `assets/template.html`
-2. Copy it to the target path
-3. Replace the Pug block inside `<script type="text/pug" id="pug-src">` with your content
-4. Set `<title>` and `data-theme` (`dark`, `light`, `cupcake`, `dracula`, etc.)
+## Workflow
 
-## Pug Syntax
+1. Pick a preset from the table above
+2. Read `assets/template-<preset>.html` to confirm structure
+3. Copy it to the target path
+4. Replace the Pug block inside `<script type="text/pug" id="pug-src">`
+5. Set `<title>`
 
-```pug
-h1 Hello World                          //- tag + text
-.container                              //- implicit div with class
-  .card.bg-base-100.shadow              //- chained classes
-    .card-body
-      h2.card-title My Title
-a(href="/about") About                  //- attributes in parens
-.grid.gap-4(class="md:grid-cols-3")     //- responsive: use class attr for colons
-li
-  span.badge Warning
-  |  Text after badge                   //- pipe for inline text nodes
-.container: h1 Shorthand                //- colon for inline nesting
-//- This is a comment                   //- not rendered
-```
+The Claude Code light theme is baked in — no theme switching needed unless the user explicitly asks for something else.
 
-## Key Rules
+## References
+
+| File | Purpose |
+|------|---------|
+| [references/preset-pico.md](references/preset-pico.md) | Pico CSS patterns, when to use |
+| [references/preset-bulma.md](references/preset-bulma.md) | Bulma patterns, when to use |
+| [references/preset-daisyui.md](references/preset-daisyui.md) | daisyUI patterns, when to use |
+| [references/preset-minimal.md](references/preset-minimal.md) | Simple.css patterns, when to use |
+| [references/claude-theme.md](references/claude-theme.md) | Color palette + overrides |
+| [references/pug-syntax.md](references/pug-syntax.md) | Pug cheat sheet (shared) |
+
+## Hard Rules
 
 - ONLY write Pug inside the template's script block — never raw HTML
-- **Prefer daisyUI components** over raw Tailwind utilities (saves ~79% more tokens)
 - 2-space indentation — Pug is whitespace-sensitive
-- Responsive prefixes (`md:`, `lg:`, `hover:`): use `(class="md:grid-cols-3")` syntax
-- Max nesting depth: 6-7 levels — flatten with grid/flex
+- Responsive prefixes (`md:` `lg:` `hover:`) → use `(class="md:grid-cols-3")` syntax
+- Do NOT mix presets — class names are incompatible across frameworks
+- Do NOT switch theme palette unless the user explicitly asks — Claude theme is default
 
-## daisyUI
+## Related
 
-Prefer daisyUI semantic classes over raw Tailwind utilities. If unsure about a component's class names or need to check the latest API, use any available retrieval tool (web search, context7, docs-discovery, etc.) to look up daisyUI documentation before guessing.
-
-## Themes
-
-Set `data-theme` on `<html>`. Options: `light`, `dark`, `cupcake`, `bumblebee`, `emerald`, `corporate`, `synthwave`, `retro`, `cyberpunk`, `valentine`, `halloween`, `garden`, `forest`, `aqua`, `lofi`, `pastel`, `fantasy`, `wireframe`, `luxury`, `dracula`, `cmyk`, `autumn`, `business`, `acid`, `lemonade`, `night`, `coffee`, `winter`, `dim`, `nord`, `sunset`
+- [references/claude-theme.md](references/claude-theme.md) — palette rationale
+- [references/pug-syntax.md](references/pug-syntax.md) — syntax shared across presets
