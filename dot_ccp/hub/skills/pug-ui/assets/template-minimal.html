@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Title</title>
+  <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+  <style>
+    /* Claude Code light theme (warm cream + terra cotta) */
+    :root, html {
+      --bg: #EEECE2;
+      --accent-bg: #F4F3EE;
+      --text: #3D3929;
+      --text-light: #6B6557;
+      --border: #D4D0C4;
+      --accent: #DA7756;
+      --accent-hover: #BD5D3A;
+      --accent-text: #FFFFFF;
+      --code: #3D3929;
+      --preformatted: #3D3929;
+      --marked: rgba(218, 119, 86, 0.25);
+      --disabled: #B5B0A1;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root, html {
+        --bg: #EEECE2;
+        --accent-bg: #F4F3EE;
+        --text: #3D3929;
+        --text-light: #6B6557;
+        --border: #D4D0C4;
+        --accent: #DA7756;
+        --accent-hover: #BD5D3A;
+      }
+    }
+    body { max-width: 64rem; }
+  </style>
+  <script src="https://gnjo.github.io/pug/pug.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script type="text/pug" id="pug-src">
+//- ============================================
+//- Simple.css minimal preset (Claude theme)
+//- Pure classless. Just write semantic HTML.
+//- Optional: .notice for callouts.
+//- ============================================
+
+header
+  nav
+    a(href="#") Home
+    a(href="#") About
+    a(href="#") Contact
+  h1 Page Title
+  p Lead paragraph that sits below the title.
+
+main
+
+  section
+    h2 Section One
+    p Body content here. Just paragraphs and headings — no classes.
+    p.notice This is an optional callout using `.notice` (the only Simple.css class).
+
+  section
+    h2 Section Two
+    article
+      h3 Article block
+      p Wrap card-like content in `<article>` for a subtle box.
+      a(href="#" role="button") Action
+
+  section
+    h2 Data Table
+    table
+      thead
+        tr
+          th Column A
+          th Column B
+          th Column C
+      tbody
+        tr
+          td Value 1
+          td Value 2
+          td Value 3
+
+footer
+  p
+    small Generated with Pug + Simple.css · Claude theme
+  </script>
+
+  <script>
+    try {
+      const src = document.getElementById('pug-src').textContent;
+      document.getElementById('app').innerHTML = pug.render(src, { filename: 'template.pug', basedir: '.' });
+    } catch (e) {
+      document.getElementById('app').innerHTML =
+        '<p class="notice"><strong>Pug error:</strong></p><pre>' + e.message + '</pre>';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Title</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css">
+  <style>
+    /* Claude Code light theme (warm cream + terra cotta) */
+    :root {
+      --pico-background-color: #EEECE2;
+      --pico-color: #3D3929;
+      --pico-muted-color: #6B6557;
+      --pico-muted-border-color: #D4D0C4;
+      --pico-primary: #DA7756;
+      --pico-primary-hover: #BD5D3A;
+      --pico-primary-background: #DA7756;
+      --pico-primary-hover-background: #BD5D3A;
+      --pico-primary-border: #DA7756;
+      --pico-primary-hover-border: #BD5D3A;
+      --pico-primary-focus: rgba(218, 119, 86, 0.25);
+      --pico-secondary: #6B6557;
+      --pico-card-background-color: #F4F3EE;
+      --pico-card-border-color: #D4D0C4;
+      --pico-code-background-color: #E8E5D8;
+      --pico-code-color: #3D3929;
+      --pico-form-element-background-color: #F4F3EE;
+      --pico-form-element-border-color: #D4D0C4;
+      --pico-form-element-focus-color: #DA7756;
+      --pico-mark-background-color: rgba(218, 119, 86, 0.2);
+      --pico-blockquote-border-color: #DA7756;
+      --pico-h1-color: #3D3929;
+      --pico-h2-color: #3D3929;
+      --pico-h3-color: #3D3929;
+      --pico-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+  </style>
+  <script src="https://gnjo.github.io/pug/pug.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script type="text/pug" id="pug-src">
+//- ============================================
+//- Pico CSS classless preset (Claude theme)
+//- Write semantic HTML — no class needed.
+//- ============================================
+
+header
+  nav
+    ul
+      li
+        strong Page Title
+    ul
+      li
+        a(href="#") Home
+      li
+        a(href="#") About
+
+main
+  hgroup
+    h1 Your Heading
+    p Your description goes here.
+
+  section
+    h2 Section One
+    p Card-like content lives inside an article.
+
+  article
+    header
+      h3 Card Header
+    p Card body content.
+    footer
+      button Action
+
+  section
+    h2 Data Table
+    table
+      thead
+        tr
+          th Column A
+          th Column B
+          th Column C
+      tbody
+        tr
+          td Value 1
+          td Value 2
+          td Value 3
+
+footer
+  small Generated with Pug + Pico CSS · Claude theme
+  </script>
+
+  <script>
+    try {
+      const src = document.getElementById('pug-src').textContent;
+      document.getElementById('app').innerHTML = pug.render(src, { filename: 'template.pug', basedir: '.' });
+    } catch (e) {
+      document.getElementById('app').innerHTML =
+        '<article style="border-color:#AB2B3F"><pre>' + e.message + '</pre></article>' +
+        '<pre>' + document.getElementById('pug-src').textContent + '</pre>';
+    }
+  </script>
+</body>
+</html>

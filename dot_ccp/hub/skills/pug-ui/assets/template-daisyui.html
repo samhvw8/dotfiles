@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="claude">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Title</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/daisyui.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Claude Code light theme — daisyUI custom theme */
+    [data-theme="claude"] {
+      color-scheme: light;
+      --color-base-100: oklch(94% 0.018 75);    /* #EEECE2 warm cream */
+      --color-base-200: oklch(96% 0.014 75);    /* #F4F3EE lighter cream */
+      --color-base-300: oklch(90% 0.020 75);    /* #E8E5D8 darker cream */
+      --color-base-content: oklch(28% 0.018 60); /* #3D3929 dark olive */
+      --color-primary: oklch(70% 0.140 45);     /* #DA7756 terra cotta */
+      --color-primary-content: oklch(98% 0.010 75);
+      --color-secondary: oklch(55% 0.020 60);   /* #6B6557 muted olive */
+      --color-secondary-content: oklch(98% 0.010 75);
+      --color-accent: oklch(60% 0.150 40);      /* #BD5D3A deeper terra */
+      --color-accent-content: oklch(98% 0.010 75);
+      --color-neutral: oklch(28% 0.018 60);
+      --color-neutral-content: oklch(94% 0.018 75);
+      --color-info: oklch(60% 0.120 220);
+      --color-success: oklch(55% 0.130 145);
+      --color-warning: oklch(75% 0.150 75);
+      --color-error: oklch(55% 0.180 25);
+      --radius-selector: 0.5rem;
+      --radius-field: 0.375rem;
+      --radius-box: 0.5rem;
+    }
+  </style>
+  <script src="https://gnjo.github.io/pug/pug.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script type="text/pug" id="pug-src">
+//- ============================================
+//- daisyUI preset (Claude theme — data-theme="claude")
+//- Use semantic classes: .btn .card .navbar .hero
+//- Tailwind utilities available: .p-4 .grid .gap-4 etc.
+//- ============================================
+
+.min-h-screen.bg-base-100
+  .navbar.bg-base-200.shadow-sm
+    .navbar-center
+      a.btn.btn-ghost.text-xl Page Title
+
+  .container.mx-auto.p-8.max-w-5xl
+
+    //- Hero section
+    .hero.bg-base-200.rounded-box.mb-8
+      .hero-content.text-center.py-12
+        .max-w-3xl
+          h1.text-4xl.font-bold.mb-4 Your Heading
+          p.text-lg.opacity-70 Your description goes here.
+
+    //- Content cards
+    .grid.gap-4.mb-8(class="md:grid-cols-2")
+      .card.bg-base-200
+        .card-body
+          h2.card-title Section One
+          p Card content here
+          .card-actions.justify-end
+            button.btn.btn-primary Action
+      .card.bg-base-200
+        .card-body
+          h2.card-title Section Two
+          p Card content here
+
+    //- Data table
+    .card.bg-base-200.mb-8
+      .card-body
+        h2.card-title.text-2xl Data Table
+        .overflow-x-auto.mt-4
+          table.table.table-zebra
+            thead
+              tr
+                th Column A
+                th Column B
+                th Column C
+            tbody
+              tr
+                td Value 1
+                td Value 2
+                td Value 3
+
+    //- Footer
+    .divider
+    footer.text-center.pb-8.opacity-50
+      p.text-sm Generated with Pug + daisyUI · Claude theme
+  </script>
+
+  <script>
+    try {
+      const src = document.getElementById('pug-src').textContent;
+      document.getElementById('app').innerHTML = pug.render(src, { filename: 'template.pug', basedir: '.' });
+    } catch (e) {
+      document.getElementById('app').innerHTML =
+        '<div class="alert alert-error m-8"><pre>' + e.message + '</pre></div>' +
+        '<pre class="m-8 p-4 bg-base-300 rounded overflow-auto text-xs">' +
+        document.getElementById('pug-src').textContent + '</pre>';
+    }
+  </script>
+</body>
+</html>

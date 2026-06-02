@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Title</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  <style>
+    /* Claude Code light theme (warm cream + terra cotta) */
+    :root {
+      --bulma-scheme-main: #EEECE2;
+      --bulma-scheme-main-bis: #F4F3EE;
+      --bulma-scheme-main-ter: #E8E5D8;
+      --bulma-background: #F4F3EE;
+      --bulma-text: #3D3929;
+      --bulma-text-strong: #3D3929;
+      --bulma-text-weak: #6B6557;
+      --bulma-border: #D4D0C4;
+      --bulma-border-weak: #E0DDD2;
+      --bulma-link: #BD5D3A;
+      --bulma-link-hover: #DA7756;
+      --bulma-primary: #DA7756;
+      --bulma-primary-h: 16deg;
+      --bulma-primary-s: 62%;
+      --bulma-primary-l: 59%;
+      --bulma-family-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body { background-color: #EEECE2; color: #3D3929; }
+    .card { background-color: #F4F3EE; border: 1px solid #D4D0C4; box-shadow: none; }
+    .navbar { background-color: #F4F3EE; border-bottom: 1px solid #D4D0C4; }
+    .navbar-item, .navbar-link { color: #3D3929; }
+    .button.is-primary { background-color: #DA7756; border-color: #DA7756; }
+    .button.is-primary:hover { background-color: #BD5D3A; border-color: #BD5D3A; }
+    .hero.is-light { background-color: #F4F3EE; color: #3D3929; }
+    .table { background-color: #F4F3EE; color: #3D3929; }
+    .table th { color: #3D3929; }
+    .table.is-striped tbody tr:nth-child(even) { background-color: #EEECE2; }
+  </style>
+  <script src="https://gnjo.github.io/pug/pug.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script type="text/pug" id="pug-src">
+//- ============================================
+//- Bulma preset (Claude theme)
+//- Semantic classes: .button .card .navbar .hero
+//- Use .is-primary / .is-light for theme accent
+//- ============================================
+
+nav.navbar
+  .container
+    .navbar-brand
+      a.navbar-item
+        strong Page Title
+
+section.hero.is-light
+  .hero-body
+    .container.has-text-centered
+      h1.title Your Heading
+      p.subtitle Your description goes here.
+
+section.section
+  .container
+    .columns
+      .column
+        .card
+          .card-content
+            p.title.is-5 Section One
+            p Card content here.
+            br
+            button.button.is-primary Action
+      .column
+        .card
+          .card-content
+            p.title.is-5 Section Two
+            p Card content here.
+
+section.section
+  .container
+    h2.title.is-4 Data Table
+    .table-container
+      table.table.is-striped.is-fullwidth
+        thead
+          tr
+            th Column A
+            th Column B
+            th Column C
+        tbody
+          tr
+            td Value 1
+            td Value 2
+            td Value 3
+
+footer.footer
+  .content.has-text-centered
+    p
+      small Generated with Pug + Bulma · Claude theme
+  </script>
+
+  <script>
+    try {
+      const src = document.getElementById('pug-src').textContent;
+      document.getElementById('app').innerHTML = pug.render(src, { filename: 'template.pug', basedir: '.' });
+    } catch (e) {
+      document.getElementById('app').innerHTML =
+        '<div class="notification is-danger m-4"><pre>' + e.message + '</pre></div>';
+    }
+  </script>
+</body>
+</html>
