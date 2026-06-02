@@ -171,6 +171,5 @@
   "verbose": true,
   "teammateMode": "auto",
   "remoteControlAtStartup": false,
-  "agentPushNotifEnabled": false,
-  "advisorModel": "opus"
+  "agentPushNotifEnabled": false
 }
