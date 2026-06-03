@@ -64,7 +64,8 @@ Write queries in the target language — do not search in English expecting Chin
 - Cross-reference: if three sources across languages agree, it's robust
 - Search iteratively: first-round results inform second-round queries
 - Do NOT include year in queries — prefer newest results by default
-- Let the model discover the best sources dynamically — do not hardcode forum names
+- Use `site:` targeting when your lead-researcher prompt specifies elite forums to search
+- Prioritize signal quality: elite/niche communities > blog posts > content farms (CSDN reposts, 百家号, Zen.yandex)
 
 **Max 60 search tool calls total** — think carefully before each one. User may request fewer.
 

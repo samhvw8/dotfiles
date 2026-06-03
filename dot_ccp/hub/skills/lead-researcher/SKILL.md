@@ -158,10 +158,11 @@ After user confirms, proceed to Phase 2 with the confirmed settings.
 
 1. **Apply confirmed settings** — use mode, sub-topics, and languages from Phase 1
 2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 1). This determines which languages to assign beyond the EN+ZH default.
-3. **Decompose** — break topic into sub-questions (use confirmed sub-topics from Phase 1)
-4. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages in higher modes.
-5. **Set iterations** — per confirmed mode
-6. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
+3. **Identify elite forums per language** — see "Elite Forum Targeting" below. Include `site:` targets in agent prompts.
+4. **Decompose** — break topic into sub-questions (use confirmed sub-topics from Phase 1)
+5. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages in higher modes.
+6. **Set iterations** — per confirmed mode
+7. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
 
 **Agent assignment: 1 language + 1 sub-topic per agent (atomic)**
 
@@ -194,6 +195,29 @@ Medium mode (1-2 sub-topics, 2 langs):
   (wave 2 if needed for sub-topic B)
 ```
 
+### Elite Forum Targeting (MANDATORY for high/max, RECOMMENDED for all)
+
+Generic web search favors SEO-optimized sites over niche/elite communities where real expertise lives. You MUST include elite forum targets in agent prompts.
+
+**How it works:**
+1. For each assigned language, identify 2-4 elite forums relevant to the topic
+2. Include them as `site:` search instructions in the agent prompt
+3. The forum list is a **starting point** — agents should discover more via search
+
+**Starting-point forums** (not exhaustive — discover more per topic):
+
+| Language | Elite/niche communities | Content farms to deprioritize |
+|----------|------------------------|-------------------------------|
+| ZH | V2EX, 看雪 (kanxue.com), 52pojie.cn, linux.do, 掘金 (juejin.cn), 知乎专栏 | CSDN reposts, 百家号 |
+| RU | Habr, 4pda.to, overclockers.ru, ixbt.com | Zen.yandex reposts |
+| EN | Hacker News, lobste.rs, specialized subreddits | Medium clones, content farms |
+| VN | tinhte.vn, voz.vn, daynhauhoc.com | |
+| JA | Qiita, Zenn, teratail | |
+| KO | GeekNews, velog.io, okky.kr | |
+
+**For topics involving reverse engineering, anti-bot, or security:**
+Add 看雪 (kanxue.com), 52pojie.cn, Hostloc, NodeSeek for ZH.
+
 ### Phase 3: Delegate (Parallel Subagents — low/medium only)
 
 For high/max mode, use the workflow engine above instead of this phase.
@@ -205,6 +229,11 @@ Research: [1 specific sub-question]
 Language: [1 assigned language — search ONLY in this language]
 Iterations: [N] (min [X], max [Y] — each = search + fetch + evaluate)
 Output: Return findings as structured data, NOT a formatted report
+
+Elite forum targeting: Include at least 2 site:-targeted searches on these forums:
+[list 2-4 forums from the table above for this language]
+Also discover additional niche forums via "[topic] 论坛 社区 精华" queries.
+Prioritize elite/niche communities over content farms.
 
 Scope: ONLY [sub-topic]. Do NOT investigate [other sub-topics].
 Report path: [./research/YYMMDD-topic/lang-subtopic.md]
@@ -251,6 +280,8 @@ Merge into one report at `./research/YYMMDD-<topic>.md` (relative to cwd):
 | Researching vague/unscoped requests | Route to heavy-think first (Phase 0 triage) |
 | Using heavy-think for every multi-part topic | Only fire when *framing* is contested, not when a clear topic has parts |
 | Blurring Phase 0 and Phase 1 | Phase 0 = "is this researchable?" Phase 1 = "confirm my plan parameters" |
+| Skipping elite forum targeting | Generic search surfaces content farms. MUST include `site:` targets in agent prompts |
+| Dropping contradictions/warnings in synthesis | Extract ALL structured fields (findings + key_insights + contradictions). Shallow extraction = incomplete report |
 
 ## Related
 
