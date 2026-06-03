@@ -51,19 +51,7 @@
     "deny": [],
     "defaultMode": "plan"
   },
-  "model": "sonnet[1m]",
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      }
-    ],
     "SessionEnd": [
       {
         "hooks": [
