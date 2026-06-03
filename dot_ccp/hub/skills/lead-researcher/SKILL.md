@@ -101,6 +101,8 @@ Before planning research, assess whether the request is **researchable as stated
 
 **Phase 0 is distinct from Phase 1's AskUserQuestion.** Phase 0 catches "the problem isn't researchable yet." Phase 1 catches "confirm my research plan parameters." Don't blur them.
 
+**Forager detection (BETA):** If the query is open-ended, multi-domain, or likely to need iterative scope expansion (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria), mention: "This might benefit from forager (beta) — iterative research with topic expansion. Want to try it?" Only if user confirms, invoke `Skill("forager")`. Never auto-invoke.
+
 **Pass-through examples** (skip heavy-think, go directly to Phase 1):
 - "Compare Next.js vs Remix for SSR performance" — criteria implied (performance), scope bounded
 - "What's the latest stable version of React" — single fact, clear target
@@ -159,10 +161,33 @@ After user confirms, proceed to Phase 2 with the confirmed settings.
 1. **Apply confirmed settings** — use mode, sub-topics, and languages from Phase 1
 2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 1). This determines which languages to assign beyond the EN+ZH default.
 3. **Identify elite forums per language** — see "Elite Forum Targeting" below. Include `site:` targets in agent prompts.
-4. **Decompose** — break topic into sub-questions (use confirmed sub-topics from Phase 1)
+4. **Decompose** — break topic into sub-questions using structured decomposition (see below)
 5. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages in higher modes.
 6. **Set iterations** — per confirmed mode
 7. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
+
+**Structured Decomposition (MANDATORY for medium+ modes)**
+
+Don't just split by obvious keywords. Apply these lenses:
+
+| Lens | Question | What it catches |
+|------|----------|-----------------|
+| **Stakeholder** | Who uses/builds/maintains this? | Different communities have different answers |
+| **Temporal** | What's the current state vs trajectory? | Avoids recommending dying tech |
+| **Failure mode** | What goes wrong? What are the pitfalls? | Catches "works in tutorial, breaks in prod" |
+| **Alternative framing** | What if the obvious answer is wrong? | Prevents confirmation bias in sub-topic selection |
+
+Example — "compare auth solutions for Next.js":
+```
+Naive decomposition: [OAuth providers, self-hosted libraries] — misses failure modes
+Structured decomposition:
+  1. "OAuth/OIDC providers" (stakeholder: teams wanting managed auth)
+  2. "Self-hosted auth libraries" (stakeholder: teams wanting control)
+  3. "Auth failure modes and migration pain" (failure mode lens)
+  4. "Auth at scale — what breaks beyond 10K users" (temporal + failure lens)
+```
+
+The failure mode lens is the most commonly skipped and highest value.
 
 **Agent assignment: 1 language + 1 sub-topic per agent (atomic)**
 
@@ -243,17 +268,38 @@ RECOMMENDED SKILLS: research - use for search-fetch loop methodology
 
 **Max 3 agents per wave.** Fire all in a single message.
 
-### Phase 4: Deepen (YOU do this after agents return)
+### Phase 4: Reflect & Deepen (YOU do this after agents return)
 
-After agents return, YOU verify and deepen:
+After agents return, YOU assess coverage and deepen gaps. This is structured reflection, not ad-hoc checking.
 
-| Check | Action |
-|-------|--------|
-| **Contradictions** | Two agents disagree? Investigate — find the primary source |
-| **Unverified claims** | Agent cited a blog? Verify against official docs or source code |
-| **Missing user experience** | Search GitHub Issues, Reddit, forums for real-world reports |
-| **Recency** | Check last commit, last release — is it maintained? |
-| **Composition** | Do recommendations work together or conflict? |
+**Step 1: Coverage Assessment**
+
+For each sub-question from Phase 2, assess:
+
+| Sub-question | Status | Sources | Confidence |
+|---|---|---|---|
+| [sub-q 1] | gap / partial / covered | count | low / medium / high |
+| [sub-q 2] | ... | ... | ... |
+
+Confidence levels: **high** = 3+ independent sources agree. **medium** = 2 sources or single authoritative source. **low** = 1 source or blog-only.
+
+**Step 2: Structured Checks**
+
+| Check | Question | Action if YES |
+|-------|----------|---------------|
+| **Contradictions** | Do agents disagree on facts? | Investigate primary source — one is wrong |
+| **Non-diagnostic findings** | Does a finding support ALL options equally? | Deprioritize — it doesn't help decide (ACH principle) |
+| **Missing failure modes** | Did any agent cover what goes WRONG? | Search GitHub Issues, forums for real-world pain |
+| **Recency** | Are recommended tools still maintained? | Check last commit, last release date |
+| **Refutation test** | What would DISPROVE the emerging recommendation? | Search for that evidence — if absent, recommendation is robust |
+| **Composition** | Do recommendations work together or conflict? | Test the combination, not just individual parts |
+
+**Step 3: Gap-Targeted Deepening**
+
+If coverage assessment shows gaps:
+- Spawn 1-2 targeted agents to fill specific gaps (not broad re-search)
+- Use refined queries informed by what was already found
+- Focus on the failure-mode and refutation checks — these are highest value
 
 This phase separates surface search from real research. NEVER skip.
 
@@ -287,3 +333,4 @@ Merge into one report at `./research/YYMMDD-<topic>.md` (relative to cwd):
 
 - [research skill](../../skills/research/SKILL.md) — methodology loaded by each agent
 - [language-matrix.md](../../skills/research/references/language-matrix.md) — conditional languages
+- [forager skill](../forager/SKILL.md) — BETA iterative research with goal-directed steering (separate system, not integrated)
