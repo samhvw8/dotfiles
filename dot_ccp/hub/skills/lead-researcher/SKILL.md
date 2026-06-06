@@ -45,6 +45,91 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 | **low/medium** | Subagents (manual) | Few agents, fast, simple |
 | **high/max** | Dynamic Workflow | 16 concurrent agents, cross-checking, resumable, results stay out of context |
 
+### Source Priority Order (MANDATORY)
+
+When constructing workflow prompts and evaluating findings, rank sources:
+
+| Priority | Source Type | Why |
+|----------|-----------|-----|
+| 1 | Elite forums (V2EX, Habr, HN, Lobste.rs, etc.) | Practitioner signal, not SEO-optimized |
+| 2 | GitHub repos, code, issues | What people actually build |
+| 3 | Official docs (Anthropic, vendor sites) | Authoritative but marketing-biased |
+| 4 | High-value websites (arXiv, McKinsey, Deloitte) | Data-backed but may lag practice |
+| 5 | Blog posts, tutorials | Secondary — verify against above |
+
+**Every workflow prompt MUST include this priority order.** Agents that return only blog/vendor sources are incomplete.
+
+### Model Tiering (MANDATORY for workflows)
+
+| Agent Role | Model | Why |
+|-----------|-------|-----|
+| Researcher (search-fetch) | `sonnet` | Mechanical retrieval — Opus is overkill, wastes budget |
+| Cross-checker | `sonnet` | Comparison task, not deep reasoning |
+| Synthesizer | `opus` | Needs deep reasoning to merge N reports into coherent analysis |
+
+Without tiering, all agents inherit the parent model (usually Opus), consuming ~5x budget before synthesis. This is the #1 cause of incomplete research reports — the synthesis agent never runs.
+
+### Budget Guards (MANDATORY for workflows)
+
+```js
+// Before cross-check phase
+if (budget.total && budget.remaining() < 80_000) {
+  log('Budget low — skipping cross-check, going direct to synthesis')
+  // skip to synthesis
+}
+
+// Before synthesis phase  
+if (budget.total && budget.remaining() < 30_000) {
+  log('Budget critically low — synthesis will be done by main loop')
+  return { findings: allFindings, crossChecks: null }
+}
+```
+
+If synthesis agent fails (spend limit), the main loop MUST:
+1. Read all agent report files from disk (agents write to `./report/`)
+2. Synthesize manually from those files
+3. Flag in the final report that cross-check was skipped
+
+### Elite Forum Passthrough (MANDATORY for workflow prompts)
+
+The elite forum table (in Phase 2) MUST be included in every researcher agent prompt within the workflow script. The table exists in THIS skill but does NOT automatically transfer to workflow agents.
+
+```js
+const ELITE_FORUMS = {
+  EN: 'Lobste.rs, Hacker News, Indie Hackers, Reddit (r/relevant)',
+  ZH: 'V2EX, linux.do, cnblogs.com, SegmentFault, NodeSeek',
+  RU: 'Habr, ODS.AI, linux.org.ru, SQL.ru'
+}
+
+agent(`...
+Source priority: elite forums > GitHub > official docs > blogs.
+Elite forums for ${lang.code}: ${ELITE_FORUMS[lang.code]}
+Use site: targeting for at least 2 of these forums.
+...`, { model: 'sonnet', agentType: 'researcher' })
+```
+
+### Structured Output Schema (RECOMMENDED for workflows)
+
+Use workflow `schema` option to get structured output from researchers — eliminates lossy free-text extraction:
+
+```js
+const RESEARCH_SCHEMA = {
+  type: 'object',
+  properties: {
+    tools: { type: 'array', items: { type: 'object', properties: {
+      name: {type:'string'}, price: {type:'string'}, url: {type:'string'}, metric: {type:'string'}
+    }}},
+    cases: { type: 'array', items: { type: 'object', properties: {
+      company: {type:'string'}, result: {type:'string'}, source_url: {type:'string'}
+    }}},
+    tips: { type: 'array', items: { type: 'string' } },
+    sources: { type: 'array', items: { type: 'string' } },
+    unresolved: { type: 'array', items: { type: 'string' } }
+  }
+}
+agent(prompt, { schema: RESEARCH_SCHEMA, model: 'sonnet' })
+```
+
 ### How to trigger a dynamic workflow
 
 After Phase 1 confirms high/max mode, tell the user:
@@ -307,15 +392,35 @@ If coverage assessment shows gaps:
 
 This phase separates surface search from real research. NEVER skip.
 
+### Post-Workflow Verification (MANDATORY — workflow mode only)
+
+After a workflow completes, BEFORE writing the final report:
+
+1. Check if synthesis/cross-check agents returned actual content vs errors (spend limits, timeouts)
+2. If any agent failed: spawn Sonnet agents to extract data from agent JSONL transcripts
+3. Cross-reference extracted data vs synthesized output — identify dropped findings
+4. Fill gaps into the final report before presenting to user
+
+**Never trust workflow output blindly.** The synthesis agent may have run out of budget.
+
 ### Phase 5: Synthesize
 
-Merge into one report at `./research/YYMMDD-<topic>.md` (relative to cwd):
+Merge into one report at `./research/YYMMDD-<topic>/` (relative to cwd, split per doc rules):
 
 1. **Lead with recommendation** — what and why
 2. **Cross-language tensions** — where communities disagree
 3. **Cite primary sources** — every claim links to a fetched URL
 4. **List contradictions** — present honestly
 5. **Unresolved questions** — what couldn't be answered
+
+**Citation Format (MANDATORY):**
+
+Every case study and data claim MUST include source URL inline:
+- Case study: `Novo Nordisk: 90% reduction ([anthropic.com](URL))`
+- Stat: `79% of top performers use AI ([Salesforce](URL))`
+- Tool claim: `60min/day savings ([53ai.com](URL))`
+
+Reports without inline citations are INCOMPLETE — do not finalize. If agents returned 333 URLs but the synthesis has 0, the synthesis failed.
 
 ## Anti-Patterns
 
@@ -332,6 +437,11 @@ Merge into one report at `./research/YYMMDD-<topic>.md` (relative to cwd):
 | Blurring Phase 0 and Phase 1 | Phase 0 = "is this researchable?" Phase 1 = "confirm my plan parameters" |
 | Skipping elite forum targeting | Generic search surfaces content farms. MUST include `site:` targets in agent prompts |
 | Dropping contradictions/warnings in synthesis | Extract ALL structured fields (findings + key_insights + contradictions). Shallow extraction = incomplete report |
+| All workflow agents on same model | Use `model: 'sonnet'` for researchers/cross-checkers, `model: 'opus'` ONLY for synthesis |
+| Synthesis has 0 citations | Raw reports have URLs → synthesis MUST preserve them inline. 0 citations = failed synthesis |
+| No budget guards in workflow | Add `budget.remaining()` checks before cross-check and synthesis phases |
+| Elite forums not in workflow prompt | The table is in THIS skill but doesn't auto-transfer — MUST paste forum list into each agent prompt |
+| Trusting workflow output without verification | ALWAYS check if synthesis agent actually ran vs returned spend-limit error |
 
 ## Related
 

@@ -65,7 +65,13 @@ Write queries in the target language — do not search in English expecting Chin
 - Search iteratively: first-round results inform second-round queries
 - Do NOT include year in queries — prefer newest results by default
 - Use `site:` targeting when your lead-researcher prompt specifies elite forums to search
-- Prioritize signal quality: elite/niche communities > blog posts > content farms (CSDN reposts, 百家号, Zen.yandex)
+- Prioritize signal quality by source tier:
+  1. Elite forums (V2EX, Habr, HN, Lobste.rs, Indie Hackers, linux.do)
+  2. GitHub repos, issues, code
+  3. Official docs (vendor sites, framework docs)
+  4. High-value analysis (arXiv, McKinsey, Deloitte, IDC)
+  5. Blog posts, tutorials (secondary — verify against tier 1-4)
+  6. Content farms (CSDN reposts, 百家号, Zen.yandex) — DEPRIORITIZE
 
 **Max 60 search tool calls total** — think carefully before each one. User may request fewer.
 
@@ -173,6 +179,14 @@ gh api search/repositories -f q="[中文关键词] stars:>50" \
 
 GitHub research reveals what practitioners actually build, not just what they write about. Prioritize repos with recent activity and meaningful star counts.
 
+### Minimum GitHub Coverage
+
+Each researcher agent MUST find at least 5 relevant repos OR document "fewer than 5 exist for [topic] in [language]". If the first `gh search repos` returns <5 results:
+- Try broader terms (L1)
+- Try adjacent terms (L3)
+- Try `gh search code "[pattern]"` to find repos by usage
+- Try `gh api search/repositories` with star threshold lowered
+
 ## Phase 4: Retrieval & Deep Gathering
 
 Use **all available tools and MCP servers** to gather information. Do NOT limit to a fixed set.
@@ -212,6 +226,14 @@ Group every discovered tool by what it can do:
 
 **Key principle:** Try every available tool before concluding content is inaccessible. Different tools succeed on different sites.
 
+### Reddit Retrieval (MANDATORY escalation)
+
+If `site:reddit.com` WebSearch returns empty (common due to API restrictions):
+1. Check if Parallax MCP is available (`ToolSearch("parallax reddit")`)
+2. If yes: use `mcp__parallax__search_reddit` or `browse_subreddit` for subreddit-specific search
+3. If no Parallax: try `WebFetch` on specific Reddit URLs constructed from the topic (e.g., `reddit.com/r/[subreddit]/search?q=[topic]`)
+4. Document "Reddit inaccessible" in findings if all methods fail — do NOT silently skip
+
 ### Free Open Platforms (always check)
 
 | Domain | EN | ZH (中文) | RU (русский) |
@@ -240,6 +262,22 @@ These are freely accessible without any tools — just `WebFetch` the URL. Alway
 - Evaluate pros/cons, maturity, security implications, performance characteristics
 
 **When findings conflict across languages:** Present the tension — different communities optimize for different constraints. A pattern proven at Chinese scale may differ from one optimized for Russian algorithmic elegance or English ecosystem breadth.
+
+## Completion Self-Check (MANDATORY before reporting)
+
+Before finalizing your report, verify coverage against the requested sections:
+
+| Requested section | Covered? | Sources (tier) | If NO, why |
+|-------------------|----------|----------------|------------|
+| [each section from prompt] | Y/N | elite/GitHub/official/blog | [reason] |
+
+If any section is "NO" and iterations remain, run 1-2 more targeted iterations to fill it. If iterations exhausted, document the gap explicitly in the report.
+
+Also verify:
+- [ ] At least 1 elite forum source included
+- [ ] At least 1 GitHub repo/code reference
+- [ ] Every case study has a source URL
+- [ ] Every stat/metric has a source URL
 
 ## Phase 6: Report
 

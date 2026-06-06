@@ -71,6 +71,10 @@ When capturing screenshots: use `save png`, NOT base64 (bloats context)
 
 # Environment
 
+## Models
+- Default Opus: `claude-opus-4-6` (Opus 4.6, 1M context)
+- When spawning agents or specifying `model: 'opus'`, this resolves to Opus 4.6
+
 ## mise
 - Polyglot tool version manager (replaces asdf, nvm, pyenv)
 - Env var switching per directory (replaces direnv)
