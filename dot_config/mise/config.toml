@@ -70,4 +70,6 @@ firebase = "15.17.0"
 "github:iii-hq/iii" = "iii/v0.11.2"
 "github:colbymchenry/codegraph" = "latest"
 opengrep = "latest"
-"github:Ataraxy-Labs/weave" = "latest"
+"github:Ataraxy-Labs/weave" = { version = "latest", matching = "weave-cli", exe = "weave" }
+"http:weave-driver" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-driver-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-driver" }
+"http:weave-mcp" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-mcp-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-mcp" }
