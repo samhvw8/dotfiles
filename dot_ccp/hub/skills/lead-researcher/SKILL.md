@@ -43,9 +43,38 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 | Mode | Engine | Why |
 |------|--------|-----|
 | **low/medium** | Subagents (manual) | Few agents, fast, simple |
-| **high/max** | Dynamic Workflow | 16 concurrent agents, cross-checking, resumable, results stay out of context |
+| **high/max** | Adaptive Iterate Loop | Agent-gated loop — gatherer agents (hands) + control agent (brain), streaming verify, rate-limited expansion |
 
-> **Target redesign (spec):** high/max is being reshaped into an agent-gated **adaptive-depth** loop (`gatherer` hands + `forager` brain) with a control panel, control-rod expansion caps, and streaming verify. See [adaptive-research/overview](references/adaptive-research/overview.md). Until implemented, the workflow guidance below remains current.
+### Adaptive Iterate Loop (high/max — the engine)
+
+high/max is **NOT** a fixed decompose → fan-out → merge. It is an **agent-gated iterate loop**: depth is decided each iteration from live coverage, not fixed by mode. This is what fixes the shallow/deep oscillation. Full design: [adaptive-research spec](references/adaptive-research/overview.md).
+
+**Encode this loop in the workflow script:**
+
+```
+seed goal-state  (sub-questions × languages, Phase-0 budget ceiling)
+while ( !control.stop  &&  gatherBudgetRemaining() > 0 ):
+  GATHER   parallel gatherer agents (topic × language × forum)            [model: sonnet]
+  VERIFY   pipeline, stream per-finding (NO barrier) + CRITIC refute      [model: sonnet]
+  GAUGE    update control panel (links / topics / per-lang sources / new-info-rate / contradictions)
+  CONTROL  1 cheap-model agent reads panel → { stop, deepen[], add_forums[], crawl_deeper[], expand_topics[] }
+  apply verdict — admission-controlled (control rod: expansion budget, depth cap, damping)
+SYNTHESIZE  opus, on a FENCED reserve (never starved) → cited report
+GOAL-CHECK  score report vs the ORIGINAL goal (catch drift)
+```
+
+| Rule | Detail |
+|------|--------|
+| **Exit by agent** | Loop stops when the CONTROL agent returns `stop` — NOT a fixed iteration count |
+| **Brake (primary)** | `new-info ÷ tokens` declining → stop; works even when `budget.total` is null |
+| **Brake (hard)** | fenced synthesis reserve + expansion budget + depth/generation caps → SCRAM to synthesis |
+| **Streaming verify** | `pipeline()`, no barrier — a refuted finding lowers coverage *before* CONTROL runs |
+| **Dynamic expansion** | topics + forums + crawl-depth, rate-limited so it can't run away |
+| **Each step** | 1 or many agents, parallel or sequential — `parallel()` to fan out, `pipeline()` to stream |
+
+The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum Passthrough, Structured Output) are **components used inside this loop**, not a separate static pipeline.
+
+Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md)
 
 ### Source Priority Order (MANDATORY)
 
@@ -140,24 +169,28 @@ After Phase 1 confirms high/max mode, tell the user:
 
 Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, languages, iterations, output path) so the workflow script encodes them.
 
-Example trigger prompt:
+Example trigger prompt (encodes the iterate loop, not a static pipeline):
 
 ```
-Run a workflow to research [topic]:
+Run a workflow as an ADAPTIVE ITERATE LOOP to research [topic]:
 
-Phase 1 — Parallel search (per language × sub-topic):
-[list each agent assignment: language + sub-topic + iterations]
+Seed: sub-questions [list] × languages [list]; budget ceiling [Phase-0 value].
 
-Phase 2 — Cross-check:
-Have independent agents adversarially review each other's findings.
-Flag contradictions, unverified claims, and missing sources.
+Each iteration:
+  GATHER  — parallel gatherer agents (1 sub-q + 1 language each), model sonnet
+  VERIFY  — pipeline, stream per-finding (no barrier), CRITIC tries to refute key claims
+  GAUGE   — update control panel: links / topics / per-language sources / new-info-rate / contradictions
+  CONTROL — one cheap-model agent reads the panel and returns:
+            { stop, deepen[], add_forums[], crawl_deeper[], expand_topics[] }
+            Loop EXIT depends on this agent — not a fixed count.
+  Apply the verdict, rate-limited (expansion budget, depth cap, damping).
 
-Phase 3 — Synthesize:
-Merge verified findings into one report at [output path].
-Lead with recommendation, present cross-language tensions, cite sources.
+Stop when CONTROL says stop OR new-info/token collapses OR gather budget hits the fenced
+synthesis reserve. Then SYNTHESIZE (opus, fenced reserve) → cited report at [output path],
+and GOAL-CHECK the report against the original question.
 
 Language matrix reference: [paste relevant T1/T2 langs from matrix]
-Each agent should use the `gather` skill for search-fetch loop methodology.
+Each gatherer agent should use the `gather` skill for search-fetch loop methodology.
 ```
 
 For **low/medium mode**, skip the workflow engine and use regular subagent spawning (Phase 2-5 below).
