@@ -84,27 +84,15 @@ The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum P
 
 Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md)
 
-### Source Priority — Goal-Dependent (MANDATORY)
+### Source Priority — Decided at Runtime (MANDATORY)
 
-Source priority is **NOT fixed — it depends on the research goal/topic.** First classify the domain, then pick the matching source stack. **GitHub is tier-1 ONLY for code/dev/tooling goals; for non-code domains it drops or disappears.** What stays constant: prefer practitioner/primary signal over SEO content farms.
+Do **NOT** hardcode which sources to use (no "always GitHub" rule). The source stack — **including whether GitHub is searched at all** — is chosen at runtime and **confirmed with the user** in Phase 1 (Question 4). Recommend a stack based on the topic, but the user decides.
 
-**Step 1 — pick the stack that matches the goal:**
+What stays constant regardless of stack: rank practitioner/primary signal above SEO content farms — 1) elite forums / practitioner communities ([elite-forums](references/elite-forums/overview.md)) → 2) primary/official sources → 3) high-value analysis → 4) blogs/tutorials (verify) → deprioritize 5) content farms.
 
-| Goal / domain | Tier-1 sources (search these first) | GitHub? |
-|---|---|---|
-| Code / dev / tooling | Elite dev forums, GitHub (repos/code/issues), package registries (npm/PyPI/crates.io/pkg.go.dev), Stack Overflow | ✅ tier-1 |
-| Academic / scientific | arXiv, Semantic/Google Scholar, PubMed, Papers with Code, OpenReview | ⚠️ only if code attached |
-| Business / market | Gartner, Forrester, IDC, McKinsey/BCG/Deloitte, Statista, Crunchbase, SEC/annual filings | ❌ rarely |
-| Product / consumer | G2, Capterra, Trustpilot, app stores, Product Hunt, Reddit, review videos | ❌ no |
-| Data / statistics | Kaggle, data.gov, World Bank, OECD, Our World in Data, HuggingFace datasets | ⚠️ for code |
-| Legal / standards | Official gov/regulator sites, RFCs / ISO / W3C, court & filing records | ❌ no |
-| News / current events | Reuters / AP / trade press, Google News | ❌ no |
+The menu of source types to pick from (with how to query each): [source-types](references/source-types.md).
 
-**Step 2 — constant ranking within the chosen stack:** 1) elite forums / practitioner communities (see [elite-forums](references/elite-forums/overview.md)) → 2) primary/official sources → 3) high-value analysis → 4) blogs/tutorials (verify) → deprioritize 5) content farms.
-
-Full searchable-source catalog with how to query each: [source-types](references/source-types.md).
-
-**Every workflow prompt MUST include the goal-matched source stack.** Agents returning only blog/vendor sources — or GitHub results for a non-code goal — are incomplete.
+**Every workflow prompt MUST inject the user-confirmed source stack.** Agents returning only blog/vendor sources are incomplete.
 
 ### Model Tiering (MANDATORY for workflows)
 
@@ -288,13 +276,28 @@ Options:
 - Let me specify
 ```
 
+**Question 4 — Source stack:**
+Recommend a stack from the catalog based on the topic; the user confirms or changes it. **This is where GitHub is included or not — at runtime, by the user, not by a rule.**
+
+```
+"Which sources should I prioritize for this?"
+Options:
+- [Recommended stack for THIS topic, e.g. "Dev/code: GitHub + package registries + Stack Overflow (Recommended)"]
+- Business/market (analysts, Statista, filings)
+- Academic (arXiv, Scholar, PubMed)
+- Consumer/product (G2, app stores, Reddit, reviews)
+- Let me pick / mixed
+```
+
+Full menu: `references/source-types.md`. The confirmed stack is injected into every gatherer prompt.
+
 After user confirms, proceed to Phase 2 with the confirmed settings.
 
 **Skip Phase 1 ONLY when:** user explicitly specified all parameters (mode + topics) in their original message, e.g. `/lead-researcher high compare A vs B`.
 
 ### Phase 2: Plan (YOU do this — don't delegate)
 
-1. **Apply confirmed settings** — use mode, sub-topics, and languages from Phase 1
+1. **Apply confirmed settings** — use mode, sub-topics, languages, and source stack from Phase 1
 2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 1). This determines which languages to assign beyond the EN+ZH default.
 3. **Identify elite forums per language** — see "Elite Forum Targeting" below. Include `site:` targets in agent prompts.
 4. **Decompose** — break topic into sub-questions using structured decomposition (see below)
