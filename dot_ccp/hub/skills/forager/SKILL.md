@@ -22,7 +22,7 @@ Built from 6 human research methodologies — each contributes one decision heur
 
 ```
 1. SEED   — define goal + initial sub-questions from user query
-2. SEARCH — spawn researcher agents (use research skill methodology)
+2. SEARCH — spawn gatherer agents (use gather skill methodology)
 3. READ   — extract claims, evidence, new leads from results
 4. REFLECT — assess: what do I now know vs goal? gaps? contradictions? new angles?
 5. STEER  — decide: deepen? expand? terminate?
@@ -54,9 +54,9 @@ Present to user: "Here's what I'll investigate. Adjust?"
 
 ## Phase 1: Search (per iteration)
 
-Spawn researcher agents for current gaps. Each agent:
+Spawn gatherer agents for current gaps. Each agent:
 - Gets 1 sub-question + 1 language
-- Runs search-fetch loop (research skill)
+- Runs search-fetch loop (gather skill)
 - Returns structured findings
 
 Use lead-researcher's wave pattern (max 3 parallel). First iteration = broad; later iterations = targeted at gaps.
@@ -162,6 +162,6 @@ Default: medium. User can request deep.
 
 - `references/methodology-map.md` — which human methodology maps to which step
 - `references/goal-state-examples.md` — example goal states for different query types
-- [research skill](../research/SKILL.md) — search-fetch loop methodology used by agents
+- [gather skill](../gather/SKILL.md) — search-fetch loop methodology used by agents
 - [lead-researcher skill](../lead-researcher/SKILL.md) — orchestrator that may invoke forager
 - [adaptive-research spec](../lead-researcher/references/adaptive-research/overview.md) — target redesign: forager becomes the reasoning **brain** wrapping the `gatherer` adaptive-depth loop; see [gatherer-vs-forager](../lead-researcher/references/adaptive-research/gatherer-vs-forager.md)

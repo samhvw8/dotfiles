@@ -1,6 +1,6 @@
 ---
 name: lead-researcher
-description: "MANDATORY entry point for ALL research tasks. Orchestrates researcher agents with configurable depth modes (low/medium/high/max). Determines languages, iterations, agent count, and sub-topics — then spawns parallel researcher agents and synthesizes results. Triggers: any research request, 'research X', 'what's the best', 'compare X vs Y', 'how should I approach', 'evaluate X', 'deep research', 'comprehensive analysis'. ALL research goes through lead-researcher first — never spawn researcher agents directly. Arguments: [mode] [topic] — e.g. 'high compare auth solutions' or 'max full ecosystem survey of MCP servers'."
+description: "MANDATORY entry point for ALL research tasks. Orchestrates gatherer agents with configurable depth modes (low/medium/high/max). Determines languages, iterations, agent count, and sub-topics — then spawns parallel gatherer agents and synthesizes results. Triggers: any research request, 'research X', 'what's the best', 'compare X vs Y', 'how should I approach', 'evaluate X', 'deep research', 'comprehensive analysis'. ALL research goes through lead-researcher first — never spawn gatherer agents directly. Arguments: [mode] [topic] — e.g. 'high compare auth solutions' or 'max full ecosystem survey of MCP servers'."
 ---
 
 # Lead Researcher
@@ -65,7 +65,7 @@ When constructing workflow prompts and evaluating findings, rank sources:
 
 | Agent Role | Model | Why |
 |-----------|-------|-----|
-| Researcher (search-fetch) | `sonnet` | Mechanical retrieval — Opus is overkill, wastes budget |
+| Gatherer (search-fetch) | `sonnet` | Mechanical retrieval — Opus is overkill, wastes budget |
 | Cross-checker | `sonnet` | Comparison task, not deep reasoning |
 | Synthesizer | `opus` | Needs deep reasoning to merge N reports into coherent analysis |
 
@@ -94,7 +94,7 @@ If synthesis agent fails (spend limit), the main loop MUST:
 
 ### Elite Forum Passthrough (MANDATORY for workflow prompts)
 
-The elite forum table (in Phase 2) MUST be included in every researcher agent prompt within the workflow script. The table exists in THIS skill but does NOT automatically transfer to workflow agents.
+The elite forum table (in Phase 2) MUST be included in every gatherer agent prompt within the workflow script. The table exists in THIS skill but does NOT automatically transfer to workflow agents.
 
 ```js
 const ELITE_FORUMS = {
@@ -107,12 +107,12 @@ agent(`...
 Source priority: elite forums > GitHub > official docs > blogs.
 Elite forums for ${lang.code}: ${ELITE_FORUMS[lang.code]}
 Use site: targeting for at least 2 of these forums.
-...`, { model: 'sonnet', agentType: 'researcher' })
+...`, { model: 'sonnet', agentType: 'gatherer' })
 ```
 
 ### Structured Output Schema (RECOMMENDED for workflows)
 
-Use workflow `schema` option to get structured output from researchers — eliminates lossy free-text extraction:
+Use workflow `schema` option to get structured output from gatherers — eliminates lossy free-text extraction:
 
 ```js
 const RESEARCH_SCHEMA = {
@@ -157,7 +157,7 @@ Merge verified findings into one report at [output path].
 Lead with recommendation, present cross-language tensions, cite sources.
 
 Language matrix reference: [paste relevant T1/T2 langs from matrix]
-Each agent should use the `research` skill for search-fetch loop methodology.
+Each agent should use the `gather` skill for search-fetch loop methodology.
 ```
 
 For **low/medium mode**, skip the workflow engine and use regular subagent spawning (Phase 2-5 below).
@@ -338,7 +338,7 @@ ZH: T00ls, 看雪, 先知社区 (xz.aliyun.com), 52pojie. RU: wasm.in, Codeby. E
 
 For high/max mode, use the workflow engine above instead of this phase.
 
-Spawn `researcher` agents. Each prompt:
+Spawn `gatherer` agents. Each prompt:
 
 ```
 Research: [1 specific sub-question]
@@ -354,7 +354,7 @@ Prioritize elite/niche communities over content farms.
 Scope: ONLY [sub-topic]. Do NOT investigate [other sub-topics].
 Report path: [./research/YYMMDD-topic/lang-subtopic.md]
 
-RECOMMENDED SKILLS: research - use for search-fetch loop methodology
+RECOMMENDED SKILLS: gather - use for search-fetch loop methodology
 ```
 
 **Max 3 agents per wave.** Fire all in a single message.
@@ -439,7 +439,7 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | Blurring Phase 0 and Phase 1 | Phase 0 = "is this researchable?" Phase 1 = "confirm my plan parameters" |
 | Skipping elite forum targeting | Generic search surfaces content farms. MUST include `site:` targets in agent prompts |
 | Dropping contradictions/warnings in synthesis | Extract ALL structured fields (findings + key_insights + contradictions). Shallow extraction = incomplete report |
-| All workflow agents on same model | Use `model: 'sonnet'` for researchers/cross-checkers, `model: 'opus'` ONLY for synthesis |
+| All workflow agents on same model | Use `model: 'sonnet'` for gatherers/cross-checkers, `model: 'opus'` ONLY for synthesis |
 | Synthesis has 0 citations | Raw reports have URLs → synthesis MUST preserve them inline. 0 citations = failed synthesis |
 | No budget guards in workflow | Add `budget.remaining()` checks before cross-check and synthesis phases |
 | Elite forums not in workflow prompt | The table is in THIS skill but doesn't auto-transfer — MUST paste forum list into each agent prompt |
@@ -447,8 +447,8 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 
 ## Related
 
-- [research skill](../../skills/research/SKILL.md) — methodology loaded by each agent
-- [language-matrix.md](../../skills/research/references/language-matrix.md) — field-to-language mapping
+- [gather skill](../../skills/gather/SKILL.md) — methodology loaded by each agent
+- [language-matrix.md](../../skills/gather/references/language-matrix.md) — field-to-language mapping
 - [elite-forums overview](references/elite-forums/overview.md) — validated forum reference (161 forums, 8 languages)
 - [content-farms](references/elite-forums/content-farms.md) — sites to deprioritize per language
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
