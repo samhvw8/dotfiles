@@ -55,6 +55,7 @@ User's framing: *"hypothesis, topic, knowledge → gather data → reasoning →
 | Wrong budget split | budget proportional to confirmed plan, not mode |
 
 ## Related
+- [expand-wiring](expand-wiring.md) — concrete JS for the EXPAND step (feed `add_topics` into next GATHER)
 - [control-panel](control-panel.md) — the control signals the brain reads
 - [control-rod](control-rod.md) — how expansion is bounded
 - [streaming-verify](streaming-verify.md) — the VERIFY step

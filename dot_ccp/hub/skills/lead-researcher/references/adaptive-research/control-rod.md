@@ -37,6 +37,7 @@ Every exit path reaches synthesis. The current system's #1 failure (0 citations 
 Reserve 1 unmoderated admission for the single highest-surprise finding — lets one off-goal-but-novel topic through, the only hedge against a stable reactor pointed at the wrong question.
 
 ## Related
+- [expand-wiring](expand-wiring.md) — the JS that enforces these rods
 - [control-panel](control-panel.md)
 - [adaptive-depth-loop](adaptive-depth-loop.md)
 - [phase-zero-planning](phase-zero-planning.md)
