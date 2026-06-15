@@ -35,9 +35,9 @@ forager loop (goal control):
 
 | Request | Path |
 |---|---|
-| low/medium | lead-researcher manual subagents (no loop) |
-| high/max | lead-researcher → forager (brain) → gatherer (hands) |
-| explicit "forager" / open-ended | forager directly |
+| low/medium | lead-researcher runs the loop **inline** — main agent IS the brain (forager reasoning), gatherer agents are the hands. No background workflow. |
+| high/max | lead-researcher runs the loop as a **background workflow** — brain = opus sub-agent, hands = gatherer agents |
+| standalone collection | `deep-gather` directly (no brain, just gather) |
 
 ## Related
 - [overview](overview.md)

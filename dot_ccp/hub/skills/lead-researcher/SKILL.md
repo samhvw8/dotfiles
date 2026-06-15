@@ -20,14 +20,14 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 
 ## Modes
 
-| Mode | Languages | Iterations/agent | When |
+| Mode | Languages | Soft depth target | When |
 |------|-----------|-----------------|------|
 | **low** | EN + ZH | 2-3 | Quick fact check, single question |
 | **medium** | EN + ZH | 3-5 | Standard evaluation, comparison |
 | **high** | EN + ZH + RU | 5-8 | Multi-domain, contradictions likely |
 | **max** | EN + ZH + RU + any relevant | 8-10 | Comprehensive landscape survey |
 
-**Chinese (ZH) is ALWAYS included** — even in low mode. The difference between modes is iteration depth and additional languages, not whether ZH is included.
+**Chinese (ZH) is ALWAYS included** — even in low mode. The depth numbers are **soft targets** the loop adapts around — actual exit is decided by the brain (REASONING/CHECK), not a fixed count. Mode sets languages, expansion budget, and a starting depth, not a hard iteration cap.
 
 ### Mode Selection Heuristic
 
@@ -40,20 +40,18 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 
 ## Execution Engine
 
-**One engine for ALL modes.** Every mode runs the same **Adaptive Iterate Loop** (the dynamic workflow). Mode is only a **scale preset** — languages, depth, expansion, budget. No more split between "manual subagents" and "workflow".
+**Same brain, two execution venues.** The hypothesis loop (GATHER DATA → REASONING → EXPAND → CHECK) runs in EVERY mode — what changes is only **where the brain executes** and how deep it goes:
 
-| Mode | Scale of the loop |
-|------|-------------------|
-| **low** | EN+ZH · single pass (loop runs once, no steering) · no expansion · tiny budget |
-| **medium** | EN+ZH · 2-3 iterations · forum expansion only · small budget |
-| **high** | EN+ZH+RU · adaptive depth · topic+forum+crawl expansion · medium budget |
-| **max** | EN+ZH+RU+ · deep · full expansion + wildcard slot · large budget |
+| Mode | Venue | The brain (REASONING/EXPAND/CHECK) runs as | Depth |
+|------|-------|--------------------------------------------|-------|
+| **low / medium** | **Direct** — main agent spawns gatherer agents inline | **the main agent itself**, reasoning inline (free, no delegation — forager's "YOU reflect, don't delegate") | low = 1-2 iterations; medium = a few |
+| **high / max** | **Background workflow** (main agent asleep) | a delegated **opus sub-agent** per iteration | adaptive, deep |
 
-low collapses the loop to a single gather → verify → synthesize pass (near-instant, no steering overhead); max runs it deep. Same machinery, different dial.
+So low/medium keep the brain — they just don't pay for a background workflow; the main agent *is* the reasoner. high/max offload to a workflow, so the brain must be a sub-agent. Mode also scales languages, expansion, and budget.
 
-**`forager` is the brain of the loop — for every mode.** The CONTROL step *is* forager's REFLECT (assess coverage / gaps / contradictions) + STEER (continue / deepen / expand / stop). low/medium reflect lightly (often one pass); high/max run the full goal-directed steering. forager is no longer a separate skill — its REFLECT/STEER methodology is fused in here as the loop's brain: [forager (the brain)](references/forager/overview.md). See also [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
+**`forager` is the brain — for every mode.** Its fused REFLECT/STEER methodology ([forager](references/forager/overview.md)) = REASONING/EXPAND/CHECK. In low/medium the MAIN agent runs it directly; in high/max an opus sub-agent runs it inside the workflow. See [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
 
-### Adaptive Iterate Loop (the engine — all modes)
+### Adaptive Iterate Loop (the engine — all modes; workflow venue shown)
 
 A **hypothesis-driven** loop, not a fixed decompose → fan-out → merge. State carries **hypotheses, topics, and accumulated knowledge** — and grows each iteration. Depth is decided by the brain from live evidence, not fixed by mode. Full design: [adaptive-research spec](references/adaptive-research/overview.md).
 
@@ -89,7 +87,21 @@ GOAL-CHECK   score the answer vs the ORIGINAL goal (catch drift)
 | **Expansion** | hypotheses + topics + knowledge grow, rate-limited so it can't run away |
 | **Each step** | 1 or many agents, parallel or sequential — `parallel()` to fan out, `pipeline()` to stream |
 
-low mode = single pass (gather → reason → synthesize, no expansion); max = deep hypothesis-refinement loop.
+low/medium run this loop **inline** (the main agent is the brain — 1-few iterations); high/max run it as the **background workflow** below.
+
+### Workflow runtime contract (high/max — MANDATORY to actually run)
+
+The loop runs as a background workflow: the JS script orchestrates but **cannot think**, and the main agent is asleep. So:
+
+| Concern | Contract |
+|---------|----------|
+| **Where the brain runs** | REASONING/EXPAND/CHECK = ONE **opus sub-agent** per iteration (NOT a cheap model). It receives the serialized STATE digest and returns the verdict ([schema](references/adaptive-research/adaptive-depth-loop.md)). |
+| **STATE digest** | Pass `hypotheses[]` + a per-topic knowledge **summary** (not raw findings). Cap ~15k tokens — summarize-and-roll old knowledge so the brain's input stays bounded. |
+| **Persistence / resume** | After EXPAND, write STATE to `./research/YYMMDD-topic/state.json` (hypotheses, topics, knowledge, gen, spentAtCheckpoint). On start, if it exists, load and resume from `gen`; restore the budget baseline from `spentAtCheckpoint` (else a crash reseeds empty and re-burns budget). |
+| **Budget self-enforce** | `const CEILING = args.budgetCeiling ?? DEFAULT_BY_MODE[mode]` (never undefined → no `NaN`). Guard on `(budget.spent() - start) < CEILING - SYNTH_RESERVE`. Do **NOT** gate on `budget.total` — it is usually null. |
+| **Handoff** | Workflow synthesizes internally and writes the report; on completion the main agent reads it and runs GOAL-CHECK. Main agent re-synthesizes ONLY if the workflow's synthesis sub-agent errored (spend limit). |
+
+For **low/medium** none of this applies — the main agent holds STATE in context and reasons directly; no JS, no state.json, no sub-agent brain.
 
 The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum Passthrough, Structured Output) are **components used inside this loop**, not a separate static pipeline.
 
@@ -117,18 +129,16 @@ Without tiering, all agents inherit the parent model (usually Opus), consuming ~
 
 ### Budget Guards (MANDATORY for workflows)
 
-```js
-// Before cross-check phase
-if (budget.total && budget.remaining() < 80_000) {
-  log('Budget low — skipping cross-check, going direct to synthesis')
-  // skip to synthesis
-}
+**Primary guard = the self-enforced ceiling from the runtime contract** (`(budget.spent() - start) ≥ CEILING - SYNTH_RESERVE`), because `budget.total` is usually null. The checks below are a *secondary* guard for when the user DID set a `+Nk` target — they no-op (correctly) when `total` is null:
 
-// Before synthesis phase  
-if (budget.total && budget.remaining() < 30_000) {
-  log('Budget critically low — synthesis will be done by main loop')
-  return { findings: allFindings, crossChecks: null }
+```js
+const used = budget.spent() - start          // works even when budget.total is null
+if (used >= GATHER_CEILING) {                 // GATHER_CEILING = CEILING - SYNTH_RESERVE
+  log('Gather ceiling hit — SCRAM to synthesis on the fenced reserve')
+  return synthesize(state)                     // synthesis reserve is never spent by gather
 }
+// optional secondary (only fires if user set +Nk):
+if (budget.total && budget.remaining() < 30_000) return { findings: state, crossChecks: null }
 ```
 
 If synthesis agent fails (spend limit), the main loop MUST:
@@ -187,28 +197,29 @@ Then describe the research task with the word **"workflow"** in your message to 
 Example trigger prompt (encodes the iterate loop, not a static pipeline):
 
 ```
-Run a workflow as an ADAPTIVE ITERATE LOOP to research [topic]:
+Run a workflow as an ADAPTIVE ITERATE LOOP (high/max) to research [topic]:
 
-Seed: sub-questions [list] × languages [list]; budget ceiling [Phase-0 value].
+Seed STATE = { hypotheses [list], topics [list], knowledge [] }; languages [list]; CEILING = [Phase-0 value].
 
 Each iteration:
-  GATHER  — parallel gatherer agents (1 sub-q + 1 language each), model sonnet
-  VERIFY  — pipeline, stream per-finding (no barrier), CRITIC tries to refute key claims
-  GAUGE   — update control panel: links / topics / per-language sources / new-info-rate / contradictions
-  CONTROL — one cheap-model agent reads the panel and returns:
-            { stop, deepen[], add_forums[], crawl_deeper[], expand_topics[] }
-            Loop EXIT depends on this agent — not a fixed count.
-  Apply the verdict, rate-limited (expansion budget, depth cap, damping).
+  GATHER DATA — parallel gatherer agents (1 topic + 1 language each), model sonnet, using deep-gather
+                + stream per-finding verify (no barrier); CRITIC refutes load-bearing claims
+  REASONING   — ONE opus sub-agent reads the STATE digest + new findings, weighs each hypothesis,
+                returns: { stop, hypotheses[{h,status}], add_topics[], knowledge[], reason }
+                Loop EXIT depends on this agent — not a fixed count.
+  EXPAND      — apply verdict: add/refine hypotheses, add topics, accumulate knowledge
+                (rate-limited: expansion budget, depth cap)
+  PERSIST     — write STATE to ./research/<topic>/state.json (resume-safe)
 
-Stop when CONTROL says stop OR new-info/token collapses OR gather budget hits the fenced
-synthesis reserve. Then SYNTHESIZE (opus, fenced reserve) → cited report at [output path],
-and GOAL-CHECK the report against the original question.
+Stop when REASONING says stop OR new-info/token collapses OR (spent - start) ≥ CEILING - SYNTH_RESERVE.
+Then SYNTHESIZE (opus, fenced reserve) → cited report at [output path]; main agent GOAL-CHECKs vs the goal.
 
-Language matrix reference: [paste relevant T1/T2 langs from matrix]
-Each gatherer agent should use the `deep-gather` skill for search-fetch loop methodology.
+Budget: const CEILING = args.budgetCeiling ?? DEFAULT_BY_MODE[mode]   (do NOT gate on budget.total — usually null)
+Language matrix: [paste relevant T1/T2 langs]
+Each gatherer agent uses the `deep-gather` skill.
 ```
 
-**All modes run through the loop.** The phases below are the loop's steps — they apply to every mode, just at different scale: Phase 0-2 = plan, Phase 3 = GATHER, Phase 4 = CONTROL (forager reflect/steer), Phase 5 = SYNTHESIZE. For **low** mode the loop makes a single pass (Phase 3 → 5, CONTROL just stops); higher modes iterate.
+**All modes run the loop; only the venue differs.** Phases map to loop steps: Phase 0-2 = plan, Phase 3 = GATHER DATA, Phase 4 = REASONING/EXPAND/CHECK (the forager brain), Phase 5 = SYNTHESIZE. **low/medium** run these **inline** (main agent is the brain, 1-few iterations); **high/max** run them as the **workflow above** (opus sub-agent brain, persisted STATE).
 
 ## Planning & Execution Phases (all modes)
 

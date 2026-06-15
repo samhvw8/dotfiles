@@ -5,7 +5,7 @@ description: "Deep internet gathering — the search-fetch loop, query templates
 
 # Deep Gather
 
-Internet gathering engine — the search-fetch loop that collects raw sources and data. **One job: gather from the internet.** No reasoning, no steering, no synthesis (that is lead-researcher's brain).
+Internet gathering engine — the search-fetch loop that collects, cross-references, and reports raw sources and data. **One job: gather from the internet.** It does NOT run hypothesis reasoning or loop steering — the goal-directed reasoning (REASONING/EXPAND/CHECK) is lead-researcher's brain.
 
 | Used | How |
 |------|-----|
