@@ -40,14 +40,22 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 
 ## Execution Engine
 
-| Mode | Engine | Why |
-|------|--------|-----|
-| **low/medium** | Subagents (manual) | Few agents, fast, simple |
-| **high/max** | Adaptive Iterate Loop | Agent-gated loop — gatherer agents (hands) + control agent (brain), streaming verify, rate-limited expansion |
+**One engine for ALL modes.** Every mode runs the same **Adaptive Iterate Loop** (the dynamic workflow). Mode is only a **scale preset** — languages, depth, expansion, budget. No more split between "manual subagents" and "workflow".
 
-### Adaptive Iterate Loop (high/max — the engine)
+| Mode | Scale of the loop |
+|------|-------------------|
+| **low** | EN+ZH · single pass (loop runs once, no steering) · no expansion · tiny budget |
+| **medium** | EN+ZH · 2-3 iterations · forum expansion only · small budget |
+| **high** | EN+ZH+RU · adaptive depth · topic+forum+crawl expansion · medium budget |
+| **max** | EN+ZH+RU+ · deep · full expansion + wildcard slot · large budget |
 
-high/max is **NOT** a fixed decompose → fan-out → merge. It is an **agent-gated iterate loop**: depth is decided each iteration from live coverage, not fixed by mode. This is what fixes the shallow/deep oscillation. Full design: [adaptive-research spec](references/adaptive-research/overview.md).
+low collapses the loop to a single gather → verify → synthesize pass (near-instant, no steering overhead); max runs it deep. Same machinery, different dial.
+
+**`forager` is the brain of the loop — for every mode.** The CONTROL step *is* forager's REFLECT (assess coverage / gaps / contradictions) + STEER (continue / deepen / expand / stop). low/medium reflect lightly (often one pass); high/max run the full goal-directed steering. forager is no longer a separate island — it is the control agent inside the loop. See [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
+
+### Adaptive Iterate Loop (the engine — all modes)
+
+It is **NOT** a fixed decompose → fan-out → merge. It is an **agent-gated iterate loop**: depth is decided each iteration from live coverage, not fixed by mode. This is what fixes the shallow/deep oscillation. Full design: [adaptive-research spec](references/adaptive-research/overview.md).
 
 **Encode this loop in the workflow script:**
 
@@ -161,13 +169,13 @@ const RESEARCH_SCHEMA = {
 agent(prompt, { schema: RESEARCH_SCHEMA, model: 'sonnet' })
 ```
 
-### How to trigger a dynamic workflow
+### How to trigger the workflow
 
-After Phase 1 confirms high/max mode, tell the user:
+After Phase 1 confirms the plan (ANY mode), tell the user:
 
-> "This is a high/max research — I'll run it as a dynamic workflow for better parallelism and cross-checking."
+> "I'll run this as a dynamic workflow (adaptive iterate loop), scaled to [mode]."
 
-Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, languages, iterations, output path) so the workflow script encodes them.
+Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, languages, mode/scale, budget ceiling, output path) so the workflow script encodes them. For **low** mode the loop is a single pass — same engine, no steering iterations.
 
 Example trigger prompt (encodes the iterate loop, not a static pipeline):
 
@@ -193,9 +201,9 @@ Language matrix reference: [paste relevant T1/T2 langs from matrix]
 Each gatherer agent should use the `gather` skill for search-fetch loop methodology.
 ```
 
-For **low/medium mode**, skip the workflow engine and use regular subagent spawning (Phase 2-5 below).
+**All modes run through the loop.** The phases below are the loop's steps — they apply to every mode, just at different scale: Phase 0-2 = plan, Phase 3 = GATHER, Phase 4 = CONTROL (forager reflect/steer), Phase 5 = SYNTHESIZE. For **low** mode the loop makes a single pass (Phase 3 → 5, CONTROL just stops); higher modes iterate.
 
-## Workflow (Subagent Mode — low/medium)
+## Planning & Execution Phases (all modes)
 
 ### Phase 0: Clarity Triage (MANDATORY)
 
@@ -367,9 +375,9 @@ Generic web search favors SEO-optimized sites over niche/elite communities where
 **For reverse engineering / security / anti-bot topics:**
 ZH: T00ls, 看雪, 先知社区 (xz.aliyun.com), 52pojie. RU: wasm.in, Codeby. EN: 0x00sec, HackTheBox, Tuts4You. VN: WhiteHat.vn, Viblo CTF. JA: SECCON. KO: Dreamhack, CODEGATE, webhacking.kr. FR: Root-Me, ZenK-Security, Hackropole.
 
-### Phase 3: Delegate (Parallel Subagents — low/medium only)
+### Phase 3: GATHER (the loop's gather step)
 
-For high/max mode, use the workflow engine above instead of this phase.
+This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. low = one wave then stop; medium = a few waves; high/max = adaptive waves driven by CONTROL (Phase 4).
 
 Spawn `gatherer` agents. Each prompt:
 
