@@ -52,17 +52,6 @@
         "matcher": "Write|Edit"
       }
     ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "rtk hook claude",
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      }
-    ],
     "SessionEnd": [
       {
         "hooks": [

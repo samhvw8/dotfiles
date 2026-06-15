@@ -164,3 +164,4 @@ Default: medium. User can request deep.
 - `references/goal-state-examples.md` — example goal states for different query types
 - [research skill](../research/SKILL.md) — search-fetch loop methodology used by agents
 - [lead-researcher skill](../lead-researcher/SKILL.md) — orchestrator that may invoke forager
+- [adaptive-research spec](../lead-researcher/references/adaptive-research/overview.md) — target redesign: forager becomes the reasoning **brain** wrapping the `gatherer` adaptive-depth loop; see [gatherer-vs-forager](../lead-researcher/references/adaptive-research/gatherer-vs-forager.md)

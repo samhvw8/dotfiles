@@ -45,6 +45,8 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 | **low/medium** | Subagents (manual) | Few agents, fast, simple |
 | **high/max** | Dynamic Workflow | 16 concurrent agents, cross-checking, resumable, results stay out of context |
 
+> **Target redesign (spec):** high/max is being reshaped into an agent-gated **adaptive-depth** loop (`gatherer` hands + `forager` brain) with a control panel, control-rod expansion caps, and streaming verify. See [adaptive-research/overview](references/adaptive-research/overview.md). Until implemented, the workflow guidance below remains current.
+
 ### Source Priority Order (MANDATORY)
 
 When constructing workflow prompts and evaluating findings, rank sources:
@@ -451,3 +453,4 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 - [content-farms](references/elite-forums/content-farms.md) — sites to deprioritize per language
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
 - [forager skill](../forager/SKILL.md) — BETA iterative research with goal-directed steering (separate system, not integrated)
+- [adaptive-research spec](references/adaptive-research/overview.md) — target redesign: gather/reason split, adaptive-depth loop, control rod, Phase 0 budget
