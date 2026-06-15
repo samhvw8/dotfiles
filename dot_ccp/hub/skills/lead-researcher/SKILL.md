@@ -51,7 +51,7 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 
 low collapses the loop to a single gather → verify → synthesize pass (near-instant, no steering overhead); max runs it deep. Same machinery, different dial.
 
-**`forager` is the brain of the loop — for every mode.** The CONTROL step *is* forager's REFLECT (assess coverage / gaps / contradictions) + STEER (continue / deepen / expand / stop). low/medium reflect lightly (often one pass); high/max run the full goal-directed steering. forager is no longer a separate island — it is the control agent inside the loop. See [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
+**`forager` is the brain of the loop — for every mode.** The CONTROL step *is* forager's REFLECT (assess coverage / gaps / contradictions) + STEER (continue / deepen / expand / stop). low/medium reflect lightly (often one pass); high/max run the full goal-directed steering. forager is no longer a separate skill — its REFLECT/STEER methodology is fused in here as the loop's brain: [forager (the brain)](references/forager/overview.md). See also [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
 
 ### Adaptive Iterate Loop (the engine — all modes)
 
@@ -225,7 +225,7 @@ Before planning research, assess whether the request is **researchable as stated
 
 **Phase 0 is distinct from Phase 1's AskUserQuestion.** Phase 0 catches "the problem isn't researchable yet." Phase 1 catches "confirm my research plan parameters." Don't blur them.
 
-**Forager detection (BETA):** If the query is open-ended, multi-domain, or likely to need iterative scope expansion (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria), mention: "This might benefit from forager (beta) — iterative research with topic expansion. Want to try it?" Only if user confirms, invoke `Skill("forager")`. Never auto-invoke.
+**Open-ended / iterative-expansion queries** (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria) are handled **natively** by the loop's CONTROL brain ([forager](references/forager/overview.md)) — no separate skill. Recommend **high** or **max** mode, where the brain runs full reflect + steer + topic expansion. forager is fused into this skill, not invoked separately.
 
 **Pass-through examples** (skip heavy-think, go directly to Phase 1):
 - "Compare Next.js vs Remix for SSR performance" — criteria implied (performance), scope bounded
@@ -411,9 +411,9 @@ RECOMMENDED SKILLS: gather - use for search-fetch loop methodology
 
 **Max 3 agents per wave.** Fire all in a single message.
 
-### Phase 4: Reflect & Deepen (YOU do this after agents return)
+### Phase 4: CONTROL — Reflect & Steer (the forager brain)
 
-After agents return, YOU assess coverage and deepen gaps. This is structured reflection, not ad-hoc checking.
+This is the loop's **CONTROL** step — the fused **forager** brain. After GATHER returns, the control agent runs REFLECT (assess coverage) → STEER (deepen / expand / stop). Full methodology: [forager](references/forager/overview.md). The checks below are the REFLECT pass; STEER then decides the next iteration or exit.
 
 **Step 1: Coverage Assessment**
 
@@ -504,5 +504,5 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 - [elite-forums overview](references/elite-forums/overview.md) — validated forum reference (161 forums, 8 languages)
 - [content-farms](references/elite-forums/content-farms.md) — sites to deprioritize per language
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
-- [forager skill](../forager/SKILL.md) — BETA iterative research with goal-directed steering (separate system, not integrated)
+- [forager (the brain)](references/forager/overview.md) — REFLECT/STEER methodology fused in as the loop's CONTROL step (was a standalone skill)
 - [adaptive-research spec](references/adaptive-research/overview.md) — target redesign: gather/reason split, adaptive-depth loop, control rod, Phase 0 budget

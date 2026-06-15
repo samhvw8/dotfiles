@@ -1,11 +1,19 @@
 ---
 name: gather
-description: "Single-agent gather methodology — the search-fetch loop, query templates, GitHub patterns, and retrieval tools. Loaded by gatherer agents spawned from lead-researcher. Do NOT use this skill directly for research — use lead-researcher instead, which orchestrates agents with configurable depth (low/medium/high/max). This skill is methodology, not orchestration."
+description: "Deep-gather methodology — the search-fetch loop, query templates, source/GitHub patterns, and retrieval tools. TWO ways to run: (1) STANDALONE 'deep gather' — invoke directly to collect raw sources/data on a topic, no reasoning loop (no forager brain, no synthesis steering); (2) ORCHESTRATED — loaded by gatherer agents inside lead-researcher's adaptive loop. Use lead-researcher when you need planning + reasoning + synthesis; use gather standalone when you just want deep mechanical collection. Triggers: 'deep gather', 'just collect sources on X', 'gather data about Y'."
 ---
 
 # Gather Methodology
 
-Search-fetch loop methodology for a single gatherer agent. This skill is loaded BY gatherer agents — not invoked directly.
+Search-fetch loop for collecting sources and data. Runs **two ways**:
+
+| Mode | When | Brain? |
+|------|------|--------|
+| **Standalone (deep gather)** | You want raw deep collection on a topic — sources, repos, data — without orchestration or synthesis | No reasoning loop — just gather + return |
+| **Orchestrated** | Inside lead-researcher's adaptive loop (as gatherer agents) | lead-researcher's CONTROL/forager brain decides when to stop |
+
+Standalone = run the phases below directly, stop when you've collected enough. Orchestrated = the loop's CONTROL step decides your depth and exit.
+
 Honoring **YAGNI**, **KISS**, **DRY**. Be honest, be brutal, straight to the point, be concise.
 
 **Your caller (lead-researcher) assigned you:** a topic, language(s), and iteration count. Follow those assignments. Search in your assigned language(s) — don't default to English unless assigned English.
