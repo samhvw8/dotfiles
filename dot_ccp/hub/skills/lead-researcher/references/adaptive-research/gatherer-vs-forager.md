@@ -1,10 +1,10 @@
 # Gatherer Vs Forager
 
-Both run the same agent-gated adaptive loop. Only the CONTROL agent's question differs. `forager`'s loop wraps `gatherer`'s.
+Both serve the same agent-gated hypothesis loop. Only the question the brain (REASONING/CHECK) asks differs. `forager` (the brain) drives `gatherer`/`deep-gather` (the hands).
 
-## Same loop, different control question
+## Same loop, different brain question
 
-| | CONTROL agent asks | Sufficiency type | Stops when |
+| | The brain (REASONING/CHECK) asks | Sufficiency type | Stops when |
 |---|---|---|---|
 | **gatherer** | Enough links/sources/coverage? Add a forum? Crawl deeper? | mechanical — did we collect enough? | gauges filled or saturated |
 | **forager** | Is the user's GOAL answered? Does the argument survive critique? Reframe? | epistemic — did we understand enough? | goal met or budget out |

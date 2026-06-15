@@ -21,12 +21,12 @@ Finding A can be at `verify` while B is still being `gather`ed — no barrier.
 | Liveness | URL resolves / not 404 | dead → refuted |
 | Tier | source priority (elite>github>official>blog>farm) | farm-only → weak |
 | Claim-evidence | does quoted evidence support the claim? | unsupported → weak |
-| Diagnosticity (ACH) | does it discriminate between answers? | non-diagnostic → tag, no coverage credit |
+| Diagnosticity (ACH) | does it discriminate between hypotheses? | non-diagnostic → tag, no knowledge credit |
 | Recency | last-commit / date | stale → flag |
 
 ## Critique (phản biện) rides the stream
 
-A **Critic** agent tries to *refute* load-bearing claims as they verify. Unresolved contradictions keep the loop alive (a control-panel gauge). Contradiction detection is keyed by `sub_q_id` — compare a new finding only against verified ones on the same sub-question, not all (near-streaming, O(sub-q) not O(all)).
+A **Critic** agent tries to *refute* load-bearing claims as they verify — directly feeding hypothesis status (support/refute). Unresolved contradictions keep the loop alive. Contradiction detection is keyed by **topic/hypothesis** — compare a new finding only against verified ones on the same topic, not all (near-streaming, O(topic) not O(all)).
 
 ## Priority window (not FIFO)
 
@@ -43,7 +43,7 @@ A stream can't be fully ordered without a barrier, but a small buffer (~20) re-s
 
 ## Why stream (the real reason)
 
-Not latency (reports are read async) — **feedback**: a refuted finding lowers a sub-question's coverage *before* CONTROL runs, so the brain steers on accurate state in the same generation.
+Not latency (reports are read async) — **feedback**: a refuted finding updates the hypothesis's knowledge *before* REASONING runs, so the brain reasons on accurate state in the same iteration.
 
 ## Related
 - [adaptive-depth-loop](adaptive-depth-loop.md)

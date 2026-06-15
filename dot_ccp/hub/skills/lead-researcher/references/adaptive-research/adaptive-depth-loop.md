@@ -18,7 +18,7 @@ while ( !check.stop  &&  gatherBudgetRemaining() > 0 ):
                  + stream per-finding verify (no barrier) + CRITIC refute
   REASONING   →  brain weighs new data vs each hypothesis: support / refute / new insight   [opus]
   EXPAND      →  grow STATE: add/refine hypotheses, add topics, accumulate knowledge   ← control rod
-  CHECK       →  condition met? hypothesis settled · saturation · coverage · budget · depth  [owns EXIT]
+  CHECK       →  condition met? hypotheses settled · saturation · topics covered · budget · depth  [owns EXIT]
   → continue (next iteration uses the expanded STATE)   OR   exit
 
 SYNTHESIZE  →  opus, FENCED reserve → answer + evidence + knowledge, cited
@@ -55,7 +55,7 @@ User's framing: *"hypothesis, topic, knowledge → gather data → reasoning →
 | Wrong budget split | budget proportional to confirmed plan, not mode |
 
 ## Related
-- [control-panel](control-panel.md) — what GAUGE produces
+- [control-panel](control-panel.md) — the control signals the brain reads
 - [control-rod](control-rod.md) — how expansion is bounded
 - [streaming-verify](streaming-verify.md) — the VERIFY step
 - [overview](overview.md)
