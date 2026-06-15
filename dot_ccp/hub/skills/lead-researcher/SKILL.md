@@ -84,19 +84,27 @@ The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum P
 
 Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md)
 
-### Source Priority Order (MANDATORY)
+### Source Priority — Goal-Dependent (MANDATORY)
 
-When constructing workflow prompts and evaluating findings, rank sources:
+Source priority is **NOT fixed — it depends on the research goal/topic.** First classify the domain, then pick the matching source stack. **GitHub is tier-1 ONLY for code/dev/tooling goals; for non-code domains it drops or disappears.** What stays constant: prefer practitioner/primary signal over SEO content farms.
 
-| Priority | Source Type | Why |
-|----------|-----------|-----|
-| 1 | Elite forums (V2EX, Habr, HN, Lobste.rs, etc.) | Practitioner signal, not SEO-optimized |
-| 2 | GitHub repos, code, issues | What people actually build |
-| 3 | Official docs (Anthropic, vendor sites) | Authoritative but marketing-biased |
-| 4 | High-value websites (arXiv, McKinsey, Deloitte) | Data-backed but may lag practice |
-| 5 | Blog posts, tutorials | Secondary — verify against above |
+**Step 1 — pick the stack that matches the goal:**
 
-**Every workflow prompt MUST include this priority order.** Agents that return only blog/vendor sources are incomplete.
+| Goal / domain | Tier-1 sources (search these first) | GitHub? |
+|---|---|---|
+| Code / dev / tooling | Elite dev forums, GitHub (repos/code/issues), package registries (npm/PyPI/crates.io/pkg.go.dev), Stack Overflow | ✅ tier-1 |
+| Academic / scientific | arXiv, Semantic/Google Scholar, PubMed, Papers with Code, OpenReview | ⚠️ only if code attached |
+| Business / market | Gartner, Forrester, IDC, McKinsey/BCG/Deloitte, Statista, Crunchbase, SEC/annual filings | ❌ rarely |
+| Product / consumer | G2, Capterra, Trustpilot, app stores, Product Hunt, Reddit, review videos | ❌ no |
+| Data / statistics | Kaggle, data.gov, World Bank, OECD, Our World in Data, HuggingFace datasets | ⚠️ for code |
+| Legal / standards | Official gov/regulator sites, RFCs / ISO / W3C, court & filing records | ❌ no |
+| News / current events | Reuters / AP / trade press, Google News | ❌ no |
+
+**Step 2 — constant ranking within the chosen stack:** 1) elite forums / practitioner communities (see [elite-forums](references/elite-forums/overview.md)) → 2) primary/official sources → 3) high-value analysis → 4) blogs/tutorials (verify) → deprioritize 5) content farms.
+
+Full searchable-source catalog with how to query each: [source-types](references/source-types.md).
+
+**Every workflow prompt MUST include the goal-matched source stack.** Agents returning only blog/vendor sources — or GitHub results for a non-code goal — are incomplete.
 
 ### Model Tiering (MANDATORY for workflows)
 
