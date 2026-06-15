@@ -2,44 +2,48 @@
 
 The core mechanism. Depth stops being a mode setting; an agent decides the exit each iteration from live evidence. Solves the shallow/deep oscillation.
 
+## State (grows each iteration)
+
+```
+STATE = { hypotheses[], topics[], knowledge[] }
+```
+
 ## The loop
 
 ```
-while ( !control.stop  &&  gatherBudgetRemaining() > 0 ):
+seed STATE = { hypotheses, topics, knowledge }
+while ( !check.stop  &&  gatherBudgetRemaining() > 0 ):
 
-  GATHER   →  parallel agents  (topic × language × forum)     [N agents together]
-  VERIFY   →  pipeline, streams per-finding, NO barrier        [no waiting]
-              + CRITIC agent refutes key claims                (phản biện)
-  GAUGE    →  deterministic: update the control panel          [cheap, no agent]
-  CONTROL  →  1 cheap-model agent reads panel → verdict        [owns the EXIT]
+  GATHER DATA →  deep-gather from internet — parallel gatherer agents (topic × language × source)
+                 + stream per-finding verify (no barrier) + CRITIC refute
+  REASONING   →  brain weighs new data vs each hypothesis: support / refute / new insight   [opus]
+  EXPAND      →  grow STATE: add/refine hypotheses, add topics, accumulate knowledge   ← control rod
+  CHECK       →  condition met? hypothesis settled · saturation · coverage · budget · depth  [owns EXIT]
+  → continue (next iteration uses the expanded STATE)   OR   exit
 
-  apply verdict (admission-controlled):                        ← control rod
-     deepen / add_forums / crawl_deeper / expand_topics
-
-SYNTHESIZE  →  opus, on a FENCED budget reserve                (never starved)
-GOAL-CHECK  →  score report vs original goal                   (catch drift)
+SYNTHESIZE  →  opus, FENCED reserve → answer + evidence + knowledge, cited
+GOAL-CHECK  →  score answer vs original goal (catch drift)
 ```
 
 ## Step types → Workflow primitives
 
 | Step | Behavior | Primitive |
 |---|---|---|
-| GATHER | many agents at once | `parallel(thunks)` |
-| VERIFY | stream each finding, no barrier | `pipeline(items, ...stages)` |
-| GAUGE | wait for wave, no agent | plain `await` + JS |
-| CONTROL | one agent decides exit | `await agent(...)` |
+| GATHER DATA | many gatherer agents + stream verify | `parallel()` + `pipeline()` |
+| REASONING | brain weighs data vs hypotheses | `await agent(opus)` |
+| EXPAND | mutate STATE, admission-controlled | JS + control rod |
+| CHECK | brain decides exit | part of the REASONING verdict |
 
-User's framing: *"1 vòng loop nhưng exit depend vào 1 agent; mỗi step 1 hoặc nhiều agent cùng chạy hoặc chờ nhau."*
+User's framing: *"hypothesis, topic, knowledge → gather data → reasoning → expand → check → continue."* Exit depends on the brain agent; each step is 1 or many agents, parallel or sequential.
 
-## Control verdict (structured)
+## REASONING + CHECK verdict (structured)
 
 ```json
 { "stop": false,
-  "deepen": ["sub_q_2"],
-  "expand_topics": [],
-  "add_forums": ["V2EX", "Habr"],
-  "crawl_deeper": ["https://..."],
-  "reason": "ZH sources thin, sub_q_2 still gap, new-info rate healthy" }
+  "hypotheses": [{ "h": "X causes Y", "status": "supported|refuted|open" }],
+  "add_topics": ["..."],
+  "knowledge": ["confirmed fact ..."],
+  "reason": "H1 refuted by 3 ZH sources; H2 open, new-info rate healthy" }
 ```
 
 ## Why this fixes shallow/deep

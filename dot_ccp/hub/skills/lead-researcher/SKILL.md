@@ -55,34 +55,45 @@ low collapses the loop to a single gather → verify → synthesize pass (near-i
 
 ### Adaptive Iterate Loop (the engine — all modes)
 
-It is **NOT** a fixed decompose → fan-out → merge. It is an **agent-gated iterate loop**: depth is decided each iteration from live coverage, not fixed by mode. This is what fixes the shallow/deep oscillation. Full design: [adaptive-research spec](references/adaptive-research/overview.md).
+A **hypothesis-driven** loop, not a fixed decompose → fan-out → merge. State carries **hypotheses, topics, and accumulated knowledge** — and grows each iteration. Depth is decided by the brain from live evidence, not fixed by mode. Full design: [adaptive-research spec](references/adaptive-research/overview.md).
 
 **Encode this loop in the workflow script:**
 
 ```
-seed goal-state  (sub-questions × languages, Phase-0 budget ceiling)
-while ( !control.stop  &&  gatherBudgetRemaining() > 0 ):
-  GATHER   parallel gatherer agents (topic × language × forum)            [model: sonnet]
-  VERIFY   pipeline, stream per-finding (NO barrier) + CRITIC refute      [model: sonnet]
-  GAUGE    update control panel (links / topics / per-lang sources / new-info-rate / contradictions)
-  CONTROL  1 cheap-model agent reads panel → { stop, deepen[], add_forums[], crawl_deeper[], expand_topics[] }
-  apply verdict — admission-controlled (control rod: expansion budget, depth cap, damping)
-SYNTHESIZE  opus, on a FENCED reserve (never starved) → cited report
-GOAL-CHECK  score report vs the ORIGINAL goal (catch drift)
+seed STATE = { hypotheses, topics, knowledge }   (+ Phase-0 budget ceiling)
+while ( !check.stop  &&  gatherBudgetRemaining() > 0 ):
+  GATHER DATA  deep-gather from internet — parallel gatherer agents (topic × language × source)  [sonnet]
+               + stream per-finding verify (no barrier) + CRITIC refute
+  REASONING    brain weighs new data vs each hypothesis: support / refute / new insight           [opus — forager brain]
+  EXPAND       grow STATE — add/refine hypotheses, add topics, accumulate knowledge        (admission-controlled: control rod)
+  CHECK        condition met? hypothesis settled · saturation (new-info/token) · coverage · budget · depth
+  → continue (next iteration uses the expanded STATE)   OR   exit
+SYNTHESIZE   opus, on a FENCED reserve (never starved) → answer + evidence + knowledge, cited
+GOAL-CHECK   score the answer vs the ORIGINAL goal (catch drift)
 ```
+
+| Step | What it does | Who |
+|------|--------------|-----|
+| **GATHER DATA** | collect from the internet for current topics/hypotheses | `deep-gather` skill (gatherer agents) |
+| **REASONING** | weigh new data against hypotheses — confirm / refute / discover | forager brain (opus) |
+| **EXPAND** | mutate STATE: new/refined hypotheses, new topics, kept knowledge | brain + control rod |
+| **CHECK** | decide continue vs stop | the brain owns the exit |
 
 | Rule | Detail |
 |------|--------|
-| **Exit by agent** | Loop stops when the CONTROL agent returns `stop` — NOT a fixed iteration count |
+| **Exit by agent** | The CHECK/brain decides `stop` — NOT a fixed iteration count |
+| **Hypothesis-driven** | every gather serves confirming/refuting a hypothesis; findings accumulate into knowledge |
 | **Brake (primary)** | `new-info ÷ tokens` declining → stop; works even when `budget.total` is null |
 | **Brake (hard)** | fenced synthesis reserve + expansion budget + depth/generation caps → SCRAM to synthesis |
-| **Streaming verify** | `pipeline()`, no barrier — a refuted finding lowers coverage *before* CONTROL runs |
-| **Dynamic expansion** | topics + forums + crawl-depth, rate-limited so it can't run away |
+| **Streaming verify** | `pipeline()`, no barrier — a refuted finding updates knowledge *before* REASONING runs |
+| **Expansion** | hypotheses + topics + knowledge grow, rate-limited so it can't run away |
 | **Each step** | 1 or many agents, parallel or sequential — `parallel()` to fan out, `pipeline()` to stream |
+
+low mode = single pass (gather → reason → synthesize, no expansion); max = deep hypothesis-refinement loop.
 
 The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum Passthrough, Structured Output) are **components used inside this loop**, not a separate static pipeline.
 
-Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md)
+Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md) · [forager (the brain)](references/forager/overview.md)
 
 ### Source Priority — Decided at Runtime (MANDATORY)
 
@@ -194,7 +205,7 @@ synthesis reserve. Then SYNTHESIZE (opus, fenced reserve) → cited report at [o
 and GOAL-CHECK the report against the original question.
 
 Language matrix reference: [paste relevant T1/T2 langs from matrix]
-Each gatherer agent should use the `gather` skill for search-fetch loop methodology.
+Each gatherer agent should use the `deep-gather` skill for search-fetch loop methodology.
 ```
 
 **All modes run through the loop.** The phases below are the loop's steps — they apply to every mode, just at different scale: Phase 0-2 = plan, Phase 3 = GATHER, Phase 4 = CONTROL (forager reflect/steer), Phase 5 = SYNTHESIZE. For **low** mode the loop makes a single pass (Phase 3 → 5, CONTROL just stops); higher modes iterate.
@@ -406,7 +417,7 @@ Prioritize elite/niche communities over content farms.
 Scope: ONLY [sub-topic]. Do NOT investigate [other sub-topics].
 Report path: [./research/YYMMDD-topic/lang-subtopic.md]
 
-RECOMMENDED SKILLS: gather - use for search-fetch loop methodology
+RECOMMENDED SKILLS: deep-gather - use for search-fetch loop methodology
 ```
 
 **Max 3 agents per wave.** Fire all in a single message.
@@ -499,8 +510,8 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 
 ## Related
 
-- [gather skill](../../skills/gather/SKILL.md) — methodology loaded by each agent
-- [language-matrix.md](../../skills/gather/references/language-matrix.md) — field-to-language mapping
+- [deep-gather skill](../../skills/deep-gather/SKILL.md) — methodology loaded by each agent
+- [language-matrix.md](../../skills/deep-gather/references/language-matrix.md) — field-to-language mapping
 - [elite-forums overview](references/elite-forums/overview.md) — validated forum reference (161 forums, 8 languages)
 - [content-farms](references/elite-forums/content-farms.md) — sites to deprioritize per language
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights

@@ -4,7 +4,7 @@ The reasoning **brain** of lead-researcher's adaptive iterate loop — the CONTR
 
 ## Role in the loop
 
-Each iteration, after GATHER → VERIFY → GAUGE, forager runs **REFLECT → STEER → decide exit**. It is the agent that owns the loop's `stop`.
+Each iteration, after GATHER DATA, forager runs **REASONING (=REFLECT) → EXPAND (=STEER) → CHECK exit**. It weighs new data against the **hypotheses**, grows **topics + knowledge**, and owns the loop's `stop`. REFLECT/STEER below map onto REASONING/EXPAND in the hypothesis loop.
 
 ## REFLECT (assess — the control agent does this, never a gatherer)
 
