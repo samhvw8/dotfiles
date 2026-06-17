@@ -1,5 +1,0 @@
-name: session-start-pickup
-type: SessionStart
-timeout: 5
-command: session-start-pickup.sh
-interpreter: bash

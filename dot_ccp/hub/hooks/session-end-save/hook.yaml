@@ -1,6 +1,0 @@
-name: session-end-save
-type: SessionEnd
-timeout: 10
-command: session-end-save.sh
-interpreter: bash
-async: true

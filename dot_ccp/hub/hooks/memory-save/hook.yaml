@@ -1,5 +1,0 @@
-name: memory-save
-type: Stop
-timeout: 5
-command: memory-save-reminder.sh
-interpreter: bash

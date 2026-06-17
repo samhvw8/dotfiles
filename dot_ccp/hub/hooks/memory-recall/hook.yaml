@@ -1,5 +1,0 @@
-name: memory-recall
-type: UserPromptSubmit
-timeout: 5
-command: memory-recall.sh
-interpreter: bash
