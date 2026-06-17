@@ -42,23 +42,12 @@
   "hooks": {
     "PostToolUse": [
       {
+        "matcher": "Write|Edit",
         "hooks": [
           {
+            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/surgical-changes/scripts/surgical-changes-check.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ],
-        "matcher": "Write|Edit"
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/session-end-save/scripts/session-end-save.sh",
-            "timeout": 10,
-            "type": "command"
+            "timeout": 5
           }
         ]
       }
@@ -67,18 +56,9 @@
       {
         "hooks": [
           {
+            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/session-start/scripts/session-start.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/session-start-pickup/scripts/session-start-pickup.sh",
-            "timeout": 5,
-            "type": "command"
+            "timeout": 5
           }
         ]
       }
@@ -87,36 +67,27 @@
       {
         "hooks": [
           {
+            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/doc-rules/scripts/check-doc-rules.sh",
-            "timeout": 5,
-            "type": "command"
+            "timeout": 5
           }
         ]
       },
       {
         "hooks": [
           {
+            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/force-agent-skills-eval/scripts/force-agent-skills-eval.sh",
-            "timeout": 220,
-            "type": "command"
+            "timeout": 220
           }
         ]
       },
       {
         "hooks": [
           {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-recall/scripts/memory-recall.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/memory-save/scripts/memory-save-reminder.sh",
-            "timeout": 5,
-            "type": "command"
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
+            "timeout": 5
           }
         ]
       }
