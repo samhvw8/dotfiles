@@ -10,6 +10,16 @@ base_url = 'https://skills.sh'
 limit = 10
 
 [sources]
+[sources.'anthropics/skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/anthropics/skills.git'
+path = 'sources/anthropics--skills'
+ref = 'main'
+commit = '57546260929473d4e0d1c1bb75297be2fdfa1949'
+updated = 2026-06-17T22:41:33.718431+07:00
+installed = ['skills/frontend-design']
+
 [sources.'ast-grep/agent-skill']
 registry = 'manual'
 provider = 'git'
@@ -67,6 +77,16 @@ ref = 'main'
 commit = '5598a3a8eff88d52ed1a0f90b5aa1cf18837eb1b'
 updated = 2026-05-18T08:52:45.913022+07:00
 installed = ['skills/think']
+
+[sources.'vercel-labs/agent-skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/vercel-labs/agent-skills.git'
+path = 'sources/vercel-labs--agent-skills'
+ref = 'main'
+commit = 'f8a72b9603728bb92a217a879b7e62e43ad76c81'
+updated = 2026-06-17T22:41:46.187731+07:00
+installed = ['skills/react-best-practices']
 
 [sources.'vercel-labs/next-skills']
 registry = 'github'
