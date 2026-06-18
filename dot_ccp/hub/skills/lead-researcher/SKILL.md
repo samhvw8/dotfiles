@@ -105,7 +105,7 @@ For **low/medium** none of this applies — the main agent holds STATE in contex
 
 The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum Passthrough, Structured Output) are **components used inside this loop**, not a separate static pipeline.
 
-Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [expand-wiring](references/adaptive-research/expand-wiring.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md) · [forager (the brain)](references/forager/overview.md)
+Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md) · [forager (the brain)](references/forager/overview.md)
 
 ### Source Priority — Decided at Runtime (MANDATORY)
 
@@ -518,8 +518,6 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | No budget guards in workflow | Add `budget.remaining()` checks before cross-check and synthesis phases |
 | Elite forums not in workflow prompt | The table is in THIS skill but doesn't auto-transfer — MUST paste forum list into each agent prompt |
 | Trusting workflow output without verification | ALWAYS check if synthesis agent actually ran vs returned spend-limit error |
-| Frozen topic set / `add_topics` ignored | EXPAND MUST feed `verdict.add_topics` into the NEXT gather. A static `SUBTOPICS` array → gen-2 re-runs identical cells → dedup → **false saturation**. Wire it per [expand-wiring](references/adaptive-research/expand-wiring.md) |
-| Re-statusing hypotheses but never adding new ones | The brain may also DISCOVER hypotheses — apply `verdict.hypotheses` as the new set, don't freeze the seed list |
 
 ## Related
 
