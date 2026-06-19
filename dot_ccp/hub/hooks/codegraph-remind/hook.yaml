@@ -1,5 +1,0 @@
-name: codegraph-remind
-type: UserPromptSubmit
-timeout: 5
-command: codegraph-remind.sh
-interpreter: bash
