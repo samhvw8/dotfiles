@@ -27,7 +27,7 @@ When rules conflict: conversation context > project CLAUDE.md > global CLAUDE.md
 # Mandatory Rules
 
 - `rules/delegation-protocol.md` is **non-negotiable**. Every rule marked MUST/NEVER in that file MUST be followed exactly. No exceptions, no "I already know how."
-- `rules/codegraph.md` is **non-negotiable**. When CodeGraph MCP is available, you MUST use codegraph tools for structural queries instead of grep. No exceptions.
+- `rules/codebase.md` is **non-negotiable**. When the `codebase` MCP (codebase-memory-mcp) is available, you MUST use its tools (`search_graph`, `trace_path`, `query_graph`, `get_architecture`, …) for structural queries instead of grep. No exceptions.
 - Skills MUST be invoked at even 1% relevance — your memory was wiped, you do NOT know how.
 - Fresh conversations receiving new features/brainstorm/tasks MUST run the Research Protocol (researcher agent + GitHub search) before implementation. See `delegation-protocol.md` for full protocol.
 

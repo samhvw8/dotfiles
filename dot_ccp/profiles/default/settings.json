@@ -37,14 +37,18 @@
       "WebSearch",
       "Write",
       "mcp__context7",
-      "mcp__codegraph__codegraph_search",
-      "mcp__codegraph__codegraph_context",
-      "mcp__codegraph__codegraph_callers",
-      "mcp__codegraph__codegraph_callees",
-      "mcp__codegraph__codegraph_impact",
-      "mcp__codegraph__codegraph_node",
-      "mcp__codegraph__codegraph_status",
-      "mcp__codegraph__codegraph_files"
+      "mcp__codebase__index_repository",
+      "mcp__codebase__search_graph",
+      "mcp__codebase__query_graph",
+      "mcp__codebase__trace_path",
+      "mcp__codebase__get_code_snippet",
+      "mcp__codebase__get_graph_schema",
+      "mcp__codebase__get_architecture",
+      "mcp__codebase__search_code",
+      "mcp__codebase__list_projects",
+      "mcp__codebase__index_status",
+      "mcp__codebase__detect_changes",
+      "mcp__codebase__manage_adr"
     ],
     "deny": [],
     "defaultMode": "plan"
@@ -96,7 +100,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/codebase-remind/scripts/codebase-remind.sh",
             "timeout": 5
           }
         ]
