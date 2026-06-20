@@ -51,7 +51,6 @@
       "mcp__codebase__manage_adr"
     ],
     "deny": [],
-    "defaultMode": "plan"
   },
   "hooks": {
     "PostToolUse": [

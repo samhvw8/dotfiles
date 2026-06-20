@@ -60,7 +60,9 @@ Grep is the right tool ONLY for non-code text:
 | Rule | Detail |
 |------|--------|
 | Load first | `ToolSearch("select:mcp__codebase__search_graph")` once per session |
-| Explore via subagent | Token-heavy — spawn via Task to keep main context clean |
+| Graph before files | Reach for `mcp__codebase__*` before Read/Grep — ~99% fewer tokens. Default tool, not a fallback. |
+| Heavy explore → delegate + equip | Broad sweeps / reviews / multi-file mapping → spawn a subagent AND name `mcp__codebase__*` in its prompt, so the graph runs in its context and only findings return. |
+| Small lookup → inline | A few targeted calls → run `mcp__codebase__*` directly; an agent costs more context than it saves. Not "manual execution" — using the tool. |
 | Index lives globally | In `~/.cache/codebase-memory-mcp`, not in-repo; auto-syncs on index |
 
 ## If this repo isn't indexed
