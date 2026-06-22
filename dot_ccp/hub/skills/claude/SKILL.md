@@ -248,6 +248,6 @@ When creating or editing skills/agents: this skill for structure → `prompt-arc
 ---
 
 **Documentation:**
-- llms.txt: https://context7.com/websites/claude_en_claude-code/llms.txt?tokens=10000
-- Main docs: https://docs.claude.com/en/docs/claude-code/
+- llms.txt: https://context7.com/websites/code_claude/llms.txt?tokens=10000
+- Main docs: https://code.claude.com/docs/en/
 - GitHub: https://github.com/anthropics/claude-code

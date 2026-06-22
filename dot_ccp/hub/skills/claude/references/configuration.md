@@ -17,7 +17,7 @@ Settings are applied in order of precedence:
 `~/.claude/settings.json`:
 ```json
 {
-  "model": "claude-sonnet-4-5-20250929",
+  "model": "claude-sonnet-4-6",
   "maxTokens": 8192,
   "temperature": 1.0,
   "thinking": {
@@ -36,7 +36,7 @@ Settings are applied in order of precedence:
 `.claude/settings.json`:
 ```json
 {
-  "model": "claude-sonnet-4-5-20250929",
+  "model": "claude-sonnet-4-6",
   "maxTokens": 4096,
   "sandboxing": {
     "enabled": true,
@@ -54,15 +54,16 @@ Settings are applied in order of precedence:
 ### Model Configuration
 
 **model**: Claude model to use
-- `claude-sonnet-4-5-20250929` (default, latest Sonnet)
-- `claude-opus-4-20250514` (Opus for complex tasks)
-- `claude-haiku-4-20250408` (Haiku for speed)
+- `claude-sonnet-4-6` (default, latest Sonnet)
+- `claude-opus-4-8` (Opus for complex tasks)
+- `claude-haiku-4-5-20251001` (Haiku for speed)
 
 **Model aliases:**
 - `sonnet`: Latest Claude Sonnet
 - `opus`: Latest Claude Opus
 - `haiku`: Latest Claude Haiku
 - `opusplan`: Opus with extended thinking for planning
+- `fable`: Claude Fable 5 — most capable model for the hardest, longest-running tasks
 
 ```json
 {
@@ -224,17 +225,17 @@ claude --model opusplan "plan authentication system"
 
 ### Model Selection Guide
 
-**Sonnet** (claude-sonnet-4-5-20250929):
+**Sonnet** (claude-sonnet-4-6):
 - Balanced performance and cost
 - Default choice for most tasks
 - Good for general development
 
-**Opus** (claude-opus-4-20250514):
+**Opus** (claude-opus-4-8):
 - Highest capability
 - Complex reasoning and planning
 - Use for architecture, design, complex debugging
 
-**Haiku** (claude-haiku-4-20250408):
+**Haiku** (claude-haiku-4-5-20251001):
 - Fastest, most cost-effective
 - Simple tasks (typos, formatting)
 - High-volume operations
@@ -243,6 +244,11 @@ claude --model opusplan "plan authentication system"
 - Opus + extended thinking
 - Deep planning and analysis
 - Architecture decisions
+
+**Fable 5** (claude-fable-5):
+- Most capable model for the hardest, longest-running tasks
+- Not the default — select with `/model fable`
+- Cybersecurity and biology content automatically falls back to Opus
 
 ## Output Styles
 

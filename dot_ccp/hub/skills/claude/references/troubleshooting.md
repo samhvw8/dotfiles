@@ -29,7 +29,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "content-type: application/json" \
-  -d '{"model":"claude-sonnet-4-5-20250929","max_tokens":10,"messages":[{"role":"user","content":"hi"}]}'
+  -d '{"model":"claude-sonnet-4-6","max_tokens":10,"messages":[{"role":"user","content":"hi"}]}'
 ```
 
 ### Environment Variable Issues
@@ -366,7 +366,7 @@ claude --show-thinking "task"
 
 ```bash
 # Use correct model name
-claude --model claude-sonnet-4-5-20250929
+claude --model claude-sonnet-4-6
 
 # Update claude-code
 npm update -g @anthropic-ai/claude-code

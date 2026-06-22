@@ -88,7 +88,7 @@ Reduce costs by caching repeated context.
 **API usage:**
 ```typescript
 const response = await client.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
+  model: 'claude-sonnet-4-6',
   system: [
     {
       type: 'text',

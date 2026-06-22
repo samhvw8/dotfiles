@@ -29,6 +29,15 @@ commit = '577f4d4507678f2c8cee150fae25e6ce309f70b1'
 updated = 2026-05-09T23:59:02.761688+07:00
 installed = ['skills/ast-grep']
 
+[sources.'colbymchenry/frontend-audit-skill']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/colbymchenry/frontend-audit-skill.git'
+path = 'sources/colbymchenry--frontend-audit-skill'
+ref = 'main'
+commit = '2f35be45a1346d240592a0af81ce16d8fce95969'
+updated = 2026-06-20T19:15:08.003926+07:00
+
 [sources.'intellectronica/agent-skills']
 registry = 'github'
 provider = 'git'

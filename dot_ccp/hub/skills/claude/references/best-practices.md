@@ -181,7 +181,7 @@ Cache repeated context:
 ```typescript
 // Cache large codebase
 const response = await client.messages.create({
-  model: 'claude-sonnet-4-5-20250929',
+  model: 'claude-sonnet-4-6',
   system: [
     {
       type: 'text',
@@ -283,7 +283,7 @@ Use project settings for consistency:
 **.claude/settings.json:**
 ```json
 {
-  "model": "claude-sonnet-4-5-20250929",
+  "model": "claude-sonnet-4-6",
   "maxTokens": 8192,
   "outputStyle": "technical-writer",
   "thinking": {
