@@ -1,6 +1,6 @@
 ---
 name: lead-researcher
-description: "MANDATORY entry point for ALL research tasks. Orchestrates gatherer agents with configurable depth modes (low/medium/high/max). Determines languages, iterations, agent count, and sub-topics — then spawns parallel gatherer agents and synthesizes results. Triggers: any research request, 'research X', 'what's the best', 'compare X vs Y', 'how should I approach', 'evaluate X', 'deep research', 'comprehensive analysis'. ALL research goes through lead-researcher first — never spawn gatherer agents directly. Arguments: [mode] [topic] — e.g. 'high compare auth solutions' or 'max full ecosystem survey of MCP servers'."
+description: "MANDATORY entry point for ALL research tasks. Orchestrates gatherer agents with configurable depth modes (low/medium/high/max). Determines languages, iterations, agent count, and sub-topics — then spawns parallel gatherer agents and synthesizes results. Triggers: any research request, 'research X', 'what's the best', 'compare X vs Y', 'how should I approach', 'evaluate X', 'deep research', 'comprehensive analysis', 'team research' (live supervised agent-team venue). ALL research goes through lead-researcher first — never spawn gatherer agents directly. Arguments: [mode] [topic] — e.g. 'high compare auth solutions' or 'max full ecosystem survey of MCP servers'."
 ---
 
 # Lead Researcher
@@ -16,6 +16,7 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 /lead-researcher high compare auth solutions for Next.js
 /lead-researcher max full ecosystem survey of MCP servers
 /lead-researcher what's the best ORM for PostgreSQL     ← mode inferred as medium
+/lead-researcher team compare auth solutions            ← live Team venue (supervised)
 ```
 
 ## Modes
@@ -46,10 +47,13 @@ Format: `[mode] [topic]` — mode is optional (default: medium).
 |------|-------|--------------------------------------------|-------|
 | **low / medium** | **Direct** — main agent spawns gatherer agents inline | **the main agent itself**, reasoning inline (free, no delegation — forager's "YOU reflect, don't delegate") | low = 1-2 iterations; medium = a few |
 | **high / max** | **Background workflow** (main agent asleep) | a delegated **opus sub-agent** per iteration | adaptive, deep |
+| **any (opt-in)** | **Team — live co-research** (main session = supervisor) | a dedicated **Steering-Lead teammate** (opus), continuously as findings stream | live, steerable; see `references/team-research.md` |
 
 So low/medium keep the brain — they just don't pay for a background workflow; the main agent *is* the reasoner. high/max offload to a workflow, so the brain must be a sub-agent. Mode also scales languages, expansion, and budget.
 
 **`forager` is the brain — for every mode.** Its fused REFLECT/STEER methodology ([forager](references/forager/overview.md)) = REASONING/EXPAND/CHECK. In low/medium the MAIN agent runs it directly; in high/max an opus sub-agent runs it inside the workflow. See [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
+
+**Third venue — Team (live co-research), opt-in.** The brain moves into a live **Steering-Lead teammate** (opus); the **main session supervises**; 2–3 gatherer teammates **stream findings live** and a **verifier** checks load-bearing claims on demand. Adaptation is continuous (you steer in real time) rather than batched between waves. Heuristic: *use teammates when the agents need to talk to each other* — for autonomous, deep, resumable runs the workflow is still better. Full protocol: [team-research](references/team-research.md). Activated by a Phase-0 toggle or the word "team research".
 
 ### Adaptive Iterate Loop (the engine — all modes; workflow venue shown)
 
@@ -258,6 +262,16 @@ Before planning research, assess whether the request is **researchable as stated
 - "Research auth" — auth for what? Security posture? Developer experience? Cost? Different criteria produce different research
 - "What's the best approach for our backend" — needs decomposition before any search is meaningful
 - "How should I think about caching" — asking for perspective, not information
+
+**Venue toggle — Team Research (opt-in, after triage passes):**
+
+| Path | Action |
+|------|--------|
+| User said "team research" / "research with me" / `team` arg | → **Team venue** ([team-research](references/team-research.md)) — skip the question |
+| Researchable, and live steering would help (medium/high, exploratory) | Ask one yes/no: *"Run as **live Team Research** — you supervise while a steering-lead brain + 2–3 gatherers + a verifier work and adapt in real time? Or run it normally?"* |
+| Otherwise | Direct/Workflow by mode, as usual |
+
+Yes → Team venue (still do Phase 1 planning first). Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + main session (no nested teams).
 
 ### Phase 1: Confirm Research Plan with User (MANDATORY)
 
@@ -528,3 +542,4 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
 - [forager (the brain)](references/forager/overview.md) — REFLECT/STEER methodology fused in as the loop's CONTROL step (was a standalone skill)
 - [adaptive-research spec](references/adaptive-research/overview.md) — target redesign: gather/reason split, adaptive-depth loop, control rod, Phase 0 budget
+- [team-research](references/team-research.md) — live supervised agent-team venue: steering-lead brain + gatherers + verifier, exchanging via SendMessage
