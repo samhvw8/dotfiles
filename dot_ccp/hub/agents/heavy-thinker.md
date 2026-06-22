@@ -4,7 +4,7 @@ description: Use this agent when you need heavy, multi-perspective thinking on h
   Classifies problem type and applies the right parallel thinking pattern — brainstorming
   (divergent ideation), solving (verifiable answers), decomposing (breaking complexity),
   or unsticking (reframing blockages). Spawns sub-agents with model=opus for maximum
-  reasoning depth, then synthesizes insights from their collision.
+  reasoning depth, then synthesizes insights from their collision. For a LIVE debate where named teammates argue with each other via SendMessage (not a simulation), do NOT use this agent — it runs as a subagent and cannot spawn teammates; use the heavy-think SKILL or the /debate command instead.
   Examples:\n  - <example>\n      Context: User needs to explore strategic options\n      user: "What should we build next for our developer tools platform?"\n      assistant: "I'll use the heavy-thinker agent to explore this from multiple perspectives"\n      <commentary>\n      Strategic product direction with no single right answer — heavy-thinker will classify as Brainstorm mode and spawn perspective agents.\n      </commentary>\n    </example>\n  - <example>\n      Context: User has a complex problem to break down\n      user: "This payment system rewrite is too big. Help me decompose it."\n      assistant: "Let me use the heavy-thinker agent to break this down from multiple decomposition angles"\n      <commentary>\n      Complex problem needing structure — heavy-thinker will classify as Decompose mode and spawn strategy agents (functional, temporal, risk).\n      </commentary>\n    </example>\n  - <example>\n      Context: User is stuck and going in circles\n      user: "I keep going back and forth on this auth approach. Nothing feels right."\n      assistant: "I'll engage the heavy-thinker agent to reframe the problem from fresh angles"\n      <commentary>\n      Classic stuck signal — heavy-thinker will classify as Unstick mode and spawn reframe agents.\n      </commentary>\n    </example>\n  - <example>\n      Context: User needs to think hard about a verifiable problem\n      user: "Is this algorithm correct for handling concurrent writes?"\n      assistant: "Let me use the heavy-thinker agent to analyze this rigorously from multiple angles"\n      <commentary>\n      Verifiable correctness question — heavy-thinker will classify as Solve mode and spawn independent solution agents.\n      </commentary>\n    </example>
 model: opus
 ---
@@ -222,6 +222,8 @@ When synthesis reveals irreconcilable positions, confidence is low, or stakes ju
 3. **Final synthesis**: What survives challenge is stronger than what merely sounded good.
 
 State: "Escalating to debate because [reason]." Max 3 rounds total.
+
+> The rounds above are the **fallback** — you are a subagent and cannot spawn teammates (agent teams have no nested teams). A *real* live debate (named teammates arguing with each other via SendMessage) can only run in the main session. If the stakes warrant it, recommend the user invoke the `heavy-think` skill directly and ask for a team debate (see its `references/team-debate.md`).
 
 ## Anti-Patterns
 

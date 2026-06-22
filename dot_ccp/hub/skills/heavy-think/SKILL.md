@@ -1,6 +1,6 @@
 ---
 name: heavy-think
-description: "Unified heavy thinking orchestrator. Classifies problem type → dispatches to the right parallel thinking pattern. Modes: brainstorm (divergent ideation), solve (verifiable answers), decompose (break complex problems), unstick (reframe blockages). All modes use parallel agents with model=opus for maximum reasoning depth, then YOU synthesize. Actions: think deeply, brainstorm, decompose, solve, unstick, analyze. Keywords: heavy think, heavy thinking, think harder, brainstorm, decompose, break down, stuck, unstick, solve, parallel thinking, multi-perspective, think about this, explore deeply, reason about, analyze deeply, heavyskill, heavy-brainstorm. Use when: user says 'heavy think', 'think harder', 'brainstorm deeply', or any problem deserving more than shallow first-pass thinking — strategic decisions, hard technical problems, complex decomposition, creative exploration, feeling stuck. Do NOT use for: simple lookups, mechanical tasks, clear next steps, tasks needing implementation not thinking."
+description: "Unified heavy thinking orchestrator. Classifies problem type → dispatches to the right parallel thinking pattern. Modes: brainstorm (divergent ideation — solo agents or a collaborative team 'council'), solve (verifiable answers), decompose (break complex problems), unstick (reframe blockages), debate (live agent-team debate — named teammates argue with each other via SendMessage, then YOU synthesize). All modes use parallel agents/teammates with model=opus for maximum reasoning depth, then YOU synthesize. Teammates vs subagents: use agent-team teammates when the agents need to talk to each other (debate, collaborative brainstorm, hand-offs); use parallel subagents when they don't (independent fan-out). Actions: think deeply, brainstorm, council, decompose, solve, unstick, analyze, debate. Keywords: heavy think, heavy thinking, think harder, brainstorm, council, collaborative brainstorm, brainstorm together, build on ideas, expand ideas, ideate together, decompose, break down, stuck, unstick, solve, debate, debate this, pressure-test, argue both sides, steelman, devil's advocate, red team, challenge this, dialectic, parallel thinking, multi-perspective, think about this, explore deeply, reason about, analyze deeply, heavyskill, heavy-brainstorm. Use when: user says 'heavy think', 'think harder', 'brainstorm deeply', 'brainstorm together', 'council', 'expand on this', 'debate this', 'pressure-test', 'argue both sides', or any problem deserving more than shallow first-pass thinking — strategic decisions, hard technical problems, complex decomposition, creative exploration, feeling stuck, high-stakes calls needing adversarial rigor. Do NOT use for: simple lookups, mechanical tasks, clear next steps, tasks needing implementation not thinking."
 ---
 
 # Heavy Think
@@ -8,6 +8,8 @@ description: "Unified heavy thinking orchestrator. Classifies problem type → d
 Unified orchestrator for heavy thinking. One entry point, four modes — all powered by parallel agents → your synthesis.
 
 **Core principle:** the parallel-agents-→-synthesize pattern is general-purpose. Change what the agents explore, and you get different thinking capabilities from the same engine.
+
+**Teammates vs subagents:** *Use teammates (agent teams) when the agents need to talk to each other — debate, collaborative brainstorm, hand-offs. Use parallel subagents when they don't — independent fan-out.* Teammates compound (live cross-talk) but cost more and require the **main session** + `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`; subagents are cheaper and collide only once, in your synthesis.
 
 ## Dispatch
 
@@ -19,7 +21,10 @@ Classify the problem, pick the mode:
 | Verifiable answer exists (math, logic, algorithm) | **Solve** | Parallel solution paths → deliberate → verify |
 | "How do we break this down" / too big to tackle | **Decompose** | Parallel decomposition strategies → synthesize best structure |
 | "I'm stuck" / every option feels wrong / going in circles | **Unstick** | Parallel reframes → find the frame that unlocks movement |
+| "Debate this" / "pressure-test" / "argue both sides" / high-stakes call needing adversarial rigor | **Debate** | Named teammates argue live via `SendMessage` → you moderate → synthesize |
 | Need step-by-step with revision capability | **Analyze** | Sequential thinking (no agents needed) |
+
+When the signal is **Debate** (user explicitly asks to debate/pressure-test, or stakes are high), go straight to [Escalation: Agent Debate](#escalation-agent-debate) and run the **Team Debate** protocol — don't simulate it inline. Requires the main session (a subagent can't spawn teammates). Debate is also reached automatically when synthesis hits irreconcilable positions.
 
 When uncertain: **ask the user** which mode fits. Don't guess.
 
@@ -93,6 +98,12 @@ Output: ## Core Insight → ## The Real Problem → ## Ideas → ## Second-Order
 ### Stage 5 (Optional): Stress Test
 
 For high stakes, spawn 1-2 agents to attack synthesis: Red team ("find every way this fails") or Pre-mortem ("it's 1 year later and this failed — what happened?"). See `references/brainstorm-agent-prompt.md` for templates.
+
+### Escalation: Team Brainstorm (collaborative teammates)
+
+Stages 1–5 use **isolated** parallel agents — they collide once, in your synthesis. When you want ideas to *compound* (each builds on the others live), escalate to a collaborative **council**: named teammates that cross-pollinate via `SendMessage`, then YOU harvest the expanded set. (Per the teammates-vs-subagents heuristic above — agents that build on each other need to talk.)
+
+Full protocol, spawn template, anti-groupthink rules, and variants: **`references/team-brainstorm.md`**. Adversarial counterpart: `references/team-debate.md`.
 
 ---
 
@@ -337,20 +348,34 @@ Invoke: `Skill("sequential-thinking")`
 
 ## Escalation: Agent Debate
 
-When standard parallel → synthesize isn't deep enough (low confidence, fundamental disagreements, high stakes), escalate to multi-round debate. Agents read and argue against each other's positions across rounds.
+When standard parallel → synthesize isn't deep enough (low confidence, fundamental disagreements, high stakes), escalate to a **debate** — positions get attacked, and only what survives is kept.
 
 ### When to Escalate
 
 - Synthesis reveals irreconcilable positions (not just different angles — genuine contradictions)
 - Stakes are high enough to justify 3-5x more compute
 - First-pass synthesis confidence is low
-- User asks for "deeper", "more rigorous", or "debate this"
+- User asks for "deeper", "more rigorous", "pressure-test", or "debate this"
 
-### Protocol
+Two mechanisms, in order of preference.
+
+### Preferred: Team Debate (agent teams)
+
+Spawn **named teammates that argue with each other directly** via `SendMessage` — a live, persistent debate where each debater keeps its own thread and engages its opponent's *latest* argument. This is the real thing, and the default when available.
+
+> **Requires** `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` **and** that you are the **main session** — agent teams have no nested teams, so a subagent cannot spawn teammates. If either is false, use the fallback below.
+
+In short: frame the motion → spawn 2–4 named debaters in one message (`model="opus"`, each given full context + its stance + opponents *by name*, since teammates don't inherit your history) → they open and cross-examine each other live → you **moderate** (bound the rounds, steer, detect convergence — never argue a stance yourself) → **you synthesize** what survived → shut them down.
+
+Full protocol, spawn-prompt template, moderation rules, and variants: **`references/team-debate.md`**.
+
+### Fallback: Round Protocol (subagents)
+
+Use only when teams are unavailable (flag off, or you're inside a subagent). Weaker — subagents can't talk to each other, so YOU relay text between rounds against *frozen* snapshots:
 
 1. **Round 1: Positions** — Run the standard mode (Brainstorm/Solve/Decompose). Collect agent outputs.
 
-2. **Round 2: Challenges** — Spawn new agents, each assigned to attack a specific position from Round 1. Each challenger receives ALL Round 1 outputs and must:
+2. **Round 2: Challenges** — Spawn new agents in parallel, each attacking one Round 1 position. Each receives ALL Round 1 outputs and must:
    - Identify the weakest assumption in their target position
    - Present the strongest counter-argument
    - Propose a specific modification or alternative
@@ -378,11 +403,11 @@ When standard parallel → synthesize isn't deep enough (low confidence, fundame
 
 4. **Final Synthesis** — YOU synthesize across all rounds. The value is in what survives challenge, not what sounded good initially.
 
-### Constraints
+### Constraints (both mechanisms)
 
-- Max 3 debate rounds (positions → challenges → defenses). Beyond that, diminishing returns.
-- Each round uses `model="opus"` for depth.
-- Spawn challengers in parallel (one message).
+- Max 3 debate rounds. Beyond that, diminishing returns.
+- Each agent/teammate uses `model="opus"` for depth.
+- Spawn in parallel (one message).
 - Always state: "Escalating to debate because [reason]."
 
 ---
@@ -414,6 +439,8 @@ State the chain upfront: "I'll decompose first, then brainstorm on the hardest p
 
 ## References
 
+- `references/team-debate.md` — Agent-teams debate: spawn named teammates that argue via SendMessage (preferred), with legacy fallback
+- `references/team-brainstorm.md` — Agent-teams council: named teammates that build on each other's ideas via SendMessage (collaborative ideation)
 - `references/brainstorm-agent-prompt.md` — Brainstorm + stress test agent prompts
 - `references/perspective-combinations.md` — Pre-built perspective sets by scenario
 - `references/compute.md` — Cost analysis, K selection, non-monotonic performance
