@@ -15,6 +15,35 @@ allowed-tools: Bash, Read
 | Search issues | `gh search issues "<query>" --limit 30` |
 | Search PRs | `gh search prs "<query>" --limit 30` |
 
+## Keyword Strategy: Variants & Long → Short
+
+GitHub matches your query tokens against repo **name + description + README** (for code search, the file contents). There is **no semantic matching** — a repo is invisible if its text doesn't contain words close to yours. Two ways a search misses:
+
+- **Wrong word** — the author used a synonym you didn't try.
+- **Too long** — your compound phrase is more specific than any repo's name/description, so nothing matches.
+
+**Fix: generate keyword variants, and cascade from longer to shorter.**
+
+```bash
+# ❌ Brittle — one long compound, matches almost nothing
+gh search repos "AI powered headless browser automation framework"
+
+# ✅ Variants + length cascade — run in parallel, shorter terms guarantee coverage
+gh search repos "headless browser automation" --sort stars --limit 15
+gh search repos "headless browser"            --sort stars --limit 15
+gh search repos "browser automation"          --sort stars --limit 15
+gh search repos "browserless"                 --sort stars --limit 15   # synonym
+gh search repos "browser"                      --sort stars --limit 15   # shortest, widest net
+```
+
+| Rule | Why |
+|------|-----|
+| **Longer → shorter** | Each word you drop widens the match set; the shortest core noun catches repos with zero topics and terse descriptions |
+| **Generate variants** | Authors and users pick different words (`headless` vs `browserless`, `agent` vs `bot`) — cover the synonyms |
+| **Never long-only** | A single long compound is the most brittle query — if it's all you run, you miss the field |
+| **Run in parallel** | Batch all variants into simultaneous calls; cost is the same, coverage is far higher |
+| **Repeat per language** | Run the cascade in each target language with native terms (`无头浏览器`, `автоматизация браузера`) |
+
 ## Direct API Search (Web-Exact Results)
 
 For complex queries where `gh search repos` gives different results than web:

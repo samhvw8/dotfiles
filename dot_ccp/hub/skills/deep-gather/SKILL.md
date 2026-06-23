@@ -136,6 +136,27 @@ GitHub search matches on repo name + description + README. Compound queries miss
 
 **Why L1 matters most:** A 13k-star Rust headless browser and a 30k-star browser engine were both missed because queries started at L2. The broad query `"headless browser"` caught both immediately. Narrow queries are for precision after broad queries establish the landscape.
 
+### Keyword Variants & Length Cascade (long → short)
+
+GitHub matches your tokens against repo **name + description + README** — no semantics. A repo is invisible if its text doesn't contain words close to yours. Two ways to miss:
+
+1. **Different word** — the author (or another searcher) picked a synonym you didn't try → generate **variants**.
+2. **Too many words** — your compound phrase is more specific than any repo's name/description → **cascade from long to short**.
+
+**For every concept, build a variant set, then a length cascade. Drop words long → short — each drop widens the net.**
+
+| Step | Action | Example (concept: "headless browser") |
+|------|--------|----------------------------------------|
+| **Variants** | Synonyms + the different words an author/user might use | `headless browser`, `browser automation`, `browserless`, `puppeteer alternative`, `无头浏览器`, `автоматизация браузера` |
+| **Cascade** | Same concept, drop words longest → shortest | `ai headless browser automation` → `headless browser automation` → `headless browser` → `browser automation` → `browser` |
+
+| Rule | Why |
+|------|-----|
+| **Never rely on a long compound alone** | It is the most brittle query — if the long form is all you run, you miss repos with different word order or terser names |
+| **Always include the shortest core noun** | It casts the widest net and catches zero-topic repos — this is exactly L1 |
+| **Cover synonyms** | Authors and users disagree on words (`headless` vs `browserless`, `agent` vs `bot`); a missed synonym = a missed field |
+| **Run the full set in parallel** | Longer forms add precision, shorter forms guarantee coverage — batch them, cost is the same |
+
 ### Query Templates
 
 ```bash
