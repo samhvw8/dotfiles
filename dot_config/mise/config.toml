@@ -60,7 +60,7 @@ zellij = "latest"
 wrangler = "latest"
 "pipx:it2" = "latest"
 "npm:cf" = "latest"
-claude = "latest"
+claude = { version = "latest", minimum_release_age = "0s" }
 gcloud = "latest"
 "pipx:code-review-graph" = "latest"
 aube = "latest"

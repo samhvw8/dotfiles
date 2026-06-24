@@ -29,6 +29,16 @@ commit = '577f4d4507678f2c8cee150fae25e6ce309f70b1'
 updated = 2026-05-09T23:59:02.761688+07:00
 installed = ['skills/ast-grep']
 
+[sources.'cloudai-x/threejs-skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/CloudAI-X/threejs-skills.git'
+path = 'sources/cloudai-x--threejs-skills'
+ref = 'main'
+commit = 'b1c623076c661fc9b03dac19292e825a5d106823'
+updated = 2026-06-22T20:40:33.260461+07:00
+installed = ['skills/threejs-animation', 'skills/threejs-fundamentals', 'skills/threejs-geometry', 'skills/threejs-interaction', 'skills/threejs-lighting', 'skills/threejs-loaders', 'skills/threejs-materials', 'skills/threejs-postprocessing', 'skills/threejs-shaders', 'skills/threejs-textures']
+
 [sources.'colbymchenry/frontend-audit-skill']
 registry = 'github'
 provider = 'git'
@@ -37,6 +47,26 @@ path = 'sources/colbymchenry--frontend-audit-skill'
 ref = 'main'
 commit = '2f35be45a1346d240592a0af81ce16d8fce95969'
 updated = 2026-06-20T19:15:08.003926+07:00
+
+[sources.'greensock/gsap-skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/greensock/gsap-skills.git'
+path = 'sources/greensock--gsap-skills'
+ref = 'main'
+commit = 'aed9cfd3277740755f6bfc1155c7aa645403b760'
+updated = 2026-06-22T20:40:01.835789+07:00
+installed = ['skills/gsap-core', 'skills/gsap-frameworks', 'skills/gsap-performance', 'skills/gsap-plugins', 'skills/gsap-react', 'skills/gsap-scrolltrigger', 'skills/gsap-timeline', 'skills/gsap-utils']
+
+[sources.'heygen-com/hyperframes']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/heygen-com/hyperframes.git'
+path = 'sources/heygen-com--hyperframes'
+ref = 'main'
+commit = '091137e3c32f7c247b6a7cc1c81ece36cd60a937'
+updated = 2026-06-22T20:41:59.198927+07:00
+installed = ['skills/embedded-captions', 'skills/faceless-explainer', 'skills/general-video', 'skills/graphic-overlays', 'skills/hyperframes', 'skills/hyperframes-animation', 'skills/hyperframes-cli', 'skills/hyperframes-core', 'skills/hyperframes-creative', 'skills/hyperframes-media', 'skills/hyperframes-registry', 'skills/motion-graphics', 'skills/pr-to-video', 'skills/product-launch-video', 'skills/remotion-to-hyperframes', 'skills/slideshow', 'skills/website-to-video']
 
 [sources.'intellectronica/agent-skills']
 registry = 'github'
