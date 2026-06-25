@@ -68,15 +68,23 @@ The lead-researcher skill has 4 modes that determine languages, agents, and iter
 - Do WebSearch yourself — use direct WebSearch ONLY for quick single-fact lookups (e.g., "what version is X")
 
 ### Step 3: GitHub Research
-MUST use `gh` CLI with multi-language queries (English + Chinese + Russian terms). Run searches in **parallel Bash calls**, not sequentially.
+MUST use `gh` CLI with multi-language queries (English + Chinese + Russian terms). Run searches in **parallel Bash calls**, not sequentially. MUST search repos, code, issues, AND PRs — not just repos.
 
 ```bash
-# Fire these simultaneously
+# Wave 1: Repos + Code (fire simultaneously)
 gh search repos "[topic]" --sort stars --limit 10
 gh search repos "[中文关键词]" --sort stars --limit 10
 gh search code "[pattern]" --language python --limit 10
 gh search code "[pattern]" --language typescript --limit 10
+
+# Wave 2: Issues + PRs (fire simultaneously)
+gh search issues "[topic] broken OR error OR blocked" --sort updated --limit 10
+gh search issues "[topic] alternative OR migration" --sort updated --limit 10
+gh search prs "[topic]" --sort updated --limit 10
+gh search commits "[topic]" --sort committer-date --limit 10
 ```
+
+Issues/PRs surface what repo search misses: real breakage reports, workarounds, pain points, and active development signals.
 
 ### Step 4: Synthesize
 - MUST compare findings across sources before proposing a solution

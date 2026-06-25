@@ -179,6 +179,54 @@ gh search code "[pattern]" --language python --limit 10
 gh search code "[pattern]" --language typescript --limit 10
 ```
 
+### Issue & PR Search (MANDATORY — same priority as repo search)
+
+Issues and PRs surface what web search cannot: real breakage reports, workarounds, migration pain, active development signals, and community health.
+
+```bash
+# Issues: find real user pain points and recent breakage
+gh search issues "[topic] broken" --sort updated --limit 10
+gh search issues "[topic] blocked" --sort updated --limit 10
+gh search issues "[topic] alternative" --sort updated --limit 10
+gh search issues "[topic] migration" --sort updated --limit 10
+
+# Issues: find workarounds and solutions
+gh search issues "[error-message-or-symptom]" --sort reactions --limit 10
+
+# PRs: find active development and new features
+gh search prs "[topic] support" --sort updated --limit 10
+gh search prs "[topic] add" --sort updated --limit 10
+
+# Commits: recent activity signal on specific topics
+gh search commits "[topic]" --sort committer-date --limit 10
+
+# Combined: repo health check (run on promising repos found in L1-L4)
+gh search issues --repo [owner/repo] "bug OR broken OR error" --sort updated --limit 5
+gh search prs --repo [owner/repo] --state merged --sort updated --limit 5
+```
+
+**What each surfaces that web search misses:**
+
+| Command | Signal | Example find |
+|---------|--------|--------------|
+| `gh search issues "[tool] broken"` | Recent breakage, reliability | "XHS signature changed, all requests 403" |
+| `gh search issues "[tool] blocked"` | Anti-bot changes, access issues | "TikTok msToken expired after 2hrs" |
+| `gh search issues --sort reactions` | Community-validated pain points | Most upvoted = most common problems |
+| `gh search prs --state merged` | Active maintenance signal | Recent merges = actively maintained |
+| `gh search prs "[feature] add"` | New capabilities being developed | "Add comment scraping support" |
+| `gh search commits --sort committer-date` | Recency of development | Last commit date = maintenance status |
+
+**Issue/PR queries MUST be in assigned language(s):**
+
+```bash
+# Chinese issue search
+gh search issues "[工具名] 失败 OR 报错 OR 无法" --sort updated --limit 10
+gh search issues "[工具名] 替代 OR 迁移" --sort updated --limit 10
+
+# Russian issue search
+gh search issues "[тема] ошибка OR сломано" --sort updated --limit 10
+```
+
 ### Structured API Search (with star threshold)
 
 ```bash
@@ -202,7 +250,7 @@ gh api search/repositories -f q="[中文关键词] stars:>50" \
 - Repos with **zero topics** only match on name + description — broad queries are the only way to find them
 - Follow leads: if a repo references another project, search for that too
 - Check repo activity: prioritize repos updated within last 6 months
-- **Max 30 gh CLI calls** — think before each one
+- **Max 45 gh CLI calls** — budget: ~15 repo/code, ~15 issues/PRs, ~15 targeted/health-checks
 
 GitHub research reveals what practitioners actually build, not just what they write about. Prioritize repos with recent activity and meaningful star counts.
 
@@ -213,6 +261,11 @@ Each gatherer agent MUST find at least 5 relevant repos OR document "fewer than 
 - Try adjacent terms (L3)
 - Try `gh search code "[pattern]"` to find repos by usage
 - Try `gh api search/repositories` with star threshold lowered
+
+Each gatherer agent MUST also run at least 3 issue/PR searches to surface:
+- Recent breakage or reliability problems (`gh search issues "[topic] broken OR error" --sort updated`)
+- Community-validated pain points (`gh search issues "[topic]" --sort reactions`)
+- Active maintenance signals (`gh search prs --repo [top-repo] --state merged --sort updated`)
 
 ## Phase 4: Retrieval & Deep Gathering
 
@@ -303,6 +356,7 @@ If any section is "NO" and iterations remain, run 1-2 more targeted iterations t
 Also verify:
 - [ ] At least 1 elite forum source included
 - [ ] At least 1 GitHub repo/code reference
+- [ ] At least 1 GitHub issue/PR reference (breakage, pain points, or maintenance signal)
 - [ ] Every case study has a source URL
 - [ ] Every stat/metric has a source URL
 
