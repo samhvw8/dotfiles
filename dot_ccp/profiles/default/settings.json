@@ -51,9 +51,9 @@
       "mcp__codebase__manage_adr"
     ],
     "deny": [],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "plan"
   },
-  "model": "claude-opus-4-8[1m]",
+  "model": "sonnet",
   "hooks": {
     "PostToolUse": [
       {
@@ -83,6 +83,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/codebase-remind/scripts/codebase-remind.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/doc-rules/scripts/check-doc-rules.sh",
             "timeout": 5
           }
@@ -96,31 +105,21 @@
             "timeout": 220
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/codebase-remind/scripts/codebase-remind.sh",
-            "timeout": 5
-          }
-        ]
       }
     ]
-  },
-  "worktree": {
-    "baseRef": "head"
   },
   "statusLine": {
     "type": "command",
     "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
   },
   "enabledPlugins": {
+    "agentmemory@agentmemory": true,
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "understand-anything@understand-anything": true
+    "understand-anything@understand-anything": true,
+    "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -134,6 +133,12 @@
         "source": "github",
         "repo": "Lum1104/Understand-Anything"
       }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
     }
   },
   "effortLevel": "xhigh",
@@ -143,11 +148,8 @@
   "autoDreamEnabled": false,
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
-  "editorMode": "normal",
   "verbose": true,
-  "autoCompactEnabled": true,
   "teammateMode": "auto",
-  "remoteControlAtStartup": true,
-  "inputNeededNotifEnabled": true,
+  "remoteControlAtStartup": false,
   "agentPushNotifEnabled": false
 }

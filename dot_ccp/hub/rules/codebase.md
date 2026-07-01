@@ -55,11 +55,23 @@ Grep is the right tool ONLY for non-code text:
 | File-extension globs | `*.test.ts`, `*.svelte` |
 | Config values / non-code files | `.env` keys, READMEs, changelogs |
 
+## Project Name = PWD Path
+
+The `project` parameter is derived from the working directory path — NOT the repo/folder name. Slashes become hyphens, leading slash stripped.
+
+| PWD | Project name |
+|-----|-------------|
+| `/home/user/projects/my-app` | `home-user-projects-my-app` |
+| `/Users/dev/workspace/org/repo` | `Users-dev-workspace-org-repo` |
+
+If unsure, call `list_projects` first. Using the wrong project name returns "project not found."
+
 ## Usage
 
 | Rule | Detail |
 |------|--------|
 | Load first | `ToolSearch("select:mcp__codebase__search_graph")` once per session |
+| Project name from PWD | Convert PWD to hyphenated path (see above). Call `list_projects` if unsure. |
 | Graph before files | Reach for `mcp__codebase__*` before Read/Grep — ~99% fewer tokens. Default tool, not a fallback. |
 | Heavy explore → delegate + equip | Broad sweeps / reviews / multi-file mapping → spawn a subagent AND name `mcp__codebase__*` in its prompt, so the graph runs in its context and only findings return. |
 | Small lookup → inline | A few targeted calls → run `mcp__codebase__*` directly; an agent costs more context than it saves. Not "manual execution" — using the tool. |

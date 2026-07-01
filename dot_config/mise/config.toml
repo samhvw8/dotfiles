@@ -73,3 +73,4 @@ opengrep = "latest"
 "http:weave-mcp" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-mcp-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-mcp" }
 "github:DeusData/codebase-memory-mcp" = "latest"
 "npm:impeccable" = "latest"
+"github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
