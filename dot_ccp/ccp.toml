@@ -75,7 +75,7 @@ url = 'https://github.com/intellectronica/agent-skills.git'
 path = 'sources/intellectronica--agent-skills'
 ref = 'main'
 commit = '9b0e00ad1b941165e2506545bbfddafa34cf2cb8'
-updated = 2026-05-18T08:52:54.36408+07:00
+updated = 2026-07-02T22:39:04.711776+07:00
 installed = ['skills/ultrathink']
 
 [sources.'nextlevelbuilder/ui-ux-pro-max-skill']
@@ -84,8 +84,8 @@ provider = 'git'
 url = 'https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git'
 path = 'sources/nextlevelbuilder--ui-ux-pro-max-skill'
 ref = 'main'
-commit = 'd7e37dd3598de748a4ec789efc42cff0409a9ac0'
-updated = 2026-07-02T15:12:22.017551+07:00
+commit = '247bf48d0245a2bfb252ac6f3b4b434bfc9a6281'
+updated = 2026-07-02T22:38:52.216444+07:00
 installed = ['skills/ui-ux-pro-max']
 
 [sources.'pbakaus/impeccable']
@@ -113,9 +113,9 @@ provider = 'git'
 url = 'https://github.com/samhvw8/claude-code-profile.git'
 path = 'sources/samhvw8--claude-code-profile'
 ref = 'main'
-commit = '4225495103284f341790df21ecb66d15ec4ee352'
-updated = 2026-07-02T15:12:01.512671+07:00
-installed = ['skills/ccp-dev', 'skills/ccp']
+commit = 'a5563faa24302b788a4a3922da9df5ca3fceae7c'
+updated = 2026-07-02T22:48:18.896805+07:00
+installed = ['skills/ccp']
 
 [sources.'tw93/waza']
 registry = 'github'
@@ -124,7 +124,7 @@ url = 'https://github.com/tw93/Waza.git'
 path = 'sources/tw93--waza'
 ref = 'main'
 commit = 'ac1cc9d685718996df081d70e677d527c3ff981f'
-updated = 2026-07-02T15:12:06.389438+07:00
+updated = 2026-07-02T22:39:04.711099+07:00
 installed = ['skills/think']
 
 [sources.'vercel-labs/agent-skills']
