@@ -9,5 +9,6 @@
         "source": "github"
       }
     }
-  }
+  },
+  "model": "sonnet"
 }
