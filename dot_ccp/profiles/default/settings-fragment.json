@@ -1,8 +1,13 @@
 {
   "enabledPlugins": {
-    "context7@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "claude-hud@claude-hud": true
+    "ponytail@ponytail": true
   },
-  "extraKnownMarketplaces": {}
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": {
+        "repo": "DietrichGebert/ponytail",
+        "source": "github"
+      }
+    }
+  }
 }

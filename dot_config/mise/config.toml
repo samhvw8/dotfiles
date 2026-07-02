@@ -51,7 +51,7 @@ kubectl = "latest"
 k9s = "latest"
 "github:bettercap/bettercap" = "latest"
 pnpm = "latest"
-"github:samhvw8/claude-code-profile" = { version = "0.39.0", minimum_release_age = "0s" }
+"github:samhvw8/claude-code-profile" = { version = "latest", minimum_release_age = "0s" }
 "npm:playwriter" = "latest"
 vhs = "latest"
 zellij = "latest"

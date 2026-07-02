@@ -124,6 +124,12 @@
         "source": "git",
         "url": "https://github.com/jarrodwatts/claude-hud.git"
       }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
     }
   },
   "effortLevel": "xhigh",
