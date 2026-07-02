@@ -2,8 +2,7 @@
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "claude-hud@claude-hud": true,
+    "claude-hud@claude-hud": true
   },
-  "extraKnownMarketplaces": {
-  }
+  "extraKnownMarketplaces": {}
 }
