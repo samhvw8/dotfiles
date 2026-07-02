@@ -74,4 +74,4 @@ opengrep = "latest"
 "github:DeusData/codebase-memory-mcp" = "latest"
 "npm:impeccable" = "latest"
 "github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
-"github:Ataraxy-Labs/sem" = "latest"
+"github:Ataraxy-Labs/sem" = { version = "latest", minimum_release_age = "0s" }
