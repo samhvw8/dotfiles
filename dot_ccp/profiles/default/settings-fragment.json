@@ -10,5 +10,13 @@
       }
     }
   },
-  "model": "sonnet"
+  "inputNeededNotifEnabled": true,
+  "model": "sonnet",
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "remoteControlAtStartup": true,
+  "worktree": {
+    "baseRef": "head"
+  }
 }

@@ -51,7 +51,7 @@
       "mcp__codebase__manage_adr"
     ],
     "deny": [],
-    "defaultMode": "plan"
+    "defaultMode": "auto"
   },
   "model": "sonnet",
   "hooks": {
@@ -108,6 +108,9 @@
       }
     ]
   },
+  "worktree": {
+    "baseRef": "head"
+  },
   "statusLine": {
     "type": "command",
     "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
@@ -142,6 +145,7 @@
   "skipDangerousModePermissionPrompt": true,
   "verbose": true,
   "teammateMode": "auto",
-  "remoteControlAtStartup": false,
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": false
 }
