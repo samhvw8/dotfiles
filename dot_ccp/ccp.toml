@@ -64,8 +64,8 @@ provider = 'git'
 url = 'https://github.com/heygen-com/hyperframes.git'
 path = 'sources/heygen-com--hyperframes'
 ref = 'main'
-commit = '65b20933967bce1bc416312dcade8c36f9473e33'
-updated = 2026-07-02T15:12:20.618361+07:00
+commit = 'e2b43583fc2480aa9511cd5e606a58841c4f211e'
+updated = 2026-07-03T08:02:23.418341+07:00
 installed = ['skills/embedded-captions', 'skills/faceless-explainer', 'skills/general-video', 'skills/graphic-overlays', 'skills/hyperframes', 'skills/hyperframes-animation', 'skills/hyperframes-cli', 'skills/hyperframes-core', 'skills/hyperframes-creative', 'skills/hyperframes-media', 'skills/hyperframes-registry', 'skills/motion-graphics', 'skills/pr-to-video', 'skills/product-launch-video', 'skills/remotion-to-hyperframes', 'skills/slideshow', 'skills/website-to-video']
 
 [sources.'intellectronica/agent-skills']
@@ -84,8 +84,8 @@ provider = 'git'
 url = 'https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git'
 path = 'sources/nextlevelbuilder--ui-ux-pro-max-skill'
 ref = 'main'
-commit = '247bf48d0245a2bfb252ac6f3b4b434bfc9a6281'
-updated = 2026-07-02T22:38:52.216444+07:00
+commit = '9ceab49a1c6e9bf23fa9ebc49ca7d4f0c6303a99'
+updated = 2026-07-03T08:02:19.720121+07:00
 installed = ['skills/ui-ux-pro-max']
 
 [sources.'pbakaus/impeccable']
@@ -94,9 +94,9 @@ provider = 'git'
 url = 'https://github.com/pbakaus/impeccable.git'
 path = 'sources/pbakaus--impeccable'
 ref = 'main'
-commit = '44c27a72af98394c32691ba79358811bff86bde6'
-updated = 2026-07-02T14:08:03.246026+07:00
-installed = ['skills/impeccable']
+commit = '1fe9c41759d4704485d04b11ab8ee71020b8b87c'
+updated = 2026-07-03T08:02:14.194947+07:00
+installed = ['skills/impeccable', 'agents/impeccable-manual-edit-applier.md']
 
 [sources.'remorses/playwriter@main']
 registry = 'github'
@@ -113,8 +113,8 @@ provider = 'git'
 url = 'https://github.com/samhvw8/claude-code-profile.git'
 path = 'sources/samhvw8--claude-code-profile'
 ref = 'main'
-commit = 'a5563faa24302b788a4a3922da9df5ca3fceae7c'
-updated = 2026-07-02T22:48:18.896805+07:00
+commit = '80a628b058450b6f94c7adde4503db66dc65a2ad'
+updated = 2026-07-03T08:02:24.51649+07:00
 installed = ['skills/ccp']
 
 [sources.'tw93/waza']
