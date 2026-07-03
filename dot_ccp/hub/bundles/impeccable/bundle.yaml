@@ -1,0 +1,8 @@
+name: impeccable
+description: Impeccable UI/UX design skill with manual edit agent
+version: 1.0.0
+members:
+    skills:
+        - impeccable
+    agents:
+        - impeccable-manual-edit-applier.md
