@@ -1,0 +1,9 @@
+version = 3
+name = 'product-architect-brainstorm'
+created = 2026-02-05T07:22:57.816876+07:00
+updated = 2026-04-15T11:18:30.88035+07:00
+
+[hub]
+skills = ['playwriter', 'problem-solving']
+agents = ['brainstormer.md', 'cofounder.md', 'cto-advisor.md', 'gemini-orchestrator.md', 'planner.md', 'project-manager.md', 'requirements-analyst.md', 'gatherer.md', 'system-architect.md']
+hooks = ['force-agent-skills-eval', 'session-start']
