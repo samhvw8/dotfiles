@@ -10,6 +10,16 @@ base_url = 'https://skills.sh'
 limit = 10
 
 [sources]
+[sources.'Leonxlnx/taste-skill']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/Leonxlnx/taste-skill.git'
+path = 'sources/Leonxlnx--taste-skill'
+ref = 'main'
+commit = '06d6028b5c623016c59ce8536f578e5a1127b499'
+updated = 2026-07-03T22:35:52.051277+07:00
+installed = ['skills/brandkit', 'skills/brutalist-skill', 'skills/gpt-tasteskill', 'skills/image-to-code-skill', 'skills/imagegen-frontend-mobile', 'skills/imagegen-frontend-web', 'skills/minimalist-skill', 'skills/output-skill', 'skills/redesign-skill', 'skills/soft-skill', 'skills/stitch-skill', 'skills/taste-skill', 'skills/taste-skill-v1']
+
 [sources.'anthropics/skills']
 registry = 'github'
 provider = 'git'
