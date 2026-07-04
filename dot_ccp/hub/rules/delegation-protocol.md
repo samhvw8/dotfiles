@@ -147,14 +147,44 @@ MUST chain when outputs become inputs:
 - Research → Design → Code → Documentation
 
 ### Sub-Agent Prompting
-MUST always pass relevant skills to sub-agents:
+MUST equip every sub-agent with relevant skills AND MCP tools. An agent without its tools is blind.
+
+**Template:**
 ```
 "[Overall Objective] [What This Task Contributes to Overall Objective]
 [Task description]
 
 RECOMMENDED SKILLS: [skill-name] - [when to use]
-Use Skill tool for guidance."
+Use Skill tool for guidance.
+
+RECOMMENDED MCP TOOLS: [tool-name] - [when to use]
+Load via ToolSearch before calling."
 ```
+
+**MCP matching rules (MANDATORY):**
+
+| Agent task | MUST include MCP |
+|------------|------------------|
+| Research / web search | `mcp__parallax__web_search`, `mcp__parallax__fetch_page` — on par with WebSearch/WebFetch, bypasses bot-protection |
+| Code exploration / architecture | `mcp__codebase__search_graph`, `mcp__codebase__trace_path`, `mcp__codebase__query_graph` |
+| Browser interaction | `mcp__claude-in-chrome__*` (list specific tools needed) |
+| Documentation lookup | `mcp__plugin_context7_context7__*` |
+| GitHub operations | `gh` CLI (not MCP, but MUST mention in prompt) |
+
+**Skill matching rules (MANDATORY):**
+
+| Agent task | MUST recommend skill |
+|------------|---------------------|
+| Research | `lead-researcher` (entry point), `deep-gather` (if agent IS a gatherer) |
+| Code review | `code-review`, `code-quality` |
+| Frontend / UI | `frontend-design`, `design-principles`, `taste-skill` |
+| Planning | `planning`, `sequential-thinking` |
+| Problem solving | `problem-solving`, `sequential-thinking` |
+| Git operations | `git-workflow` |
+| Infrastructure | `infra-engineer` |
+| Database work | `databases` |
+
+**The rule:** if YOU would use a skill/MCP for this task, the agent MUST know about it too.
 
 ## Anti-Patterns (MUST AVOID)
 
@@ -171,3 +201,6 @@ Use Skill tool for guidance."
 | Skip skills because "I know how" | Memory arrogance | MUST invoke — your memory was wiped |
 | Implement before reading local code | Context blindness | MUST read local files + git first |
 | Using research skill to do searches yourself | Context bloat + bias | MUST delegate to researcher agent — fresh context, parallel, no bias |
+| Spawn agent without MCP tools | Tool blindness | MUST include relevant MCP tools (parallax for research, codebase for code, etc.) |
+| Use only WebSearch, skip Parallax | Tool tunnel vision | MUST mention both — parallax bypasses bot-protection, fetches JS-rendered pages |
+| Spawn code agent without codebase MCP | Grep fallback waste | MUST equip with codebase MCP tools for structural queries |

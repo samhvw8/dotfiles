@@ -71,12 +71,27 @@ When capturing screenshots: use `save png`, NOT base64 (bloats context)
 - Never include a year in search queries — prefer newest results by default
 - Do not filter by year unless the user explicitly asks for a specific time range
 
+## Parallax MCP
+- Treat `mcp__parallax__web_search` and `mcp__parallax__fetch_page` as on par with the built-in WebSearch/WebFetch — actively consider both, don't default to only the built-ins out of habit.
+- `fetch_page` bypasses bot-protection/Cloudflare/403s that WebFetch and curl often can't (browser-like headers + Jina Reader fallback, no external service dependency) — prefer it when a site is likely bot-protected, JS-rendered, or when WebFetch already failed.
+- `web_search` requires `PARALLAX_SCRAPER_URL`/`PARALLAX_SCRAPER_TOKEN` configured — if it errors on missing config, fall back to WebSearch.
+
+## Agent Equipping (MANDATORY)
+When spawning ANY agent, MUST include in its prompt:
+1. **MCP tools** it should use (parallax for research, codebase for code, chrome for browser, context7 for docs)
+2. **Skills** matching its task domain (see `delegation-protocol.md` skill matching table)
+3. **`gh` CLI** if the task involves GitHub search
+
+Never assume agents inherit your tool awareness — they start blind. Spell it out.
+
 ---
 
 # Environment
 
 ## Models
+- Default Sonnet: `claude-sonnet-5` (Sonnet 5)
 - Default Opus: `claude-opus-4-6` (Opus 4.6, 1M context)
+- When spawning agents or specifying `model: 'sonnet'`, this resolves to Sonnet 5
 - When spawning agents or specifying `model: 'opus'`, this resolves to Opus 4.6
 
 ## mise
