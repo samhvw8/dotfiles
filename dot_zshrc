@@ -363,7 +363,7 @@ if command -v ccp &> /dev/null; then
     if [[ $# -gt 0 && "$1" != -* ]]; then
       if [[ -z "$_CLAUDE_SUBCMDS" || "$_CLAUDE_BIN_MT" != "$(stat -f%m "$(command -v claude)" 2>/dev/null)" ]]; then
         _CLAUDE_BIN_MT="$(stat -f%m "$(command -v claude)" 2>/dev/null)"
-        _CLAUDE_SUBCMDS=" $(command claude --help 2>/dev/null | sed -n '/^  Commands:/,/^$/{ /^  [a-z]/s/^  \([a-z|_-]*\).*/\1/p }' | tr '|' '\n' | xargs) "
+        _CLAUDE_SUBCMDS=" $(command claude --help 2>/dev/null | sed -n '/^Commands:/,/^$/p' | sed -n 's/^  \([a-z|_-]*\).*/\1/p' | tr '|' '\n' | xargs) "
       fi
       if [[ "$_CLAUDE_SUBCMDS" == *" $1 "* ]]; then
         command claude "$@"
