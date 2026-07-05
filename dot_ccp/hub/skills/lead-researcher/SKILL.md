@@ -1,6 +1,6 @@
 ---
 name: lead-researcher
-description: "MANDATORY entry point for ALL research tasks. Orchestrates gatherer agents with configurable depth modes (low/medium/high/max). Determines languages, iterations, agent count, and sub-topics — then spawns parallel gatherer agents and synthesizes results. Triggers: any research request, 'research X', 'what's the best', 'compare X vs Y', 'how should I approach', 'evaluate X', 'deep research', 'comprehensive analysis', 'team research' (live supervised agent-team venue). ALL research goes through lead-researcher first — never spawn gatherer agents directly. Arguments: [mode] [topic] — e.g. 'high compare auth solutions' or 'max full ecosystem survey of MCP servers'."
+description: "MANDATORY entry point for ALL research tasks. Orchestrates gatherer agents — brain decides agent count, languages, iterations, and depth at runtime based on the actual question. Default languages: EN + ZH + ZH-TW. Triggers: any research request, 'research X', 'what's the best', 'compare X vs Y', 'how should I approach', 'evaluate X', 'deep research', 'comprehensive analysis', 'team research' (live supervised agent-team venue). ALL research goes through lead-researcher first — never spawn gatherer agents directly."
 ---
 
 # Lead Researcher
@@ -10,50 +10,38 @@ You plan, decompose, assign (1 language + 1 sub-topic) per agent, then synthesiz
 
 ## Arguments
 
-Format: `[mode] [topic]` — mode is optional (default: medium).
+Format: `[topic]` — everything else (agents, languages, depth) is decided by the brain at runtime.
 
 ```
-/lead-researcher high compare auth solutions for Next.js
-/lead-researcher max full ecosystem survey of MCP servers
-/lead-researcher what's the best ORM for PostgreSQL     ← mode inferred as medium
+/lead-researcher compare auth solutions for Next.js
+/lead-researcher full ecosystem survey of MCP servers
+/lead-researcher what's the best ORM for PostgreSQL
 /lead-researcher team compare auth solutions            ← live Team venue (supervised)
 ```
 
-## Modes
+## Defaults
 
-| Mode | Languages | Soft depth target | When |
-|------|-----------|-----------------|------|
-| **low** | EN + ZH | 2-3 | Quick fact check, single question |
-| **medium** | EN + ZH | 3-5 | Standard evaluation, comparison |
-| **high** | EN + ZH + RU | 5-8 | Multi-domain, contradictions likely |
-| **max** | EN + ZH + RU + any relevant | 8-10 | Comprehensive landscape survey |
+| Parameter | Default | Override |
+|-----------|---------|----------|
+| **Languages** | EN + ZH + ZH-TW | User specifies, or brain adds based on topic |
+| **Agent count** | Brain decides based on sub-topics × languages | No fixed limit — use what the question needs |
+| **Iterations** | Brain decides — stop when saturated | No preset count |
+| **Depth** | Brain decides — shallow for simple, deep for complex | Saturation curve, not a mode setting |
+| **Venue** | Inline (brain = main agent) or workflow (brain = opus sub-agent) | Brain picks based on expected complexity |
 
-**Chinese (ZH) is ALWAYS included** — even in low mode. The depth numbers are **soft targets** the loop adapts around — actual exit is decided by the brain (REASONING/CHECK), not a fixed count. Mode sets languages, expansion budget, and a starting depth, not a hard iteration cap.
-
-### Mode Selection Heuristic
-
-| Signal | Mode |
-|--------|------|
-| Single fact, version check, yes/no | **low** |
-| "best X", "how to", single comparison | **medium** |
-| "compare A vs B vs C", multi-domain, "investigate" | **high** |
-| "deep research", "comprehensive", "landscape", "all options" | **max** |
+**The brain (forager) decides everything.** No modes, no preset agent counts, no fixed iterations. The only hard default is languages: EN + ZH + ZH-TW when nothing is specified.
 
 ## Execution Engine
 
-**Same brain, two execution venues.** The hypothesis loop (GATHER DATA → REASONING → EXPAND → CHECK) runs in EVERY mode — what changes is only **where the brain executes** and how deep it goes:
+**Same brain, three execution venues.** The brain picks the venue based on expected complexity — no preset modes:
 
-| Mode | Venue | The brain (REASONING/EXPAND/CHECK) runs as | Depth |
-|------|-------|--------------------------------------------|-------|
-| **low / medium** | **Direct** — main agent spawns gatherer agents inline | **the main agent itself**, reasoning inline (free, no delegation — forager's "YOU reflect, don't delegate") | low = 1-2 iterations; medium = a few |
-| **high / max** | **Background workflow** (main agent asleep) | a delegated **opus sub-agent** per iteration | adaptive, deep |
-| **any (opt-in)** | **Team — live co-research** (main session = supervisor) | a dedicated **Steering-Lead teammate** (opus), continuously as findings stream | live, steerable; see `references/team-research.md` |
+| Venue | When brain picks it | Brain runs as |
+|-------|-------------------|---------------|
+| **Inline** | Simple/focused questions, quick lookups | Main agent itself — free, no delegation |
+| **Workflow** | Complex multi-domain, deep investigation | Opus sub-agent per iteration (background) |
+| **Team** (opt-in) | Live co-research, user wants to steer | Steering-Lead teammate (opus), live streaming. See [team-research](references/team-research.md) |
 
-So low/medium keep the brain — they just don't pay for a background workflow; the main agent *is* the reasoner. high/max offload to a workflow, so the brain must be a sub-agent. Mode also scales languages, expansion, and budget.
-
-**`forager` is the brain — for every mode.** Its fused REFLECT/STEER methodology ([forager](references/forager/overview.md)) = REASONING/EXPAND/CHECK. In low/medium the MAIN agent runs it directly; in high/max an opus sub-agent runs it inside the workflow. See [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
-
-**Third venue — Team (live co-research), opt-in.** The brain moves into a live **Steering-Lead teammate** (opus); the **main session supervises**; 2–3 gatherer teammates **stream findings live** and a **verifier** checks load-bearing claims on demand. Adaptation is continuous (you steer in real time) rather than batched between waves. Heuristic: *use teammates when the agents need to talk to each other* — for autonomous, deep, resumable runs the workflow is still better. Full protocol: [team-research](references/team-research.md). Activated by a Phase-0 toggle or the word "team research".
+**`forager` is the brain.** Its fused REFLECT/STEER methodology ([forager](references/forager/overview.md)) = REASONING/EXPAND/CHECK. See [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
 
 ### Adaptive Iterate Loop (the engine — all modes; workflow venue shown)
 
@@ -91,9 +79,9 @@ GOAL-CHECK   score the answer vs the ORIGINAL goal (catch drift)
 | **Expansion** | hypotheses + topics + knowledge grow, rate-limited so it can't run away |
 | **Each step** | 1 or many agents, parallel or sequential — `parallel()` to fan out, `pipeline()` to stream |
 
-low/medium run this loop **inline** (the main agent is the brain — 1-few iterations); high/max run it as the **background workflow** below.
+Inline venue runs this loop directly (main agent is the brain). Workflow venue runs it as the background script below.
 
-### Workflow runtime contract (high/max — MANDATORY to actually run)
+### Workflow runtime contract (workflow venue — MANDATORY to actually run)
 
 The loop runs as a background workflow: the JS script orchestrates but **cannot think**, and the main agent is asleep. So:
 
@@ -102,10 +90,10 @@ The loop runs as a background workflow: the JS script orchestrates but **cannot 
 | **Where the brain runs** | REASONING/EXPAND/CHECK = ONE **opus sub-agent** per iteration (NOT a cheap model). It receives the serialized STATE digest and returns the verdict ([schema](references/adaptive-research/adaptive-depth-loop.md)). |
 | **STATE digest** | Pass `hypotheses[]` + a per-topic knowledge **summary** (not raw findings). Cap ~15k tokens — summarize-and-roll old knowledge so the brain's input stays bounded. |
 | **Persistence / resume** | After EXPAND, write STATE to `./research/YYMMDD-topic/state.json` (hypotheses, topics, knowledge, gen, spentAtCheckpoint). On start, if it exists, load and resume from `gen`; restore the budget baseline from `spentAtCheckpoint` (else a crash reseeds empty and re-burns budget). |
-| **Budget self-enforce** | `const CEILING = args.budgetCeiling ?? DEFAULT_BY_MODE[mode]` (never undefined → no `NaN`). Guard on `(budget.spent() - start) < CEILING - SYNTH_RESERVE`. Do **NOT** gate on `budget.total` — it is usually null. |
+| **Budget self-enforce** | `const CEILING = args.budgetCeiling ?? 200_000` (never undefined → no `NaN`). Guard on `(budget.spent() - start) < CEILING - SYNTH_RESERVE`. Do **NOT** gate on `budget.total` — it is usually null. |
 | **Handoff** | Workflow synthesizes internally and writes the report; on completion the main agent reads it and runs GOAL-CHECK. Main agent re-synthesizes ONLY if the workflow's synthesis sub-agent errored (spend limit). |
 
-For **low/medium** none of this applies — the main agent holds STATE in context and reasons directly; no JS, no state.json, no sub-agent brain.
+For **inline venue** none of this applies — the main agent holds STATE in context and reasons directly; no JS, no state.json, no sub-agent brain.
 
 The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum Passthrough, Structured Output) are **components used inside this loop**, not a separate static pipeline.
 
@@ -192,18 +180,18 @@ agent(prompt, { schema: RESEARCH_SCHEMA, model: 'sonnet' })
 
 ### How to trigger the workflow
 
-After Phase 1 confirms the plan (ANY mode), tell the user:
+After Phase 1 confirms the plan, if brain picks workflow venue, tell the user:
 
-> "I'll run this as a dynamic workflow (adaptive iterate loop), scaled to [mode]."
+> "I'll run this as a dynamic workflow (adaptive iterate loop)."
 
-Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, languages, mode/scale, budget ceiling, output path) so the workflow script encodes them. For **low** mode the loop is a single pass — same engine, no steering iterations.
+Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, languages, budget ceiling, output path) so the workflow script encodes them.
 
 Example trigger prompt (encodes the iterate loop, not a static pipeline):
 
 ```
-Run a workflow as an ADAPTIVE ITERATE LOOP (high/max) to research [topic]:
+Run a workflow as an ADAPTIVE ITERATE LOOP to research [topic]:
 
-Seed STATE = { hypotheses [list], topics [list], knowledge [] }; languages [list]; CEILING = [Phase-0 value].
+Seed STATE = { hypotheses [list], topics [list], knowledge [] }; languages [list]; CEILING = [value].
 
 Each iteration:
   GATHER DATA — parallel gatherer agents (1 topic + 1 language each), model sonnet, using deep-gather
@@ -218,12 +206,29 @@ Each iteration:
 Stop when REASONING says stop OR new-info/token collapses OR (spent - start) ≥ CEILING - SYNTH_RESERVE.
 Then SYNTHESIZE (opus, fenced reserve) → cited report at [output path]; main agent GOAL-CHECKs vs the goal.
 
-Budget: const CEILING = args.budgetCeiling ?? DEFAULT_BY_MODE[mode]   (do NOT gate on budget.total — usually null)
-Language matrix: [paste relevant T1/T2 langs]
+Budget: const CEILING = args.budgetCeiling ?? 200_000   (do NOT gate on budget.total — usually null)
+Languages: [default EN + ZH + ZH-TW, or as specified]
 Each gatherer agent uses the `deep-gather` skill.
 ```
 
-**All modes run the loop; only the venue differs.** Phases map to loop steps: Phase 0-2 = plan, Phase 3 = GATHER DATA, Phase 4 = REASONING/EXPAND/CHECK (the forager brain), Phase 5 = SYNTHESIZE. **low/medium** run these **inline** (main agent is the brain, 1-few iterations); **high/max** run them as the **workflow above** (opus sub-agent brain, persisted STATE).
+Phases map to loop steps: Phase 0-2 = plan, Phase 3 = GATHER DATA, Phase 4 = REASONING/EXPAND/CHECK (the forager brain), Phase 5 = SYNTHESIZE. Inline venue runs these directly; workflow venue runs them as the script above.
+
+## Phase Skip Prevention (MANDATORY — learned from real failures)
+
+Every phase runs on EVERY research task. The brain scales depth/breadth freely, but the phase sequence is fixed:
+
+| Phase | Skippable? |
+|-------|-----------|
+| **Phase 0** (Triage) | **NEVER** — catches ambiguous terms, wrong targets |
+| **Phase 1** (Confirm plan) | ONLY if user specified all params explicitly |
+| **Phase 2** (Plan) | **NEVER** |
+| **Phase 3** (Gather) | **NEVER** — brain decides how many waves |
+| **Phase 4** (Brain — REFLECT + gem extraction) | **NEVER** — even a quick research runs 1 REFLECT pass |
+| **Phase 5** (Synthesize) | **NEVER** |
+
+**"Quick/nhanh/fast" = shallower depth, NOT skip phases.** A quick research still triages, confirms, gathers, reflects, and synthesizes — the brain just does each step once.
+
+**Failure pattern:** interpreting "quick" as "skip ceremony" → gatherers search wrong target → user must manually correct multiple times → MORE tokens burned than if Phase 0/1 ran. Skipping phases is never faster.
 
 ## Planning & Execution Phases (all modes)
 
@@ -275,61 +280,23 @@ Yes → Team venue (still do Phase 1 planning first). Requires `CLAUDE_CODE_EXPE
 
 ### Phase 1: Confirm Research Plan with User (MANDATORY)
 
-Before executing, you MUST present the research plan and let the user confirm or adjust. Use `AskUserQuestion` with these questions:
-
-**Question 1 — Mode selection:**
-Show the recommended mode (based on heuristic) and let user pick. Include estimated agent count and cost.
+Before executing, present your research plan and let the user confirm or adjust. Keep it lightweight — one message, not 4 separate questions:
 
 ```
-"Which research depth? I recommend [X] based on your query."
-Options:
-- low: 2 langs (EN+ZH), 2-3 iterations/agent, ~2-4 agents
-- medium: 2 langs (EN+ZH), 3-5 iterations/agent, ~4-6 agents
-- high: 3 langs (EN+ZH+RU), 5-8 iterations/agent, ~6-12 agents
-- max: 3+ langs, 8-10 iterations/agent, ~9-15+ agents
+"Here's my research plan:
+- Target: [what I understand you're asking about — disambiguate if needed]
+- Sub-topics: [list]
+- Languages: EN + ZH + ZH-TW [+ any others brain thinks relevant]
+- Sources: [recommended stack for this topic]
+
+Adjust anything, or good to go?"
 ```
 
-**Question 2 — Sub-topics:**
-Show the decomposed sub-topics and let user add/remove/adjust.
+The brain decides agent count, iterations, and depth — these are NOT confirmed with the user (implementation detail, not a plan parameter).
 
-```
-"I've broken this into [N] sub-topics. Adjust?"
-Options:
-- Looks good (Recommended)
-- [list each sub-topic so user can see what will be researched]
-- Let me customize (user types their own breakdown)
-```
+**What IS confirmed:** the research TARGET (most important — catches wrong search terms), sub-topics, and source priority.
 
-**Question 3 — Languages:**
-Show which languages will be searched, based on the language matrix lookup.
-
-```
-"Which languages to search?"
-Options:
-- [Recommended set based on mode + matrix, e.g. "EN + ZH + RU (Recommended)"]
-- EN + ZH only (faster, fewer agents)
-- Add [specific T2 language from matrix, e.g. "DE" or "JA"]
-- Let me specify
-```
-
-**Question 4 — Source stack:**
-Recommend a stack from the catalog based on the topic; the user confirms or changes it. **This is where GitHub is included or not — at runtime, by the user, not by a rule.**
-
-```
-"Which sources should I prioritize for this?"
-Options:
-- [Recommended stack for THIS topic, e.g. "Dev/code: GitHub + package registries + Stack Overflow (Recommended)"]
-- Business/market (analysts, Statista, filings)
-- Academic (arXiv, Scholar, PubMed)
-- Consumer/product (G2, app stores, Reddit, reviews)
-- Let me pick / mixed
-```
-
-Full menu: `references/source-types.md`. The confirmed stack is injected into every gatherer prompt.
-
-After user confirms, proceed to Phase 2 with the confirmed settings.
-
-**Skip Phase 1 ONLY when:** user explicitly specified all parameters (mode + topics) in their original message, e.g. `/lead-researcher high compare A vs B`.
+**Skip Phase 1 ONLY when:** user explicitly specified the target and sub-topics clearly, e.g. "compare Prisma vs Drizzle for PostgreSQL ORM."
 
 ### Phase 2: Plan (YOU do this — don't delegate)
 
@@ -368,32 +335,21 @@ The failure mode lens is the most commonly skipped and highest value.
 
 Each agent has a single, clear job. If you have 2 sub-topics and 3 languages, that's 6 agents — batch into waves of 3.
 
-Example for "compare auth solutions" in high mode:
+Example for "compare auth solutions":
 
 ```
-Wave 1 (parallel):
+Wave 1 (parallel, max 3):
   Agent 1: EN + "OAuth/OIDC providers comparison"
   Agent 2: ZH + "OAuth/OIDC providers comparison"  
-  Agent 3: RU + "OAuth/OIDC providers comparison"
+  Agent 3: ZH-TW + "OAuth/OIDC providers comparison"
 
 Wave 2 (parallel):
   Agent 4: EN + "self-hosted auth libraries"
   Agent 5: ZH + "self-hosted auth libraries"
-  Agent 6: RU + "self-hosted auth libraries"
+  (brain decides if more languages/sub-topics needed)
 ```
 
-For simpler topics (low/medium), fewer sub-topics = fewer agents:
-
-```
-Low mode (1 sub-topic, 2 langs):
-  Agent 1: EN + the question
-  Agent 2: ZH + the question
-
-Medium mode (1-2 sub-topics, 2 langs):
-  Agent 1: EN + sub-topic A
-  Agent 2: ZH + sub-topic A
-  (wave 2 if needed for sub-topic B)
-```
+Simple question? 2 agents may suffice. Complex landscape? 10+ agents across waves. **Brain decides — no preset.**
 
 ### Elite Forum Targeting (MANDATORY for high/max, RECOMMENDED for all)
 
@@ -424,15 +380,14 @@ ZH: T00ls, 看雪, 先知社区 (xz.aliyun.com), 52pojie. RU: wasm.in, Codeby. E
 
 ### Phase 3: GATHER (the loop's gather step)
 
-This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. low = one wave then stop; medium = a few waves; high/max = adaptive waves driven by CONTROL (Phase 4).
+This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. Brain decides how many waves and agents.
 
 Spawn `gatherer` agents. Each prompt:
 
 ```
 Research: [1 specific sub-question]
 Language: [1 assigned language — search ONLY in this language]
-Iterations: [N] (min [X], max [Y] — each = search + fetch + evaluate)
-Output: Return findings as structured data, NOT a formatted report
+Output: Return findings as structured data, NOT a formatted report. Search until you find gems or exhaust the topic.
 
 Elite forum targeting: Include at least 2 site:-targeted searches on these forums:
 [list 2-4 forums from the table above for this language]
@@ -441,6 +396,12 @@ Prioritize elite/niche communities over content farms.
 
 Scope: ONLY [sub-topic]. Do NOT investigate [other sub-topics].
 Report path: [./research/YYMMDD-topic/lang-subtopic.md]
+
+Tag each finding as GEM/MEH/NOISE:
+- GEM: specific numbers, pain points, workarounds, real code/config, contradictions with official docs
+- MEH: partial signal, some specifics but also generic
+- NOISE: generic praise, listicles, no downsides, undated, affiliate links, keyword stuffing
+Prioritize GEM findings. Report NOISE count but don't expand on them.
 
 RECOMMENDED SKILLS: deep-gather - use for search-fetch loop methodology
 ```
@@ -466,19 +427,36 @@ Confidence levels: **high** = 3+ independent sources agree. **medium** = 2 sourc
 
 | Check | Question | Action if YES |
 |-------|----------|---------------|
+| **Intent-data mismatch** | Does the data answer what the user ACTUALLY asked? User implied X is real/used, but data says "doesn't exist"? | **HIGHEST PRIORITY** — you may be searching for the wrong thing. Re-examine the search term. Ask user to clarify OR pivot search target. NEVER relay "it doesn't exist" without checking if YOU misidentified the target |
+| **Scent redirect** | Did search results consistently redirect to a DIFFERENT term/project? (e.g., searching "OpenCrawl" but all results point to "OpenClaw") | Follow the scent — this IS the signal. The user likely means the thing search redirects to |
 | **Contradictions** | Do agents disagree on facts? | Investigate primary source — one is wrong |
 | **Non-diagnostic findings** | Does a finding support ALL options equally? | Deprioritize — it doesn't help decide (ACH principle) |
 | **Missing failure modes** | Did any agent cover what goes WRONG? | Search GitHub Issues, forums for real-world pain |
 | **Recency** | Are recommended tools still maintained? | Check last commit, last release date |
 | **Refutation test** | What would DISPROVE the emerging recommendation? | Search for that evidence — if absent, recommendation is robust |
 | **Composition** | Do recommendations work together or conflict? | Test the combination, not just individual parts |
+| **Data accuracy** | Are specific numbers (costs, stars, dates) verified from primary sources, or just repeated from one blog? | Cross-check load-bearing claims against primary source (GitHub, official docs, actual invoices). Unverified numbers must be flagged |
+| **Distribution** | Is the data representative or just outliers/cherry-picked? What's the spread? | Report range (min-median-max), not just one data point. Flag if sample size is too small to generalize |
 
-**Step 3: Gap-Targeted Deepening**
+**Step 3: Gem Extraction (MANDATORY — gather is the small step, this is where value lives)**
+
+Gather collects raw data. YOUR job is to find **gems** — real practitioner insights buried under SEO noise. Apply [gem-detection](references/forager/gem-detection.md) scoring:
+
+| Tag | Criteria | Action |
+|-----|----------|--------|
+| **GEM** | Specific numbers + pain/failure + verifiable (code, config, error logs) | Keep, cite prominently in synthesis |
+| **MEH** | Partial signal — some specifics but also generic | Use only if no gem available |
+| **NOISE** | SEO patterns: generic praise, listicles, no downsides, undated, affiliate | **Drop from synthesis** |
+
+**Rule: a synthesis built from NOISE is worse than saying "insufficient data."** 2 gems > 20 noise items.
+
+**Step 4: Gap-Targeted Deepening**
 
 If coverage assessment shows gaps:
 - Spawn 1-2 targeted agents to fill specific gaps (not broad re-search)
 - Use refined queries informed by what was already found
 - Focus on the failure-mode and refutation checks — these are highest value
+- If gem count is 0 after gather → the search target may be wrong. Re-examine before deepening
 
 This phase separates surface search from real research. NEVER skip.
 
@@ -532,6 +510,10 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | No budget guards in workflow | Add `budget.remaining()` checks before cross-check and synthesis phases |
 | Elite forums not in workflow prompt | The table is in THIS skill but doesn't auto-transfer — MUST paste forum list into each agent prompt |
 | Trusting workflow output without verification | ALWAYS check if synthesis agent actually ran vs returned spend-limit error |
+| Interpreting "quick/nhanh/fast" as skip phases | "Quick" = low MODE (fewer iterations), NOT skip Phase 0/1/4. Skipping phases burns MORE tokens (wrong target → user corrects → redo) |
+| Relaying gatherer data without REFLECT pass | YOU are the brain, not a relay station. Even low mode: 1 REFLECT pass checking intent-data match, scent redirect, data accuracy |
+| "It doesn't exist" without questioning your search term | If user implies X is real but data says nothing → YOU likely searched for the wrong thing. Follow search redirects, ask user, or pivot |
+| Reporting single data points without distribution | Report range (min-median-max), flag small sample sizes, note if data is from one source vs cross-verified |
 
 ## Related
 
