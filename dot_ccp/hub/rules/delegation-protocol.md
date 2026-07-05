@@ -46,21 +46,12 @@ When you receive a **new feature request, brainstorm task, or unfamiliar problem
 
 **ALWAYS invoke the `lead-researcher` skill** — it is the MANDATORY entry point for ALL research. Never spawn `researcher` agents directly.
 
-The lead-researcher skill has 4 modes that determine languages, agents, and iterations:
-
-| Mode | Languages | Iterations/agent | When |
-|------|-----------|-----------------|------|
-| **low** | EN + ZH | 2-3 | Quick fact check, single question |
-| **medium** | EN + ZH | 3-5 | Standard evaluation, comparison |
-| **high** | EN + ZH + RU | 5-8 | Multi-domain, contradictions likely |
-| **max** | EN + ZH + RU + any relevant | 8-10 | Comprehensive landscape survey |
-
-**ZH always included.** Agent count = languages x sub-topics (1 lang + 1 sub-topic per agent). Max 3 concurrent, batch into waves.
+The brain decides agent count, languages, iterations, and depth at runtime. Only hard default: **EN + ZH + ZH-TW** when no language specified.
 
 **How it works:**
-1. YOU invoke `lead-researcher` skill → it guides you to plan, decompose, assign
-2. YOU spawn `researcher` agents per the plan (each gets assigned language + topic + iteration count)
-3. Agents return findings → YOU (guided by lead-researcher) verify, deepen, synthesize
+1. YOU invoke `lead-researcher` skill → it guides you to triage, confirm plan, decompose, assign
+2. YOU spawn `gatherer` agents per the plan (each gets 1 language + 1 sub-topic)
+3. Agents return findings → YOU (the forager brain) REFLECT: verify data accuracy, extract gems, filter SEO noise, check intent-data match → then synthesize
 
 **Do NOT:**
 - Invoke the `research` skill directly for research — it's methodology, not orchestration
