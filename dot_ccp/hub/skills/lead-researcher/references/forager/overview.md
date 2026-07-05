@@ -12,9 +12,12 @@ Each iteration, after GATHER DATA, forager runs **REASONING (=REFLECT) → EXPAN
 |---|---|
 | Coverage | which sub-questions moved gap→partial→covered? |
 | New items | how many genuinely new claims this iteration? |
+| **Gem vs noise** | how many findings are GEM (specific, painful, verifiable) vs NOISE (SEO, generic, no downsides)? See [gem-detection](gem-detection.md) |
+| **Intent-data match** | does the data answer what the user ACTUALLY asked? If user implies X is real but data says "doesn't exist" → wrong search target |
 | Contradictions | do sources disagree? |
 | New angles | did findings reveal unplanned sub-topics? |
 | Scent strength | are results still yielding relevant content? (foraging MVT) |
+| **Scent redirect** | did search consistently redirect to a different term? Follow the redirect — it IS the signal |
 | Focus formulation | has understanding crystallized vague→clear? (Kuhlthau) |
 
 ### Focus formulation (the key signal)
@@ -47,18 +50,15 @@ IF focused AND all sub-qs partial/covered    → STOP (sufficient)
 | Depth | max generations / depth |
 | User | "enough" at any steer step |
 
-## Mode = reflect depth
+## Reflect depth = brain decides
 
-| Mode | Brain |
-|---|---|
-| low | single pass, no steer |
-| medium | reflect + light steer |
-| high / max | full reflect + steer + final goal-check |
+The brain scales reflect depth to the question — no preset modes. Simple question: single REFLECT pass. Complex/contradictory: full REFLECT + STEER + goal-check. The brain reads the saturation curve and decides.
 
 ## Related
 
 - [methodology-map](methodology-map.md) — which human methodology maps to which loop step
 - [goal-state-examples](goal-state-examples.md) — example goal states by query type
+- [gem-detection](gem-detection.md) — gem vs SEO noise scoring heuristics
 - [control-panel](../adaptive-research/control-panel.md) — the gauges REFLECT reads
 - [control-rod](../adaptive-research/control-rod.md) — expansion limits STEER respects
 - [lead-researcher SKILL](../../SKILL.md) — Phase 4 CONTROL loads this brain
