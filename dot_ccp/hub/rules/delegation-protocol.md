@@ -46,7 +46,7 @@ When you receive a **new feature request, brainstorm task, or unfamiliar problem
 
 **ALWAYS invoke the `lead-researcher` skill** — it is the MANDATORY entry point for ALL research. Never spawn `researcher` agents directly.
 
-The brain decides agent count, languages, iterations, and depth at runtime. Only hard default: **EN + ZH + ZH-TW** when no language specified. "Quick/nhanh/fast" research still goes through lead-researcher — the skill assigns fewer agents and iterations, you do NOT bypass it to save time.
+The brain decides agent count, languages, iterations, and depth at runtime. Only hard default: **EN + ZH + ZH-TW** when no language specified. "Quick/fast" research still goes through lead-researcher — the skill assigns fewer agents and iterations, you do NOT bypass it to save time.
 
 **How it works:**
 1. YOU invoke `lead-researcher` skill → it guides you to triage, confirm plan, decompose, assign
@@ -56,7 +56,7 @@ The brain decides agent count, languages, iterations, and depth at runtime. Only
 **Do NOT:**
 - Invoke the `research` skill directly for research — it's methodology, not orchestration
 - Spawn `researcher` agents without going through `lead-researcher` first
-- Do WebSearch yourself — use direct WebSearch ONLY for single-fact lookups (e.g., "what version is X", "is library Y deprecated"). "Quick research" / "research nhanh" is STILL research — route through lead-researcher.
+- Do WebSearch yourself — use direct WebSearch ONLY for single-fact lookups (e.g., "what version is X", "is library Y deprecated"). "Quick research" / "research" is STILL research — route through lead-researcher.
 
 ### Step 3: GitHub Research
 MUST use `gh` CLI with multi-language queries (English + Chinese + Russian terms). Run searches in **parallel Bash calls**, not sequentially. MUST search repos, code, issues, AND PRs — not just repos.
