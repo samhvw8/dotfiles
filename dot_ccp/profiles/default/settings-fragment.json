@@ -1,6 +1,6 @@
 {
   "enabledPlugins": {
-    "ponytail@ponytail": true
+    "ponytail@ponytail": false
   },
   "extraKnownMarketplaces": {
     "ponytail": {
@@ -11,11 +11,12 @@
     }
   },
   "inputNeededNotifEnabled": true,
-  "model": "sonnet",
+  "model": "claude-fable-5[1m]",
   "permissions": {
     "defaultMode": "auto"
   },
   "remoteControlAtStartup": true,
+  "skipWorkflowUsageWarning": true,
   "worktree": {
     "baseRef": "head"
   }

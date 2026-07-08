@@ -254,7 +254,23 @@ Before planning research, assess whether the request is **researchable as stated
 2. After heavy-think produces a clear, bounded research question with success criteria → return here at Phase 1
 3. State: "The research question wasn't clear enough to scope. After thinking through it, the researchable question is: [X]"
 
-**Phase 0 is distinct from Phase 1's AskUserQuestion.** Phase 0 catches "the problem isn't researchable yet." Phase 1 catches "confirm my research plan parameters." Don't blur them.
+**Target Verification (MANDATORY sub-step of Phase 0):**
+
+Before advancing to Phase 1, do 2-3 quick inline web searches to verify that named entities (tools, projects, frameworks, companies, concepts) actually exist as stated. User-provided terms are hypotheses, not facts — they may be approximate, misremembered, or from a different domain than assumed.
+
+| Signal | What's wrong | Action |
+|--------|--------------|--------|
+| No results for the exact term | Misspelled or doesn't exist | Try variants, check what search redirects to |
+| Results consistently point to a different name | User used an approximation | Follow the scent — the redirect IS the target |
+| Results exist but in a different domain than user implied | Domain mismatch (e.g., user said "crawler" but it's an agent framework) | Clarify with user before proceeding |
+| Multiple unrelated projects share the name | Ambiguous target | Disambiguate — ask which one |
+| Term existed but is now renamed/superseded | Outdated reference | Note the current name, confirm with user |
+
+**Cost calculus:** 2-3 inline searches = near-zero cost. Spawning agents with wrong terms = entire research wasted + user must correct + redo. Always verify first.
+
+**Rule:** NEVER proceed to Phase 1 with unverified proper nouns. If you can't confirm the target exists as named within 3 searches, present what you found and ask the user.
+
+**Phase 0 is distinct from Phase 1's AskUserQuestion.** Phase 0 catches "the problem isn't researchable yet" AND "the search target isn't what you think." Phase 1 catches "confirm my research plan parameters." Don't blur them.
 
 **Open-ended / iterative-expansion queries** (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria) are handled **natively** by the loop's CONTROL brain ([forager](references/forager/overview.md)) — no separate skill. Recommend **high** or **max** mode, where the brain runs full reflect + steer + topic expansion. forager is fused into this skill, not invoked separately.
 
@@ -514,6 +530,8 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | Relaying gatherer data without REFLECT pass | YOU are the brain, not a relay station. Even low mode: 1 REFLECT pass checking intent-data match, scent redirect, data accuracy |
 | "It doesn't exist" without questioning your search term | If user implies X is real but data says nothing → YOU likely searched for the wrong thing. Follow search redirects, ask user, or pivot |
 | Reporting single data points without distribution | Report range (min-median-max), flag small sample sizes, note if data is from one source vs cross-verified |
+| Spawning agents with unverified proper nouns | MUST do 2-3 inline searches in Phase 0 to verify targets exist as named. User terms are hypotheses — approximate, misremembered, wrong domain. Wrong search terms = entire research wasted |
+| Skipping Target Verification on "quick" research | Target Verification is NEVER skippable — 2-3 searches (~free) vs N wasted agent spawns (~expensive). Quick reduces depth, not verification |
 
 ## Related
 

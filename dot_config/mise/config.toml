@@ -75,3 +75,4 @@ opengrep = "latest"
 "npm:impeccable" = "latest"
 "github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
 "github:Ataraxy-Labs/sem" = { version = "latest", minimum_release_age = "0s" }
+"pipx:fal" = "1.78.1"
