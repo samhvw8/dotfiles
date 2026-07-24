@@ -1,5 +1,0 @@
-name: codebase-remind
-type: UserPromptSubmit
-timeout: 5
-command: codebase-remind.sh
-interpreter: bash
