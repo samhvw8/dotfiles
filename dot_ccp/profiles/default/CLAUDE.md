@@ -31,7 +31,7 @@ When rules conflict: conversation context > project CLAUDE.md > global CLAUDE.md
 # Mandatory Rules
 
 - `rules/delegation-protocol.md` is **non-negotiable**. Every rule marked MUST/NEVER in that file MUST be followed exactly. No exceptions, no "I already know how."
-- `rules/codebase.md` is **non-negotiable**. When the `codebase` MCP (codebase-memory-mcp) is available, you MUST use its tools (`search_graph`, `trace_path`, `query_graph`, `get_architecture`, …) for structural queries instead of grep. No exceptions.
+- `rules/codegraph.md` is **non-negotiable**. When the `codegraph` MCP ([colbymchenry/codegraph](https://github.com/colbymchenry/codegraph)) is available for a repo, you MUST use `codegraph_explore` for structural/code queries instead of grep. No exceptions.
 - Skills MUST be invoked at even 1% relevance — your memory was wiped, you do NOT know how.
 - Fresh conversations receiving new features/brainstorm/tasks MUST run the Research Protocol (researcher agent + GitHub search) before implementation. See `delegation-protocol.md` for full protocol.
 
@@ -78,7 +78,7 @@ When capturing screenshots: use `save png`, NOT base64 (bloats context)
 
 ## Agent Equipping (MANDATORY)
 When spawning ANY agent, MUST include in its prompt:
-1. **MCP tools** it should use (parallax for research, codebase for code, chrome for browser, context7 for docs)
+1. **MCP tools** it should use (parallax for research, codegraph for code, chrome for browser, context7 for docs)
 2. **Skills** matching its task domain (see `delegation-protocol.md` skill matching table)
 3. **`gh` CLI** if the task involves GitHub search
 

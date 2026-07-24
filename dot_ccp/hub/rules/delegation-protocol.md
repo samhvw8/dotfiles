@@ -157,7 +157,7 @@ Load via ToolSearch before calling."
 | Agent task | MUST include MCP |
 |------------|------------------|
 | Research / web search | `mcp__parallax__web_search`, `mcp__parallax__fetch_page` — on par with WebSearch/WebFetch, bypasses bot-protection |
-| Code exploration / architecture | `mcp__codebase__search_graph`, `mcp__codebase__trace_path`, `mcp__codebase__query_graph` |
+| Code exploration / architecture | `mcp__codegraph__codegraph_explore` — one call: symbols' source + call paths + blast radius |
 | Browser interaction | `mcp__claude-in-chrome__*` (list specific tools needed) |
 | Documentation lookup | `mcp__plugin_context7_context7__*` |
 | GitHub operations | `gh` CLI (not MCP, but MUST mention in prompt) |
@@ -192,6 +192,6 @@ Load via ToolSearch before calling."
 | Skip skills because "I know how" | Memory arrogance | MUST invoke — your memory was wiped |
 | Implement before reading local code | Context blindness | MUST read local files + git first |
 | Using research skill to do searches yourself | Context bloat + bias | MUST delegate to researcher agent — fresh context, parallel, no bias |
-| Spawn agent without MCP tools | Tool blindness | MUST include relevant MCP tools (parallax for research, codebase for code, etc.) |
+| Spawn agent without MCP tools | Tool blindness | MUST include relevant MCP tools (parallax for research, codegraph for code, etc.) |
 | Use only WebSearch, skip Parallax | Tool tunnel vision | MUST mention both — parallax bypasses bot-protection, fetches JS-rendered pages |
-| Spawn code agent without codebase MCP | Grep fallback waste | MUST equip with codebase MCP tools for structural queries |
+| Spawn code agent without codegraph MCP | Grep fallback waste | MUST equip with `mcp__codegraph__codegraph_explore` for structural queries |

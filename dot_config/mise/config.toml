@@ -61,7 +61,6 @@ wrangler = "latest"
 "npm:cf" = "latest"
 claude = { version = "latest", minimum_release_age = "0s" }
 gcloud = "latest"
-"pipx:code-review-graph" = "latest"
 aube = "latest"
 flyctl = "latest"
 firebase = "15.17.0"
@@ -76,3 +75,4 @@ opengrep = "latest"
 "github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
 "github:Ataraxy-Labs/sem" = { version = "latest", minimum_release_age = "0s" }
 "pipx:fal" = "1.78.1"
+"pipx:git+https://github.com/wassermanproductions/unofficial-davinci-mcp.git" = "latest"
