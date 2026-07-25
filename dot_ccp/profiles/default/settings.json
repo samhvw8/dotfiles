@@ -43,7 +43,7 @@
     "deny": [],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
+  "model": "opus[1m]",
   "hooks": {
     "PostToolUse": [
       {
@@ -73,15 +73,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/doc-rules/scripts/check-doc-rules.sh",
             "timeout": 5
           }
@@ -101,8 +92,6 @@
   "worktree": {
     "baseRef": "head"
   },
-  "enableWorkflows": false,
-  "workflowKeywordTriggerEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
