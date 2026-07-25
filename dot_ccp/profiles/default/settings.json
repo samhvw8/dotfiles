@@ -73,6 +73,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/doc-rules/scripts/check-doc-rules.sh",
             "timeout": 5
           }
