@@ -76,3 +76,4 @@ opengrep = "latest"
 "github:Ataraxy-Labs/sem" = { version = "latest", minimum_release_age = "0s" }
 "pipx:fal" = "1.78.1"
 "pipx:git+https://github.com/wassermanproductions/unofficial-davinci-mcp.git" = "latest"
+"github:max-sixty/worktrunk" = "latest"
