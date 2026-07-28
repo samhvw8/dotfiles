@@ -1,23 +1,22 @@
 # Documentation Convention
 
-When creating or updating documentation files, follow this structure.
+**Scope:** this is the house style for `docs/` trees — multi-page documentation
+meant to be navigated. It is not a rule for every markdown file. READMEs,
+changelogs, ADRs, RFCs, and issue templates have their own conventions; follow
+those. A `doc-rules` hook reminds on every `.md` edit regardless — apply judgement
+about whether the file is actually a docs page.
 
-## File Structure
+## Structure
 
-- **One heading per file** — each file's name IS the heading (kebab-case)
-- **Max 100 lines per file** — split longer content into separate files
-- **Nested folders for sub-sections** — `1.1 Topic` becomes `topic/subtopic.md`
-- **Cross-link with markdown** — use relative links between related docs
+| Rule | Detail |
+|------|--------|
+| One heading per file | The file name *is* the heading, kebab-case |
+| Keep files short | ~100 lines; split at logical boundaries when longer |
+| Nest instead of numbering | `1.1 Topic` becomes `topic/subtopic.md` |
+| Cross-link | Add a `## Related` section pointing at siblings and parent |
+| Prefer tables and code blocks | Over prose paragraphs |
 
-## Naming
-
-| Content | File |
-|---------|------|
-| Top-level topic | `docs/topic/overview.md` |
-| Sub-topic | `docs/topic/subtopic.md` |
-| Deep sub-section | `docs/topic/subtopic/detail.md` |
-
-## Example
+## Layout
 
 ```
 docs/
@@ -32,10 +31,6 @@ docs/
     └── endpoints.md
 ```
 
-## Rules
-
-- NEVER create a single monolithic doc file
-- ALWAYS split at logical section boundaries
-- ALWAYS add `## Related` section with links to sibling/parent docs
-- File names use kebab-case, no numbers (use folder nesting instead)
-- Prefer tables and code blocks over prose paragraphs
+Splitting exists so the right page can be loaded on its own — a single monolithic
+file defeats that. But don't shred a genuinely short topic across four files to
+satisfy a line count.

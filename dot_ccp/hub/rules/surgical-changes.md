@@ -1,38 +1,22 @@
 # Surgical Changes
 
-Touch only what you must. Every changed line traces to the request.
-
-## Editing Existing Code
-
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated issues, mention them — don't fix them.
-
-## Orphan Cleanup
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-## Diff Discipline
-
-Before finishing, review every changed line:
-
-| Check | Pass? |
-|-------|-------|
-| Does this line trace to the user's request? | Required |
-| Did I change formatting/style I wasn't asked to? | Revert |
-| Did I add error handling for impossible cases? | Remove |
-| Did I add abstractions for single-use code? | Inline |
-| Did I "improve" code adjacent to my change? | Revert |
-
-## Scope Boundary
+Touch only what you must. Every changed line should trace back to the request.
 
 | Do | Don't |
 |----|-------|
 | Fix what was asked | Fix what you noticed nearby |
-| Add requested features | Add "while I'm here" features |
-| Match existing patterns | Introduce "better" patterns |
-| Clean up your own mess | Clean up pre-existing mess |
-| Mention unrelated issues | Silently fix unrelated issues |
+| Match the surrounding style | Introduce a "better" pattern mid-task |
+| Clean up orphans *your* change created | Delete pre-existing dead code |
+| Mention unrelated problems you spot | Silently fix them |
+
+Reformatting untouched lines, adding error handling for impossible cases, and
+abstracting single-use code all count as scope creep — they bury the real change in
+diff noise.
+
+This isn't a ban on judgement. If the requested change is genuinely unsafe without
+an adjacent fix, make it and say why. And when the user asks for a cleanup or a
+refactor, that *is* the scope — go do it properly.
+
+## Related
+
+- [se.md](se.md) — verifiable goals

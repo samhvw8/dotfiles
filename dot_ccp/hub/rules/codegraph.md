@@ -1,76 +1,49 @@
 # Codegraph
 
-The `codegraph` MCP ([colbymchenry/codegraph](https://github.com/colbymchenry/codegraph), v1.5.0+) is a pre-built knowledge graph of every symbol, call edge, and dependency in a repo — surgical context in one call instead of grep/Read crawls. ~60% lower cost, ~69% fewer tokens measured. Deferred MCP tool (`mcp__codegraph__*`). Load via `ToolSearch` before first use each session.
+Two MCP servers answer structural code questions from a real symbol graph instead
+of a text search. Both beat grep for anything about *code*; grep still wins for
+text.
 
-## Gate (MANDATORY)
+| Server | Shape |
+|--------|-------|
+| `codegraph` ([colbymchenry/codegraph](https://github.com/colbymchenry/codegraph)) | Per-repo SQLite index. `codegraph_explore` takes a natural-language question and returns the relevant symbols' verbatim source, the call paths between them, and a blast-radius summary |
+| `sem` | Entity-level, no per-repo index step. `sem_context` reads a function/class *with* its callers and callees; `sem_impact` answers "what breaks if I change this"; `sem_entities` finds text inside entity bodies |
 
-**Before ANY codebase search — STOP and run this check:**
+Both are deferred — load with `ToolSearch` before first use in a session.
 
-```
-1. Is codegraph available for this repo? (.codegraph/ present — the codegraph-remind hook confirms)
-2. Is this about CODE? (symbols, files, architecture, behavior, flow, usage, dependencies)
-   - YES -> codegraph_explore. Always. No exceptions.
-   - NO  -> grep (literal strings in non-code: logs, comments, configs, READMEs)
-3. Proceed.
-```
+## Choosing
 
-**The rule is simple: code questions -> `codegraph_explore`. Text questions -> grep.**
+Ask a code question → graph tool. Ask a text question → grep.
 
-## One Tool: `codegraph_explore`
+| Question | Tool |
+|----------|------|
+| "How does X work?" / "how does X reach Y?" | `codegraph_explore` |
+| "Read/understand function X" | `sem_context` — returns the body plus its dependencies |
+| "What calls X? What breaks if I change it?" | `sem_impact` |
+| Survey an area, map an unfamiliar subsystem | `codegraph_explore` |
+| Exact string in logs or error output | grep |
+| `TODO:`/`FIXME:` comments, config keys, READMEs | grep |
+| Find files by extension | glob |
 
-v1.5.0 exposes a **single MCP tool** — one strong tool steers better than a menu:
+Open a file directly to *edit* it, or when it isn't code. To merely understand
+code, the graph tools arrive with the dependency context already attached.
 
-| Ask it | Get back |
-|--------|----------|
-| "how does X work" | Relevant symbols' verbatim source, grouped by file |
-| "how does X reach Y" (a flow) | Call paths between the symbols — incl. dynamic-dispatch hops (callbacks, React re-render, interface->impl) grep can't follow |
-| Survey an area / topic | The area's symbols + relationship map + blast-radius summary |
-| Name a file or symbol | Its current line-numbered source (same shape as Read) plus dependents |
-| Another indexed repo | Pass `projectPath` — monorepo sub-service or second repo, same session |
+If you fall back to grep on a structural question, say why.
 
-**Query construction:** natural language; name the concept + flow endpoints; split cross-domain questions into separate calls. Prefer explore over Read for *understanding* code — Read/Edit only to modify.
+## Practicalities
 
-## Unlisted Tools & CLI Equivalents
-
-`codegraph_node`, `codegraph_search`, `codegraph_callers`, `codegraph_callees`, `codegraph_impact`, `codegraph_files`, `codegraph_status` stay functional but unlisted — everything they return already arrives inline on `codegraph_explore`. Re-enable via `CODEGRAPH_MCP_TOOLS=explore,node,...` env, or use the CLI:
-
-| CLI | Purpose |
-|-----|---------|
-| `codegraph explore <query>` | Same output as the MCP tool |
-| `codegraph node <name>` | One symbol's source + caller/callee trail |
-| `codegraph query <search>` | Symbol search |
-| `codegraph callers/callees <symbol>` | Call graph edges |
-| `codegraph impact <symbol>` | Blast radius of changing a symbol |
-| `codegraph affected [files...]` | Test files affected by changed source files |
-| `codegraph init` / `status` / `sync` | Index management (per project) |
-
-## When Grep Wins
-
-Grep is the right tool ONLY for non-code text:
-
-| Use grep for | Example |
-|-------------|---------|
-| Exact string literals in output/logs | `'ERR_AUTH_FAILED'` |
-| Comment patterns | `TODO:`, `FIXME`, `HACK` |
-| File-extension globs | `*.test.ts`, `*.svelte` |
-| Config values / non-code files | `.env` keys, READMEs, changelogs |
-
-## Usage
-
-| Rule | Detail |
-|------|--------|
-| Load first | `ToolSearch("select:mcp__codegraph__codegraph_explore")` once per session |
-| Graph before files | `codegraph_explore` before Read/Grep — fewer calls, surgical context. Default tool, not a fallback. |
-| Heavy explore → delegate + equip | Broad sweeps / reviews / multi-file mapping → spawn a subagent AND name `mcp__codegraph__codegraph_explore` in its prompt, so the graph runs in its context and only findings return. |
-| Small lookup → inline | A targeted explore call → run it directly; an agent costs more context than it saves. Not "manual execution" — using the tool. |
-| Index lives in-repo | `.codegraph/` at project root; **auto-sync watches every file change — never stale, nothing to re-run** |
-| Upgrade | `codegraph upgrade` (add `--check` to preview); `codegraph upgrade` also refreshes agent wiring |
-
-## If this repo isn't indexed
-
-Ask: *"This repo isn't indexed by codegraph. Want me to run `codegraph init` here?"* (CLI step, not an MCP tool — builds the graph once, then auto-syncs.)
+- **Index location** — codegraph keeps `.codegraph/` at the project root and
+  auto-syncs on file changes, so it's never stale. `sem` needs no per-repo setup.
+- **Other repos** — pass `projectPath` to reach a monorepo sub-service or a second
+  indexed repo in the same session.
+- **Not indexed?** Ask before running `codegraph init` — it's the user's call, and
+  it's a CLI step, not an MCP tool. A `codegraph-remind` hook flags this too.
+- **Heavy sweeps** — a broad multi-file map belongs in a subagent, with
+  `codegraph_explore` named in its prompt so only findings come back. A single
+  targeted call is cheaper inline.
+- **CLI** — `codegraph explore|node|query|callers|callees|impact|affected|status`
+  mirror the MCP surface. `codegraph upgrade` refreshes the tool and agent wiring.
 
 ## Related
 
-- [se.md](se.md) — software engineering principles
-- [delegation-protocol.md](delegation-protocol.md) — delegate explore to subagents
+- [delegation-protocol.md](delegation-protocol.md) — delegating heavy exploration

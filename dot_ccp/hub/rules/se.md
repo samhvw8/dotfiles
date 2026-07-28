@@ -1,104 +1,53 @@
 # Software Engineering Principles
 
-Evidence over assumptions. Working code over documentation. Simplicity over cleverness.
+Evidence over assumptions. Working code over documentation. Simplicity over
+cleverness.
 
-## Core Loop
+## Verifiable goals
 
-```
-Understand → Plan → Execute → Verify → Iterate
-```
+The useful move is turning a vague request into something you can check. Do this
+before writing code, not after.
 
-| Phase | Action |
-|-------|--------|
-| Understand | Read code, trace dependencies, identify constraints. State assumptions explicitly. |
-| Plan | Minimal testable steps. Transform tasks into verifiable goals before coding. |
-| Execute | One change at a time, validate incrementally. |
-| Verify | Test, measure, confirm behavior matches intent. Loop until verified. |
-
-### Verifiable Goals
-
-Transform vague tasks into concrete checks:
-
-| Request | Verifiable Goal |
-|---------|----------------|
-| "Add validation" | Write tests for invalid inputs, then make them pass |
+| Request | Verifiable goal |
+|---------|-----------------|
+| "Add validation" | Write tests for the invalid inputs, then make them pass |
 | "Fix the bug" | Write a test that reproduces it, then make it pass |
-| "Refactor X" | Ensure tests pass before and after |
+| "Refactor X" | Tests pass before and after |
+| "Make it faster" | Measure first — you need a number to beat |
 
-For multi-step tasks, state a brief plan:
+For anything multi-step, state the plan as steps with their checks:
+
 ```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
+1. [step] -> verify: [check]
+2. [step] -> verify: [check]
 ```
 
-Strong success criteria enable independent iteration. Weak criteria ("make it work") require clarification — ask before coding.
+If success criteria are too weak to iterate against ("make it work"), ask before
+coding rather than guessing.
 
-## Unix Philosophy (17 Laws)
+## Loop
 
-### Build
+Understand → Plan → Execute → Verify → Iterate. Read the code and trace the
+dependencies before changing them. Change one thing at a time. Confirm behavior
+matches intent before claiming it does — and if a test fails, say so with the
+output.
 
-| Law | Rule | Apply |
-|-----|------|-------|
-| Modularity | Simple parts, clean interfaces | <500 LOC per unit; AI-safe modification scope |
-| Composition | Programs connect to programs | APIs, pipes; AI chains tools same way |
-| Separation | Policy ≠ mechanism | Spec/config separate; change spec → regenerate code |
-| Parsimony | Small programs preferred | Intent clarity > line count; AI navigates if structure clear |
+## Decision framing
 
-### Design
-
-| Law | Rule | Apply |
-|-----|------|-------|
-| Clarity | Clarity > cleverness | Explicit intent; AI parses readable, fails on clever |
-| Simplicity | Complexity only when proven | YAGNI; AI regenerates simple faster |
-| Transparency | Visible = debuggable | Expose state; AI reasons on visible decision points |
-| Representation | Smart data, dumb code | Types as spec; AI reads schema, ignores comments |
-
-### Behave
-
-| Law | Rule | Apply |
-|-----|------|-------|
-| Least Surprise | Do what users expect | Conventions; AI learns patterns, not exceptions |
-| Silence | No output unless meaningful | Errors on stderr; clean signal for AI parsing |
-| Repair | Fail fast, fail loud | Crash > corrupt; AI detects explicit failures |
-| Robustness | Transparency + simplicity | Handle known failures; AI predicts from visible paths |
-
-### Evolve
-
-| Law | Rule | Apply |
-|-----|------|-------|
-| Economy | Iteration speed > polish | Spec clarity matters; regeneration cost → 0 |
-| Generation | AI generates from spec | Spec = source of truth; code = disposable artifact |
-| Optimization | Generate variants, measure | AI explores options in parallel |
-| Diversity | Right tool for the job | AI adapts to any stack |
-| Extensibility | Design for replaceability | AI can rewrite modules if isolated |
-
-### AI-Era Heuristics
-
-| Check | Action |
-|-------|--------|
-| AI can't parse intent | Refactor for explicitness |
-| AI can't modify in isolation | Reduce coupling |
-| Spec unclear | Invest in spec before code |
-| Clever one-liners | Replace with explicit branching |
-| Implicit conventions | Document in types/spec |
-| Comments as spec | Use types + tests instead |
-
-## Decision Making
-
-| Dimension | Question |
-|-----------|----------|
+| Dimension | Ask |
+|-----------|-----|
 | Reversibility | One-way door? Get more data first |
-| Blast Radius | Can rollback quickly? Ship small |
-| Temporal | Tech debt now vs maintenance later? |
-| Evidence | Measured or assumed? Profile first |
+| Blast radius | Can this roll back cleanly? Ship small if not |
+| Temporal | Debt now versus maintenance later — which is actually cheaper? |
+| Evidence | Measured or assumed? Profile before optimizing |
 
-## Risk Protocol
+## Risk
 
-```
-Identify → Assess (P × I) → Mitigate → Monitor
-```
+Identify what can fail (dependencies, edge cases, external services), mitigate what
+matters (tests, error handling, graceful degradation), and make failures visible
+(logs, alerts) rather than silent. Crashing beats corrupting.
 
-- **Identify**: Dependencies, edge cases, external failures
-- **Mitigate**: Tests, error handling, graceful degradation
-- **Monitor**: Logs, alerts, metrics for early detection
+## Related
+
+- [surgical-changes.md](surgical-changes.md) — scope discipline
+- [cognitive-framework.md](cognitive-framework.md) — frameworks for hard calls

@@ -37,6 +37,36 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Copy aside every target that already exists before chezmoi overwrites it.
+# Chezmoi only prompts for files it has written before, so pre-existing
+# dotfiles are replaced silently -- this is the only safety net.
+backup_existing_targets() {
+    local backup_dir managed target rel count=0
+    backup_dir="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
+
+    if ! managed="$(chezmoi managed --path-style=absolute --include=files,symlinks)"; then
+        log_error "Could not list managed files; aborting before apply"
+        exit 1
+    fi
+
+    while IFS= read -r target; do
+        [[ -n "$target" ]] || continue
+        [[ -e "$target" || -L "$target" ]] || continue
+        rel="${target#"$HOME"/}"
+        mkdir -p "$backup_dir/$(dirname "$rel")"
+        cp -a "$target" "$backup_dir/$rel"
+        count=$((count + 1))
+    done <<< "$managed"
+
+    if [[ $count -eq 0 ]]; then
+        log_info "No existing dotfiles to back up."
+        return
+    fi
+
+    log_success "Backed up $count existing file(s) to $backup_dir"
+    log_info "Restore one with: cp -a \"$backup_dir/<relative/path>\" \"\$HOME/<relative/path>\""
+}
+
 # Parse command line arguments
 MINIMAL=false
 CONDA=false
@@ -78,22 +108,27 @@ main() {
         log_info "chezmoi already installed"
     fi
 
-    # Initialize and apply dotfiles from repository
+    # Initialize dotfiles repository WITHOUT applying yet, so the destination
+    # directory can be backed up first.
     # Chezmoi will prompt for name/email via .chezmoi.toml.tmpl
     if [[ ! -d "$HOME/.local/share/chezmoi/.git" ]]; then
         log_info "Initializing chezmoi with dotfiles repository..."
         log_info "You will be prompted for your git name and email..."
-        log_info "This will automatically install all required tools and dependencies..."
-        if ! chezmoi init --apply --promptBool "minimal=${MINIMAL}" --promptBool "conda=${CONDA}" https://github.com/samhvw8/dotfiles.git; then
+        if ! chezmoi init --promptBool "minimal=${MINIMAL}" --promptBool "conda=${CONDA}" https://github.com/samhvw8/dotfiles.git; then
             log_error "Failed to initialize chezmoi with dotfiles repository"
             exit 1
         fi
     else
-        log_info "Chezmoi already initialized, applying latest configurations..."
-        if ! chezmoi apply; then
-            log_error "Failed to apply chezmoi configurations"
-            exit 1
-        fi
+        log_info "Chezmoi already initialized."
+    fi
+
+    backup_existing_targets
+
+    log_info "Applying configurations..."
+    log_info "This will automatically install all required tools and dependencies..."
+    if ! chezmoi apply; then
+        log_error "Failed to apply chezmoi configurations"
+        exit 1
     fi
 
     log_success "Dotfiles setup completed successfully!"

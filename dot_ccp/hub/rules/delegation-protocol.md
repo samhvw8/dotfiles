@@ -1,197 +1,90 @@
-# Delegation Protocol (MANDATORY)
+# Delegation Protocol
 
-> **Why this file exists:** Your memory is wiped on every session refresh. You retain NOTHING from prior conversations. The ONLY way to persist knowledge, behavior, and expertise is through **files** — CLAUDE.md, rules/, skills, agents, and memory/. This protocol is your survival manual. Every rule here is a MUST, not a suggestion. Violating these rules means regressing to a blank, unguided state that wastes the user's time re-teaching you.
+> **Gotcha:** a SessionStart hook injects an older, stricter copy of this protocol
+> (absolute MUSTs, a "1% rule" for skills, a per-turn evaluation form). This file
+> is the current version and supersedes it. The harness system prompt supersedes
+> both — if it says not to spawn agents, don't.
 
-## Core Distinction
+`Task` delegates work to an agent. `Skill` loads guidance for you to follow
+yourself. They are not interchangeable.
 
-| Tool | Type | You do work? |
-|------|------|--------------|
-| `Task` | Delegation | No — agent works autonomously |
-| `Skill` | Enhancement | Yes — skill guides you |
+## When to delegate
 
-## Memory Loss Mitigation
+Delegate when the work needs a context window of its own, splits into genuinely
+independent branches, or would flood this conversation with output you don't need
+to keep. Don't delegate to appear thorough — an agent costs more context than a
+targeted tool call saves.
 
-You MUST understand the persistence hierarchy:
+| Situation | Do |
+|-----------|-----|
+| Answer is already in this conversation | Use it |
+| The user handed you the spec | Transform it; don't go re-discover it |
+| One file, one symbol, one lookup | Read/Glob/Grep/`codegraph_explore` inline |
+| Broad sweep across unknown scope | One agent |
+| Several independent branches | Parallel agents, max 3 at a time |
 
-| Layer | What it preserves | When to use |
-|-------|-------------------|-------------|
-| **CLAUDE.md** | Identity, rules, tool config | Core behavior that NEVER changes |
-| **rules/** | Domain protocols, workflows | Structured guidance for specific domains |
-| **Skills** | Step-by-step process guidance | When you need HOW to do something — even 1% relevance triggers invocation |
-| **Agents** | Autonomous task execution | When work requires independent judgment or parallel exploration |
-| **memory/** | User preferences, project context | Cross-session knowledge about the user and their projects |
+Before spawning, ask whether the agent adds autonomous judgement or just chains
+tools you could chain yourself. If it's the latter, do it inline.
 
-**Why skills and agents matter more than you think:** Without them, you are a blank slate guessing at best practices. Skills encode hard-won process knowledge. Agents encode delegation patterns. Skipping them means the user must re-teach you every session. This is unacceptable.
+## Equipping a subagent
 
-## Skills: 1% Rule (MANDATORY)
+Agents start blind. They don't inherit your awareness of what's installed, so name
+the tools and skills explicitly in the prompt.
 
-**Even 1% chance a skill applies? You MUST invoke it. No exceptions.**
+```
+[Objective, and what this task contributes to it]
+[Task]
 
-- Skills are your only way to access process knowledge that survives memory loss
-- Skipping a skill = discarding expertise the user already configured for you
-- You MUST check available skills BEFORE taking any action
-- When multiple skills match: **Process first** (debugging, planning) → **Implementation second**
-- You MUST NEVER justify skipping a skill with "I already know how to do this" — you don't, your memory was wiped
+SUGGESTED TOOLS: [names] — [when each helps]
+Load MCP tools via ToolSearch before calling them.
+SUGGESTED SKILLS: [names] — [when each helps]
+```
 
-## Fresh Conversation Research Protocol (MANDATORY)
+| Agent's job | Point it at |
+|-------------|-------------|
+| Research / web | `mcp__parallax__web_search`, `mcp__parallax__fetch_page`, WebSearch |
+| Code exploration | `mcp__codegraph__codegraph_explore`, `mcp__sem__sem_context` |
+| Browser work | `mcp__claude-in-chrome__*` (list the specific tools) |
+| Library docs | `mcp__plugin_context7_context7__*` |
+| GitHub | `gh` CLI — not an MCP, but say so anyway |
 
-When you receive a **new feature request, brainstorm task, or unfamiliar problem** in a fresh conversation, you MUST follow this research protocol before implementation:
+Match skills the same way: research → `lead-researcher`/`deep-gather`; review →
+`code-review`, `code-quality`; UI → `frontend-design`, `design-principles`;
+planning → `planning`; git → `git-workflow`; infra → `infra-engineer`;
+databases → `databases`. If you'd load it for this task, the agent should know
+about it too.
 
-### Step 1: Read Local First
-- MUST read relevant local files (code, configs, docs) to understand current state
-- MUST run `git log`, `git diff`, or `git blame` if the task involves existing code
-- Use local findings to craft precise search queries
+## Research
 
-### Step 2: Research (via lead-researcher)
+`lead-researcher` is the entry point — it sizes the job and spawns `gatherer`
+agents. Never spawn `gatherer` directly. Single-fact lookups are just a WebSearch.
 
-**ALWAYS invoke the `lead-researcher` skill** — it is the MANDATORY entry point for ALL research. Never spawn `researcher` agents directly.
+Read local first: the code, the config, `git log`/`diff`/`blame`. Local findings
+make the search queries precise. Then search the web and GitHub, then synthesize —
+say which approach you picked and why, and surface conflicts rather than papering
+over them.
 
-The brain decides agent count, languages, iterations, and depth at runtime. Only hard default: **EN + ZH + ZH-TW** when no language specified. "Quick/fast" research still goes through lead-researcher — the skill assigns fewer agents and iterations, you do NOT bypass it to save time.
-
-**How it works:**
-1. YOU invoke `lead-researcher` skill → it guides you to triage, confirm plan, decompose, assign
-2. YOU spawn `gatherer` agents per the plan (each gets 1 language + 1 sub-topic)
-3. Agents return findings → YOU (the forager brain) REFLECT: verify data accuracy, extract gems, filter SEO noise, check intent-data match → then synthesize
-
-**Do NOT:**
-- Invoke the `research` skill directly for research — it's methodology, not orchestration
-- Spawn `researcher` agents without going through `lead-researcher` first
-- Do WebSearch yourself — use direct WebSearch ONLY for single-fact lookups (e.g., "what version is X", "is library Y deprecated"). "Quick research" / "research" is STILL research — route through lead-researcher.
-
-### Step 3: GitHub Research
-MUST use `gh` CLI with multi-language queries (English + Chinese + Russian terms). Run searches in **parallel Bash calls**, not sequentially. MUST search repos, code, issues, AND PRs — not just repos.
+GitHub searches run in parallel, and cover more than repos:
 
 ```bash
-# Wave 1: Repos + Code (fire simultaneously)
 gh search repos "[topic]" --sort stars --limit 10
-gh search repos "[中文关键词]" --sort stars --limit 10
 gh search code "[pattern]" --language python --limit 10
-gh search code "[pattern]" --language typescript --limit 10
-
-# Wave 2: Issues + PRs (fire simultaneously)
-gh search issues "[topic] broken OR error OR blocked" --sort updated --limit 10
-gh search issues "[topic] alternative OR migration" --sort updated --limit 10
+gh search issues "[topic] broken OR error" --sort updated --limit 10
 gh search prs "[topic]" --sort updated --limit 10
-gh search commits "[topic]" --sort committer-date --limit 10
 ```
 
-Issues/PRs surface what repo search misses: real breakage reports, workarounds, pain points, and active development signals.
+Issues and PRs surface real breakage, workarounds, and whether a project is still
+alive — repo search doesn't.
 
-### Step 4: Synthesize
-- MUST compare findings across sources before proposing a solution
-- MUST cite which approach you chose and why
-- If conflicting advice exists, present the tension to the user
+Skip research for a bug with a known cause, a mechanical change, or when I say so.
 
-### When to Skip Research
-You may skip web/GitHub research ONLY when:
-- The task is a simple bug fix with a clear root cause already identified
-- The user explicitly says "don't research, just do it"
-- The task is purely mechanical (rename, move file, format)
+## Staying honest
 
-## Agents: Decision Tree
+State what you're about to do, then do it. If new information changes the plan,
+say what changed and why — don't quietly pivot, and don't keep reading "one more
+file to be sure" instead of acting.
 
-### Step 1: Context Check
-Before spawning an agent, you MUST verify:
-- Is the answer already in this conversation? → MUST use it
-- Did user provide the spec/target? → MUST transform, NEVER explore what's already given
+## Related
 
-### Step 2: Complexity Assessment
-
-| Unknowns | Action |
-|----------|--------|
-| 0 (have everything) | MUST execute directly |
-| 1 (single lookup) | MUST use direct tool (Glob/Grep/Read) |
-| 2-3 related | MUST consider 1 agent |
-| Multiple independent | MUST use parallel agents (max 3) |
-
-### Step 3: Necessity Test
-Ask: "Can I answer this with ONE direct tool call?"
-- YES → MUST NOT delegate
-- NO → MUST check if agent adds value beyond tool chaining
-
-### Step 4: Value Test
-Delegate ONLY when agent provides:
-- Autonomous decision-making (not just sequential tools)
-- Domain expertise you lack
-- Parallel exploration of unknown scope
-
-## DGE Loop: Decide → Gather → Execute (MANDATORY)
-
-- MUST state commitment before gathering: "I will [Tool] after reading"
-- MUST execute within max 3 reads
-- MUST NOT silently pivot — state explicitly: "Changing from X to Y because..."
-- MUST NOT enter infinite refinement loops ("one more file to be sure...")
-
-## Orchestration Patterns
-
-### Parallel Execution
-MUST launch multiple agents simultaneously when tasks are independent:
-- Different aspects of same system (frontend + backend)
-- Multiple independent searches
-- Code + Tests + Docs for non-conflicting components
-
-**Max 3 concurrent agents.** MUST batch larger workloads into waves.
-
-### Sequential Chaining
-MUST chain when outputs become inputs:
-- Planning → Implementation → Testing → Review
-- Research → Design → Code → Documentation
-
-### Sub-Agent Prompting
-MUST equip every sub-agent with relevant skills AND MCP tools. An agent without its tools is blind.
-
-**Template:**
-```
-"[Overall Objective] [What This Task Contributes to Overall Objective]
-[Task description]
-
-RECOMMENDED SKILLS: [skill-name] - [when to use]
-Use Skill tool for guidance.
-
-RECOMMENDED MCP TOOLS: [tool-name] - [when to use]
-Load via ToolSearch before calling."
-```
-
-**MCP matching rules (MANDATORY):**
-
-| Agent task | MUST include MCP |
-|------------|------------------|
-| Research / web search | `mcp__parallax__web_search`, `mcp__parallax__fetch_page` — on par with WebSearch/WebFetch, bypasses bot-protection |
-| Code exploration / architecture | `mcp__codegraph__codegraph_explore` — one call: symbols' source + call paths + blast radius |
-| Browser interaction | `mcp__claude-in-chrome__*` (list specific tools needed) |
-| Documentation lookup | `mcp__plugin_context7_context7__*` |
-| GitHub operations | `gh` CLI (not MCP, but MUST mention in prompt) |
-
-**Skill matching rules (MANDATORY):**
-
-| Agent task | MUST recommend skill |
-|------------|---------------------|
-| Research | `lead-researcher` (entry point), `deep-gather` (if agent IS a gatherer) |
-| Code review | `code-review`, `code-quality` |
-| Frontend / UI | `frontend-design`, `design-principles`, `taste-skill` |
-| Planning | `planning`, `sequential-thinking` |
-| Problem solving | `problem-solving`, `sequential-thinking` |
-| Git operations | `git-workflow` |
-| Infrastructure | `infra-engineer` |
-| Database work | `databases` |
-
-**The rule:** if YOU would use a skill/MCP for this task, the agent MUST know about it too.
-
-## Anti-Patterns (MUST AVOID)
-
-| Sign | Problem | Fix |
-|------|---------|-----|
-| Agent for single file lookup | Over-delegation | MUST use Glob/Read |
-| Multiple agents for linear task | Over-division | MUST use single agent or direct |
-| Exploring what's in the message | Context blindness | MUST read the conversation |
-| Agent to "understand patterns" | Skill gap | MUST use Skill for guidance |
-| Confuse Skill with delegation | Wrong tool type | Skill = guidance, Task = delegation |
-| Sequential launches for independent tasks | Wasted time | MUST parallel launch |
-| Spawn agents without skill guidance | Missing context | MUST include RECOMMENDED SKILLS |
-| Skip web research on new tasks | Reinventing the wheel | MUST research first (Step 2-3 above) |
-| Skip skills because "I know how" | Memory arrogance | MUST invoke — your memory was wiped |
-| Implement before reading local code | Context blindness | MUST read local files + git first |
-| Using research skill to do searches yourself | Context bloat + bias | MUST delegate to researcher agent — fresh context, parallel, no bias |
-| Spawn agent without MCP tools | Tool blindness | MUST include relevant MCP tools (parallax for research, codegraph for code, etc.) |
-| Use only WebSearch, skip Parallax | Tool tunnel vision | MUST mention both — parallax bypasses bot-protection, fetches JS-rendered pages |
-| Spawn code agent without codegraph MCP | Grep fallback waste | MUST equip with `mcp__codegraph__codegraph_explore` for structural queries |
+- [codegraph.md](codegraph.md) — code navigation
+- [se.md](se.md) — verifiable goals
