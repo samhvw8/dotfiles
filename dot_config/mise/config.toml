@@ -42,14 +42,11 @@ usage = "latest"
 "forgejo:mergiraf/mergiraf" = "0.17.0"
 bun = "latest"
 jnv = "latest"
-"github:asyrjasalo/dynamic-mcp" = "latest"
-"github:memextech/ht-mcp" = "latest"
 "npm:mcp-chrome-bridge" = "latest"
 rclone = "latest"
 git-lfs = "latest"
 kubectl = "latest"
 k9s = "latest"
-"github:bettercap/bettercap" = "latest"
 pnpm = "latest"
 "github:samhvw8/claude-code-profile" = { version = "latest", minimum_release_age = "0s" }
 "npm:playwriter" = "latest"
@@ -64,13 +61,10 @@ gcloud = "latest"
 aube = "latest"
 flyctl = "latest"
 firebase = "15.17.0"
-"npm:@agentmemory/agentmemory" = "latest"
-"github:iii-hq/iii" = "iii/v0.11.2"
 opengrep = "latest"
 "github:Ataraxy-Labs/weave" = { version = "latest", matching = "weave-cli", exe = "weave" }
 "http:weave-driver" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-driver-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-driver" }
 "http:weave-mcp" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-mcp-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-mcp" }
-"github:DeusData/codebase-memory-mcp" = "latest"
 "npm:impeccable" = "latest"
 "github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
 "github:Ataraxy-Labs/sem" = { version = "latest", minimum_release_age = "0s" }
