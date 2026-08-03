@@ -26,6 +26,39 @@ targeted tool call saves.
 Before spawning, ask whether the agent adds autonomous judgement or just chains
 tools you could chain yourself. If it's the latter, do it inline.
 
+## Teammates vs subagents
+
+A subagent runs once and is gone. A teammate is spawned with a `name`, stays
+addressable via `SendMessage`, and holds its context until shut down.
+
+**Default to a subagent. Spawn a teammate only when something will send it a
+second message** — teammates talking to each other mid-run, or you following up
+later in the session.
+
+| Want | Spawn |
+|------|-------|
+| Independent fan-out, one result each | Subagents |
+| A single answer, however large | Subagent |
+| Two takes you'll compare yourself | Subagents |
+| One hand-off — A's output goes straight into B | Subagents |
+| Agents that must discuss: debate, cross-examine, converge (`/debate`) | Teammates |
+| Ideas that compound — each builds on the others live (`/council`) | Teammates |
+| Multi-round hand-off — B questions A, A revises, repeat | Teammates |
+| A specialist you'll consult again this session (reviewer, domain expert) | Teammate |
+| Long work you'll steer mid-flight rather than read at the end | Teammate |
+
+The discriminator is rounds, not topic. One relay hop you can paste yourself is
+cheaper than a team; two or more rounds, or agents that need each other's replies
+without you in the middle, is a team.
+
+"Might be useful to keep around" isn't reuse — if you can't name the follow-up
+message you'd send, it's a subagent. Teammates also need the main session and
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`.
+
+Running a team: spawn them in one message, give each the context and its
+counterparts *by name* (they don't inherit your history), moderate rather than
+join the discussion, and shut them down once you've synthesized.
+
 ## Equipping a subagent
 
 Agents start blind. They don't inherit your awareness of what's installed, so name
@@ -56,27 +89,14 @@ about it too.
 
 ## Research
 
-`lead-researcher` is the entry point — it sizes the job and spawns `gatherer`
-agents. Never spawn `gatherer` directly. Single-fact lookups are just a WebSearch.
-
 Read local first: the code, the config, `git log`/`diff`/`blame`. Local findings
-make the search queries precise. Then search the web and GitHub, then synthesize —
+make the search queries precise. Then web and GitHub in parallel, then synthesize —
 say which approach you picked and why, and surface conflicts rather than papering
-over them.
-
-GitHub searches run in parallel, and cover more than repos:
-
-```bash
-gh search repos "[topic]" --sort stars --limit 10
-gh search code "[pattern]" --language python --limit 10
-gh search issues "[topic] broken OR error" --sort updated --limit 10
-gh search prs "[topic]" --sort updated --limit 10
-```
-
-Issues and PRs surface real breakage, workarounds, and whether a project is still
-alive — repo search doesn't.
+over them. `deep-gather` holds the query templates, GitHub issue/PR searches
+included.
 
 Skip research for a bug with a known cause, a mechanical change, or when I say so.
+Entry point, `gatherer` rule, and language defaults live in CLAUDE.md.
 
 ## Staying honest
 

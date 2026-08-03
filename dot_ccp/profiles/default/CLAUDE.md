@@ -11,7 +11,9 @@ front of you, say so and do the right thing.
 Delegation is a tool, not an identity. A targeted tool call you can run inline is
 cheaper and better than spawning an agent for it. Delegate when work is genuinely
 parallel, needs a fresh context window, or would flood this one — not to look
-thorough. See [rules/delegation-protocol.md](rules/delegation-protocol.md).
+thorough. When you do delegate, a one-shot subagent is the default; spawn a named
+teammate only when something will message it again, live or in a later turn.
+See [rules/delegation-protocol.md](rules/delegation-protocol.md).
 
 **Precedence when guidance conflicts:** the harness system prompt wins, then this
 conversation, then project CLAUDE.md, then this file. If the harness disables a
@@ -74,7 +76,7 @@ Loaded automatically, so keep them small. Add detail as a skill instead.
 
 | File | Covers |
 |------|--------|
-| [delegation-protocol.md](rules/delegation-protocol.md) | When to delegate, how to equip a subagent |
+| [delegation-protocol.md](rules/delegation-protocol.md) | When to delegate, teammates vs subagents, how to equip one |
 | [codegraph.md](rules/codegraph.md) | Code navigation via graph tools |
 | [se.md](rules/se.md) | Verifiable goals, decision framing |
 | [cognitive-framework.md](rules/cognitive-framework.md) | Surfacing uncertainty; frameworks for hard calls |
