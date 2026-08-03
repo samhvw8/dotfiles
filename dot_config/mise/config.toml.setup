@@ -26,7 +26,7 @@ zig = "0.11.0"
 shellcheck = "latest"
 shfmt = "latest"
 uv = "latest"
-yt-dlp = "latest"
+yt-dlp = { version = "latest", rename_exe = "yt-dlp" }
 yq = "latest"
 neovim = "0.11.4"
 lazygit = "latest"
@@ -41,40 +41,39 @@ zoxide = "latest"
 delta = "latest"
 "npm:@kaitranntt/ccs" = "latest"
 usage = "latest"
-"forgejo:mergiraf/mergiraf" = "latest"
+"forgejo:mergiraf/mergiraf" = "0.17.0"
 bun = "latest"
 doggo = "latest"
 jnv = "latest"
-"github:asyrjasalo/dynamic-mcp" = "latest"
 "github:ouch-org/ouch" = "latest"
 "npm:ccusage" = "latest"
-"github:memextech/ht-mcp" = "latest"
 gemini-cli = "latest"
 "npm:mcp-chrome-bridge" = "latest"
 rclone = "latest"
 git-lfs = "latest"
 kubectl = "latest"
 k9s = "latest"
-claude-code = { version = "latest", bin = "claude", platforms = """
-[linux-arm64]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/linux-arm64/claude"
-
-[linux-x64]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/linux-x64/claude"
-
-[macos-arm64]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/darwin-arm64/claude"
-
-[macos-x64]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/darwin-x64/claude"
-
-[windows-x64]
-bin = "claude.exe"
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{ version }}/win32-x64/claude.exe"
-""", version_list_url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest" }
-"github:bettercap/bettercap" = "latest"
 pnpm = "latest"
-"github:samhvw8/claude-code-profile" = "latest"
+"github:samhvw8/claude-code-profile" = { version = "latest", minimum_release_age = "0s" }
 "npm:playwriter" = "latest"
 vhs = "latest"
 zellij = "latest"
+"github:pinchtab/pinchtab" = "latest"
+wrangler = "latest"
+"pipx:it2" = "latest"
+"npm:cf" = "latest"
+claude = { version = "latest", minimum_release_age = "0s" }
+gcloud = "latest"
+aube = "latest"
+flyctl = "latest"
+firebase = "15.17.0"
+opengrep = "latest"
+"github:Ataraxy-Labs/weave" = { version = "latest", matching = "weave-cli", exe = "weave" }
+"http:weave-driver" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-driver-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-driver" }
+"http:weave-mcp" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-mcp-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-mcp" }
+"npm:impeccable" = "latest"
+"github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
+"github:Ataraxy-Labs/sem" = { version = "latest", minimum_release_age = "0s" }
+"pipx:fal" = "1.78.1"
+"pipx:git+https://github.com/wassermanproductions/unofficial-davinci-mcp.git" = "latest"
+"github:max-sixty/worktrunk" = "latest"

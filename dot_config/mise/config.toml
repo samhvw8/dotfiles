@@ -4,7 +4,7 @@ legacy_version_file_disable_tools = ['java']
 idiomatic_version_file_enable_tools = ["node"]
 
 [settings.npm]
-package_manager = "aube"
+package_manager = "pnpm"
 
 [settings.pipx]
 uvx = true

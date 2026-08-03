@@ -1,13 +1,18 @@
 #!/bin/bash
 # run_once_after_60-mise-install.sh.tmpl
 # Install mise tools after chezmoi apply
+#
+# Runs after 10-install-dependencies.sh (which installs the mise binary) and
+# 55-setup-mise-config.sh (which selects the full or minimal config). Because
+# the correct config is already in place by now, this installs the right tool
+# set in both modes -- no minimal-mode special case needed.
 
 set -e
 
-{{ if .minimal | default false }}
-echo "⏭️  Skipping mise install (minimal mode)"
-exit 0
-{{ end }}
+# 10-install-dependencies.sh may have just installed mise into ~/.local/bin.
+# This is a separate process, so it does not inherit that script's PATH edit
+# and ~/.local/bin is not yet on PATH on a fresh machine.
+export PATH="$HOME/.local/bin:$PATH"
 
 echo "📦 Installing mise tools..."
 

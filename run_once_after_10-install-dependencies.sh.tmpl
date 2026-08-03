@@ -156,11 +156,10 @@ setup_mise() {
     # Add mise to PATH for current session
     export PATH="$HOME/.local/bin:$PATH"
 
-    if ! mise install; then
-        log_error "Failed to run mise install"
-        return 1
-    fi
-
+    # Installing the tools themselves is deliberately left to
+    # 60-mise-install.sh, which runs after 55-setup-mise-config.sh has decided
+    # which config (full or minimal) should be in place. Running `mise install`
+    # here would install the full tool set even on a minimal install.
     log_success "mise setup completed successfully"
 }
 
@@ -247,7 +246,9 @@ main() {
 {{- if eq .chezmoi.os "darwin" }}
     if [[ $(uname -m) == "arm64" ]]; then
         if ! pgrep oahd >/dev/null; then
-            if ! softwareupdate --install-rosetta --agree-to-license; then
+            # Rosetta installation requires root. setup.sh primes the sudo
+            # credential up front, so this normally will not re-prompt.
+            if ! sudo softwareupdate --install-rosetta --agree-to-license; then
                 log_error "Failed to install Rosetta 2"
                 exit 1
             fi
