@@ -4,7 +4,7 @@ legacy_version_file_disable_tools = ['java']
 idiomatic_version_file_enable_tools = ["node"]
 
 [settings.npm]
-package_manager = "pnpm"
+package_manager = "aube"
 
 [settings.pipx]
 uvx = true
@@ -15,7 +15,7 @@ binstall = true
 [tools]
 chezmoi = "latest"
 direnv = "latest"
-go = "1.25.1"
+go = "1.27.1"
 jq = "latest"
 k6 = "latest"
 node = "22"
@@ -57,7 +57,7 @@ wrangler = "latest"
 "pipx:it2" = "latest"
 "npm:cf" = "latest"
 claude = { version = "latest", minimum_release_age = "0s" }
-gcloud = "latest"
+gcloud = "584.0.0"
 aube = "latest"
 flyctl = "latest"
 firebase = "15.17.0"
@@ -71,3 +71,12 @@ opengrep = "latest"
 "pipx:fal" = "1.78.1"
 "pipx:git+https://github.com/wassermanproductions/unofficial-davinci-mcp.git" = "latest"
 "github:max-sixty/worktrunk" = "latest"
+antigravity-cli = "latest"
+pandoc = "3.9.0.2"
+pi = "latest"
+"npm:@companion-ai/feynman" = "latest"
+"github:can1357/oh-my-pi" = { version = "latest", minimum_release_age = "0s" }
+opencode = "latest"
+ruff = "latest"
+"npm:@rynfar/meridian" = "latest"
+"github:Tencent/BrowserSkill" = { version = "latest", version_prefix = "cli-v" }

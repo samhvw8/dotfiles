@@ -6,6 +6,16 @@ if [ -f "$HOME/.local/bin/mise" ]; then
     eval "$($HOME/.local/bin/mise activate zsh)"
 fi
 
+# GitHub token for mise — without it mise gets the 60 req/hr unauthenticated
+# API limit and fails version checks on github:/aqua:/packslip: tools.
+# Deliberately MISE_GITHUB_TOKEN, not GITHUB_TOKEN: the latter would override
+# gh's own keyring auth for every other tool that reads it.
+if [[ -z "$MISE_GITHUB_TOKEN" ]] && command -v gh &>/dev/null; then
+    _gh_token="$(gh auth token 2>/dev/null)"
+    [[ -n "$_gh_token" ]] && export MISE_GITHUB_TOKEN="$_gh_token"
+    unset _gh_token
+fi
+
 # Basic ZSH Options
 setopt SHARE_HISTORY INC_APPEND_HISTORY HIST_NO_STORE
 setopt appendhistory beep nomatch promptsubst

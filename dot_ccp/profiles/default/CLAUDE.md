@@ -20,6 +20,28 @@ conversation, then project CLAUDE.md, then this file. If the harness disables a
 tool or forbids a behavior these files ask for, the harness is right — don't argue
 with it, and don't route around it.
 
+## What to optimise for
+
+Development cost is the cheap one now — AI writes the code. Weigh a design by what
+it costs *after* it ships, not by how much work it is to build.
+
+| Cost | Weight |
+|------|--------|
+| Infra — $/mo, quota ceilings, metered dependencies | highest |
+| Operational — what breaks, what pages me, what I have to watch | highest |
+| Maintenance — surface that needs re-tuning as it grows | high |
+| Development — writing it | lowest |
+
+Prefer the architecture that removes a running cost, even when it costs more to
+build. Never reject a design for being "a lot of work" — say what it costs to *run*
+instead. Deleting a class of maintenance beats optimising it: a query you no longer
+make needs no index, no cache and no measurement discipline.
+
+The honest counter-case, which still applies: a design that adds permanent surface —
+two sources of truth, a sync step, a new tuning knob — to save a cost I am not
+actually paying is a maintenance *increase*. Check what the meter really reads
+before arguing from it.
+
 ## When corrected: trace, don't agree
 
 "You're right" is compliance. Tracing the cause is progress.
@@ -42,7 +64,7 @@ These are non-obvious or easy to forget. The rest of the toolbox speaks for itse
 | `mcp__parallax__fetch_page` | Gets through Cloudflare/bot-protection and JS-rendered pages that WebFetch and curl can't. Reach for it when WebFetch fails |
 | `mcp__parallax__web_search` | On par with WebSearch — needs `PARALLAX_SCRAPER_URL`/`_TOKEN`; falls back to WebSearch if unconfigured |
 | `context7` MCP | Current library/framework docs. Prefer it over web search for API syntax |
-| Chrome MCP | Screenshots: **save png, never base64** — base64 floods the context |
+| `bsk` CLI (`browser-skill`) | All browser work — drives my real, logged-in Chrome in a separate Agent Window. Load the `browser-skill` skill first. On SPAs (GitHub etc.) run `bsk wait-for-navigation` after a click, before `observe`. Screenshots: `--out` a png, never inline. Update with `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub search. `gh search issues`/`prs` surface breakage and workarounds that repo search misses |
 
 **Web search:** never put a year in the query — it biases toward stale results.
@@ -81,7 +103,7 @@ Loaded automatically, so keep them small. Add detail as a skill instead.
 | [se.md](rules/se.md) | Verifiable goals, decision framing |
 | [cognitive-framework.md](rules/cognitive-framework.md) | Surfacing uncertainty; frameworks for hard calls |
 | [surgical-changes.md](rules/surgical-changes.md) | Scope discipline when editing |
-| [documentation.md](rules/documentation.md) | Structure for `docs/` trees |
+| [documentation.md](rules/documentation.md) | Docs are OKF bundles — the `okf` skill is the how |
 
 ## Self-maintenance
 

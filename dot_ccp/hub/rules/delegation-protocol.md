@@ -77,7 +77,7 @@ SUGGESTED SKILLS: [names] — [when each helps]
 |-------------|-------------|
 | Research / web | `mcp__parallax__web_search`, `mcp__parallax__fetch_page`, WebSearch |
 | Code exploration | `mcp__codegraph__codegraph_explore`, `mcp__sem__sem_context` |
-| Browser work | `mcp__claude-in-chrome__*` (list the specific tools) |
+| Browser work | `bsk` CLI via the `browser-skill` skill — not an MCP, but say so anyway |
 | Library docs | `mcp__plugin_context7_context7__*` |
 | GitHub | `gh` CLI — not an MCP, but say so anyway |
 
