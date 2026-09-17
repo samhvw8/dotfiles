@@ -1,0 +1,52 @@
+# Dotfiles and machine setup shared by the full and minimal installs.
+#
+# ~/.config/mise/config.toml links to mise/config.toml (full) or
+# mise/minimal.toml (minimal); this file is linked into
+# ~/.config/mise/conf.d/ on both. Apply everything with `mise bootstrap`,
+# or only the files with `mise dot apply`.
+#
+# Machine-local values live in ~/.config/mise/config.local.toml, which is
+# never committed:
+#
+#   [vars]
+#   git_name = "Your Name"
+#   git_email = "you@example.com"
+
+[dotfiles]
+# Every file committed under home/ is linked to the same path under ~.
+# ~/.zshrc differs between installs, so each config declares it.
+"~" = { source = "~/.dotfiles/home", mode = "symlink-each", manifest = "git", exclude = [".zshrc"] }
+"~/.config/mise/conf.d/dotfiles.toml" = { source = "~/.dotfiles/mise/conf.d/dotfiles.toml", mode = "symlink" }
+
+# ~/.gitconfig is also written by `git config --global` and `gh auth
+# setup-git`, so only these blocks are managed.
+"~/.gitconfig/identity" = { source = "~/.dotfiles/mise/snippets/git-identity.tera", template = "tera" }
+"~/.gitconfig/base" = { block = "[include]\n\tpath = ~/.base.gitconfig" }
+
+[bootstrap.packages]
+"brew:telnet" = { os = "macos" }
+"brew:wget" = { os = "macos" }
+"brew:sshuttle" = { os = "macos" }
+"brew:htop" = { os = "macos" }
+"brew-cask:macfuse" = { os = "macos" }
+"brew-cask:calibre" = { os = "macos" }
+"brew-cask:iterm2" = { os = "macos" }
+"apt:tmux" = "latest"
+"apt:vim" = "latest"
+"apt:git" = "latest"
+"apt:zsh" = "latest"
+"apt:wget" = "latest"
+"apt:curl" = "latest"
+"apt:net-tools" = "latest"
+"apt:unzip" = "latest"
+"apt:aptitude" = "latest"
+"apt:apt-transport-https" = "latest"
+
+[bootstrap.repos]
+"~/.fzf" = { url = "https://github.com/junegunn/fzf.git" }
+
+# Hooks run on every `mise bootstrap`, so each script skips work already done.
+[bootstrap.hooks]
+pre-packages = "bash $HOME/.dotfiles/mise/scripts/prepare-host.sh"
+post-packages = "bash $HOME/.dotfiles/mise/scripts/finish-host.sh"
+post-repos = "bash $HOME/.dotfiles/mise/scripts/setup-fzf.sh"

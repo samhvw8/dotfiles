@@ -1,11 +1,17 @@
 #!/bin/bash
 
 # =============================================================================
-# Simplified Dotfiles Setup Script
-# Now uses chezmoi's automatic setup via run_once scripts
+# Dotfiles Setup Script
+# Installs mise, clones this repository to ~/.dotfiles, links the mise config
+# and runs `mise bootstrap`, which installs packages, links dotfiles and
+# installs tools.
 # =============================================================================
 
 set -euo pipefail
+
+REPO_URL="https://github.com/samhvw8/dotfiles.git"
+DOTFILES_DIR="$HOME/.dotfiles"
+MISE_CONFIG_DIR="$HOME/.config/mise"
 
 # Log functions
 log_info() {
@@ -24,11 +30,9 @@ print_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "Options:"
     echo "  -m, --minimal     Minimal installation (fewer packages and tools)"
-    echo "  -c, --conda       Install Miniconda (not installed by default)"
     echo "  -h, --help        Display this help message"
     echo ""
-    echo "This script now uses chezmoi to automatically set up your dotfiles."
-    echo "Most setup tasks will run automatically when chezmoi initializes."
+    echo "Set DOTFILES_GIT_NAME and DOTFILES_GIT_EMAIL to skip the identity prompt."
     exit 0
 }
 
@@ -58,7 +62,7 @@ wait_for_user() {
 #
 # Several steps below the surface need root: Homebrew's installer, apt, Rosetta,
 # and the Command Line Tools package. Rather than letting a password prompt
-# ambush the user 10 minutes into a `brew bundle`, ask once up front and then
+# ambush the user 10 minutes into a package install, ask once up front and then
 # refresh the credential in the background so it never expires mid-run.
 # -----------------------------------------------------------------------------
 SUDO_KEEPALIVE_PID=""
@@ -200,26 +204,119 @@ setup_clt() {
     exit 1
 }
 
-# Copy aside every target that already exists before chezmoi overwrites it.
-# Chezmoi only prompts for files it has written before, so pre-existing
-# dotfiles are replaced silently -- this is the only safety net.
-backup_existing_targets() {
-    local backup_dir managed target rel count=0
-    backup_dir="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
+# git and curl are needed to fetch mise and this repository. On macOS the
+# Command Line Tools provide git; a bare Debian/Ubuntu may have neither.
+setup_linux_prerequisites() {
+    command_exists git && command_exists curl && return 0
 
-    if ! managed="$(chezmoi managed --path-style=absolute --include=files,symlinks)"; then
-        log_error "Could not list managed files; aborting before apply"
+    log_info "Installing git and curl..."
+    if ! sudo apt-get update || ! sudo apt-get install --yes git curl; then
+        log_error "Failed to install git and curl"
+        exit 1
+    fi
+}
+
+setup_mise() {
+    export PATH="$HOME/.local/bin:$PATH"
+    if command_exists mise; then
+        log_info "mise already installed"
+        return 0
+    fi
+
+    log_info "Installing mise..."
+    if ! curl -fsSL https://mise.run | sh; then
+        log_error "Failed to install mise"
+        exit 1
+    fi
+}
+
+clone_dotfiles() {
+    if [[ -d "$DOTFILES_DIR/.git" ]]; then
+        log_info "Dotfiles repository already present at $DOTFILES_DIR"
+        return 0
+    fi
+
+    log_info "Cloning dotfiles repository into $DOTFILES_DIR..."
+    if ! git clone "$REPO_URL" "$DOTFILES_DIR"; then
+        log_error "Failed to clone $REPO_URL"
+        exit 1
+    fi
+}
+
+toml_string() {
+    local value=${1//\\/\\\\}
+    printf '"%s"' "${value//\"/\\\"}"
+}
+
+# The git identity is machine-local: it goes into config.local.toml, which is
+# never committed, and is rendered into ~/.gitconfig by mise.
+setup_git_identity() {
+    local local_config="$MISE_CONFIG_DIR/config.local.toml"
+    local name="${DOTFILES_GIT_NAME:-}"
+    local email="${DOTFILES_GIT_EMAIL:-}"
+
+    if [[ -f "$local_config" ]] && grep -qE '^git_name *=' "$local_config"; then
+        log_info "Git identity already set in $local_config"
+        return 0
+    fi
+    if [[ -f "$local_config" ]] && grep -qE '^\[vars\]' "$local_config"; then
+        log_error "$local_config already has a [vars] table; add git_name and git_email to it, then re-run."
         exit 1
     fi
 
-    while IFS= read -r target; do
-        [[ -n "$target" ]] || continue
+    if [[ -z "$name" || -z "$email" ]]; then
+        if ! tty_available; then
+            log_error "No terminal to ask for the git identity; set DOTFILES_GIT_NAME and DOTFILES_GIT_EMAIL."
+            exit 1
+        fi
+        [[ -n "$name" ]] || read -r -p "Git user name: " name </dev/tty
+        [[ -n "$email" ]] || read -r -p "Git email address: " email </dev/tty
+    fi
+
+    mkdir -p "$MISE_CONFIG_DIR"
+    printf '\n[vars]\ngit_name = %s\ngit_email = %s\n' "$(toml_string "$name")" "$(toml_string "$email")" >>"$local_config"
+    log_success "Git identity saved to $local_config"
+}
+
+# Link one path to the repository, moving anything else that is in the way.
+link_path() {
+    local source=$1 target=$2
+    if [[ -L "$target" && "$(readlink "$target")" == "$source" ]]; then
+        return 0
+    fi
+    if [[ -e "$target" || -L "$target" ]]; then
+        mv "$target" "$target.bak-$(date +%Y%m%d-%H%M%S)"
+    fi
+    ln -s "$source" "$target"
+}
+
+# ~/.config/mise/config.toml selects the installation: the full or minimal
+# config, each of which declares its own dotfiles, packages and tools.
+link_mise_config() {
+    local config="$DOTFILES_DIR/mise/config.toml"
+    [[ "$MINIMAL" == "true" ]] && config="$DOTFILES_DIR/mise/minimal.toml"
+
+    mkdir -p "$MISE_CONFIG_DIR/conf.d"
+    link_path "$config" "$MISE_CONFIG_DIR/config.toml"
+    link_path "$DOTFILES_DIR/mise/conf.d/dotfiles.toml" "$MISE_CONFIG_DIR/conf.d/dotfiles.toml"
+}
+
+# Copy aside every existing file that bootstrap is about to replace with a link.
+# mise refuses to replace real files unless --force-dotfiles is passed, which
+# this script does, so this is the safety net.
+backup_existing_targets() {
+    local backup_dir rel target count=0
+    backup_dir="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
+
+    while IFS= read -r rel; do
+        rel="${rel#home/}"
+        target="$HOME/$rel"
         [[ -e "$target" || -L "$target" ]] || continue
-        rel="${target#"$HOME"/}"
+        [[ -L "$target" && "$(readlink "$target")" == "$DOTFILES_DIR/home/$rel" ]] && continue
         mkdir -p "$backup_dir/$(dirname "$rel")"
         cp -a "$target" "$backup_dir/$rel"
         count=$((count + 1))
-    done <<< "$managed"
+    done < <(git -C "$DOTFILES_DIR" ls-files home; echo .gitconfig)
 
     if [[ $count -eq 0 ]]; then
         log_info "No existing dotfiles to back up."
@@ -232,16 +329,11 @@ backup_existing_targets() {
 
 # Parse command line arguments
 MINIMAL=false
-CONDA=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         -m|--minimal)
             MINIMAL=true
-            shift
-            ;;
-        -c|--conda)
-            CONDA=true
             shift
             ;;
         -h|--help)
@@ -256,67 +348,46 @@ done
 
 # Main setup
 main() {
-    log_info "Starting dotfiles setup with chezmoi..."
+    log_info "Starting dotfiles setup with mise..."
 
-    # Prerequisites that must be in place before chezmoi -- or the run_once
-    # scripts it triggers -- can do anything useful.
+    # Prerequisites that must be in place before git, mise, or the bootstrap
+    # hooks can do anything useful.
     if [[ "$(uname -s)" == "Darwin" ]]; then
         setup_clt
     fi
 
     # Ask for the password now, while the user is still watching, so the long
-    # unattended stretch below (chezmoi apply -> Homebrew / apt / Rosetta)
-    # does not stall waiting on a prompt nobody is there to answer.
+    # unattended stretch below (Homebrew / apt / Rosetta) does not stall
+    # waiting on a prompt nobody is there to answer.
     if ! ensure_sudo; then
         log_info "Continuing without cached administrator access."
         log_info "Individual steps may prompt for your password later."
     fi
 
-    # Install chezmoi if not present
-    if ! command_exists chezmoi; then
-        log_info "Installing chezmoi..."
-        if ! sh -c "$(curl -fsLS get.chezmoi.io)"; then
-            log_error "Failed to install chezmoi"
-            exit 1
-        fi
-        # Add chezmoi to PATH for this session
-        export PATH="$HOME/bin:$PATH"
-    else
-        log_info "chezmoi already installed"
+    if [[ "$(uname -s)" == "Linux" ]]; then
+        setup_linux_prerequisites
     fi
 
-    # Initialize dotfiles repository WITHOUT applying yet, so the destination
-    # directory can be backed up first.
-    # Chezmoi will prompt for name/email via .chezmoi.toml.tmpl
-    if [[ ! -d "$HOME/.local/share/chezmoi/.git" ]]; then
-        log_info "Initializing chezmoi with dotfiles repository..."
-        log_info "You will be prompted for your git name and email..."
-        if ! chezmoi init --promptBool "minimal=${MINIMAL}" --promptBool "conda=${CONDA}" https://github.com/samhvw8/dotfiles.git; then
-            log_error "Failed to initialize chezmoi with dotfiles repository"
-            exit 1
-        fi
-    else
-        log_info "Chezmoi already initialized."
-    fi
-
+    setup_mise
+    clone_dotfiles
+    setup_git_identity
+    link_mise_config
     backup_existing_targets
 
-    log_info "Applying configurations..."
-    log_info "This will automatically install all required tools and dependencies..."
-    if ! chezmoi apply; then
-        log_error "Failed to apply chezmoi configurations"
+    log_info "Running mise bootstrap (packages, repositories, dotfiles, tools)..."
+    if ! mise bootstrap --update --yes --force-dotfiles; then
+        log_error "mise bootstrap failed; fix the reported step and re-run: mise bootstrap"
         exit 1
     fi
 
     log_success "Dotfiles setup completed successfully!"
-    log_info "Your development environment is now fully configured."
-    
+
     if [[ "$MINIMAL" == "true" ]]; then
         log_info "Minimal installation completed - essential tools only."
     else
         log_info "Full installation completed - all development tools installed."
     fi
-    
+
     log_info "Please restart your shell or run 'source ~/.zshrc' to load the new configuration."
 }
 

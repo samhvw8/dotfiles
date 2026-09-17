@@ -7,7 +7,6 @@ idiomatic_version_file_enable_tools = ["node"]
 
 [tools]
 # Essential tools
-chezmoi = "latest"
 jq = "latest"
 ripgrep = "latest"
 yq = "latest"
@@ -16,3 +15,8 @@ yq = "latest"
 node = "22"
 python = "3.11"
 uv = "latest"
+
+# Minimal install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
+[dotfiles]
+"~/.config/mise/config.toml" = { source = "~/.dotfiles/mise/minimal.toml", mode = "symlink" }
+"~/.zshrc" = { source = "~/.dotfiles/home/.zshrc_minimal", mode = "symlink" }

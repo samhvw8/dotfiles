@@ -1,0 +1,3 @@
+[user]
+	name = {{ vars.git_name }}
+	email = {{ vars.git_email }}

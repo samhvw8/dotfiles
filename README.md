@@ -1,6 +1,8 @@
 # Dotfiles Setup
 
-A comprehensive dotfiles setup script that configures development environments for both macOS and Linux systems.
+Dotfiles and machine setup for macOS and Linux, managed with
+[mise](https://mise.jdx.dev): one `mise bootstrap` installs system packages,
+clones repositories, links dotfiles and installs tools.
 
 ## Quick Install
 
@@ -17,20 +19,40 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bas
 ## Installation Options
 
 - `-m, --minimal`: Minimal installation with fewer packages and tools
-- `-n, --no-sudo`: Install without sudo privileges
 - `-h, --help`: Display help message
 
-Examples:
+The script asks for your git name and email once and stores them in
+`~/.config/mise/config.local.toml`, which is never committed. Set
+`DOTFILES_GIT_NAME` and `DOTFILES_GIT_EMAIL` to skip the prompt.
+
+## Layout
+
+| Path | Purpose |
+|------|---------|
+| `home/` | Dotfiles. Every committed file is linked to the same path under `~` |
+| `mise/config.toml` | Full install: tools, full-only dotfiles, packages, repos and hooks |
+| `mise/minimal.toml` | Minimal install: the same, trimmed down |
+| `mise/conf.d/dotfiles.toml` | Dotfiles, packages, repos and hooks shared by both installs |
+| `mise/scripts/` | Bootstrap hook scripts; they run on every bootstrap and skip finished work |
+| `mise/snippets/` | Templated blocks managed inside files such as `~/.gitconfig` |
+
+`~/.config/mise/config.toml` links to `mise/config.toml` or `mise/minimal.toml`,
+which is what makes a machine full or minimal.
+
+## Everyday use
+
 ```bash
-# Minimal installation
-curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash -s -- -m
-
-# Installation without sudo
-curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash -s -- -n
-
-# Minimal installation without sudo
-curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash -s -- -m -n
+mise dot status            # what is linked, missing or different
+mise dot apply             # link new files
+mise bootstrap --dry-run   # preview the whole machine setup
+mise bootstrap             # packages, repos, dotfiles and tools
 ```
+
+Edits through `~` land directly in this repository, so commit them with git.
+To add a new dotfile, move it into `home/`, `git add` it, then run
+`mise dot apply`. If an application replaces a link with a regular file,
+`mise dot status` reports it as different; copy the file back into `home/`
+and run `mise dot apply --force`.
 
 ## Features
 
@@ -42,11 +64,9 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bas
 - Rosetta 2 (macOS ARM)
 
 ### Tools & Utilities
-- [chezmoi](https://chezmoi.io) for dotfiles management
+- [mise](https://mise.jdx.dev) for dotfiles, packages and runtime version management
 - [fzf](https://github.com/junegunn/fzf) for fuzzy finding
-- [mise](https://mise.run) for runtime version management
 - [tmux](https://github.com/tmux/tmux) with plugin manager (full installation)
-- [Miniconda](https://docs.conda.io/en/latest/miniconda.html) for Python environment management (full installation)
 
 ### Additional Features in Full Installation
 - Development tools and build essentials
@@ -57,8 +77,6 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bas
 ## System Requirements
 - macOS or Linux (Debian/Ubuntu-based)
 - Internet connection
-- Git
-- curl
 
 ## Note
-The script automatically detects your operating system and installs the appropriate packages and configurations. Use the minimal installation option (-m) for a lighter setup or the no-sudo option (-n) when you don't have sudo privileges.
+The script automatically detects your operating system and installs the appropriate packages and configurations. Use the minimal installation option (-m) for a lighter setup.

@@ -2,7 +2,7 @@
 
 # =============================================================================
 # Claude MCP Server Setup
-# Runs once after install_dependencies.sh
+# Runs after tools are installed, on every full `mise bootstrap`
 # =============================================================================
 
 set -euo pipefail

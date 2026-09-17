@@ -13,7 +13,6 @@ uvx = true
 binstall = true
 
 [tools]
-chezmoi = "latest"
 direnv = "latest"
 go = "1.27.1"
 jq = "latest"
@@ -80,3 +79,30 @@ opencode = "latest"
 ruff = "latest"
 "npm:@rynfar/meridian" = "latest"
 "github:Tencent/BrowserSkill" = { version = "latest", version_prefix = "cli-v" }
+
+# Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
+[dotfiles]
+"~/.config/mise/config.toml" = { source = "~/.dotfiles/mise/config.toml", mode = "symlink" }
+"~/.zshrc" = { source = "~/.dotfiles/home/.zshrc", mode = "symlink" }
+"~/.claude" = { source = "~/.ccp/profiles/default", mode = "symlink" }
+
+[bootstrap.packages]
+"apt:python3-pip" = "latest"
+"apt:gnupg" = "latest"
+"apt:ca-certificates" = "latest"
+"apt:software-properties-common" = "latest"
+"apt:build-essential" = "latest"
+"apt:terminator" = "latest"
+"apt:zip" = "latest"
+
+[bootstrap.repos]
+"~/.tmux/plugins/tpm" = { url = "https://github.com/tmux-plugins/tpm" }
+
+[bootstrap.hooks]
+# ~/.claude links to the ccp profile directory, which the "~" entry only creates
+# while it links files; mise requires link sources to exist before applying.
+pre-dotfiles = "mkdir -p $HOME/.ccp/profiles/default"
+post-tools = [
+    "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-mcp.sh",
+    "bash $HOME/.dotfiles/mise/scripts/setup-font-linux.sh",
+]
