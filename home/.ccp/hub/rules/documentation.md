@@ -1,36 +1,23 @@
 # Documentation Convention
 
-**Scope:** this is the house style for `docs/` trees — multi-page documentation
-meant to be navigated. It is not a rule for every markdown file. READMEs,
-changelogs, ADRs, RFCs, and issue templates have their own conventions; follow
-those. A `doc-rules` hook reminds on every `.md` edit regardless — apply judgement
-about whether the file is actually a docs page.
+Project knowledge is written as **OKF (Open Knowledge Format)** bundles: a
+directory of markdown files with typed YAML frontmatter, `.okf/` at the repo root
+by default. This replaces the old `docs/` tree house style.
 
-## Structure
+The `okf` skill is the how, and the only place OKF rules live. This file is the
+why. The `okf-docs` SessionStart hook is the per-repo pointer: it names the
+bundle and hands over its `index.md`, or notes that none exists yet.
 
-| Rule | Detail |
-|------|--------|
-| One heading per file | The file name *is* the heading, kebab-case |
-| Keep files short | ~100 lines; split at logical boundaries when longer |
-| Nest instead of numbering | `1.1 Topic` becomes `topic/subtopic.md` |
-| Cross-link | Add a `## Related` section pointing at siblings and parent |
-| Prefer tables and code blocks | Over prose paragraphs |
+| Do | Don't |
+|----|-------|
+| Load the `okf` skill before reading or writing a bundle | Write OKF from memory; the skill carries the spec |
+| Update the bundle in the same change as the code it describes | Leave docs for a later pass, where they rot |
+| Run the `validate` skill before calling doc work done | Eyeball conformance |
 
-## Layout
+**Out of scope:** READMEs, changelogs, issue templates, and agent config
+(CLAUDE.md, SKILL.md, these rule files) keep their own conventions.
 
-```
-docs/
-├── auth/
-│   ├── overview.md          <- "# Auth System"
-│   ├── sessions.md          <- "# Sessions"
-│   └── oauth/
-│       ├── overview.md      <- "# OAuth 2.1"
-│       └── pkce.md          <- "# PKCE Flow"
-└── api/
-    ├── overview.md
-    └── endpoints.md
-```
+## Related
 
-Splitting exists so the right page can be loaded on its own — a single monolithic
-file defeats that. But don't shred a genuinely short topic across four files to
-satisfy a line count.
+- [surgical-changes.md](surgical-changes.md) — scope discipline
+- [se.md](se.md) — verifiable goals

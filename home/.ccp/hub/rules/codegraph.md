@@ -1,3 +1,8 @@
+---
+description: Route structural code questions to the codegraph / sem MCP graph tools instead of grep
+alwaysApply: true
+---
+
 # Codegraph
 
 Two MCP servers answer structural code questions from a real symbol graph instead
@@ -9,7 +14,21 @@ text.
 | `codegraph` ([colbymchenry/codegraph](https://github.com/colbymchenry/codegraph)) | Per-repo SQLite index. `codegraph_explore` takes a natural-language question and returns the relevant symbols' verbatim source, the call paths between them, and a blast-radius summary |
 | `sem` | Entity-level, no per-repo index step. `sem_context` reads a function/class *with* its callers and callees; `sem_impact` answers "what breaks if I change this"; `sem_entities` finds text inside entity bodies |
 
-Both are deferred — load with `ToolSearch` before first use in a session.
+How you reach them depends on the harness:
+
+- **omp** — registered in `~/.omp/agent/mcp.json` and mounted as `xd://` *devices*,
+  not top-level tools. Call one by writing to its path with the JSON args as the
+  content, and `read xd://<device>` for its docs and schema:
+
+  ```
+  write xd://mcp__codegraph_explore
+  {"query": "how does a request reach the auth check", "projectPath": "/abs/path/to/repo"}
+  ```
+
+  `projectPath` is required — pass the repo root holding `.codegraph/`. If a device
+  is missing, `/mcp list` and `/mcp test <name>` show why.
+- **Claude Code** — deferred: load with `ToolSearch` before first use in a
+  session, then call them as `mcp__codegraph__*` / `mcp__sem__*`.
 
 ## Choosing
 
@@ -37,12 +56,13 @@ If you fall back to grep on a structural question, say why.
 - **Other repos** — pass `projectPath` to reach a monorepo sub-service or a second
   indexed repo in the same session.
 - **Not indexed?** Ask before running `codegraph init` — it's the user's call, and
-  it's a CLI step, not an MCP tool. A `codegraph-remind` hook flags this too.
-- **Heavy sweeps** — a broad multi-file map belongs in a subagent, with
+  it's a CLI step, not an MCP tool. The `codegraph-remind` extension flags this too.
+- **Heavy sweeps** — a broad multi-file map belongs in a `task` subagent, with
   `codegraph_explore` named in its prompt so only findings come back. A single
   targeted call is cheaper inline.
 - **CLI** — `codegraph explore|node|query|callers|callees|impact|affected|status`
-  mirror the MCP surface. `codegraph upgrade` refreshes the tool and agent wiring.
+  mirror the MCP surface. `codegraph install`/`upgrade` don't know about omp — this
+  wiring is maintained by hand.
 
 ## Related
 
