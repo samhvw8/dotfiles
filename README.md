@@ -29,7 +29,7 @@ The script asks for your git name and email once and stores them in
 
 | Path | Purpose |
 |------|---------|
-| `home/` | Dotfiles. Every committed file is linked to the same path under `~` |
+| `home/` | Dotfiles, linked to the same paths under `~` |
 | `mise/config.toml` | Full install: tools, full-only dotfiles, packages, repos and hooks |
 | `mise/minimal.toml` | Minimal install: the same, trimmed down |
 | `mise/conf.d/dotfiles.toml` | Dotfiles, packages, repos and hooks shared by both installs |
@@ -50,7 +50,9 @@ mise bootstrap             # packages, repos, dotfiles and tools
 
 Edits through `~` land directly in this repository, so commit them with git.
 To add a new dotfile, move it into `home/`, `git add` it, then run
-`mise dot apply`. If an application replaces a link with a regular file,
+`mise dot apply`. Files inside `home/.ccp`, `home/.config` and
+`home/.local/bin` are picked up automatically; a file directly in `home/`, or a
+new top-level directory, also needs an entry in `mise/conf.d/dotfiles.toml`. If an application replaces a link with a regular file,
 `mise dot status` reports it as different; copy the file back into `home/`
 and run `mise dot apply --force`.
 

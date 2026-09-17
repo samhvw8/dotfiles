@@ -13,9 +13,28 @@
 #   git_email = "you@example.com"
 
 [dotfiles]
-# Every file committed under home/ is linked to the same path under ~.
-# ~/.zshrc differs between installs, so each config declares it.
-"~" = { source = "~/.dotfiles/home", mode = "symlink-each", manifest = "git", exclude = [".zshrc"] }
+# Every file committed under these home/ directories is linked to the same path
+# under ~. Each directory is its own entry: a single "~" entry makes mise walk
+# the whole home directory (minutes, with ~/workspace) on every status or apply.
+"~/.ccp" = { source = "~/.dotfiles/home/.ccp", mode = "symlink-each", manifest = "git" }
+"~/.config" = { source = "~/.dotfiles/home/.config", mode = "symlink-each", manifest = "git" }
+"~/.local/bin" = { source = "~/.dotfiles/home/.local/bin", mode = "symlink-each", manifest = "git" }
+
+# Files directly in home/. ~/.zshrc differs between installs, so each config
+# declares it.
+"~/.base.gitconfig" = { source = "~/.dotfiles/home/.base.gitconfig", mode = "symlink" }
+"~/.condarc" = { source = "~/.dotfiles/home/.condarc", mode = "symlink" }
+"~/.envrc" = { source = "~/.dotfiles/home/.envrc", mode = "symlink" }
+"~/.gitattributes" = { source = "~/.dotfiles/home/.gitattributes", mode = "symlink" }
+"~/.gitignore" = { source = "~/.dotfiles/home/.gitignore", mode = "symlink" }
+"~/.ideavimrc" = { source = "~/.dotfiles/home/.ideavimrc", mode = "symlink" }
+"~/.profile" = { source = "~/.dotfiles/home/.profile", mode = "symlink" }
+"~/.tmux.conf" = { source = "~/.dotfiles/home/.tmux.conf", mode = "symlink" }
+"~/.wslconfig" = { source = "~/.dotfiles/home/.wslconfig", mode = "symlink" }
+"~/.zprofile" = { source = "~/.dotfiles/home/.zprofile", mode = "symlink" }
+"~/.zshrc_minimal" = { source = "~/.dotfiles/home/.zshrc_minimal", mode = "symlink" }
+"~/terminator.vbs" = { source = "~/.dotfiles/home/terminator.vbs", mode = "symlink" }
+
 "~/.config/mise/conf.d/dotfiles.toml" = { source = "~/.dotfiles/mise/conf.d/dotfiles.toml", mode = "symlink" }
 
 # ~/.gitconfig is also written by `git config --global` and `gh auth
