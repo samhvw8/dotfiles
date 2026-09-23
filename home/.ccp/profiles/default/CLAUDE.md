@@ -62,7 +62,8 @@ These are non-obvious or easy to forget. The rest of the toolbox speaks for itse
 |------|---------------|
 | `codegraph` / `sem` MCP | Symbol-level code graph — one call replaces a grep+Read crawl. See [rules/codegraph.md](rules/codegraph.md) |
 | `mcp__parallax__fetch_page` | Gets through Cloudflare/bot-protection and JS-rendered pages that WebFetch and curl can't. Reach for it when WebFetch fails |
-| `mcp__parallax__web_search` | On par with WebSearch — needs `PARALLAX_SCRAPER_URL`/`_TOKEN`; falls back to WebSearch if unconfigured |
+| `mcp__parallax__web_search` | ~90-engine meta-search — needs `PARALLAX_SCRAPER_URL`/`_TOKEN`; falls back to WebSearch if unconfigured |
+| Parallax `focus` | On every list-shaped Parallax call (search, subreddit, comments, threads, feeds, tweets) pass `focus` — the question in one line — to get only the items that bear on it. `kept 0 of N` means broaden the focus, not give up. `fetch_page`/`batch_fetch` take `query` instead |
 | `context7` MCP | Current library/framework docs. Prefer it over web search for API syntax |
 | `bsk` CLI (`browser-skill`) | All browser work — drives my real, logged-in Chrome in a separate Agent Window. Load the `browser-skill` skill first. On SPAs (GitHub etc.) run `bsk wait-for-navigation` after a click, before `observe`. Screenshots: `--out` a png, never inline. Update with `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub search. `gh search issues`/`prs` surface breakage and workarounds that repo search misses |

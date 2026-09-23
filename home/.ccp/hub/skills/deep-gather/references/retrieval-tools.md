@@ -16,7 +16,23 @@ Knowledge base for web retrieval MCP servers and APIs. Use this to understand wh
 | Structured platform data | Apify MCP | Pre-built extractors for 120+ domains |
 | Self-hosted / private | Crawl4AI (Docker) / SearXNG | Free; no external API dependency |
 
-## Budget Tiers
+## Parallax MCP: pass `focus`
+
+When `mcp__parallax__*` tools are present, they reach comment-level discussion
+(Reddit, HN, 26 forum/social platforms incl. V2EX, Zhihu, Weibo, Dcard, PTT) that
+the search tools above cannot. Their output is your context budget, so:
+
+| Call | Add |
+|------|-----|
+| `web_search`, `search_reddit`, `browse_subreddit`, `social_search`, `find_discussions`, `twitter_search`, `bluesky_search`, `get_feed_items` | `focus: "<the research question, one line>"` |
+| `get_comments`, `get_post`, `social_thread` | `focus` too — the thread comes back as the matching comments plus their parents |
+| `fetch_page`, `batch_fetch` | `query` instead (same judge, returns only the relevant passages) |
+
+- `focus` is a topic in plain words, not the search keywords: `"real-world latency of X under load"`, not `"X benchmark"`.
+- With `focus`, `limit` means that many *relevant* items; the header says `kept N of M`.
+- **`kept 0 of M` means the focus was too narrow, not that nothing exists.** Broaden it once; only then retry without it.
+- Skip `focus` only for title-only scans (`include_body=false`) or when you want the whole list.
+
 
 ### Free ($0/mo)
 

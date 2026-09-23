@@ -310,7 +310,7 @@ Group every discovered tool by what it can do:
 
 If `site:reddit.com` WebSearch returns empty (common due to API restrictions):
 1. Check if Parallax MCP is available (`ToolSearch("parallax reddit")`)
-2. If yes: use `mcp__parallax__search_reddit` or `browse_subreddit` for subreddit-specific search
+2. If yes: use `mcp__parallax__search_reddit` or `browse_subreddit` for subreddit-specific search — with `focus` set to the research question (see [retrieval-tools.md](references/retrieval-tools.md#parallax-mcp-pass-focus))
 3. If no Parallax: try `WebFetch` on specific Reddit URLs constructed from the topic (e.g., `reddit.com/r/[subreddit]/search?q=[topic]`)
 4. Document "Reddit inaccessible" in findings if all methods fail — do NOT silently skip
 
