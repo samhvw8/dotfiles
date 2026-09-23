@@ -243,6 +243,11 @@ clone_dotfiles() {
     fi
 }
 
+# The pre-commit hook refuses a commit that adds a dotfile nothing links.
+setup_repo_hooks() {
+    git -C "$DOTFILES_DIR" config core.hooksPath .githooks
+}
+
 toml_string() {
     local value=${1//\\/\\\\}
     printf '"%s"' "${value//\"/\\\"}"
@@ -305,14 +310,19 @@ link_mise_config() {
 # mise refuses to replace real files unless --force-dotfiles is passed, which
 # this script does, so this is the safety net.
 backup_existing_targets() {
-    local backup_dir rel target count=0
+    local backup_dir rel target expected count=0
     backup_dir="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 
     while IFS= read -r rel; do
         rel="${rel#home/}"
         target="$HOME/$rel"
+        expected="$DOTFILES_DIR/home/$rel"
+        [[ "$rel" == ".zshrc" && "$MINIMAL" == "true" ]] && expected="$DOTFILES_DIR/home/.zshrc_minimal"
         [[ -e "$target" || -L "$target" ]] || continue
-        [[ -L "$target" && "$(readlink "$target")" == "$DOTFILES_DIR/home/$rel" ]] && continue
+        [[ -L "$target" && "$(readlink "$target")" == "$expected" ]] && continue
+        # mise only maintains marked blocks in ~/.gitconfig; once they are
+        # there, a previous run already backed the file up.
+        [[ "$rel" == ".gitconfig" ]] && grep -q '>>> mise:identity >>>' "$target" && continue
         mkdir -p "$backup_dir/$(dirname "$rel")"
         cp -a "$target" "$backup_dir/$rel"
         count=$((count + 1))
@@ -370,6 +380,7 @@ main() {
 
     setup_mise
     clone_dotfiles
+    setup_repo_hooks
     setup_git_identity
     link_mise_config
     backup_existing_targets

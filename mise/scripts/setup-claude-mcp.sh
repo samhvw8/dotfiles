@@ -29,8 +29,11 @@ setup_claude_mcp() {
         return 0
     fi
 
+    # `claude mcp get` looks up one server by exact name; `claude mcp list`
+    # would health-check every configured server.
+
     # Setup grep MCP
-    if claude mcp list 2>/dev/null | grep -q "grep"; then
+    if claude mcp get grep >/dev/null 2>&1; then
         log_info "Claude grep MCP already configured, skipping"
     elif ! claude mcp add -s user --transport http grep https://mcp.grep.app; then
         log_error "Failed to add Claude grep MCP server"
@@ -40,7 +43,7 @@ setup_claude_mcp() {
     fi
 
     # Setup Notion MCP
-    if claude mcp list 2>/dev/null | grep -q "notion"; then
+    if claude mcp get notion >/dev/null 2>&1; then
         log_info "Claude Notion MCP already configured, skipping"
     elif ! claude mcp add -s user --transport http notion https://mcp.notion.com/mcp; then
         log_error "Failed to add Claude Notion MCP server"

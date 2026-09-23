@@ -39,7 +39,8 @@ setup_debget() {
 setup_login_shell() {
     local zsh_path
     zsh_path="$(command -v zsh)" || return 0
-    [[ "$SHELL" == "$zsh_path" ]] && return 0
+    # $SHELL keeps the old value until the next login, so read the account.
+    [[ "$(getent passwd "$USER" | cut -d: -f7)" == "$zsh_path" ]] && return 0
 
     if ! sudo chsh -s "$zsh_path" "$USER"; then
         log_error "Failed to change default shell to zsh"
