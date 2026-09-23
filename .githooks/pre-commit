@@ -1,0 +1,5 @@
+#!/bin/sh
+# Refuse a commit that adds a dotfile no [dotfiles] entry links.
+# Enabled per clone with: git config core.hooksPath .githooks (setup.sh does this).
+mise_bin="$(command -v mise || echo "$HOME/.local/bin/mise")"
+exec "$mise_bin" run --quiet dot:check

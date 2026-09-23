@@ -20,7 +20,8 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bas
 
 1. Installs the Xcode Command Line Tools on macOS, or git and curl on
    Debian/Ubuntu, asking for your password once.
-2. Installs mise and clones this repository to `~/.dotfiles`.
+2. Installs mise, clones this repository to `~/.dotfiles`, and enables its
+   pre-commit hook.
 3. Asks for your git name and email and saves them in
    `~/.config/mise/config.local.toml`. Set `DOTFILES_GIT_NAME` and
    `DOTFILES_GIT_EMAIL` to skip the prompt.
@@ -60,7 +61,8 @@ done, so it is safe to run again at any time:
    then `setup-fzf.sh` builds fzf.
 5. Dotfiles: links and managed blocks.
 6. Tools from the mise config.
-7. Full installs only: Claude Code MCP servers, and FiraCode Nerd Font on Linux.
+7. Full installs only: the `~/.claude` link (see below), Claude Code MCP
+   servers, and FiraCode Nerd Font on Linux.
 
 Dotfiles are linked like this:
 
@@ -68,7 +70,11 @@ Dotfiles are linked like this:
   by one. Other files in those directories on the machine are left alone.
 - Each file directly in `home/` has its own entry in `mise/conf.d/dotfiles.toml`.
 - `~/.zshrc` links to `.zshrc` on full installs and `.zshrc_minimal` on minimal
-  ones. Full installs also link `~/.claude` to the ccp `default` profile.
+  ones.
+- `~/.claude` belongs to ccp, which repoints it on `ccp use -g <profile>`, so
+  mise does not manage it. Bootstrap only creates it, with
+  `ccp use -g default`, when it does not exist. An existing `~/.claude`
+  directory is left alone; `ccp init` moves it into ccp.
 - `~/.gitconfig` is not linked, because git and `gh` write to it. mise manages
   two marked blocks inside it: your identity from `config.local.toml`, and an
   include of `~/.base.gitconfig`.
@@ -78,6 +84,9 @@ Dotfiles are linked like this:
 ```bash
 mise dot status            # linked, missing or different files
 mise dot apply             # link files added to the repository
+mise run dot:save          # commit every change in ~/.dotfiles
+mise run dot:add <path>    # store a file or directory from ~ and link it
+mise run dot:check         # find unlinked files and unsaved ccp hub items
 mise bootstrap --dry-run   # preview the whole machine setup
 mise bootstrap             # packages, repos, dotfiles and tools
 ```
@@ -85,27 +94,28 @@ mise bootstrap             # packages, repos, dotfiles and tools
 ### Change a dotfile
 
 Edit it where it lives. Because it is a link, the change is already in
-`~/.dotfiles`. Nothing is committed automatically:
+`~/.dotfiles`. Nothing is committed automatically; `dot:save` commits
+everything with a message such as `Update .zshrc`:
 
 ```bash
-git -C ~/.dotfiles status
-git -C ~/.dotfiles commit -am "Update .zshrc"
+mise run dot:save
+git -C ~/.dotfiles push
 ```
 
 ### Add a dotfile
 
-Move the file into `home/` at the same path, add it to git, and link it:
+`dot:add` moves the path into `home/` at the same location, adds it to git,
+and links it back:
 
 ```bash
-mkdir -p ~/.dotfiles/home/.config/foo
-mv ~/.config/foo/config.toml ~/.dotfiles/home/.config/foo/
-git -C ~/.dotfiles add home/.config/foo/config.toml
-mise dot apply
+mise run dot:add ~/.config/foo/config.toml
+mise run dot:save
 ```
 
 Files inside `home/.ccp`, `home/.config` and `home/.local/bin` are picked up
 automatically. A file directly in `home/`, or a new top-level directory, also
-needs an entry in `mise/conf.d/dotfiles.toml`.
+needs an entry in `mise/conf.d/dotfiles.toml`; `dot:add` and the pre-commit
+hook fail until it has one.
 
 ### Add a tool or package
 
@@ -130,10 +140,15 @@ mise bootstrap
 ### ccp hub items
 
 The ccp hub and profiles live in `home/.ccp`. Skills installed from ccp sources
-are not stored here; `ccp bootstrap` fetches them. To keep a hub item you
-created by hand, move it into `home/.ccp/hub/` and add it like any other
-dotfile. `ccp bootstrap --push` still writes to chezmoi, which is no longer
-used.
+are not stored here; `ccp bootstrap` fetches them. A hub item you create by
+hand is only on that machine until you store it; `dot:check` lists such items:
+
+```bash
+mise run dot:add ~/.ccp/hub/skills/my-skill
+```
+
+`ccp bootstrap --push` wrote to chezmoi, which is no longer used; `dot:add`
+replaces it.
 
 ## Troubleshooting
 
