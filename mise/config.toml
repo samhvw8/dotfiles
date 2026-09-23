@@ -85,6 +85,7 @@ ruff = "latest"
 fzf = "latest"
 fd = "latest"
 bat = "latest"
+atuin = "latest"
 
 # Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
 [dotfiles]

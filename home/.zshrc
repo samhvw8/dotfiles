@@ -166,6 +166,13 @@ if command_exists fzf; then
     zi light wfxr/forgit
 fi
 
+# Atuin: SQLite-backed history search on Ctrl-R; fzf keeps Ctrl-T and Alt-C.
+# Loaded after fzf so it owns Ctrl-R. Remove atuin from mise/config.toml to
+# switch it off.
+if command_exists atuin; then
+    _cached_init atuin atuin init zsh --disable-up-arrow
+fi
+
 # Zoxide (installed via mise)
 if command_exists zoxide; then
     zi ice wait"0d" lucid atload'eval "$(zoxide init --cmd j zsh)"'
