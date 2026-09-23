@@ -20,6 +20,16 @@ commit = 'ccbc15639c97057cbfcf32ecebc38ef716e4bb37'
 updated = 2026-09-05T20:12:54.44893+07:00
 installed = ['skills/brandkit', 'skills/brutalist-skill', 'skills/gpt-tasteskill', 'skills/image-to-code-skill', 'skills/imagegen-frontend-mobile', 'skills/imagegen-frontend-web', 'skills/minimalist-skill', 'skills/output-skill', 'skills/redesign-skill', 'skills/soft-skill', 'skills/stitch-skill', 'skills/taste-skill', 'skills/taste-skill-v1']
 
+[sources.'alchaincyf/huashu-design']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/alchaincyf/huashu-design.git'
+path = 'sources/alchaincyf--huashu-design'
+ref = 'master'
+commit = 'c4b83675d1cdc1a6f43039518db9057749931758'
+updated = 2026-09-17T11:08:36.015351+07:00
+installed = ['skills/huashu-design']
+
 [sources.'anthropics/skills']
 registry = 'github'
 provider = 'git'
@@ -155,6 +165,16 @@ ref = 'main'
 commit = '2d1420da16d22794ba100183bbd4198fd9d0ba03'
 updated = 2026-09-06T21:15:35.46419+07:00
 installed = ['skills/think']
+
+[sources.'typesafe-ai/skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/typesafe-ai/skills.git'
+path = 'sources/typesafe-ai--skills'
+ref = 'main'
+commit = '65a39f393687675ce170e6094757de20370365b9'
+updated = 2026-09-23T07:25:27.956959+07:00
+installed = ['skills/typesafe-ai']
 
 [sources.'vercel-labs/agent-skills']
 registry = 'github'

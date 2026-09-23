@@ -1,0 +1,5 @@
+name: okf-docs
+type: SessionStart
+timeout: 5
+command: okf-docs.sh
+interpreter: bash
