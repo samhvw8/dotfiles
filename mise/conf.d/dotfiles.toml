@@ -64,14 +64,10 @@
 "apt:aptitude" = "latest"
 "apt:apt-transport-https" = "latest"
 
-[bootstrap.repos]
-"~/.fzf" = { url = "https://github.com/junegunn/fzf.git" }
-
 # Hooks run on every `mise bootstrap`, so each script skips work already done.
 [bootstrap.hooks]
 pre-packages = "bash $HOME/.dotfiles/mise/scripts/prepare-host.sh"
 post-packages = "bash $HOME/.dotfiles/mise/scripts/finish-host.sh"
-post-repos = "bash $HOME/.dotfiles/mise/scripts/setup-fzf.sh"
 
 # Repository housekeeping, available from any directory: `mise run dot:save`.
 [tasks."dot:save"]

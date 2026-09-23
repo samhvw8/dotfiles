@@ -9,7 +9,7 @@ if [ -f "$HOME/.local/bin/mise" ]; then
 fi
 
 # Basic ZSH Options
-setopt SHARE_HISTORY INC_APPEND_HISTORY HIST_NO_STORE
+setopt SHARE_HISTORY HIST_NO_STORE
 setopt appendhistory beep nomatch promptsubst
 
 # XDG Base Directories

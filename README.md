@@ -57,8 +57,7 @@ done, so it is safe to run again at any time:
 1. `prepare-host.sh`: XDG directories, Homebrew and Rosetta 2 on macOS.
 2. System packages: `brew` and `brew-cask` on macOS, `apt` on Linux.
 3. `finish-host.sh`: deb-get and zsh as the login shell on Linux.
-4. Repositories: `~/.fzf` and, on full installs, `~/.tmux/plugins/tpm`;
-   then `setup-fzf.sh` builds fzf.
+4. Repositories: `~/.tmux/plugins/tpm` on full installs.
 5. Dotfiles: links and managed blocks.
 6. Tools from the mise config.
 7. Full installs only: the `~/.claude` link (see below), Claude Code MCP

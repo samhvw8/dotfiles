@@ -1,3 +1,6 @@
+# Keep only the first occurrence of each PATH entry.
+typeset -U path PATH
+
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/bin
 

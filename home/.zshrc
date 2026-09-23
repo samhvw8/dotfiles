@@ -2,22 +2,18 @@
 # ZSH Configuration - Optimized
 # =============================================================================
 
+# Keep only the first occurrence of each PATH entry.
+typeset -U path PATH
+
 if [ -f "$HOME/.local/bin/mise" ]; then
     eval "$($HOME/.local/bin/mise activate zsh)"
 fi
 
-# GitHub token for mise — without it mise gets the 60 req/hr unauthenticated
-# API limit and fails version checks on github:/aqua:/packslip: tools.
-# Deliberately MISE_GITHUB_TOKEN, not GITHUB_TOKEN: the latter would override
-# gh's own keyring auth for every other tool that reads it.
-if [[ -z "$MISE_GITHUB_TOKEN" ]] && command -v gh &>/dev/null; then
-    _gh_token="$(gh auth token 2>/dev/null)"
-    [[ -n "$_gh_token" ]] && export MISE_GITHUB_TOKEN="$_gh_token"
-    unset _gh_token
-fi
+# mise gets its GitHub token from `gh auth token` via
+# settings.github.credential_command, only when it calls the GitHub API.
 
-# Basic ZSH Options
-setopt SHARE_HISTORY INC_APPEND_HISTORY HIST_NO_STORE
+# Basic ZSH Options (SHARE_HISTORY already appends each command as it runs)
+setopt SHARE_HISTORY HIST_NO_STORE
 setopt appendhistory beep nomatch promptsubst
 
 # XDG Base Directories
@@ -65,6 +61,25 @@ add_to_path() {
     [[ -d "$1" ]] && export PATH="$1:$PATH"
 }
 
+# Source a tool's shell init script from a cache instead of running the tool on
+# every shell start. The cache is rebuilt when the tool's resolved binary path
+# (which includes its version under mise) or the arguments change.
+# Usage: _cached_init <name> <command> [args...]
+_cached_init() {
+    local name=$1; shift
+    local key="# ${commands[$1]:A} $*" cache="$ZSH_CACHE_DIR/init/$name.zsh" first=""
+    [[ -r $cache ]] && read -r first < "$cache"
+    if [[ $first != "$key" ]]; then
+        mkdir -p "${cache:h}"
+        if ! { print -r -- "$key"; "$@" } >| "$cache.tmp"; then
+            rm -f "$cache.tmp"
+            return 1
+        fi
+        mv -f "$cache.tmp" "$cache"
+    fi
+    source "$cache"
+}
+
 fbd() {
     git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)" | \
     fzf --multi | xargs -r git branch -D
@@ -74,7 +89,7 @@ fbd() {
 # Prompt - Starship (must be synchronous)
 # =============================================================================
 
-command_exists starship && eval "$(starship init zsh)"
+command_exists starship && _cached_init starship starship init zsh --print-full-init
 
 # =============================================================================
 # Tool Completions (cached)
@@ -96,6 +111,9 @@ done
 # =============================================================================
 
 zi lucid for OMZL::history.zsh
+# OMZ keeps 50000 lines in memory but only saves 10000; save them all.
+HISTSIZE=50000
+SAVEHIST=50000
 
 zi wait lucid for \
     OMZL::clipboard.zsh \
@@ -141,10 +159,9 @@ fi
 # Additional Tools
 # =============================================================================
 
-# FZF integration
-if [[ -f "$HOME/.fzf.zsh" ]]; then
-    zi ice wait"0b" lucid
-    zi snippet "$HOME/.fzf.zsh"
+# FZF integration (fzf, fd and bat are mise tools)
+if command_exists fzf; then
+    _cached_init fzf fzf --zsh
     zi ice wait"0c" lucid
     zi light wfxr/forgit
 fi
