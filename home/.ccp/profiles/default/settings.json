@@ -204,7 +204,8 @@
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "ponytail@ponytail": false
+    "ponytail@ponytail": false,
+    "code-modernization@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
