@@ -28,9 +28,11 @@ setup_debget() {
         return 0
     fi
 
+    # deb-get is a convenience and supports only some releases (it rejects
+    # Ubuntu 24.04), so a failure must not stop the rest of bootstrap.
     if ! curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get; then
-        log_error "Failed to install deb-get"
-        return 1
+        log_error "Failed to install deb-get; continuing without it"
+        return 0
     fi
 
     log_success "deb-get setup completed successfully"

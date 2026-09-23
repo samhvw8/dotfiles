@@ -56,6 +56,9 @@
 "apt:zsh" = "latest"
 "apt:wget" = "latest"
 "apt:curl" = "latest"
+# finish-host.sh's deb-get installer quits without lsb_release, which minimal
+# Ubuntu images do not ship.
+"apt:lsb-release" = "latest"
 "apt:net-tools" = "latest"
 "apt:unzip" = "latest"
 "apt:aptitude" = "latest"
