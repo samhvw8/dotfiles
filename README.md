@@ -149,6 +149,21 @@ mise run dot:add ~/.ccp/hub/skills/my-skill
 `ccp bootstrap --push` wrote to chezmoi, which is no longer used; `dot:add`
 replaces it.
 
+### Migrate a machine that still uses chezmoi
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/samhvw8/dotfiles/master/migrate-from-chezmoi.sh -o migrate.sh
+bash migrate.sh --dry-run     # what this machine changed that the repository lacks
+bash migrate.sh --keep-local  # migrate, merging those changes into ~/.dotfiles
+```
+
+The script backs up the chezmoi repository (including unpushed commits) and
+every file it manages, reuses chezmoi's git identity and minimal setting, runs
+`setup.sh`, then moves the chezmoi directories aside as `*.migrated-<timestamp>`.
+Without `--keep-local`, this machine's differing files are only saved in the
+backup. With it, they are three-way merged into `~/.dotfiles` and left
+uncommitted: review with `git -C ~/.dotfiles diff`, then `mise run dot:save`.
+
 ## Troubleshooting
 
 - **`mise dot status` shows a file as different.** An application replaced the
