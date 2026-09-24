@@ -12,6 +12,8 @@ set -euo pipefail
 REPO_URL="https://github.com/samhvw8/dotfiles.git"
 DOTFILES_DIR="$HOME/.dotfiles"
 MISE_CONFIG_DIR="$HOME/.config/mise"
+# Oldest mise with everything the config uses ([dotfiles], `mise dot`, bootstrap).
+MISE_MIN_VERSION="2026.9.8"
 
 # Log functions
 log_info() {
@@ -219,7 +221,17 @@ setup_linux_prerequisites() {
 setup_mise() {
     export PATH="$HOME/.local/bin:$PATH"
     if command_exists mise; then
-        log_info "mise already installed"
+        local current
+        current="$(mise --version 2>/dev/null | awk '{print $1}')"
+        if [[ "$(printf '%s\n' "$MISE_MIN_VERSION" "$current" | sort -V | head -1)" == "$MISE_MIN_VERSION" ]]; then
+            log_info "mise $current already installed"
+            return 0
+        fi
+        log_info "mise $current is older than $MISE_MIN_VERSION; updating..."
+        if ! mise self-update --yes; then
+            log_error "Failed to update mise; update it (mise self-update) and re-run"
+            exit 1
+        fi
         return 0
     fi
 
@@ -386,7 +398,13 @@ main() {
     backup_existing_targets
 
     log_info "Running mise bootstrap (packages, repositories, dotfiles, tools)..."
-    if ! mise bootstrap --update --yes --force-dotfiles; then
+    # --update refreshes package metadata (apt-get update needs sudo); only do it
+    # when there is something to install.
+    local update=()
+    if ! mise bootstrap packages status --missing >/dev/null 2>&1; then
+        update=(--update)
+    fi
+    if ! mise bootstrap ${update[@]+"${update[@]}"} --yes --force-dotfiles; then
         log_error "mise bootstrap failed; fix the reported step and re-run: mise bootstrap"
         exit 1
     fi
