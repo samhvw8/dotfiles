@@ -45,26 +45,6 @@
   },
   "model": "claude-fable-5-1[1m]",
   "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
@@ -75,34 +55,6 @@
             "timeout": 5
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
       }
     ],
     "SessionStart": [
@@ -110,55 +62,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/session-start/scripts/session-start.sh",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/okf-docs/scripts/okf-docs.sh",
             "timeout": 5
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
-      }
-    ],
-    "StopFailure": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
           }
         ]
       }
@@ -170,23 +75,6 @@
             "type": "command",
             "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
             "timeout": 5
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/force-agent-skills-eval/scripts/force-agent-skills-eval.sh",
-            "timeout": 220
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/samhv/.config/iterm2/cc-status"
           }
         ]
       }
@@ -202,7 +90,7 @@
   "enabledPlugins": {
     "claude-hud@claude-hud": true,
     "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": false,
     "gopls-lsp@claude-plugins-official": true,
     "ponytail@ponytail": false,
     "code-modernization@claude-plugins-official": true

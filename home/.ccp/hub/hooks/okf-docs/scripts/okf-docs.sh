@@ -51,7 +51,8 @@ NOTE
     echo "(No index.md at the bundle root.)"
   fi
   echo "</okf_docs>"
-else
+elif git -C "$cwd" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  # Repo without a bundle yet. Outside a repo there's no project to document: silent.
   cat <<'NOTE'
 <okf_docs>
 Documentation convention: project knowledge is written as OKF (Open Knowledge Format) bundles. None exists here yet.

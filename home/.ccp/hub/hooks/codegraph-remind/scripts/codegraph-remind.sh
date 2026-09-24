@@ -77,20 +77,11 @@ if command -v git >/dev/null 2>&1 && git -C "$cwd" rev-parse --is-inside-work-tr
   if git -C "$cwd" ls-files 2>/dev/null | grep -E -i -m1 "$pat" >/dev/null 2>&1; then
     has_code="yes"
   fi
-else
-  # Non-git: bounded find that prunes heavy dirs and quits at first match.
-  find_args=()
-  for e in $code_exts; do find_args+=(-o -name "*.$e"); done
-  if find "$cwd" \
-        \( -name .git -o -name node_modules -o -name .venv -o -name venv \
-           -o -name dist -o -name build -o -name target -o -name vendor \) -prune \
-        -o -type f \( "${find_args[@]:1}" \) -print -quit 2>/dev/null | grep -q .; then
-    has_code="yes"
-  fi
 fi
+# Non-git dirs ($HOME, config dirs, scratch folders) aren't projects — never nag there.
 
 # ---------------------------------------------------------------------------
-# Branch 3: no code (docs / knowledge base) -> nothing to index, stay silent.
+# Branch 3: no code, or not a git repo -> nothing to index, stay silent.
 # ---------------------------------------------------------------------------
 [ -z "$has_code" ] && exit 0
 

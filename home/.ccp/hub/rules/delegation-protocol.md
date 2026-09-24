@@ -1,10 +1,5 @@
 # Delegation Protocol
 
-> **Gotcha:** a SessionStart hook injects an older, stricter copy of this protocol
-> (absolute MUSTs, a "1% rule" for skills, a per-turn evaluation form). This file
-> is the current version and supersedes it. The harness system prompt supersedes
-> both — if it says not to spawn agents, don't.
-
 `Task` delegates work to an agent. `Skill` loads guidance for you to follow
 yourself. They are not interchangeable.
 

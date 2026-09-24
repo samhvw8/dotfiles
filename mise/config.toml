@@ -86,6 +86,7 @@ fzf = "latest"
 fd = "latest"
 bat = "latest"
 atuin = "latest"
+"pipx:huggingface_hub" = "latest"
 
 # Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
 [dotfiles]
