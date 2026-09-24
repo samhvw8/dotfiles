@@ -3,9 +3,10 @@
 # =============================================================================
 # Migrate a machine from the old chezmoi setup of this repository to mise.
 #
-#   curl -fsSL https://raw.githubusercontent.com/samhvw8/dotfiles/master/migrate-from-chezmoi.sh | bash
-#   bash migrate-from-chezmoi.sh --dry-run      # report only, change nothing
-#   bash migrate-from-chezmoi.sh --keep-local   # put this machine's edits into the repo for review
+# Run it from the chezmoi source directory's own git, without merging anything:
+#   git -C ~/.local/share/chezmoi fetch origin
+#   bash <(git -C ~/.local/share/chezmoi show origin/master:migrate-from-chezmoi.sh) --dry-run
+#   bash <(git -C ~/.local/share/chezmoi show origin/master:migrate-from-chezmoi.sh) --keep-local
 #
 # Steps: back up the chezmoi repository and every file it manages, find files
 # edited on this machine that differ from the repository, reuse chezmoi's
@@ -92,7 +93,16 @@ GIT_EMAIL="$(chezmoi_cmd execute-template '{{ .email }}' 2>/dev/null || true)"
 MINIMAL="$(chezmoi_cmd execute-template '{{ .minimal | default false }}' 2>/dev/null || echo false)"
 [[ "$MINIMAL" == "true" ]] || MINIMAL=false
 
-UNPUSHED="$(git -C "$SRC" rev-list --count '@{u}..HEAD' 2>/dev/null || echo "unknown")"
+# Clone the new repository from the same remote the chezmoi repository uses.
+REPO_URL="$(git -C "$SRC" remote get-url origin 2>/dev/null || echo "$REPO_URL")"
+# The last commit this machine shared with the remote. After `git fetch`, @{u}
+# already points at the new layout, so compare against this instead.
+BASE="$(git -C "$SRC" merge-base HEAD '@{u}' 2>/dev/null || true)"
+if [[ -n "$BASE" ]]; then
+    UNPUSHED="$(git -C "$SRC" rev-list --count "$BASE..HEAD")"
+else
+    UNPUSHED="unknown"
+fi
 STASHES="$(git -C "$SRC" stash list 2>/dev/null | wc -l | tr -d ' ')"
 
 log_info "chezmoi source: $SRC (unpushed commits: $UNPUSHED, stashes: $STASHES)"
@@ -140,8 +150,8 @@ same_content() {
 # but never pushed. Files that merely lag behind the repository are left out.
 changed_targets() {
     chezmoi_cmd status 2>/dev/null | awk 'substr($0, 1, 1) != " " { print substr($0, 4) }'
-    if git -C "$SRC" rev-parse '@{u}' >/dev/null 2>&1; then
-        git -C "$SRC" diff --name-only '@{u}' | while IFS= read -r f; do
+    if [[ -n "$BASE" ]]; then
+        git -C "$SRC" diff --name-only "$BASE" | while IFS= read -r f; do
             chezmoi_cmd target-path "$SRC/$f" 2>/dev/null | sed "s|^$HOME/||"
         done
     else
@@ -213,11 +223,16 @@ keep_local_file() {
     local live="$HOME/$rel" dest="$DOTFILES_DIR/$rp"
     base="$(mktemp)"; merged="$(mktemp)"
     src_path="$(chezmoi_cmd source-path "$live" 2>/dev/null || true)"
-    if [[ -n "$src_path" && -f "$dest" && ! -L "$live" && ! -L "$dest" ]] \
-        && git -C "$SRC" show "@{u}:${src_path#"$SRC"/}" > "$base" 2>/dev/null; then
+    if [[ -n "$BASE" && -n "$src_path" && -f "$dest" && ! -L "$live" && ! -L "$dest" ]] \
+        && git -C "$SRC" show "$BASE:${src_path#"$SRC"/}" > "$base" 2>/dev/null; then
         git merge-file -p -L repository -L chezmoi-pushed -L this-machine "$dest" "$base" "$live" > "$merged" || rc=$?
-        cat "$merged" > "$dest"
-        (( rc > 0 )) && log_warn "$HOME/$rel: $rc conflict(s) marked in $rp; resolve them before committing"
+        if (( rc == 0 )); then
+            cat "$merged" > "$dest"
+        else
+            # The file goes live as a link, so conflict markers must not land in it.
+            cp "$merged" "$BACKUP_DIR/differs/$rel.merged"
+            log_warn "$HOME/$rel conflicts with the repository; kept the repository version. Merge by hand from $BACKUP_DIR/differs/$rel.merged"
+        fi
     else
         mkdir -p "$(dirname "$dest")"
         cp -a "$live" "$dest"
@@ -251,7 +266,10 @@ setup_args=()
 [[ "$MINIMAL" == "true" ]] && setup_args+=(--minimal)
 export DOTFILES_GIT_NAME="$GIT_NAME" DOTFILES_GIT_EMAIL="$GIT_EMAIL"
 if ! bash "$DOTFILES_DIR/setup.sh" ${setup_args[@]+"${setup_args[@]}"}; then
-    log_error "setup.sh failed; chezmoi was left in place. Fix the error and run this script again."
+    if [[ -f "$BACKUP_DIR/gitconfig" ]]; then
+        cp -p "$BACKUP_DIR/gitconfig" "$HOME/.gitconfig"
+    fi
+    log_error "setup.sh failed; restored ~/.gitconfig and left chezmoi in place. Fix the error and run this script again."
     exit 1
 fi
 

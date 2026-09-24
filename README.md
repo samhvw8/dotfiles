@@ -151,10 +151,14 @@ replaces it.
 
 ### Migrate a machine that still uses chezmoi
 
+The chezmoi source directory is already a clone of this repository, so fetch
+the script with its git. Do not `git pull` there: merging the new layout into
+it would confuse chezmoi and hide what this machine changed.
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/samhvw8/dotfiles/master/migrate-from-chezmoi.sh -o migrate.sh
-bash migrate.sh --dry-run     # what this machine changed that the repository lacks
-bash migrate.sh --keep-local  # migrate, merging those changes into ~/.dotfiles
+git -C ~/.local/share/chezmoi fetch origin
+bash <(git -C ~/.local/share/chezmoi show origin/master:migrate-from-chezmoi.sh) --dry-run
+bash <(git -C ~/.local/share/chezmoi show origin/master:migrate-from-chezmoi.sh) --keep-local
 ```
 
 The script backs up the chezmoi repository (including unpushed commits) and
@@ -162,7 +166,8 @@ every file it manages, reuses chezmoi's git identity and minimal setting, runs
 `setup.sh`, then moves the chezmoi directories aside as `*.migrated-<timestamp>`.
 Without `--keep-local`, this machine's differing files are only saved in the
 backup. With it, they are three-way merged into `~/.dotfiles` and left
-uncommitted: review with `git -C ~/.dotfiles diff`, then `mise run dot:save`.
+uncommitted (a file that conflicts keeps the repository version, and the
+conflicted merge is saved in the backup): review with `git -C ~/.dotfiles diff`, then `mise run dot:save`.
 
 ## Troubleshooting
 
