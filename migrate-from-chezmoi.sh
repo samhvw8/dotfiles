@@ -191,6 +191,7 @@ else
 fi
 if [[ ${#EXTRA_TOOLS[@]} -gt 0 ]]; then
     log_warn "mise tools on this machine that the repository does not list: ${EXTRA_TOOLS[*]-}"
+    log_info "They will be kept in ~/.config/mise/config.local.toml, which stays on this machine."
 fi
 
 if $DRY_RUN; then
@@ -248,6 +249,34 @@ if $KEEP_LOCAL; then
 fi
 
 # -----------------------------------------------------------------------------
+# Tools only this machine had: once ~/.config/mise/config.toml links to the
+# repository they would drop off PATH, so keep them in config.local.toml, which
+# stays on this machine. Each line is copied as is, version options included.
+# -----------------------------------------------------------------------------
+
+keep_extra_tools() {
+    local local_cfg="$HOME/.config/mise/config.local.toml" lines
+    lines="$(KEYS="$(printf '%s\n' "${EXTRA_TOOLS[@]}")" awk '
+        BEGIN { n = split(ENVIRON["KEYS"], k, "\n"); for (i = 1; i <= n; i++) want[k[i]] = 1 }
+        /^\[tools\]/ { f = 1; next }
+        /^\[/ { f = 0 }
+        f && /=/ { key = $0; sub(/[ \t]*=.*/, "", key); if (key in want) print }' "$LIVE_MISE")"
+    [[ -n "$lines" ]] || return 0
+    mkdir -p "$(dirname "$local_cfg")"
+    if grep -q '^\[tools\]' "$local_cfg" 2>/dev/null; then
+        LINES="$lines" awk '{ print } /^\[tools\]/ && !done { print ENVIRON["LINES"]; done = 1 }' "$local_cfg" > "$local_cfg.tmp"
+        mv "$local_cfg.tmp" "$local_cfg"
+    else
+        printf '\n# Tools only this machine uses (kept by migrate-from-chezmoi.sh)\n[tools]\n%s\n' "$lines" >> "$local_cfg"
+    fi
+    log_success "Kept this machine's own tools in $local_cfg: ${EXTRA_TOOLS[*]-}"
+}
+
+if [[ ${#EXTRA_TOOLS[@]} -gt 0 ]]; then
+    keep_extra_tools
+fi
+
+# -----------------------------------------------------------------------------
 # ~/.gitconfig: chezmoi merged plain [user] and [include] entries into it; mise
 # manages the same values as marked blocks, so remove the chezmoi copies.
 # -----------------------------------------------------------------------------
@@ -295,6 +324,6 @@ if [[ ${#DRIFT[@]} -gt 0 ]] && ! $KEEP_LOCAL; then
     log_info "To keep one: copy it over the link target in $DOTFILES_DIR/home, then: mise run dot:save"
 fi
 if [[ ${#EXTRA_TOOLS[@]} -gt 0 ]]; then
-    log_info "Tools only this machine had: ${EXTRA_TOOLS[*]-} (add with: mise use -g <tool>)"
+    log_info "Tools only this machine had are in ~/.config/mise/config.local.toml; move one to the repository with: mise use -g <tool>"
 fi
 log_info "Remove chezmoi later with: rm -rf $SRC.migrated-$TIMESTAMP ~/.config/chezmoi.migrated-$TIMESTAMP"
