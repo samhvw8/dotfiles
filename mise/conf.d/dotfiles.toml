@@ -75,6 +75,10 @@ description = "Commit every change in ~/.dotfiles with a chezmoi-style message"
 tools = { python = "3.11" }
 run = "bash $HOME/.dotfiles/mise/scripts/dot-save.sh"
 
+[tasks."dot:pull"]
+description = "Pull the latest main from origin, rebasing local commits on top"
+run = "bash $HOME/.dotfiles/mise/scripts/dot-pull.sh"
+
 [tasks."dot:add"]
 description = "Move paths from ~ into ~/.dotfiles/home and link them back"
 tools = { python = "3.11" }

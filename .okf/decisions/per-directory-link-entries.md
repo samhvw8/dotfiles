@@ -7,7 +7,7 @@ status: stable
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 sources:
   - id: conf
-    resource: https://github.com/samhvw8/dotfiles/blob/master/mise/conf.d/dotfiles.toml
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
     title: Shared dotfiles config
 ---
 

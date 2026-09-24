@@ -7,10 +7,10 @@ status: stable
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 sources:
   - id: setup
-    resource: https://github.com/samhvw8/dotfiles/blob/master/setup.sh
+    resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
     title: setup.sh
   - id: migrate
-    resource: https://github.com/samhvw8/dotfiles/blob/master/migrate-from-chezmoi.sh
+    resource: https://github.com/samhvw8/dotfiles/blob/main/migrate-from-chezmoi.sh
     title: migrate-from-chezmoi.sh
 ---
 

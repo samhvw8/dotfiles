@@ -7,13 +7,13 @@ status: stable
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 sources:
   - id: full
-    resource: https://github.com/samhvw8/dotfiles/blob/master/mise/config.toml
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/config.toml
     title: Full install config
   - id: minimal
-    resource: https://github.com/samhvw8/dotfiles/blob/master/mise/minimal.toml
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/minimal.toml
     title: Minimal install config
   - id: setup
-    resource: https://github.com/samhvw8/dotfiles/blob/master/setup.sh
+    resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
     title: setup.sh
 ---
 

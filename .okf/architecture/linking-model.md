@@ -2,14 +2,14 @@
 type: Design
 title: "Linking model"
 description: "How files in home/ become links under ~, and which files are managed differently."
-resource: https://github.com/samhvw8/dotfiles/blob/master/mise/conf.d/dotfiles.toml
+resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
 tags: [mise, dotfiles, symlinks]
 status: stable
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 stale_after: 2027-03-24
 sources:
   - id: conf
-    resource: https://github.com/samhvw8/dotfiles/blob/master/mise/conf.d/dotfiles.toml
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
     title: Shared dotfiles config
   - id: mise-dotfiles
     resource: https://mise.jdx.dev/dotfiles.html

@@ -4,10 +4,10 @@ title: "Change, add and sync dotfiles"
 description: "Day-to-day loop: edit through the links, save with dot:save, push, and pull on other machines."
 tags: [workflow, git, sync]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T09:40:00Z }
 sources:
   - id: readme
-    resource: https://github.com/samhvw8/dotfiles/blob/master/README.md
+    resource: https://github.com/samhvw8/dotfiles/blob/main/README.md
     title: Repository README
 ---
 
@@ -43,7 +43,7 @@ A file directly in `home/` or a new top-level directory also needs an entry in
 # Update another machine
 
 ```bash
-git -C ~/.dotfiles pull
+mise run dot:pull    # pull main, rebasing any local dot:save commits
 mise install        # or `mise bootstrap` when packages, links or hooks changed
 exec zsh
 ```

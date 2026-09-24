@@ -8,7 +8,7 @@ stale_after: 2026-12-31
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T09:00:00Z }
 sources:
   - id: zshrc
-    resource: https://github.com/samhvw8/dotfiles/blob/master/home/.zshrc
+    resource: https://github.com/samhvw8/dotfiles/blob/main/home/.zshrc
     title: .zshrc
   - id: oss-bundle
     resource: ~/workspace/oss/zsh/.okf/index.md

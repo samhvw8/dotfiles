@@ -7,13 +7,13 @@ clones repositories, links dotfiles and installs tools.
 ## Install
 
 ```bash
-curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash
+curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/main/setup.sh | bash
 ```
 
 For a minimal install (servers), pass `--minimal`:
 
 ```bash
-curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash -s -- --minimal
+curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/main/setup.sh | bash -s -- --minimal
 ```
 
 `setup.sh`:
@@ -90,6 +90,7 @@ Dotfiles are linked like this:
 mise dot status            # linked, missing or different files
 mise dot apply             # link files added to the repository
 mise run dot:save          # commit every change in ~/.dotfiles
+mise run dot:pull          # pull the latest main from origin
 mise run dot:add <path>    # store a file or directory from ~ and link it
 mise run dot:check         # find unlinked files and unsaved ccp hub items
 mise bootstrap --dry-run   # preview the whole machine setup
@@ -142,7 +143,7 @@ mise gets its GitHub token by running `gh auth token` itself
 ### Update another machine
 
 ```bash
-git -C ~/.dotfiles pull
+mise run dot:pull
 mise bootstrap
 ```
 

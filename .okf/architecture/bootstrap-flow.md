@@ -2,17 +2,17 @@
 type: Process
 title: "Bootstrap flow"
 description: "The ordered phases of mise bootstrap in this repository and the hook scripts that run in them."
-resource: https://github.com/samhvw8/dotfiles/blob/master/mise/conf.d/dotfiles.toml
+resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
 tags: [mise, bootstrap, hooks]
 status: stable
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 stale_after: 2027-03-24
 sources:
   - id: conf
-    resource: https://github.com/samhvw8/dotfiles/blob/master/mise/conf.d/dotfiles.toml
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
     title: Shared dotfiles config
   - id: full
-    resource: https://github.com/samhvw8/dotfiles/blob/master/mise/config.toml
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/config.toml
     title: Full install config
   - id: mise-bootstrap
     resource: https://mise.jdx.dev/bootstrap.html

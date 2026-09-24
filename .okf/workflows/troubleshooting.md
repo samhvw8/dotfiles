@@ -8,10 +8,10 @@ generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 stale_after: 2027-03-24
 sources:
   - id: setup
-    resource: https://github.com/samhvw8/dotfiles/blob/master/setup.sh
+    resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
     title: setup.sh
   - id: tmux
-    resource: https://github.com/samhvw8/dotfiles/blob/master/home/.tmux.conf
+    resource: https://github.com/samhvw8/dotfiles/blob/main/home/.tmux.conf
     title: .tmux.conf
 ---
 

@@ -2,22 +2,22 @@
 type: Playbook
 title: "Set up a new machine"
 description: "Install mise, clone the repository and bootstrap a new macOS or Debian/Ubuntu machine."
-resource: https://github.com/samhvw8/dotfiles/blob/master/setup.sh
+resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
 tags: [setup, bootstrap]
 status: stable
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 stale_after: 2027-03-24
 sources:
   - id: setup
-    resource: https://github.com/samhvw8/dotfiles/blob/master/setup.sh
+    resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
     title: setup.sh
 ---
 
 # Steps
 
 ```bash
-curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash            # full
-curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bash -s -- --minimal
+curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/main/setup.sh | bash            # full
+curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/main/setup.sh | bash -s -- --minimal
 ```
 
 `setup.sh` then:[^setup]

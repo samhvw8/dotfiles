@@ -109,7 +109,7 @@ ensure_sudo() {
     if ! tty_available; then
         log_error "Administrator access is needed, but there is no terminal to read a password from."
         log_error "Re-run interactively instead of piping, e.g.:"
-        log_error "  bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh)\""
+        log_error "  bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/samhvw8/dotfiles/main/setup.sh)\""
         return 1
     fi
 

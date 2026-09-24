@@ -2,14 +2,14 @@
 type: Playbook
 title: "Migrate a machine still on chezmoi"
 description: "Run migrate-from-chezmoi.sh to move a machine from the old chezmoi layout to mise dotfiles without losing local changes."
-resource: https://github.com/samhvw8/dotfiles/blob/master/migrate-from-chezmoi.sh
+resource: https://github.com/samhvw8/dotfiles/blob/main/migrate-from-chezmoi.sh
 tags: [migration, chezmoi]
 status: stable
 generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
 stale_after: 2027-03-24
 sources:
   - id: migrate
-    resource: https://github.com/samhvw8/dotfiles/blob/master/migrate-from-chezmoi.sh
+    resource: https://github.com/samhvw8/dotfiles/blob/main/migrate-from-chezmoi.sh
     title: migrate-from-chezmoi.sh
 ---
 
