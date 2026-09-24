@@ -20,15 +20,17 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/master/setup.sh | bas
 
 1. Installs the Xcode Command Line Tools on macOS, or git and curl on
    Debian/Ubuntu, asking for your password once.
-2. Installs mise, clones this repository to `~/.dotfiles`, and enables its
-   pre-commit hook.
+2. Installs mise (or runs `mise self-update` when it is older than 2026.9.8),
+   clones this repository to `~/.dotfiles`, and enables its pre-commit hook.
 3. Asks for your git name and email and saves them in
    `~/.config/mise/config.local.toml`. Set `DOTFILES_GIT_NAME` and
    `DOTFILES_GIT_EMAIL` to skip the prompt.
 4. Links `~/.config/mise/config.toml` to the full or minimal config.
 5. Copies every existing file it is about to replace into
    `~/.dotfiles-backup-<timestamp>/`.
-6. Runs `mise bootstrap`.
+6. Runs `mise bootstrap`. It refreshes package metadata (`apt-get update`, which
+   needs sudo) only when a package is missing, so an up-to-date machine needs no
+   password.
 
 Then open a new shell. On a full install, run `ccp bootstrap` to fetch the
 Claude Code skills installed from ccp sources; only the ccp hub items created
@@ -44,6 +46,10 @@ by hand are stored here.
 | `mise/conf.d/dotfiles.toml` | Dotfiles, packages, repos and hooks shared by both installs |
 | `mise/scripts/` | Bootstrap hook scripts |
 | `mise/snippets/` | Templated blocks managed inside files such as `~/.gitconfig` |
+| `setup.sh` | New-machine installer |
+| `migrate-from-chezmoi.sh` | One-time migration for machines still on chezmoi |
+| `.githooks/pre-commit` | Runs `dot:check` before each commit |
+| `.okf/` | Knowledge bundle: how and why this setup works (see below) |
 
 `~/.config/mise/config.toml` links to `mise/config.toml` or `mise/minimal.toml`,
 which is what makes a machine full or minimal. `mise/conf.d/dotfiles.toml` is
@@ -126,8 +132,12 @@ hook fail until it has one.
 ### Machine-local settings
 
 `~/.config/mise/config.local.toml` is never committed. It holds the git identity
-(`[vars]`) and private environment variables such as API keys (`[env]`). Apart
-from the identity that `setup.sh` asks for, recreate it by hand on a new machine.
+(`[vars]`), private environment variables such as API keys (`[env]`), and tools
+only that machine uses (`[tools]`). Apart from the identity that `setup.sh` asks
+for, recreate it by hand on a new machine.
+
+mise gets its GitHub token by running `gh auth token` itself
+(`settings.github.credential_command`), only when it calls the GitHub API.
 
 ### Update another machine
 
@@ -162,12 +172,25 @@ bash <(git -C ~/.local/share/chezmoi show origin/master:migrate-from-chezmoi.sh)
 ```
 
 The script backs up the chezmoi repository (including unpushed commits) and
-every file it manages, reuses chezmoi's git identity and minimal setting, runs
+every file it manages, keeps tools only that machine uses in
+`config.local.toml`, reuses chezmoi's git identity and minimal setting, runs
 `setup.sh`, then moves the chezmoi directories aside as `*.migrated-<timestamp>`.
-Without `--keep-local`, this machine's differing files are only saved in the
+Without `--keep-local`, the machine's differing files are only saved in the
 backup. With it, they are three-way merged into `~/.dotfiles` and left
-uncommitted (a file that conflicts keeps the repository version, and the
-conflicted merge is saved in the backup): review with `git -C ~/.dotfiles diff`, then `mise run dot:save`.
+uncommitted; a file that conflicts keeps the repository version and the
+conflicted merge is saved in the backup. Review with `git -C ~/.dotfiles diff`,
+then `mise run dot:save`.
+
+## Shell
+
+- zsh with zi plugins (syntax highlighting, autosuggestions, fzf-tab, forgit) and
+  the starship prompt; a new shell starts in about 0.26s.
+- **Ctrl-R** searches history with atuin (SQLite; remove `atuin` from
+  `mise/config.toml` to switch it off). **Ctrl-T** and **Alt-C** are fzf.
+- fzf, fd, bat, zoxide and atuin come from mise. Their init scripts are cached in
+  `~/.cache/zsh/init/` and rebuilt when a tool's version changes.
+- tmux passes Claude Code notifications and Shift+Enter through
+  (`allow-passthrough`, `extended-keys`).
 
 ## Troubleshooting
 
@@ -176,7 +199,18 @@ conflicted merge is saved in the backup): review with `git -C ~/.dotfiles diff`,
   kept, then run `mise dot apply --force`.
 - **A bootstrap step fails.** Fix the reported problem and run `mise bootstrap`
   again. Steps that already finished are skipped.
+- **Errors about `[dotfiles]` or `mise dot`.** mise is older than 2026.9.8; run
+  `mise self-update`.
 - **Not sure what a command will change.** Add `--dry-run`.
+
+More symptoms and fixes: [.okf/workflows/troubleshooting.md](.okf/workflows/troubleshooting.md).
+
+## Knowledge base
+
+`.okf/` is an [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf)
+bundle describing this setup for people and agents: architecture, workflows,
+and the decisions behind them. Start at [.okf/index.md](.okf/index.md). Update the
+matching concept in the same commit when the setup changes.
 
 ## Requirements
 
