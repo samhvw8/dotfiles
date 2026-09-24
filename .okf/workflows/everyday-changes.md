@@ -43,7 +43,7 @@ A file directly in `home/` or a new top-level directory also needs an entry in
 # Update another machine
 
 ```bash
-mise run dot:pull    # pull main, rebasing any local dot:save commits
+mise run dot:update  # pull main, link new files, run dot:check
 mise install        # or `mise bootstrap` when packages, links or hooks changed
 exec zsh
 ```

@@ -50,6 +50,12 @@ change behavior, update the concept that describes it and add an entry to
 mise run dot:check         # unlinked files, unsaved ccp hub items
 mise run dot:save          # commit everything with an "Update <file>" message (never pushes)
 mise run dot:pull          # pull main from origin, rebasing local commits
+mise run dot:cd            # open a shell in ~/.dotfiles
+mise run dot:status        # unapplied dotfiles + uncommitted changes (like chezmoi status)
+mise run dot:diff          # git diff HEAD + mise dot diff
+mise run dot:update        # dot:pull, mise dot apply, dot:check
+mise run dot:rm <path>     # stop managing; ~ keeps a real copy (chezmoi forget)
+mise run dot:destroy <path> # delete from ~ and home/ (chezmoi destroy)
 mise run dot:add <path>    # move a path from ~ into home/ and link it back
 mise dot status            # link state
 mise bootstrap --dry-run   # preview the whole machine setup

@@ -79,10 +79,46 @@ run = "bash $HOME/.dotfiles/mise/scripts/dot-save.sh"
 description = "Pull the latest main from origin, rebasing local commits on top"
 run = "bash $HOME/.dotfiles/mise/scripts/dot-pull.sh"
 
+[tasks."dot:cd"]
+description = "Open a shell in ~/.dotfiles; exit returns to where you were"
+dir = "{{env.HOME}}/.dotfiles"
+raw = true
+run = "exec ${SHELL:-zsh}"
+
 [tasks."dot:add"]
 description = "Move paths from ~ into ~/.dotfiles/home and link them back"
 tools = { python = "3.11" }
 run = "bash $HOME/.dotfiles/mise/scripts/dot-add.sh"
+
+[tasks."dot:rm"]
+description = "Stop managing paths: replace each link in ~ with a real copy and remove it from home/"
+tools = { python = "3.11" }
+run = "python3 $HOME/.dotfiles/mise/scripts/dot-rm.py"
+
+[tasks."dot:destroy"]
+description = "Delete paths from both ~ and home/ (asks first; --yes skips)"
+tools = { python = "3.11" }
+raw = true
+run = "python3 $HOME/.dotfiles/mise/scripts/dot-rm.py --destroy"
+
+[tasks."dot:status"]
+description = "List dotfiles that are not applied and uncommitted changes in ~/.dotfiles"
+tools = { python = "3.11" }
+run = "python3 $HOME/.dotfiles/mise/scripts/dot-status.py"
+
+[tasks."dot:diff"]
+description = "Show uncommitted changes in ~/.dotfiles and dotfiles waiting to be applied"
+# Extra arguments go to git diff, the last command.
+run = ["mise dot diff", "git -C $HOME/.dotfiles diff HEAD"]
+
+[tasks."dot:update"]
+description = "Pull the latest main, link new dotfiles and check the result"
+tools = { python = "3.11" }
+run = [
+  "bash $HOME/.dotfiles/mise/scripts/dot-pull.sh",
+  "mise dot apply --yes",
+  "python3 $HOME/.dotfiles/mise/scripts/dot-check.py",
+]
 
 [tasks."dot:check"]
 description = "Check that every file in home/ is linked; list ccp hub items missing from the repository"

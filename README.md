@@ -91,6 +91,12 @@ mise dot status            # linked, missing or different files
 mise dot apply             # link files added to the repository
 mise run dot:save          # commit every change in ~/.dotfiles
 mise run dot:pull          # pull the latest main from origin
+mise run dot:cd            # open a shell in ~/.dotfiles (exit to return)
+mise run dot:status        # unapplied dotfiles and uncommitted changes
+mise run dot:diff          # uncommitted changes and dotfiles waiting to be applied
+mise run dot:update        # dot:pull, then link new dotfiles
+mise run dot:rm <path>     # stop managing a path; ~ keeps a real copy
+mise run dot:destroy <path> # delete a path from ~ and the repository
 mise run dot:add <path>    # store a file or directory from ~ and link it
 mise run dot:check         # find unlinked files and unsaved ccp hub items
 mise bootstrap --dry-run   # preview the whole machine setup
@@ -143,8 +149,7 @@ mise gets its GitHub token by running `gh auth token` itself
 ### Update another machine
 
 ```bash
-mise run dot:pull
-mise bootstrap
+mise run dot:update   # pull and link; `mise bootstrap` when packages or hooks changed
 ```
 
 ### ccp hub items
