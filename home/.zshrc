@@ -38,16 +38,13 @@ if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
     command git clone -q --depth=1 https://github.com/z-shell/zi "$HOME/.zi/bin" || return 1
 fi
 
+# zi ignores $ZSH_COMPDUMP unless told; keep one dump in the XDG cache.
+typeset -gA ZI
+ZI[ZCOMPDUMP_PATH]=$ZSH_COMPDUMP
+
 source "$HOME/.zi/bin/zi.zsh"
 autoload -Uz _zi
 (( ${+_comps} )) && _comps[zi]=_zi
-
-# Load only the ZI annexes we use (readurl + patch-dl for plugin fetching)
-# Skipped: z-a-bin-gem-node, z-a-rust — mise handles all tool/binary management
-zi light-mode for \
-    z-shell/z-a-meta-plugins \
-    z-shell/z-a-readurl \
-    z-shell/z-a-patch-dl
 
 # =============================================================================
 # Helper Functions
@@ -95,39 +92,55 @@ command_exists starship && _cached_init starship starship init zsh --print-full-
 # Tool Completions (cached)
 # =============================================================================
 
-for tool in mise kubectl; do
-    if command_exists $tool; then
-        comp_file="$ZSH_CACHE_DIR/completions/_$tool"
-        [[ ! -f "$comp_file" ]] && $tool completion zsh > "$comp_file" 2>/dev/null
-        if [[ -f "$comp_file" ]]; then
-            zi ice as"completion"
-            zi snippet "$comp_file"
-        fi
-    fi
-done
+# Generate a tool's completion into a cached fpath dir, like _cached_init: only
+# when its resolved binary path (which includes its version under mise) or the
+# arguments change. A rewrite drops the compdump so compinit picks it up.
+# Usage: _cached_comp <name> <command> [args...]
+fpath=("$ZSH_CACHE_DIR/completions" $fpath)
+_cached_comp() {
+    local name=$1; shift
+    (( $+commands[$1] )) || return 0
+    local key="${commands[$1]:A} $*" comp="$ZSH_CACHE_DIR/completions/_$name" old=""
+    [[ -r $comp.key ]] && old=$(<$comp.key)
+    [[ $old == "$key" ]] && return 0
+    mkdir -p "${comp:h}"
+    "$@" >| "$comp.tmp" 2>/dev/null && [[ -s $comp.tmp ]] || { rm -f "$comp.tmp"; return 1; }
+    mv -f "$comp.tmp" "$comp" && print -r -- "$key" >| "$comp.key"
+    rm -f "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc"
+}
+_cached_comp mise     mise completion zsh
+_cached_comp kubectl  kubectl completion zsh
+_cached_comp uv       uv generate-shell-completion zsh
+_cached_comp bat      bat --completion zsh
+_cached_comp delta    delta --generate-completion zsh
+zicompdef _delta delta      # zsh's _sccs also claims `delta` (the SCCS tool)
+_cached_comp atuin    atuin gen-completions --shell zsh
+_cached_comp rg       rg --generate complete-zsh
+_cached_comp fd       fd --gen-completions zsh
+_cached_comp starship starship completions zsh
+_cached_comp rustup   rustup completions zsh
+_cached_comp cargo    rustup completions zsh cargo
 
 # =============================================================================
-# Oh-My-Zsh Integration
+# History & completion (the parts of OMZ lib that were in use)
 # =============================================================================
 
-zi lucid for OMZL::history.zsh
-# OMZ keeps 50000 lines in memory but only saves 10000; save them all.
+HISTFILE=${HISTFILE:-$HOME/.zsh_history}
 HISTSIZE=50000
 SAVEHIST=50000
+setopt extended_history hist_expire_dups_first hist_ignore_dups hist_ignore_space hist_verify
+setopt complete_in_word always_to_end
+unsetopt flowcontrol        # keep ^S/^Q free for zle
+WORDCHARS=''                # ^W / M-b stop at / - . like before
 
-zi wait lucid for \
-    OMZL::clipboard.zsh \
-    OMZL::compfix.zsh \
-    OMZL::completion.zsh \
-    OMZL::correction.zsh \
-    OMZL::directories.zsh \
-    OMZL::git.zsh \
-    OMZL::grep.zsh \
-    OMZL::spectrum.zsh \
-    OMZP::git \
-    OMZP::urltools \
-    OMZP::extract \
-    OMZP::encode64
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' use-cache yes
+zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR"
+zstyle ':completion:*' menu no              # fzf-tab draws the menu
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+alias g=git
 
 # =============================================================================
 # Aliases
@@ -139,9 +152,11 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
 alias ls='ls --color=auto'
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+# These are the OMZ definitions that were actually in effect (OMZ loaded after
+# this file and overrode the old ls -alF / -A / -CF ones).
+alias ll='ls -lh'
+alias la='ls -lAh'
+alias l='ls -lah'
 
 if command_exists kubectl; then
     alias k=kubectl
@@ -162,8 +177,6 @@ fi
 # FZF integration (fzf, fd and bat are mise tools)
 if command_exists fzf; then
     _cached_init fzf fzf --zsh
-    zi ice wait"0c" lucid
-    zi light wfxr/forgit
 fi
 
 # Atuin: SQLite-backed history search on Ctrl-R; fzf keeps Ctrl-T and Alt-C.
@@ -174,41 +187,47 @@ if command_exists atuin; then
 fi
 
 # Zoxide (installed via mise)
+# compdef doesn't exist until compinit runs (turbo, below), so zoxide skips its
+# own registration; queue it for zicdreplay instead.
 if command_exists zoxide; then
-    zi ice wait"0d" lucid atload'eval "$(zoxide init --cmd j zsh)"'
-    zi light zdharma-continuum/null
-fi
-
-# Cargo completions (cached, not fetched remotely each time)
-if command_exists cargo; then
-    comp_file="$ZSH_CACHE_DIR/completions/_cargo"
-    if [[ ! -f "$comp_file" ]]; then
-        zi ice wait"1c" lucid as'completion' blockf
-        zi snippet https://raw.githubusercontent.com/rust-lang/cargo/master/src/etc/_cargo
-    else
-        zi ice wait"1c" lucid as"completion"
-        zi snippet "$comp_file"
-    fi
+    _cached_init zoxide zoxide init --cmd j zsh
+    zicompdef __zoxide_z_complete j
 fi
 
 # =============================================================================
 # ZSH Enhancements
 # =============================================================================
 
-# Completions, autosuggestions, syntax highlighting (MUST be last)
+# Completions, fzf-tab, syntax highlighting, autosuggestions (MUST be last).
+# TEMP: the three plugins load from the samhvw8 forks' `perf` branches (sources
+# in ~/workspace/oss/zsh, documented in its .okf) while the patches are tested
+# before the upstream PRs.
+# Switch back to Aloxaf/fzf-tab, z-shell/F-Sy-H and zsh-users/... after.
+# atuin's init sets its own strategy, which forks `atuin search` per keystroke;
+# history is the same data looked up in-process.
+ZSH_AUTOSUGGEST_STRATEGY=(history)
+
+# compinit -C never rebuilds an existing dump, so drop it when a completion dir
+# changed since it was written, then zcompile it for the next shell.
+_compinit_fresh() {
+    local d
+    for d in $fpath; do
+        [[ $d -nt $ZSH_COMPDUMP ]] && { rm -f "$ZSH_COMPDUMP" "$ZSH_COMPDUMP.zwc"; break; }
+    done
+    ZI[COMPINIT_OPTS]=-C
+    zicompinit
+    zicdreplay
+    [[ $ZSH_COMPDUMP.zwc -nt $ZSH_COMPDUMP ]] || zcompile "$ZSH_COMPDUMP"
+}
+
+# fzf-tab loads right after compinit and before the widget-wrapping plugins.
 zi wait lucid for \
-    atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-        z-shell/fast-syntax-highlighting \
-    blockf \
-        zsh-users/zsh-completions \
-    atload"!_zsh_autosuggest_start" \
-        zsh-users/zsh-autosuggestions
-
-zi wait"2c" lucid for \
-        Aloxaf/fzf-tab
-
-zi ice wait"2e" lucid
-zi light "MichaelAquilina/zsh-you-should-use"
+    atinit"_compinit_fresh" ver"perf" \
+        samhvw8/fzf-tab \
+    ver"perf" \
+        samhvw8/F-Sy-H \
+    atload"!_zsh_autosuggest_start" ver"perf" \
+        samhvw8/zsh-autosuggestions
 
 # =============================================================================
 # PATH Configuration
@@ -221,7 +240,7 @@ add_to_path "$HOME/bin"
 # OS-specific Configuration
 # =============================================================================
 
-if [[ $(uname) == "Darwin" ]]; then
+if [[ $OSTYPE == darwin* ]]; then
     [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
     export HOMEBREW_NO_INSTALL_CLEANUP=1
     add_to_path "/usr/local/sbin"
