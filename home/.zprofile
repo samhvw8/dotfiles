@@ -4,12 +4,11 @@ typeset -U path PATH
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/bin
 
-if [ -f "$HOME/.local/bin/mise" ]; then 
-    eval "$($HOME/.local/bin/mise activate zsh --shims)"
-fi
-
+# brew first, so mise's shims land ahead of Homebrew's python3/kubectl.
 if [[ $(uname) == "Darwin" ]]; then
     eval $(/opt/homebrew/bin/brew shellenv)
-else
-    :
+fi
+
+if [ -f "$HOME/.local/bin/mise" ]; then
+    eval "$($HOME/.local/bin/mise activate zsh --shims)"
 fi
