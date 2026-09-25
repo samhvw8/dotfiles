@@ -1,5 +1,9 @@
 # Update Log
 
+## 2026-09-25
+* **Update**: [Troubleshooting](/workflows/troubleshooting.md) covers aube `trust downgrade` failures on `mise up` (how to check the release, then add a narrow `trust_policy_excludes`), including the standing `pi-subagents` exception on feynman, and marks `minimum_release_age` and 502 warnings as harmless.
+* **Update**: [Install variants](/architecture/install-variants.md) now count 55 tools in the full install, after removing firebase, ripgrep (duplicate of `rg`), direnv, zig, k6, hurl, jnv, dasel, shfmt, git-lfs, weave (with weave-driver and weave-mcp), mcp-chrome-bridge, pinchtab and lazygit, which shell history and agent transcripts showed were unused.
+
 ## 2026-09-24
 * **Update**: [Dotfile tasks](/tools/dot-tasks.md) covers the new `dot:cd`, `dot:status`, `dot:diff`, `dot:update`, `dot:rm` and `dot:destroy` tasks, with a chezmoi command map.
 * **Update**: The default branch is now `main` (the old chezmoi-era `main` is kept as `backup/main-20250615`; `master` still exists). Repository links point at `main`, and [dotfile tasks](/tools/dot-tasks.md) and [everyday changes](/workflows/everyday-changes.md) cover the new `dot:pull` task.
