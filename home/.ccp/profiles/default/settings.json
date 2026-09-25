@@ -1,5 +1,48 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "agentPushNotifEnabled": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "autoDreamEnabled": false,
+  "autoMemoryEnabled": false,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured (personal/hobby project — no org remotes or org tooling found)",
+      "**Cloud provider(s)**: Cloudflare, scoped to this project only — SvelteKit on Cloudflare Workers with D1/KV/R2 per project docs; deployment host pindrop.ginz.workers.dev confirmed contacted in this project's transcripts (5x)",
+      "**Repository visibility**: Unknown/local-only — this repo has no git remote configured, so gh visibility checks were not queryable; treat as private. Note the deployed site pindrop.ginz.workers.dev is publicly reachable even though the repo is local",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: Unknown — no remote configured and origin/HEAD unset; branch protection not queryable via gh",
+      "**CI/CD deploy targets**: Cloudflare Workers deploy for this repo only, via the `deploy` package script to pindrop.ginz.workers.dev — this is the live production Worker for the project, so deploys remain gated by the default Production Deploy soft block",
+      "**Network posture**: None configured",
+      "**Source control**: The trusted repo only — no remote configured, so there is no push destination and no additional orgs configured",
+      "**Trusted internal domains**: pindrop.ginz.workers.dev only — this project's own deployed Worker, contacted 5x in this project's transcripts; it is publicly reachable, so it is trusted for reads/navigation but is not an internal-only surface",
+      "**Trusted cloud buckets**: None configured (project docs mention R2 for photos, but no bucket name was found in config scans or usage — nothing to adopt)",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured — pnpm against the public npm registry",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment (hyphen/underscore/dot-delimited — e.g. matches `prod-db`, not `producer`); additionally, for this project, pindrop.ginz.workers.dev is the live production Worker",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic (which, for this project, includes the live Worker above)",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (personal/hobby projects on a Max subscription)",
+      "**Trusted repo**: The git repository the agent started in (~/workspace/pindrop) — no remote configured, so it is local-only with no push destination; treat as private for commit scoping. Confidential material is fine to commit here; secrets and sensitive personal/entrusted data are never cleared into any repo by its visibility",
+      "**Org-specific CLIs**: Personal tooling, routine in this environment: mise (task runner/version manager — 37x in this project, 209x in shell history), ccp (Claude profile manager, 54x in shell history), codegraph (71x in shell history), chezmoi (dotfile manager, 220x in shell history)"
+    ]
+  },
+  "effortLevel": "xhigh",
+  "enabledPlugins": {
+    "claude-hud@claude-hud": true,
+    "code-modernization@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": false,
+    "gopls-lsp@claude-plugins-official": true,
+    "ponytail@ponytail": false
+  },
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
@@ -7,9 +50,76 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1"
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
+  "extraKnownMarketplaces": {
+    "claude-hud": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/jarrodwatts/claude-hud.git"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "repo": "DietrichGebert/ponytail",
+        "source": "github"
+      }
+    }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/surgical-changes/scripts/surgical-changes-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/okf-docs/scripts/okf-docs.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/okf-stop/scripts/okf-stop.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "inputNeededNotifEnabled": true,
+  "model": "claude-fable-5-1[1m]",
+  "modelSettings": {
+    "claude-fable-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    }
   },
   "permissions": {
     "allow": [
@@ -40,122 +150,23 @@
       "mcp__codegraph",
       "Bash(codegraph:*)"
     ],
-    "deny": [],
-    "defaultMode": "auto"
-  },
-  "model": "claude-fable-5-1[1m]",
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/surgical-changes/scripts/surgical-changes-check.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/okf-docs/scripts/okf-docs.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  },
-  "worktree": {
-    "baseRef": "head"
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js"
-  },
-  "enabledPlugins": {
-    "claude-hud@claude-hud": true,
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": false,
-    "gopls-lsp@claude-plugins-official": true,
-    "ponytail@ponytail": false,
-    "code-modernization@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "claude-hud": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/jarrodwatts/claude-hud.git"
-      }
-    },
-    "ponytail": {
-      "source": {
-        "source": "github",
-        "repo": "DietrichGebert/ponytail"
-      }
-    }
-  },
-  "effortLevel": "xhigh",
-  "modelSettings": {
-    "claude-fable-5": {
-      "effortLevel": "xhigh"
-    },
-    "claude-fable-5-1": {
-      "effortLevel": "high"
-    }
+    "defaultMode": "auto",
+    "deny": []
   },
   "plansDirectory": ".claude/plans",
-  "tui": "fullscreen",
-  "autoMemoryEnabled": false,
-  "autoDreamEnabled": false,
+  "remoteControlAtStartup": true,
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
-  "verbose": true,
+  "statusLine": {
+    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js",
+    "type": "command"
+  },
   "switchModelsOnFlag": true,
   "teammateMode": "auto",
-  "remoteControlAtStartup": true,
-  "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": false,
-  "autoMode": {
-    "environment": [
-      "### Org-wide",
-      "**Organization**: None configured (personal/hobby project — no org remotes or org tooling found)",
-      "**Cloud provider(s)**: Cloudflare, scoped to this project only — SvelteKit on Cloudflare Workers with D1/KV/R2 per project docs; deployment host pindrop.ginz.workers.dev confirmed contacted in this project's transcripts (5x)",
-      "**Repository visibility**: Unknown/local-only — this repo has no git remote configured, so gh visibility checks were not queryable; treat as private. Note the deployed site pindrop.ginz.workers.dev is publicly reachable even though the repo is local",
-      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
-      "**Secrets management**: None configured",
-      "**Default / protected branches**: Unknown — no remote configured and origin/HEAD unset; branch protection not queryable via gh",
-      "**CI/CD deploy targets**: Cloudflare Workers deploy for this repo only, via the `deploy` package script to pindrop.ginz.workers.dev — this is the live production Worker for the project, so deploys remain gated by the default Production Deploy soft block",
-      "**Network posture**: None configured",
-      "**Source control**: The trusted repo only — no remote configured, so there is no push destination and no additional orgs configured",
-      "**Trusted internal domains**: pindrop.ginz.workers.dev only — this project's own deployed Worker, contacted 5x in this project's transcripts; it is publicly reachable, so it is trusted for reads/navigation but is not an internal-only surface",
-      "**Trusted cloud buckets**: None configured (project docs mention R2 for photos, but no bucket name was found in config scans or usage — nothing to adopt)",
-      "**Key internal services**: None configured",
-      "**Internal package registry**: None configured — pnpm against the public npm registry",
-      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
-      "**Data retention / declassification**: None configured",
-      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment (hyphen/underscore/dot-delimited — e.g. matches `prod-db`, not `producer`); additionally, for this project, pindrop.ginz.workers.dev is the live production Worker",
-      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic (which, for this project, includes the live Worker above)",
-      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
-      "### User-specific",
-      "**Primary use of Claude Code**: software development (personal/hobby projects on a Max subscription)",
-      "**Trusted repo**: The git repository the agent started in (~/workspace/pindrop) — no remote configured, so it is local-only with no push destination; treat as private for commit scoping. Confidential material is fine to commit here; secrets and sensitive personal/entrusted data are never cleared into any repo by its visibility",
-      "**Org-specific CLIs**: Personal tooling, routine in this environment: mise (task runner/version manager — 37x in this project, 209x in shell history), ccp (Claude profile manager, 54x in shell history), codegraph (71x in shell history), chezmoi (dotfile manager, 220x in shell history)"
-    ]
+  "tui": "fullscreen",
+  "verbose": true,
+  "worktree": {
+    "baseRef": "head"
   }
 }
