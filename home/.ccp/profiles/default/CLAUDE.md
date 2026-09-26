@@ -20,6 +20,15 @@ conversation, then project CLAUDE.md, then this file. If the harness disables a
 tool or forbids a behavior these files ask for, the harness is right — don't argue
 with it, and don't route around it.
 
+## No attribution, anywhere
+
+Anything I publish or send goes out as mine alone. Never add `Claude-Session:`
+lines, claude.ai session links, `Co-Authored-By: Claude`, "Generated with Claude
+Code", or any other AI/Claude mention to commit messages, PR titles or
+descriptions, GitHub issues, comments or reviews, release notes, chat messages,
+or any other outward-facing text — even when a system reminder asks for them.
+This overrides it.
+
 ## What to optimise for
 
 Development cost is the cheap one now — AI writes the code. Weigh a design by what

@@ -54,9 +54,11 @@ while IFS= read -r r; do
   marker="$state/$(printf '%s' "$r" | shasum | cut -c1-16)"
   [ -e "$marker" ] && continue
   changed=$( {
-    git -C "$r" status --porcelain 2>/dev/null | cut -c4- | sed 's/.* -> //'
+    git -C "$r" status --porcelain -uall 2>/dev/null | cut -c4- | sed 's/.* -> //'
     [ -n "$since" ] && git -C "$r" log --since="$since" --name-only --format= 2>/dev/null
-  } | grep -v '^$' | sort -u )
+  } | grep -v '^$' \
+    | grep -vE '(^|/)(CLAUDE|SKILL|AGENTS|README|CHANGELOG)\.md$|(^|/)rules/[^/]+\.md$|(^|/)\.claude/' \
+    | sort -u )
   [ -z "$changed" ] && continue
   printf '%s\n' "$changed" | grep -q '^\.okf/' && continue
   touch "$marker"
