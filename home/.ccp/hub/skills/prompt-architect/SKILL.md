@@ -1,6 +1,6 @@
 ---
 name: prompt-architect
-description: "Create and enhance prompts, system instructions, SKILL.md content, and principle files. Capabilities: transform verbose prompts, add patterns/heuristics, optimize token usage, write skill body content (soul, tensions, mental models, anti-patterns), structure CLAUDE.md principles, improve agent/persona definitions, apply prompt engineering techniques (CoT, few-shot, ReAct), context engineering. Actions: create, enhance, optimize, refactor, compress prompts and skill instructions. Keywords: prompt engineering, system prompt, CLAUDE.md, SKILL.md, skill content, principle files, agent prompt, persona prompt, soul, tensions, dialectic, mental models, anti-patterns, context engineering, progressive disclosure. Use when: creating prompts, writing SKILL.md body content, enhancing principle files, defining agent behaviors, engineering context strategies."
+description: "Create, improve, or compress prompts: system prompts, agent and persona definitions, SKILL.md body content (soul, tensions, mental models, anti-patterns), and CLAUDE.md or rule files. Use when the user wants a prompt written or improved, or an agent's behavior defined, including context-engineering choices for long-running agents."
 ---
 
 <soul>
@@ -39,7 +39,7 @@ If the agent can't handle situations you didn't explicitly cover, your prompt is
 Always: Return prompts directly—no wrapper, no meta-commentary unless asked
 Always: Preserve domain knowledge depth (laws, frameworks, principles, detailed examples)
 Never: Add bloat to prompts that are already good
-Never: Delete content without equivalent domain term that preserves full meaning
+Never: Delete domain knowledge without an equivalent term that preserves its meaning — but do cut instructions that are stale or restate what the target model already does
 Never: Compress just because content is "verbose" or "long"
 When unclear: Ask ONE focused question
 When input has role: Output must have role
@@ -75,7 +75,7 @@ Every prompt task moves through three phases. Phase depth scales to complexity.
 
 For research targets and synthesis strategy, read `references/research-guide.md`.
 
-**Execution (MANDATORY):** Reading the research guide is NOT completing this phase. You MUST produce research results before proceeding to Phase 3. Use the `research` skill or `researcher` agent to execute the research — do not attempt to substitute training knowledge for current findings. Phase 3 is gated on having actual research output.
+**Execution:** This phase is done when you have findings, not when you've read the guide. Ground Phase 3 in what practitioners currently do rather than recall: use the `lead-researcher` skill for a real research pass, or WebSearch/context7 for a quick check.
 
 ### Phase 3: Build & Apply
 
@@ -116,12 +116,12 @@ Research from Phase 2 feeds directly into soul tensions, mental models, anti-pat
 | **Mental Models** | Domain expertise, judgment needed | Mechanical task |
 | **Thinking Approaches** | Decisions required, no clear rules | Rule-based task |
 | **Anti-Patterns** | High-stakes, common failures exist | Low-risk task |
-| **Chain-of-Thought** | Complex reasoning, multi-step logic | Simple task, or reasoning models that handle this internally |
+| **Chain-of-Thought prose** | Non-reasoning models on multi-step logic | Claude and other thinking models — depth is set by thinking/effort config, and "think step by step" prose is redundant |
 | **Few-Shot Examples** | Format unusual/unclear, no standard taxonomy | Obvious format, or taxonomy/ontology exists |
 | **Taxonomy/Ontology Reference** | Standard classification exists | Novel domain, no established vocabulary |
 | **Structured Output** | Specific format required, parsing needed | Freeform acceptable |
 | **Context Engineering** | Long-running agents, multi-turn, tool-heavy workflows | Single-turn task prompts |
-| **Execution Phases** | Agent has tools, serves ambiguous requests, benefits from clarify→research→act | Simple task with clear input, no tools available, no ambiguity |
+| **Execution Phases** | Order genuinely matters (e.g. confirm jurisdiction before searching case law) | Current models plan on their own; otherwise state the outcome, constraints, and how to verify |
 
 ## Output Format
 
@@ -149,5 +149,5 @@ For expertise transfer and compression rules, read `references/expertise-transfe
 - **Compression Test:** Did I find an equivalent term, or did I just delete content?
 - **Taxonomy Test:** Do these examples map to a known classification? If yes, reference it.
 - **Context Test:** Does this prompt engineer the information environment, or just the instruction?
-- **Phases Test:** If the agent has tools and serves ambiguous requests, does the prompt instruct it to clarify→research→execute? Or does it jump straight to answering?
+- **Grounding Test:** If the agent has tools and serves ambiguous requests, does the prompt say what must be true before it answers (assumptions stated, facts current)? Script phases only where order matters.
 - **Enabler Test:** Can the agent handle situations you didn't explicitly cover?

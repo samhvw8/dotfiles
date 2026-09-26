@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-09-26
+* **Update**: [Troubleshooting](/workflows/troubleshooting.md) notes that `ccp unlink` of a hook leaves its command in the profile's `settings.json`, which then errors on every matching tool call.
+
 ## 2026-09-25
 * **Update**: [Shell setup](/tools/shell.md): `.zprofile` now sets up Homebrew before mise so login shells prefer mise's tools; the lazy conda/mamba loader and the dead envman and `.kubecm` lines left `.zshrc` with Miniconda.
 * **Update**: [Troubleshooting](/workflows/troubleshooting.md) covers aube `trust downgrade` failures on `mise up` (how to check the release, then add a narrow `trust_policy_excludes`), including the standing `pi-subagents` exception on feynman, and marks `minimum_release_age` and 502 warnings as harmless.

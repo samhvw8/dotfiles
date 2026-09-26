@@ -23,7 +23,7 @@ Single-responsibility units. Side tag: **G** = gather (mechanical), **R** = reas
 | 15 | Synthesizer | Verified findings + knowledge → cited report (model: opus) | STATE → report | R |
 | 16 | Goal-Fidelity Check | Score synthesis vs ORIGINAL goal, independent of brain | report → pass/gap | C |
 
-#12 + #13 = the **forager brain** (REASONING/EXPAND/CHECK). Venue: opus sub-agent (high/max workflow) or the main agent inline (low/medium).
+#12 + #13 = the **forager brain** (REASONING/EXPAND/CHECK). Venue: opus sub-agent (workflow venue) or the main agent (inline venue).
 
 ## Naming
 
@@ -31,7 +31,7 @@ Single-responsibility units. Side tag: **G** = gather (mechanical), **R** = reas
 |---|---|
 | #6–9 + #4 (gather) | `deep-gather` skill, run by `gatherer` agents |
 | #2, #10–13, #15 (reason) | `forager` brain — fused into `lead-researcher` |
-| #1, #5, #14, #16 + Phase 0 (control) | `lead-researcher` + the JS workflow (high/max only) |
+| #1, #5, #14, #16 + Phase 0 (control) | `lead-researcher` + the JS workflow (workflow venue only) |
 
 ## Related
 - [overview](overview.md)

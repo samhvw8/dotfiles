@@ -65,7 +65,7 @@ Searchable sources beyond GitHub, by domain, with how to query each. Pick the st
 
 ## Selection Rule
 
-1. **Recommend** a stack for the goal → **confirm with the user** at runtime (Phase 1, Question 4). Do not hardcode — GitHub included only if the user keeps it.
+1. **Recommend** a stack for the goal → **confirm with the user** at runtime (Phase 1, the Sources line of the plan). Do not hardcode — GitHub included only if the user keeps it.
 2. Within the confirmed stack: practitioner/primary > analysis > blogs > content farms.
 3. Multi-domain goals combine stacks; assign each gatherer agent one stack × language.
 

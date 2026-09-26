@@ -4,7 +4,7 @@ title: "Troubleshooting"
 description: "Symptoms seen with this setup and what to do about them."
 tags: [troubleshooting]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-09-25T14:30:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-09-26T05:20:00Z }
 stale_after: 2027-03-24
 sources:
   - id: setup
@@ -35,6 +35,7 @@ sources:
 | A bootstrap phase fails | That phase's error | Fix it and re-run `mise bootstrap`; finished phases are skipped |
 | `mise up` fails an npm tool with `trust downgrade for <pkg>@<ver>` | aube's `no-downgrade` policy: an earlier release of a dependency had provenance, this one does not[^aube-trust] | Check the release first: `npm view <pkg>@<ver> _npmUser gitHead` should name the usual maintainer, and `gitHead` should match the repo's `v<ver>` tag. Then add `trust_policy_excludes = ["<pkg>@<ver>"]` to that tool's entry. Never exempt a bare package name. feynman carries one for `pi-subagents`, whose maintainer has published by hand since 0.37.2, so bump the version on each new pi-subagents release[^full] |
 | `mise up` warns `ignored by minimum_release_age` or `502 Bad Gateway` | A release younger than 24h, or a GitHub API hiccup | Nothing to fix; the 502 falls back on its own. Tools with `minimum_release_age = "0s"` skip the delay |
+| After `ccp unlink <profile> hooks/<name>`, every matching tool call reports a hook error (`No such file`) | `ccp unlink` removes the hook's symlink and its `profile.toml` entry but leaves its command in the profile's `settings.json` | Delete that hook's entry from `home/.ccp/profiles/<profile>/settings.json`; `grep <name>` there should come back empty |
 
 [^setup]: setup.sh
 [^tmux]: .tmux.conf

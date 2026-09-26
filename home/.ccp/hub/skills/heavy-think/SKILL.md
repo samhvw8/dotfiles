@@ -1,11 +1,11 @@
 ---
 name: heavy-think
-description: "Unified heavy thinking orchestrator. Classifies problem type → dispatches to the right parallel thinking pattern. Modes: brainstorm (divergent ideation — solo agents or a collaborative team 'council'), solve (verifiable answers), decompose (break complex problems), unstick (reframe blockages), debate (live agent-team debate — named teammates argue with each other via SendMessage, then YOU synthesize). All modes use parallel agents/teammates with model=opus for maximum reasoning depth, then YOU synthesize. Teammates vs subagents: use agent-team teammates when the agents need to talk to each other (debate, collaborative brainstorm, hand-offs); use parallel subagents when they don't (independent fan-out). Actions: think deeply, brainstorm, council, decompose, solve, unstick, analyze, debate. Keywords: heavy think, heavy thinking, think harder, brainstorm, council, collaborative brainstorm, brainstorm together, build on ideas, expand ideas, ideate together, decompose, break down, stuck, unstick, solve, debate, debate this, pressure-test, argue both sides, steelman, devil's advocate, red team, challenge this, dialectic, parallel thinking, multi-perspective, think about this, explore deeply, reason about, analyze deeply, heavyskill, heavy-brainstorm. Use when: user says 'heavy think', 'think harder', 'brainstorm deeply', 'brainstorm together', 'council', 'expand on this', 'debate this', 'pressure-test', 'argue both sides', or any problem deserving more than shallow first-pass thinking — strategic decisions, hard technical problems, complex decomposition, creative exploration, feeling stuck, high-stakes calls needing adversarial rigor. Do NOT use for: simple lookups, mechanical tasks, clear next steps, tasks needing implementation not thinking."
+description: "Multi-agent thinking orchestrator: classifies a hard problem and runs parallel opus agents (or live teammates) on it, then synthesizes. Modes: brainstorm, solve (verifiable answers), decompose, unstick (reframe when stuck), debate (live agent-team debate). Use when the user asks for heavy thinking, a deep brainstorm, a decomposition, a pressure-test, or says they're stuck — strategic decisions, hard technical problems, high-stakes calls. Not for simple lookups, mechanical tasks, clear next steps, or implementation work."
 ---
 
 # Heavy Think
 
-Unified orchestrator for heavy thinking. One entry point, four modes — all powered by parallel agents → your synthesis.
+Unified orchestrator for heavy thinking. One entry point, several modes — most powered by parallel agents → your synthesis.
 
 **Core principle:** the parallel-agents-→-synthesize pattern is general-purpose. Change what the agents explore, and you get different thinking capabilities from the same engine.
 
@@ -22,7 +22,7 @@ Classify the problem, pick the mode:
 | "How do we break this down" / too big to tackle | **Decompose** | Parallel decomposition strategies → synthesize best structure |
 | "I'm stuck" / every option feels wrong / going in circles | **Unstick** | Parallel reframes → find the frame that unlocks movement |
 | "Debate this" / "pressure-test" / "argue both sides" / high-stakes call needing adversarial rigor | **Debate** | Named teammates argue live via `SendMessage` → you moderate → synthesize |
-| Need step-by-step with revision capability | **Analyze** | Sequential thinking (no agents needed) |
+| Needs careful sequential reasoning, not multiple perspectives | **Analyze** | Reason it through yourself (no agents) |
 
 When the signal is **Debate** (user explicitly asks to debate/pressure-test, or stakes are high), go straight to [Escalation: Agent Debate](#escalation-agent-debate) and run the **Team Debate** protocol — don't simulate it inline. Requires the main session (a subagent can't spawn teammates). Debate is also reached automatically when synthesis hits irreconcilable positions.
 
@@ -42,7 +42,7 @@ Parallel perspective agents explore the same problem from different worldviews. 
 PROBLEM: [One sentence — what are we trying to figure out?]
 CONSTRAINTS: [What's fixed? Budget, timeline, team size, tech stack...]
 SUCCESS LOOKS LIKE: [How will we know a good answer when we see it?]
-MODE: scan (3 agents, breadth-first) | deep (3-5 agents, depth-first)
+MODE: scan (3 agents, breadth-first) | deep (up to 5 agents in waves of 3, depth-first)
 ```
 
 ### Stage 2: Design Perspectives
@@ -66,7 +66,7 @@ See `references/perspective-combinations.md` for pre-built sets by scenario.
 
 ### Stage 3: Spawn Parallel Agents
 
-Launch all in **one message**, `model="opus"`. Each gets the same problem, distinct lens.
+Launch up to 3 in **one message**, `model="opus"`; a 4th and 5th go in a second wave. Each gets the same problem, distinct lens.
 
 See `references/brainstorm-agent-prompt.md` for full prompt. Core structure:
 
@@ -119,15 +119,15 @@ K independent agents solve the same verifiable problem from scratch. Deliberatio
 
 ### Stage 1: Parallel Reasoning
 
-Spawn **K independent agents** in a **single message** (parallel). Zero sibling knowledge.
+Spawn **K independent agents**, at most 3 per message (parallel waves). Zero sibling knowledge.
 
 | K | When |
 |---|------|
 | 3 | Standard — most problems |
-| 5 | High-stakes — competition math, critical correctness |
+| 5 | High-stakes — competition math, critical correctness (two waves: 3 + 2) |
 
 ```
-Solve this problem step by step. Show complete reasoning and arrive at a final answer.
+Solve this problem. Write out the full derivation in your answer — it will be audited against other solvers' — and arrive at a final answer.
 Use whatever approach you find most natural — algebraic, geometric, constructive, brute force, or proof by contradiction.
 
 Problem: {query}
@@ -284,7 +284,7 @@ Launch all in **one message**, `model="opus"`:
 | Abstraction Shift | "What if you're solving the wrong level of the problem? Go up one level or down one level." |
 | Constraint Flip | "What if the thing you think is fixed is actually variable, and vice versa?" |
 
-For deeper stuck-ness, add:
+For deeper stuck-ness, add (as a second wave — max 3 agents per message):
 | Agent | Reframe Strategy |
 |-------|-----------------|
 | Adjacent Domain | "What field outside yours has solved an analogous problem?" |
@@ -338,11 +338,7 @@ Output:
 
 ## Mode 5: Analyze
 
-No agents needed — apply `sequential-thinking` skill directly.
-
-Use when the problem needs step-by-step decomposition with revision capability, not parallel exploration.
-
-Invoke: `Skill("sequential-thinking")`
+No agents. Use when the problem needs one careful line of reasoning with revision, not parallel exploration — work it through yourself.
 
 ---
 
@@ -407,7 +403,7 @@ Use only when teams are unavailable (flag off, or you're inside a subagent). Wea
 
 - Max 3 debate rounds. Beyond that, diminishing returns.
 - Each agent/teammate uses `model="opus"` for depth.
-- Spawn in parallel (one message).
+- Spawn in parallel — subagents at most 3 per message; debate teammates all in one message.
 - Always state: "Escalating to debate because [reason]."
 
 ---
@@ -449,4 +445,3 @@ State the chain upfront: "I'll decompose first, then brainstorm on the hardest p
 - `references/paper-details.md` — HeavySkill paper methodology details
 - `references/decompose-prompt.md` — Full decomposition agent prompts with variants
 - `references/unstick-prompt.md` — Full unsticking agent prompts with variants
-- Related skills: `problem-solving`, `sequential-thinking`

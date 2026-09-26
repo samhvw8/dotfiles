@@ -1,7 +1,6 @@
 ---
 name: pug-ui
-description: Generate single-file HTML UIs, reports, dashboards, and landing pages using Pug syntax compiled client-side. Four CSS framework presets (Pico CSS classless default, Bulma, daisyUI, Simple.css minimal) — all pre-themed with Claude Code's warm cream + terra cotta light palette. Reduces LLM output tokens by 70-85% vs raw HTML + Tailwind. ALWAYS invoke when the user asks to create an HTML page, report, dashboard, UI mockup, or single-file web deliverable. Also invoke when user says "make a page", "create a report", "build a dashboard", "html output", "web UI", "single-file HTML", or "pug". Do NOT use for React/Vue/Svelte component development or server-rendered templates.
-when_to_use: Triggers "make me a page", "create an html report", "build a dashboard", "landing page", "single-file", "web mockup", "html deliverable", "pug output", "token-efficient html", any request for a standalone .html file with visual UI. Also use when the user has previously indicated preference for Pug output format.
+description: Generate single-file HTML UIs, reports, dashboards, and landing pages using Pug syntax compiled client-side. Four pre-themed CSS presets (Pico default, Bulma, daisyUI, Simple.css). ALWAYS invoke when the user wants a standalone .html file with visual UI — page, report, dashboard, landing page, mockup — or asks for Pug output. Do NOT use for React/Vue/Svelte components or server-rendered templates.
 ---
 
 # pug-ui
@@ -17,7 +16,7 @@ Output Pug syntax inside a self-compiling HTML template. Pick a framework preset
 | **daisyui** | `template-daisyui.html` | ~57KB+Tailwind | Semantic + utility | Tabs, drawers, carousels, mobile-first |
 | **minimal** | `template-minimal.html` | ~3KB | Classless | Text-heavy reports, docs, articles |
 
-**When unsure → use `pico`.** It's the new default.
+**When unsure → use `pico`.**
 
 ## Workflow
 

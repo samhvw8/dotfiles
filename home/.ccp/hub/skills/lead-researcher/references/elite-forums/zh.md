@@ -43,5 +43,5 @@ Covers Simplified Chinese (mainland CN) and Traditional Chinese (Taiwan/HK).
 | Google searchability | V2EX, linux.do, 看雪, SegmentFault, 博客园, iThome = Google-indexed. T00ls, 脉脉, Hostloc = not indexed, require direct access. |
 | 出海 trend | CN indie/startup discussions dominated by "going global" SaaS/AI tools. w2solo + V2EX 出海 threads are primary gathering spots. |
 | Content farm filter | CN devs use uBlacklist browser extension to block CSDN/Juejin/51CTO/百家号 systematically. |
-| VOZ registration | Requires CCCD (Vietnamese national ID) — wait, this is zh file. V2EX requires registration; T00ls requires accepted articles or invitation. |
+| Registration gates | V2EX requires registration; T00ls requires accepted articles or an invitation. |
 | Meta-resource | V2EX users recommend other niche forums — it's a meta-resource for discovering more specialized communities. |

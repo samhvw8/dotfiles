@@ -23,7 +23,7 @@ Redesign of the research stack: split mechanical **gathering** from epistemic **
 
 > Depth is not a setting — it is a decision made repeatedly from evidence.
 
-The loop carries STATE {hypotheses, topics, knowledge} and exits when the **brain** judges hypotheses settled / goal met, bounded by hard budget caps so it can never run away. The brain steers *direction*; budget caps bound *energy*. Venue: inline main agent (low/medium) or an opus sub-agent in a workflow (high/max).
+The loop carries STATE {hypotheses, topics, knowledge} and exits when the **brain** judges hypotheses settled / goal met, bounded by hard budget caps so it can never run away. The brain steers *direction*; budget caps bound *energy*. Venue: inline main agent (simple, focused) or an opus sub-agent in a workflow (complex, multi-domain).
 
 ## Related
 - [atomic-components](atomic-components.md) — the component decomposition

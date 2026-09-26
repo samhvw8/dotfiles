@@ -1,6 +1,6 @@
 ---
 name: canvas-design
-description: "Visual art and static design creation. Outputs: .png, .pdf documents. Capabilities: poster design, infographics, visual art, design philosophy creation, composition, layout. Actions: create, design, compose, generate posters/art/infographics. Keywords: poster, infographic, visual art, canvas, composition, layout, PDF design, PNG creation, graphic design, visual hierarchy, design philosophy, aesthetic movement, static design, printable, artwork. Use when: creating posters, designing infographics, generating visual art, making static designs, producing printable materials, expressing design philosophies visually."
+description: "Create static visual art as .png or .pdf — posters, infographics, artwork, printable designs — by first writing a design philosophy and then expressing it on a canvas."
 license: Complete terms in LICENSE.txt
 ---
 
@@ -45,7 +45,7 @@ To capture the VISUAL essence, express how the philosophy manifests through:
 
 **CRITICAL GUIDELINES:**
 - **Avoid redundancy**: Each design aspect should be mentioned once. Avoid repeating points about color theory, spatial relationships, or typographic principles unless adding new depth.
-- **Emphasize craftsmanship REPEATEDLY**: The philosophy MUST stress multiple times that the final work should appear as though it took countless hours to create, was labored over with care, and comes from someone at the absolute top of their field. This framing is essential - repeat phrases like "meticulously crafted," "the product of deep expertise," "painstaking attention," "master-level execution."
+- **Set the craft bar**: State once, concretely, what master-level execution means for this movement — the precision of alignment, the restraint of the palette, the finish of the typography — so the canvas phase has a standard to meet.
 - **Leave creative space**: Remain specific about the aesthetic direction, but concise enough that the next Claude has room to make interpretive choices also at a extremely high level of craftmanship.
 
 The philosophy must guide the next version to express ideas VISUALLY, not through text. Information lives in design, not paragraphs.
@@ -99,7 +99,7 @@ This is **VERY IMPORTANT**: The reference must be refined so it enhances the wor
 
 ## CANVAS CREATION
 
-With both the philosophy and the conceptual framework established, express it on a canvas. Take a moment to gather thoughts and clear the mind. Use the design philosophy created and the instructions below to craft a masterpiece, embodying all aspects of the philosophy with expert craftsmanship.
+With both the philosophy and the conceptual framework established, express it on a canvas. Use the design philosophy created and the instructions below to craft a masterpiece, embodying all aspects of the philosophy with expert craftsmanship.
 
 **IMPORTANT**: For any type of content, even if the user requests something for a movie/game/book, the approach should still be sophisticated. Never lose sight of the idea that this should be art, not something that's cartoony or amateur.
 
@@ -119,9 +119,7 @@ Output the final result as a single, downloadable .pdf or .png file, alongside t
 
 ## FINAL STEP
 
-**IMPORTANT**: The user ALREADY said "It isn't perfect enough. It must be pristine, a masterpiece if craftsmanship, as if it were about to be displayed in a museum."
-
-**CRITICAL**: To refine the work, avoid adding more graphics; instead refine what has been created and make it extremely crisp, respecting the design philosophy and the principles of minimalism entirely. Rather than adding a fun filter or refactoring a font, consider how to make the existing composition more cohesive with the art. If the instinct is to call a new function or draw a new shape, STOP and instead ask: "How can I make what's already here more of a piece of art?"
+Before delivering, take a refinement pass aimed at museum-quality finish. To refine the work, avoid adding more graphics; instead refine what has been created and make it extremely crisp, respecting the design philosophy and the principles of minimalism entirely. Rather than adding a fun filter or refactoring a font, consider how to make the existing composition more cohesive with the art. If the instinct is to call a new function or draw a new shape, STOP and instead ask: "How can I make what's already here more of a piece of art?"
 
 Take a second pass. Go back to the code and refine/polish further to make this a philosophically designed masterpiece.
 

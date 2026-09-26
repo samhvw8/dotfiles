@@ -54,5 +54,5 @@ Items │ ██
 
 ## Related
 
-- [SKILL.md](../SKILL.md) — forager skill main file
+- [overview.md](overview.md) — forager methodology
 - [goal-state-examples.md](goal-state-examples.md) — example goal states

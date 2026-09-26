@@ -8,8 +8,8 @@ The forager loop (REASON → EXPAND → CHECK) is the **brain**. The venue decid
 
 | Venue | Forager brain runs as | Strategic oversight |
 |-------|----------------------|---------------------|
-| Direct (low/med) | the main agent, inline | same main agent |
-| Workflow (high/max) | an opus sub-agent per iteration (main asleep) | main agent, GOAL-CHECK after |
+| Inline (simple, focused) | the main agent, inline | same main agent |
+| Workflow (complex, multi-domain) | an opus sub-agent per iteration (main asleep) | main agent, GOAL-CHECK after |
 | **Team (live)** | the **Steering-Lead teammate** (opus), continuously | **Supervisor = main session** |
 
 Two cognition levels in the team venue: the **tactical brain** (Steering-Lead = forager, per-finding) and **strategic oversight** (Supervisor = you: approve pivots, decide verify, GOAL-CHECK, synthesize). The brain moves *out* of the main session into a live teammate — that frees you to supervise.

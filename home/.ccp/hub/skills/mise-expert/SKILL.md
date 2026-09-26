@@ -1,74 +1,29 @@
 ---
 name: mise-expert
-description: "Mise development environment manager (asdf + direnv + make replacement). Capabilities: tool version management (node, python, go, ruby, rust), environment variables, task runners, project-local configs, backend selection (aqua, github, core, cargo, npm, pipx), security verification (cosign, SLSA, GitHub attestations, minisign). Actions: install, manage, configure, run tools/tasks with mise, troubleshoot attestation failures, migrate backends. Keywords: mise, mise.toml, tool version, runtime version, node, python, go, ruby, rust, asdf, direnv, task runner, environment variables, version manager, .tool-versions, mise install, mise use, mise run, mise tasks, project config, global config, aqua backend, github backend, ubi deprecated, MISE_AQUA_COSIGN, MISE_AQUA_GITHUB_ATTESTATIONS, attestation verification failed, cosign, SLSA, uv astral-sh. Use when: installing runtime versions, managing tool versions, setting up dev environments, creating task runners, replacing asdf/direnv/make, configuring project-local tools, troubleshooting tool installation failures, attestation/verification errors, choosing between backends."
+description: "mise — the tool-version manager, env-var loader, and task runner that replaces asdf, direnv, and make. Use for anything touching mise.toml or .tool-versions: installing or pinning tools, choosing a backend (core, aqua, github, cargo, npm, pipx), env vars, tasks, CI setup, migrating from asdf/direnv/make/npm scripts, and install failures — including attestation/cosign/SLSA verification errors."
 ---
 
 # Mise Expert Skill
 
-## Purpose
+## Check live docs first
 
-Specialized skill for mise - a unified development environment manager combining tool version management (asdf replacement), environment variable management (direnv replacement), and task running (make/npm scripts replacement).
+mise ships several releases a month, and backends, settings, env vars and flags change between them. This file is a snapshot checked against **mise 2026.9.14 (2026-09-25)**; treat it as a map of where to look, not as the current truth.
 
-## When to Use This Skill
+Before giving syntax, a setting name, an env var, a flag, or a backend recommendation, confirm it against a live source, in this order:
 
-### Tool & Runtime Management
-- Installing and managing runtime versions (node, python, go, ruby, rust, etc.)
-- Setting up project-specific tool versions for reproducibility
-- Switching between multiple language versions in polyglot projects
-- Managing global vs project-local tool installations
-- Migrating from asdf, nvm, pyenv, rbenv, or similar version managers
-- Troubleshooting tool version conflicts
+1. **The installed binary** — `mise --version`, `mise help <command>`, `mise settings ls`, `mise registry <tool>`, `mise doctor`. Authoritative for what this machine runs.
+2. **Current docs** — context7 (resolve the `mise` library ID, then query the topic), or https://mise.jdx.dev. Use `mcp__parallax__fetch_page` if WebFetch fails.
+3. **What changed since the snapshot** — the release notes at https://github.com/jdx/mise/releases, when the installed version is newer than the one above or the user hits behavior this file doesn't match.
 
-### Project Setup & Onboarding
-- Bootstrapping new project development environments
-- Creating mise.toml for team consistency
-- Setting up monorepo tool configurations
-- Configuring per-directory environment switching
-- Establishing project development standards
-- Simplifying onboarding for new team members
+How often each part of this file needs that check:
 
-### Task Runner & Build Systems
-- Creating or optimizing mise.toml task configurations
-- Designing task workflows with dependency chains
-- Implementing parallel task execution strategies
-- Adding intelligent caching with sources/outputs
-- Converting from make, npm scripts, just, or other task runners
-- Building cross-platform compatible task systems
-- Optimizing build performance with incremental builds
+| Label | Sections | Query live docs |
+|-------|----------|-----------------|
+| **volatile** | Backends, Security Verification, the attestation and `ubi` troubleshooting entries, CI/CD Integration | Every time |
+| **drifts** | Configuration Patterns, Variables and Environment Management, Migration Strategies | When quoting exact keys or syntax |
+| **stable** | Task Configuration Principles, Decision Framework, Best Practices Checklist, Anti-Patterns to Avoid | Only if the user reports a mismatch |
 
-### Environment Management
-- Configuring per-directory environment variables
-- Managing secrets and configuration across environments
-- Setting up development/staging/production environment switching
-- Replacing direnv with mise
-- Loading environment from .env files
-- Creating environment-specific task behaviors
-
-### CI/CD Integration
-- Setting up mise in GitHub Actions, GitLab CI, CircleCI
-- Ensuring consistent environments between local and CI
-- Optimizing CI builds with mise caching
-- Managing tool versions in containerized environments
-
-### Troubleshooting & Optimization
-- Debugging mise task execution issues
-- Diagnosing tool version problems
-- Resolving environment variable loading issues
-- Optimizing task caching and performance
-- Fixing cross-platform compatibility issues
-
-## Core Capabilities
-
-<capabilities>
-- **Tool Version Management**: Install, configure, and switch between runtime versions
-- **Task Design**: Create efficient, cacheable, and maintainable task configurations
-- **Environment Setup**: Configure tools, variables, and per-directory environments
-- **Workflow Optimization**: Design parallel execution and intelligent dependency chains
-- **Migration Support**: Convert from asdf, make, npm, direnv, and other tools
-- **Troubleshooting**: Diagnose and resolve mise configuration issues
-- **Best Practices**: Apply mise patterns for modern development workflows
-- **CI/CD Integration**: Configure mise for continuous integration pipelines
-</capabilities>
+Label what you give the user: name the source and version you checked against ("per `mise help use` on 2026.9.14", "per mise.jdx.dev/configuration"). If you could only use this file, say "from the skill's 2026.9.14 snapshot, not verified live". When a live source contradicts this file, follow the live source and tell the user this skill is out of date.
 
 ## Backends
 
@@ -166,9 +121,7 @@ aqua.github_attestations = false
 MISE_DEBUG=1 mise install <tool>@<version>
 ```
 
-**Known per-tool attestation issues:**
-- uv v0.9.11: manually published release, no attestations. Use a different version.
-- Some tools have releases that predate GitHub attestation support — aqua-registry PRs disable attestation requirements for those versions.
+**Known per-tool attestation issues:** some releases were published by hand or predate GitHub attestation support, so they carry no attestations — install an adjacent version, or check the tool's aqua-registry entry for a per-version exemption.
 </security_verification>
 
 ## Operational Guidelines
@@ -213,11 +166,11 @@ MISE_DEBUG=1 mise install <tool>@<version>
 ```toml
 # mise.toml - Project root configuration
 [tools]
-# Exact versions for reproducibility
-node = "20.10.0"
-python = "3.11.6"
-go = "1.21.5"
-terraform = "1.6.6"
+# Exact versions for reproducibility (illustrative — look up current ones with `mise latest <tool>`)
+node = "<x.y.z>"
+python = "<x.y.z>"
+go = "<x.y.z>"
+terraform = "<x.y.z>"
 
 # Read from version file
 ruby = { file = ".ruby-version" }
@@ -569,45 +522,9 @@ db_password=secret-password
 ```
 </environment_patterns>
 
-## Workflow Process
+## Verifying a Configuration
 
-<workflow_steps>
-When helping with mise configurations:
-
-1. **Assess Current State**
-   - Read existing mise.toml if present
-   - Identify current task runner (make, npm, etc.)
-   - Check for version managers (asdf, nvm, pyenv)
-   - Understand project structure and requirements
-
-2. **Design Architecture**
-   - Determine tool version requirements
-   - Map out task dependencies and relationships
-   - Identify parallel execution opportunities
-   - Plan caching strategy with sources/outputs
-   - Consider cross-platform needs
-
-3. **Implement Configuration**
-   - Start with tool versions and environment setup
-   - Create simple tasks, add complexity incrementally
-   - Use namespacing for related tasks
-   - Add aliases for frequently used tasks
-   - Document complex tasks with descriptions
-
-4. **Optimize Performance**
-   - Add sources/outputs for caching
-   - Leverage parallel execution via depends
-   - Set appropriate `jobs` limit
-   - Use watch mode for development workflows
-
-5. **Validate and Test**
-   - Run `mise install` to verify tool installation
-   - Run `mise tasks ls` to verify task registration
-   - Test task execution: `mise run <task>`
-   - Verify caching behavior
-   - Test cross-platform if applicable
-   - Run `mise doctor` for diagnostics
-</workflow_steps>
+After changing mise config, check it: `mise install` (tools resolve), `mise tasks ls` (tasks register), `mise run <task>` (it runs), and `mise doctor` for diagnostics.
 
 ## Migration Strategies
 
@@ -683,7 +600,7 @@ run = "npm test"
 
 [tasks.deploy]
 description = "Deploy to production"
-depends = ["build", "test"]  # build and test run in parallel
+depends = ["build", "test"]  # test already depends on build, so these run in order
 run = "./deploy.sh"
 ```
 
@@ -939,13 +856,13 @@ mise cache clear                 # Clear cache and retry
 # Step 1: Update mise (most attestation bugs are fixed in newer releases)
 mise self-update
 
-# Step 2: If still failing, disable the specific verification method
+# Step 2: If still failing, disable ONLY the method Step 5's debug output names — one of:
 export MISE_AQUA_GITHUB_ATTESTATIONS=false   # GitHub attestations
-export MISE_AQUA_COSIGN=false                # Cosign signatures
-export MISE_AQUA_SLSA=false                  # SLSA provenance
+# export MISE_AQUA_COSIGN=false              # Cosign signatures
+# export MISE_AQUA_SLSA=false                # SLSA provenance
 
-# Step 3: Try a different version (some releases lack attestations)
-mise install uv@0.9.13                       # Skip known-bad versions
+# Step 3: Try an adjacent version (some releases lack attestations)
+mise install <tool>@<other-version>
 
 # Step 4: Switch backend as workaround
 mise use "github:owner/repo@version"         # github backend instead of aqua
@@ -972,7 +889,7 @@ MISE_DEBUG=1 mise install tool@version
 
 <best_practices>
 **Tool Management:**
-- [ ] Pin exact versions for reproducibility (node = "20.10.0" not "20")
+- [ ] Pin exact versions in shared and CI projects; a major-version prefix (node = "22") is fine for personal tools
 - [ ] Document version choices in comments
 - [ ] Use .tool-versions or version files for compatibility
 - [ ] Test tool installation on fresh clone
@@ -1011,122 +928,13 @@ MISE_DEBUG=1 mise install tool@version
 
 ## Output Standards
 
-When creating mise configurations:
-
-1. **Always provide complete mise.toml sections**, not fragments
-2. **Include comments** explaining non-obvious configurations
-3. **Add descriptions** to all user-facing tasks
-4. **Show usage examples** with `mise run` commands
-5. **Explain caching strategy** when using sources/outputs
-6. **Document environment variables** and their purposes
-7. **Provide migration path** if converting from other systems
-8. **Include validation steps** to verify configuration works
-9. **Show tool installation** with `mise install` when setting up tools
-10. **Demonstrate testing** with actual command examples
-
-## Example Interactions
-
-<example_setup>
-User: "Setup mise for my Node.js project"
-
-Response:
-```toml
-# mise.toml
-[tools]
-node = "20.10.0"
-
-[env]
-NODE_ENV = "development"
-
-[tasks.install]
-description = "Install dependencies"
-run = "npm install"
-
-[tasks.dev]
-alias = "d"
-description = "Start development server"
-env = { NODE_ENV = "development" }
-run = "npm run dev"
-
-[tasks.build]
-alias = "b"
-description = "Build for production"
-sources = ["src/**/*", "package.json"]
-outputs = ["dist/**/*"]
-env = { NODE_ENV = "production" }
-run = "npm run build"
-
-[tasks.test]
-alias = "t"
-description = "Run tests"
-run = "npm test"
-```
-
-Setup:
-```bash
-mise install        # Install Node.js 20.10.0
-mise run install    # Install npm dependencies
-mise dev            # Start development server
-```
-</example_setup>
-
-<example_polyglot>
-User: "I have a project with Python backend and Node frontend"
-
-Response:
-```toml
-# mise.toml
-[tools]
-node = "20.10.0"
-python = "3.11.6"
-
-[env]
-PROJECT_ROOT = "{{cwd}}"
-
-[tasks."backend:install"]
-description = "Install Python dependencies"
-dir = "{{cwd}}/backend"
-run = "pip install -r requirements.txt"
-
-[tasks."frontend:install"]
-description = "Install Node dependencies"
-dir = "{{cwd}}/frontend"
-run = "npm install"
-
-[tasks.install]
-description = "Install all dependencies"
-depends = ["backend:install", "frontend:install"]
-
-[tasks."backend:dev"]
-description = "Start Python backend"
-dir = "{{cwd}}/backend"
-env = { FLASK_ENV = "development" }
-run = "python app.py"
-
-[tasks."frontend:dev"]
-description = "Start Node frontend"
-dir = "{{cwd}}/frontend"
-env = { NODE_ENV = "development" }
-run = "npm run dev"
-
-[tasks.dev]
-description = "Start both frontend and backend"
-depends = ["backend:dev", "frontend:dev"]
-```
-
-Usage:
-```bash
-mise install              # Install both Node and Python
-mise run install          # Install all dependencies
-mise dev                  # Start both services in parallel
-```
-</example_polyglot>
+When editing an existing mise.toml, change only the sections the request touches. Give user-facing tasks a `description`, and comment only non-obvious configuration.
 
 ## Anti-Patterns to Avoid
 
 <anti_patterns>
 **Don't:**
-- ❌ Use broad version ranges (node = "20" → unpredictable)
+- ❌ Use broad version ranges in shared/CI projects (node = "22" drifts between machines)
 - ❌ Create tasks without descriptions (hard to maintain)
 - ❌ Ignore sources/outputs on build tasks (misses caching benefits)
 - ❌ Use sequential run arrays when depends would allow parallel execution
