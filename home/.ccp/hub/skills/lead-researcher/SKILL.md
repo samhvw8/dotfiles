@@ -1,6 +1,6 @@
 ---
 name: lead-researcher
-description: "MANDATORY entry point for ALL research tasks. Orchestrates gatherer agents — brain decides agent count, languages, iterations, and depth at runtime based on the actual question. Default languages: EN + ZH + ZH-TW. Triggers: any research request, 'research X', 'what's the best', 'compare X vs Y', 'how should I approach', 'evaluate X', 'deep research', 'comprehensive analysis', 'team research' (live supervised agent-team venue). ALL research goes through lead-researcher first — never spawn gatherer agents directly."
+description: "Entry point for all multi-source research — comparing options, evaluating tools, surveying an ecosystem, deep or 'team research' (live supervised agent-team venue). Orchestrates gatherer agents; the brain decides agent count, languages (default EN + ZH + ZH-TW), iterations, and depth from the question. Never spawn gatherer agents directly — they go through this skill. Not for single-fact lookups ('what version is X', 'is Y deprecated') — those are one WebSearch."
 ---
 
 # Lead Researcher
@@ -81,7 +81,7 @@ GOAL-CHECK   score the answer vs the ORIGINAL goal (catch drift)
 
 Inline venue runs this loop directly (main agent is the brain). Workflow venue runs it as the background script below.
 
-### Workflow runtime contract (workflow venue — MANDATORY to actually run)
+### Workflow runtime contract (workflow venue)
 
 The loop runs as a background workflow: the JS script orchestrates but **cannot think**, and the main agent is asleep. So:
 
@@ -89,7 +89,7 @@ The loop runs as a background workflow: the JS script orchestrates but **cannot 
 |---------|----------|
 | **Where the brain runs** | REASONING/EXPAND/CHECK = ONE **opus sub-agent** per iteration (NOT a cheap model). It receives the serialized STATE digest and returns the verdict ([schema](references/adaptive-research/adaptive-depth-loop.md)). |
 | **STATE digest** | Pass `hypotheses[]` + a per-topic knowledge **summary** (not raw findings). Cap ~15k tokens — summarize-and-roll old knowledge so the brain's input stays bounded. |
-| **Persistence / resume** | After EXPAND, write STATE to `./research/YYMMDD-topic/state.json` (hypotheses, topics, knowledge, gen, spentAtCheckpoint). On start, if it exists, load and resume from `gen`; restore the budget baseline from `spentAtCheckpoint` (else a crash reseeds empty and re-burns budget). |
+| **Persistence / resume** | The script has no filesystem access. The Workflow tool journals every `agent()` result; resume a killed run with `resumeFromRunId` (same script + args replays the cached prefix). Files — the report, any STATE snapshot — are written by an agent, not by the script. |
 | **Budget self-enforce** | `const CEILING = args.budgetCeiling ?? 200_000` (never undefined → no `NaN`). Guard on `(budget.spent() - start) < CEILING - SYNTH_RESERVE`. Do **NOT** gate on `budget.total` — it is usually null. |
 | **Handoff** | Workflow synthesizes internally and writes the report; on completion the main agent reads it and runs GOAL-CHECK. Main agent re-synthesizes ONLY if the workflow's synthesis sub-agent errored (spend limit). |
 
@@ -99,27 +99,28 @@ The sections below (Source Priority, Model Tiering, Budget Guards, Elite Forum P
 
 Detailed refs: [adaptive-depth-loop](references/adaptive-research/adaptive-depth-loop.md) · [control-panel](references/adaptive-research/control-panel.md) · [control-rod](references/adaptive-research/control-rod.md) · [phase-zero-planning](references/adaptive-research/phase-zero-planning.md) · [streaming-verify](references/adaptive-research/streaming-verify.md) · [forager (the brain)](references/forager/overview.md)
 
-### Source Priority — Decided at Runtime (MANDATORY)
+### Source Priority — Decided at Runtime
 
-Do **NOT** hardcode which sources to use (no "always GitHub" rule). The source stack — **including whether GitHub is searched at all** — is chosen at runtime and **confirmed with the user** in Phase 1 (Question 4). Recommend a stack based on the topic, but the user decides.
+Do **NOT** hardcode which sources to use (no "always GitHub" rule). The source stack — **including whether GitHub is searched at all** — is chosen at runtime and **confirmed with the user** in Phase 1 (the Sources line of the plan). Recommend a stack based on the topic, but the user decides.
 
 What stays constant regardless of stack: rank practitioner/primary signal above SEO content farms — 1) elite forums / practitioner communities ([elite-forums](references/elite-forums/overview.md)) → 2) primary/official sources → 3) high-value analysis → 4) blogs/tutorials (verify) → deprioritize 5) content farms.
 
 The menu of source types to pick from (with how to query each): [source-types](references/source-types.md).
 
-**Every workflow prompt MUST inject the user-confirmed source stack.** Agents returning only blog/vendor sources are incomplete.
+**Inject the user-confirmed source stack into every workflow prompt** — workflow agents can't see Phase 1. Agents returning only blog/vendor sources are incomplete.
 
-### Model Tiering (MANDATORY for workflows)
+### Model Tiering (workflows)
 
 | Agent Role | Model | Why |
 |-----------|-------|-----|
 | Gatherer (search-fetch) | `sonnet` | Mechanical retrieval — Opus is overkill, wastes budget |
 | Cross-checker | `sonnet` | Comparison task, not deep reasoning |
+| REASONING brain (per iteration) | `opus` | Weighs findings against hypotheses and owns the exit |
 | Synthesizer | `opus` | Needs deep reasoning to merge N reports into coherent analysis |
 
 Without tiering, all agents inherit the parent model (usually Opus), consuming ~5x budget before synthesis. This is the #1 cause of incomplete research reports — the synthesis agent never runs.
 
-### Budget Guards (MANDATORY for workflows)
+### Budget Guards (workflows)
 
 **Primary guard = the self-enforced ceiling from the runtime contract** (`(budget.spent() - start) ≥ CEILING - SYNTH_RESERVE`), because `budget.total` is usually null. The checks below are a *secondary* guard for when the user DID set a `+Nk` target — they no-op (correctly) when `total` is null:
 
@@ -134,23 +135,24 @@ if (budget.total && budget.remaining() < 30_000) return { findings: state, cross
 ```
 
 If synthesis agent fails (spend limit), the main loop MUST:
-1. Read all agent report files from disk (agents write to `./report/`)
+1. Read all agent report files from disk (the report paths assigned in Phase 3, under `./research/YYMMDD-<topic>/`)
 2. Synthesize manually from those files
 3. Flag in the final report that cross-check was skipped
 
-### Elite Forum Passthrough (MANDATORY for workflow prompts)
+### Elite Forum Passthrough (workflow prompts)
 
-The elite forum table (in Phase 2) MUST be included in every gatherer agent prompt within the workflow script. The table exists in THIS skill but does NOT automatically transfer to workflow agents.
+Include the elite forum table in every gatherer agent prompt within the workflow script — workflow agents don't load this skill, so the table doesn't reach them otherwise.
 
 ```js
 const ELITE_FORUMS = {
   EN: 'Lobste.rs, Hacker News, Indie Hackers, Reddit (r/relevant)',
   ZH: 'V2EX, linux.do, cnblogs.com, SegmentFault, NodeSeek',
+  'ZH-TW': 'PTT (Soft_Job, Programmer boards), iThome 鐵人賽 (ithelp.ithome.com.tw)',
   RU: 'Habr, ODS.AI, linux.org.ru, SQL.ru'
 }
 
 agent(`...
-Source priority: elite forums > GitHub > official docs > blogs.
+Source stack (user-confirmed in Phase 1): ${SOURCE_STACK}
 Elite forums for ${lang.code}: ${ELITE_FORUMS[lang.code]}
 Use site: targeting for at least 2 of these forums.
 ...`, { model: 'sonnet', agentType: 'gatherer' })
@@ -201,7 +203,6 @@ Each iteration:
                 Loop EXIT depends on this agent — not a fixed count.
   EXPAND      — apply verdict: add/refine hypotheses, add topics, accumulate knowledge
                 (rate-limited: expansion budget, depth cap)
-  PERSIST     — write STATE to ./research/<topic>/state.json (resume-safe)
 
 Stop when REASONING says stop OR new-info/token collapses OR (spent - start) ≥ CEILING - SYNTH_RESERVE.
 Then SYNTHESIZE (opus, fenced reserve) → cited report at [output path]; main agent GOAL-CHECKs vs the goal.
@@ -213,7 +214,7 @@ Each gatherer agent uses the `deep-gather` skill.
 
 Phases map to loop steps: Phase 0-2 = plan, Phase 3 = GATHER DATA, Phase 4 = REASONING/EXPAND/CHECK (the forager brain), Phase 5 = SYNTHESIZE. Inline venue runs these directly; workflow venue runs them as the script above.
 
-## Phase Skip Prevention (MANDATORY — learned from real failures)
+## Phase Skip Prevention
 
 Every phase runs on EVERY research task. The brain scales depth/breadth freely, but the phase sequence is fixed:
 
@@ -232,7 +233,7 @@ Every phase runs on EVERY research task. The brain scales depth/breadth freely, 
 
 ## Planning & Execution Phases (all modes)
 
-### Phase 0: Clarity Triage (MANDATORY)
+### Phase 0: Clarity Triage
 
 Before planning research, assess whether the request is **researchable as stated**. This prevents wasting compute on poorly-scoped queries.
 
@@ -254,7 +255,7 @@ Before planning research, assess whether the request is **researchable as stated
 2. After heavy-think produces a clear, bounded research question with success criteria → return here at Phase 1
 3. State: "The research question wasn't clear enough to scope. After thinking through it, the researchable question is: [X]"
 
-**Target Verification (MANDATORY sub-step of Phase 0):**
+**Target Verification (part of Phase 0):**
 
 Before advancing to Phase 1, do 2-3 quick inline web searches to verify that named entities (tools, projects, frameworks, companies, concepts) actually exist as stated. User-provided terms are hypotheses, not facts — they may be approximate, misremembered, or from a different domain than assumed.
 
@@ -272,11 +273,12 @@ Before advancing to Phase 1, do 2-3 quick inline web searches to verify that nam
 
 **Phase 0 is distinct from Phase 1's AskUserQuestion.** Phase 0 catches "the problem isn't researchable yet" AND "the search target isn't what you think." Phase 1 catches "confirm my research plan parameters." Don't blur them.
 
-**Open-ended / iterative-expansion queries** (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria) are handled **natively** by the loop's CONTROL brain ([forager](references/forager/overview.md)) — no separate skill. Recommend **high** or **max** mode, where the brain runs full reflect + steer + topic expansion. forager is fused into this skill, not invoked separately.
+**Open-ended / iterative-expansion queries** (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria) are handled **natively** by the loop's CONTROL brain ([forager](references/forager/overview.md)), which runs full reflect + steer + topic expansion for them.
+
+Single-fact lookups ("what's the latest stable React", "is Y deprecated") are not research — answer them with one WebSearch and leave this skill.
 
 **Pass-through examples** (skip heavy-think, go directly to Phase 1):
 - "Compare Next.js vs Remix for SSR performance" — criteria implied (performance), scope bounded
-- "What's the latest stable version of React" — single fact, clear target
 - "Evaluate Drizzle vs Prisma for type-safe PostgreSQL ORM" — evaluation axes implicit in "type-safe PostgreSQL ORM"
 
 **Fire examples** (route to heavy-think first):
@@ -289,12 +291,12 @@ Before advancing to Phase 1, do 2-3 quick inline web searches to verify that nam
 | Path | Action |
 |------|--------|
 | User said "team research" / "research with me" / `team` arg | → **Team venue** ([team-research](references/team-research.md)) — skip the question |
-| Researchable, and live steering would help (medium/high, exploratory) | Ask one yes/no: *"Run as **live Team Research** — you supervise while a steering-lead brain + 2–3 gatherers + a verifier work and adapt in real time? Or run it normally?"* |
-| Otherwise | Direct/Workflow by mode, as usual |
+| Researchable, and live steering would help (exploratory, multi-step) | Ask one yes/no: *"Run as **live Team Research** — you supervise while a steering-lead brain + 2–3 gatherers + a verifier work and adapt in real time? Or run it normally?"* |
+| Otherwise | Inline or Workflow venue, as the brain picks |
 
 Yes → Team venue (still do Phase 1 planning first). Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + main session (no nested teams).
 
-### Phase 1: Confirm Research Plan with User (MANDATORY)
+### Phase 1: Confirm Research Plan with User
 
 Before executing, present your research plan and let the user confirm or adjust. Keep it lightweight — one message, not 4 separate questions:
 
@@ -316,15 +318,15 @@ The brain decides agent count, iterations, and depth — these are NOT confirmed
 
 ### Phase 2: Plan (YOU do this — don't delegate)
 
-1. **Apply confirmed settings** — use mode, sub-topics, languages, and source stack from Phase 1
-2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 1). This determines which languages to assign beyond the EN+ZH default.
+1. **Apply confirmed settings** — use sub-topics, languages, and source stack from Phase 1
+2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 1). This determines which languages to assign beyond the EN + ZH + ZH-TW default.
 3. **Identify elite forums per language** — see "Elite Forum Targeting" below. Include `site:` targets in agent prompts.
 4. **Decompose** — break topic into sub-questions using structured decomposition (see below)
-5. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages in higher modes.
-6. **Set iterations** — per confirmed mode
+5. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages when the topic is broad or T1 coverage comes back thin.
+6. **Iterations** — none preset; the brain stops on saturation (Phase 4)
 7. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
 
-**Structured Decomposition (MANDATORY for medium+ modes)**
+**Structured Decomposition** (any topic with more than one part)
 
 Don't just split by obvious keywords. Apply these lenses:
 
@@ -367,9 +369,9 @@ Wave 2 (parallel):
 
 Simple question? 2 agents may suffice. Complex landscape? 10+ agents across waves. **Brain decides — no preset.**
 
-### Elite Forum Targeting (MANDATORY for high/max, RECOMMENDED for all)
+### Elite Forum Targeting
 
-Generic web search favors SEO-optimized sites over niche/elite communities where real expertise lives. You MUST include elite forum targets in agent prompts.
+Generic web search favors SEO-optimized sites over niche/elite communities where real expertise lives, so include elite forum targets in every gatherer prompt.
 
 **How it works:**
 1. Read `references/elite-forums/overview.md` for the validated forum reference (or use the table below as quick-reference)
@@ -378,7 +380,7 @@ Generic web search favors SEO-optimized sites over niche/elite communities where
 4. Also read `references/elite-forums/content-farms.md` to know what to deprioritize
 5. The forum list is a **starting point** — agents should discover more via search
 
-**Starting-point forums** (research-validated June 2026 — full details in `research/elite-forums/`):
+**Starting-point forums** (research-validated June 2026 — full details in `references/elite-forums/`):
 
 | Lang | Elite forums (use `site:` targeting) | Content farms (deprioritize) |
 |------|--------------------------------------|------------------------------|
@@ -454,7 +456,7 @@ Confidence levels: **high** = 3+ independent sources agree. **medium** = 2 sourc
 | **Data accuracy** | Are specific numbers (costs, stars, dates) verified from primary sources, or just repeated from one blog? | Cross-check load-bearing claims against primary source (GitHub, official docs, actual invoices). Unverified numbers must be flagged |
 | **Distribution** | Is the data representative or just outliers/cherry-picked? What's the spread? | Report range (min-median-max), not just one data point. Flag if sample size is too small to generalize |
 
-**Step 3: Gem Extraction (MANDATORY — gather is the small step, this is where value lives)**
+**Step 3: Gem Extraction** (gather is the small step; this is where value lives)
 
 Gather collects raw data. YOUR job is to find **gems** — real practitioner insights buried under SEO noise. Apply [gem-detection](references/forager/gem-detection.md) scoring:
 
@@ -476,7 +478,7 @@ If coverage assessment shows gaps:
 
 This phase separates surface search from real research. NEVER skip.
 
-### Post-Workflow Verification (MANDATORY — workflow mode only)
+### Post-Workflow Verification (workflow venue only)
 
 After a workflow completes, BEFORE writing the final report:
 
@@ -497,9 +499,9 @@ Merge into one report at `./research/YYMMDD-<topic>/` (relative to cwd, split pe
 4. **List contradictions** — present honestly
 5. **Unresolved questions** — what couldn't be answered
 
-**Citation Format (MANDATORY):**
+**Citation Format:**
 
-Every case study and data claim MUST include source URL inline:
+Every case study and data claim carries its source URL inline:
 - Case study: `Novo Nordisk: 90% reduction ([anthropic.com](URL))`
 - Stat: `79% of top performers use AI ([Salesforce](URL))`
 - Tool claim: `60min/day savings ([53ai.com](URL))`
@@ -521,12 +523,12 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | Blurring Phase 0 and Phase 1 | Phase 0 = "is this researchable?" Phase 1 = "confirm my plan parameters" |
 | Skipping elite forum targeting | Generic search surfaces content farms. MUST include `site:` targets in agent prompts |
 | Dropping contradictions/warnings in synthesis | Extract ALL structured fields (findings + key_insights + contradictions). Shallow extraction = incomplete report |
-| All workflow agents on same model | Use `model: 'sonnet'` for gatherers/cross-checkers, `model: 'opus'` ONLY for synthesis |
+| All workflow agents on same model | Use `model: 'sonnet'` for gatherers/cross-checkers, `model: 'opus'` only for the REASONING brain and synthesis |
 | Synthesis has 0 citations | Raw reports have URLs → synthesis MUST preserve them inline. 0 citations = failed synthesis |
-| No budget guards in workflow | Add `budget.remaining()` checks before cross-check and synthesis phases |
+| No budget guards in workflow | Guard on `(budget.spent() - start) < CEILING - SYNTH_RESERVE` before cross-check and synthesis — `budget.remaining()` is `Infinity` when no target is set |
 | Elite forums not in workflow prompt | The table is in THIS skill but doesn't auto-transfer — MUST paste forum list into each agent prompt |
 | Trusting workflow output without verification | ALWAYS check if synthesis agent actually ran vs returned spend-limit error |
-| Interpreting "quick/nhanh/fast" as skip phases | "Quick" = low MODE (fewer iterations), NOT skip Phase 0/1/4. Skipping phases burns MORE tokens (wrong target → user corrects → redo) |
+| Interpreting "quick/nhanh/fast" as skip phases | "Quick" = shallower depth (fewer iterations), NOT skip Phase 0/1/4. Skipping phases burns MORE tokens (wrong target → user corrects → redo) |
 | Relaying gatherer data without REFLECT pass | YOU are the brain, not a relay station. Even low mode: 1 REFLECT pass checking intent-data match, scent redirect, data accuracy |
 | "It doesn't exist" without questioning your search term | If user implies X is real but data says nothing → YOU likely searched for the wrong thing. Follow search redirects, ask user, or pivot |
 | Reporting single data points without distribution | Report range (min-median-max), flag small sample sizes, note if data is from one source vs cross-verified |
@@ -540,6 +542,6 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 - [elite-forums overview](references/elite-forums/overview.md) — validated forum reference (161 forums, 8 languages)
 - [content-farms](references/elite-forums/content-farms.md) — sites to deprioritize per language
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
-- [forager (the brain)](references/forager/overview.md) — REFLECT/STEER methodology fused in as the loop's CONTROL step (was a standalone skill)
+- [forager (the brain)](references/forager/overview.md) — REFLECT/STEER methodology, the loop's CONTROL step
 - [adaptive-research spec](references/adaptive-research/overview.md) — target redesign: gather/reason split, adaptive-depth loop, control rod, Phase 0 budget
 - [team-research](references/team-research.md) — live supervised agent-team venue: steering-lead brain + gatherers + verifier, exchanging via SendMessage

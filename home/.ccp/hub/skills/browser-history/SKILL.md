@@ -23,10 +23,10 @@ Search the user's browser history to find visited pages, analyze browsing patter
 First, detect available browsers by running:
 
 ```bash
-./find-browser.sh
+<this skill's directory>/find-browser.sh
 ```
 
-- Output: PATH,TYPE,BROWSER,LAST_MODIFIED
+- Output: tab-separated PATH, TYPE, BROWSER_NAME, MTIME, most recent first
 - **TYPE**: `firefox` or `chromium` (determines SQL syntax)
 - Use the first result (most recently used browser) by default
 - If multiple browsers were used recently (within last 24h), ask the user which one to search
@@ -153,5 +153,3 @@ ORDER BY last_visit_time DESC;
 - When showing history, include the date and a clickable link
 - If results are numerous, summarize by domain or time period
 - You might include a small ASCII/Unicode chart (daily breakdown, histogram) if relevant
-
-See @README.md for output examples.

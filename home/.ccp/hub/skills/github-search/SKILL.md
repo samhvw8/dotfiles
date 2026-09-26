@@ -1,6 +1,6 @@
 ---
 name: github-search
-description: "Search GitHub for repos, code, and usage examples using gh CLI. Capabilities: repo discovery, code search, finding library usage patterns, issue/PR search. Actions: search, find, discover repos/code/examples. Keywords: gh, github, search repos, search code, find examples, how to use library, stars, language filter. Use when: finding repositories, searching code patterns, discovering how libraries are used, exploring open source."
+description: "Search GitHub with the gh CLI: find repositories, code, and issues/PRs, and see how open-source projects use a library. Use when looking for repos, usage examples, or reported bugs and workarounds on GitHub."
 allowed-tools: Bash, Read
 ---
 
@@ -92,8 +92,8 @@ gh search repos "stars:>1000 -topic:cryptocurrency -topic:blockchain"
 # By topic
 gh search repos "topic:cli topic:terminal stars:>100"
 
-# Recently updated
-gh search repos "language:python pushed:>2024-01-01"
+# Recently updated (pick a date a few months back)
+gh search repos "language:python pushed:>YYYY-MM-DD"
 ```
 
 **Output formats:**
@@ -197,7 +197,7 @@ gh search repos "topic:Z -topic:cryptocurrency -topic:blockchain -topic:web3"
 
 ### "Find recent active projects"
 ```bash
-gh search repos "language:go pushed:>2024-06-01 stars:>100" --sort=updated
+gh search repos "language:go pushed:>YYYY-MM-DD stars:>100" --sort=updated
 ```
 
 ## Tips

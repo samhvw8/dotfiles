@@ -36,7 +36,7 @@ Do NOT escalate routine questions. Always state: "Escalating to a team debate be
 You (the main session) are the **moderator + synthesizer**. You do not argue — you frame, spawn, steer, and synthesize.
 
 1. **Frame the motion.** State the proposition/decision and carve 2–4 *distinct* stances that collide. 2–3 debaters is the sweet spot; 4 only when the space is genuinely multi-sided. More debaters = more cross-talk to track.
-2. **Spawn debaters — all in one message.** One `Agent` call per debater, each with a meaningful `name` (e.g. `advocate`/`skeptic`/`pragmatist`, or position-named `monolith`/`microservices`). Use your strongest model (`model: "opus"`) for reasoning depth. Each spawn prompt carries FULL context — teammates do **not** inherit your conversation history. Give each the roster of opponents *by name* so they can address each other. (Optionally reference the `brainstormer` agent type for a debater role.)
+2. **Spawn debaters — all in one message.** One `Agent` call per debater, each with a meaningful `name` (e.g. `advocate`/`skeptic`/`pragmatist`, or position-named `monolith`/`microservices`). Use your strongest model (`model: "opus"`) for reasoning depth. Each spawn prompt carries FULL context — teammates do **not** inherit your conversation history. Give each the roster of opponents *by name* so they can address each other.
 3. **Opening statements.** The spawn prompt tells each debater to open by `SendMessage`-ing its single strongest case to each opponent. They start arguing on spawn.
 4. **Cross-examination.** Each debater attacks the *weakest point in the opponent's latest message* and defends the strongest objection to its own. Messages from teammates are delivered automatically; you receive them and idle notifications without polling.
 5. **Converge.** When exchanges stop producing new arguments (debaters idle / only restating), message each to close: what it concedes, what survives, its final position.
@@ -71,7 +71,7 @@ Rules of engagement:
 5. CLOSE: when the moderator asks, reply with — what you concede, what survives, and
    your final position with confidence.
 
-Do NOT edit files. Do NOT spawn agents. Think hard; argue only through messages.
+Do NOT edit files. Do NOT spawn agents. Argue only through messages.
 ```
 
 ## Moderation rules (make it actually work)

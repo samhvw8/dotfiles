@@ -92,7 +92,7 @@ gh search issues "[тема] ошибка OR сломано OR заблокир�
 # Per-repo health check (run on top repos from repo search)
 gh search issues --repo [owner/repo] "bug OR broken" --sort updated --limit 5
 gh search prs --repo [owner/repo] --state merged --sort updated --limit 5
-gh search commits --author-date ">2025-01-01" --repo [owner/repo] --limit 5
+gh search commits --repo [owner/repo] --sort committer-date --limit 5
 ```
 
 | Sort flag | When to use |

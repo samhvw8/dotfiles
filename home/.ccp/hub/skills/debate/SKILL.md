@@ -1,6 +1,6 @@
 ---
 name: debate
-description: "Live multi-agent debate. Spawns named teammates (agent teams) that argue WITH EACH OTHER directly via SendMessage — a real, persistent debate, not one agent simulating both sides in a single reply. Heuristic: use teammates when the agents need to talk to each other (debate, collaborative brainstorm, hand-offs); use parallel subagents when they don't (independent fan-out). Keywords: debate, debate this, argue both sides, pressure-test, pressure test, steelman, devil's advocate, red team, red-team, challenge this, dialectic, adversarial review, two advocates, for and against, attack this idea. Use when: user types /debate, says 'debate this', 'argue both sides', 'pressure-test this decision', or wants a high-stakes call stress-tested by opposing positions that engage each other live. Requires the MAIN session (a subagent cannot spawn teammates) and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1. Do NOT use for: simple questions, mechanical tasks, or when one analysis suffices."
+description: "Live multi-agent debate: named teammates (agent teams) argue with each other via SendMessage, you moderate and synthesize what survived — not one agent simulating both sides. Use when the user types /debate or wants a decision pressure-tested by opposing positions — debate this, argue both sides, steelman, red-team, devil's advocate. Requires the main session and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1. Not for simple questions, mechanical tasks, or when one analysis suffices."
 ---
 
 # Debate

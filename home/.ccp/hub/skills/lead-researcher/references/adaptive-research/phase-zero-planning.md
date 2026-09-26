@@ -1,15 +1,15 @@
 # Phase Zero Planning
 
-What `lead-researcher` confirms with the user before any gathering. Adds budget + relative depth to the existing mode/sub-topics/languages questions, in one `AskUserQuestion`.
+What `lead-researcher` confirms with the user before any gathering, in the single Phase 1 plan message.
 
-## The four confirmations
+## The confirmations
 
 | # | Question | Why |
 |---|---|---|
-| 1 | Mode (low/medium/high/max) | breadth + languages |
-| 2 | Sub-topics | what gets researched |
-| 3 | Languages | EN + ZH always; +RU etc. |
-| 4 | **Depth budget (absolute + relative)** | sizes and brakes the adaptive loop |
+| 1 | Target + sub-topics | what gets researched |
+| 2 | Languages | default EN + ZH + ZH-TW; + T1/T2 from the language matrix |
+| 3 | Source stack | which source types gatherers search |
+| 4 | **Depth budget (absolute + relative)** | sizes and brakes the adaptive loop (workflow venue) |
 
 ## Two complementary depth knobs
 
@@ -21,7 +21,7 @@ What `lead-researcher` confirms with the user before any gathering. Adds budget 
 ## Absolute estimate (deterministic, no agent)
 
 ```
-agents     = sub_topics × languages × avg_waves(mode)
+agents     = sub_topics × languages × expected_waves
 gather_est = agents × ~15k
 synth_est  = max(50k, 0.20 × gather_est)
 suggested  = gather_est + synth_est
@@ -40,10 +40,10 @@ Scales with the **confirmed plan**, not a blind mode default.
 
 ## How the confirmed number becomes a real brake
 
-The runtime `budget.total` is set by the user's `+Nk` directive — a skill can't force it. So `gatherer` carries the confirmed ceiling itself, self-enforced via `spent()` deltas:
+The runtime `budget.total` is set by the user's `+Nk` directive — a skill can't force it. So the workflow script carries the confirmed ceiling itself, self-enforced via `spent()` deltas:
 
 ```js
-const CEILING = args.budgetCeiling
+const CEILING = args.budgetCeiling ?? 200_000   // never undefined → no NaN
 const SYNTH_RESERVE = Math.max(50_000, 0.20 * CEILING)
 const GATHER_CEILING = CEILING - SYNTH_RESERVE
 const start = budget.spent()

@@ -46,7 +46,7 @@ You (the main session) are the **facilitator + synthesizer**. You do not generat
 
 1. **Frame the question — open, not binary.** A "how might we…" or "what could we…", with constraints and what a great idea looks like. No yes/no motions (that's debate).
 2. **Assign distinct lenses.** 2–4 teammates, each a *generative* perspective (First Principles, User, Futurist, Operator, Minimalist, Contrarian…). Name them. Designate one **wildcard** to keep the space open.
-3. **Spawn all in one message.** One `Agent` call per teammate, `model: "opus"`, each with FULL context (teammates don't inherit your history) and the roster *by name*. (The `brainstormer` agent type fits a teammate role.)
+3. **Spawn all in one message.** One `Agent` call per teammate, `model: "opus"`, each with FULL context (teammates don't inherit your history) and the roster *by name*.
 4. **Phase 1 — Diverge.** Each posts its initial ideas *independently* first (seed the space before anyone anchors). Tell them to hold judgment.
 5. **Phase 2 — Cross-pollinate.** Now they read each other and BUILD: "yes-and", combine two ideas, push one further, find the adjacent idea. Each message must **add or extend**, never just approve.
 6. **Phase 3 — Cluster & elevate.** They group ideas, surface the most novel/promising, and develop the top few deeper together.

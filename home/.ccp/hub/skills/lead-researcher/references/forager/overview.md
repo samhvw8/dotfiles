@@ -1,6 +1,6 @@
 # Forager
 
-The reasoning **brain** of lead-researcher's adaptive iterate loop — the CONTROL step. No longer a standalone skill; this is its methodology, fused into lead-researcher. Built from 6 human research methodologies (see [methodology-map](methodology-map.md)).
+The reasoning **brain** of lead-researcher's adaptive iterate loop — the CONTROL step. Built from 6 human research methodologies (see [methodology-map](methodology-map.md)).
 
 ## Role in the loop
 
@@ -34,7 +34,7 @@ Each iteration, after GATHER DATA, forager runs **REASONING (=REFLECT) → EXPAN
 IF saturated (<2 new items × 2 iters)        → STOP
 IF gaps in CORE sub-questions                → DEEPEN (targeted queries)
 IF important NEW sub-topic                   → EXPAND (admission-controlled;
-                                                high/max may auto-admit, else ask user)
+                                                workflow venue may auto-admit, else ask user)
 IF contradictions unresolved                 → INVESTIGATE (agents to resolve)
 IF gather budget / depth cap hit             → STOP → synthesize
 IF focused AND all sub-qs partial/covered    → STOP (sufficient)

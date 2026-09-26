@@ -25,7 +25,7 @@ goal_state = {
 }
 ```
 
-This might NOT need forager — lead-researcher handles bounded comparisons well. Forager adds value when sub-questions aren't known upfront.
+Bounded comparisons need little steering; the brain earns its cost when sub-questions aren't known upfront.
 
 ## Open-Ended Exploration
 
@@ -90,5 +90,5 @@ Iteration 5: coverage all "covered", 1 new item → SATURATED → terminate
 
 ## Related
 
-- [SKILL.md](../SKILL.md) — forager skill main file
+- [overview.md](overview.md) — forager methodology
 - [methodology-map.md](methodology-map.md) — human methodology sources

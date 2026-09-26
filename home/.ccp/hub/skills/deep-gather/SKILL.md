@@ -12,9 +12,7 @@ Internet gathering engine — the search-fetch loop that collects, cross-referen
 | **Standalone** | Invoke directly to deep-gather a topic → returns collected sources + data |
 | **GATHER-DATA step** | lead-researcher's research loop calls it each iteration (via gatherer agents) |
 
-Honoring **YAGNI**, **KISS**, **DRY**. Be honest, be brutal, straight to the point, be concise.
-
-**Your caller (lead-researcher) assigned you:** a topic, language(s), and iteration count. Follow those assignments. Search in your assigned language(s) — don't default to English unless assigned English.
+**Your caller (lead-researcher) assigned you:** a topic, language(s), and an output path. Follow those assignments. Search in your assigned language(s) — don't default to English unless assigned English.
 
 ## Phase 1: Scope Definition
 
@@ -65,7 +63,7 @@ Write queries in the target language — do not search in English expecting Chin
 ### Search Strategy
 
 - 8-15 targeted queries per language, not broad sweeps
-- Start with `[topic] + "best practices"` or `"system prompt"` for patterns
+- Start with `[topic] + "best practices"` for patterns
 - Follow with `[topic] + specific sub-problems`
 - Cross-reference: if three sources across languages agree, it's robust
 - Search iteratively: first-round results inform second-round queries
@@ -79,7 +77,7 @@ Write queries in the target language — do not search in English expecting Chin
   5. Blog posts, tutorials (secondary — verify against tier 1-4)
   6. Content farms (CSDN reposts, 百家号, Zen.yandex) — DEPRIORITIZE
 
-**Max 60 search tool calls total** — think carefully before each one. User may request fewer.
+**Max 60 search tool calls total.** User may request fewer.
 
 ### Search-Fetch Loop
 
@@ -239,7 +237,7 @@ gh api search/repositories -f q="[中文关键词] stars:>50" \
 
 ### Execution: Parallel Batching
 
-**MUST batch independent `gh` searches into parallel Bash calls.** Do NOT run sequentially.
+Batch independent `gh` searches into parallel Bash calls.
 
 ### Search Strategy
 
@@ -321,7 +319,7 @@ If `site:reddit.com` WebSearch returns empty (common due to API restrictions):
 | **Academic** | arXiv, bioRxiv, SSRN, PubMed Central, Semantic Scholar, CORE, Unpaywall, OpenAlex | CNKI (中国知网), Wanfang (万方数据), Baidu Scholar (百度学术), CQVIP (维普) | eLibrary.ru, CyberLeninka, Math-Net.ru |
 | **Code/Packages** | GitHub, GitLab, npm, PyPI, crates.io, pkg.go.dev | Gitee, OSChina (开源中国) | GitFlic |
 | **Docs/Standards** | MDN, DevDocs, W3C, IETF RFCs | Chinese national standards (GB) | GOST standards |
-| **Archives/Cache** | archive.org, Google Cache, Common Crawl | web.archive.org (works for .cn) | web.archive.org |
+| **Archives/Cache** | archive.org, Common Crawl | web.archive.org (works for .cn) | web.archive.org |
 | **Q&A** | Stack Overflow, Stack Exchange, Quora | Zhihu (知乎), SegmentFault, CSDN Q&A | Habr Q&A, CyberForum.ru, sql.ru |
 | **Forums/Discussion** | Reddit ⚠️, HN, Lobsters, Tildes, IndieHackers, Product Hunt | V2EX, Tieba (百度贴吧), NodeSeek, Hostloc, 52pojie (吾爱破解) | Habr, OpenNET.ru, LOR (linux.org.ru), 4PDA, iXBT |
 | **Dev Blogs** | dev.to, Medium, Hashnode | Juejin (掘金), CSDN blogs, InfoQ CN | Tproger, Habr blogs, vc.ru/dev |
@@ -364,7 +362,7 @@ Also verify:
 
 For report structure and formatting, read `references/report-template.md`.
 
-Reports are saved to `./report/YYMMDD-<topic>.md` in the current working directory.
+Save the report to the path your caller assigned; standalone, use `./report/YYMMDD-<topic>.md` in the current working directory.
 
 **MANDATORY: Every claim MUST cite its source.** Use inline links `[text](url)` next to each claim. End the report with a `## Sources` section listing all URLs used. No claim without a source — if you can't cite it, don't include it.
 

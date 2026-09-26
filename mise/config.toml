@@ -16,24 +16,16 @@ binstall = true
 credential_command = "gh auth token"
 
 [tools]
-direnv = "latest"
 go = "1.27.1"
 jq = "latest"
-k6 = "latest"
 node = "22"
 python = "3.11"
-ripgrep = "latest"
 rust = "latest"
-zig = "0.11.0"
 shellcheck = "latest"
-shfmt = "latest"
 uv = "latest"
 yt-dlp = { version = "latest", rename_exe = "yt-dlp" }
 yq = "latest"
 neovim = "0.11.4"
-lazygit = "latest"
-dasel = "latest"
-hurl = "latest"
 rg = "latest"
 cloudflared = "latest"
 ast-grep = "latest"
@@ -43,10 +35,7 @@ delta = "latest"
 usage = "latest"
 "forgejo:mergiraf/mergiraf" = "0.17.0"
 bun = "latest"
-jnv = "latest"
-"npm:mcp-chrome-bridge" = "latest"
 rclone = "latest"
-git-lfs = "latest"
 kubectl = "latest"
 k9s = "latest"
 pnpm = "latest"
@@ -54,7 +43,6 @@ pnpm = "latest"
 "npm:playwriter" = "latest"
 vhs = "latest"
 zellij = "latest"
-"github:pinchtab/pinchtab" = "latest"
 wrangler = "latest"
 "pipx:it2" = "latest"
 "npm:cf" = "latest"
@@ -62,11 +50,7 @@ claude = { version = "latest", minimum_release_age = "0s" }
 gcloud = "584.0.0"
 aube = "latest"
 flyctl = "latest"
-firebase = "15.17.0"
 opengrep = "latest"
-"github:Ataraxy-Labs/weave" = { version = "latest", matching = "weave-cli", exe = "weave" }
-"http:weave-driver" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-driver-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-driver" }
-"http:weave-mcp" = { version = "v0.3.6", url = "https://github.com/Ataraxy-Labs/weave/releases/download/{{ version }}/weave-mcp-{{ arch(arm64=\"aarch64\", x64=\"x86_64\") }}-{{ os(macos=\"apple-darwin\", linux=\"unknown-linux-gnu\") }}.tar.gz", exe = "weave-mcp" }
 "npm:impeccable" = "latest"
 "github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
 "github:Ataraxy-Labs/sem" = { version = "latest", minimum_release_age = "0s" }
@@ -76,7 +60,7 @@ opengrep = "latest"
 antigravity-cli = "latest"
 pandoc = "3.9.0.2"
 pi = "latest"
-"npm:@companion-ai/feynman" = "latest"
+"npm:@companion-ai/feynman" = { version = "latest", trust_policy_excludes = ["pi-subagents@0.71.0"] }  # maintainer publishes manually since 0.37.2; 0.71.0 verified vs git tag 2026-09-25
 "github:can1357/oh-my-pi" = { version = "latest", minimum_release_age = "0s" }
 opencode = "latest"
 ruff = "latest"
@@ -86,6 +70,7 @@ fzf = "latest"
 fd = "latest"
 bat = "latest"
 atuin = "latest"
+"pipx:nvitop" = { version = "latest", os = ["linux"] }
 "pipx:huggingface_hub" = "latest"
 
 # Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.

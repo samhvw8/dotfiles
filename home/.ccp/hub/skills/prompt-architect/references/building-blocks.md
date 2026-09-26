@@ -155,7 +155,7 @@ If examples map to known taxonomy/ontology (HTTP codes, sentiment, OWASP, design
 
 ## Chain-of-Thought
 
-When complex reasoning needed. Note: for reasoning models (o1, o3, Claude with extended thinking), explicit CoT may be redundant or harmful. Check model-specific guidance.
+Only for models without built-in reasoning. For Claude, thinking is configured (effort level), not prompted — "think step by step" and `<thinking>`/scratchpad instructions are redundant and can cause over-planning.
 
 ## Custom Sections
 
@@ -256,4 +256,4 @@ After:
 - **Soul:** Tensions generated for the specific domain, not copied. Personas actually argue. Collision produces insight.
 - **Preservation:** Domain knowledge depth maintained. Detailed frameworks/laws/principles kept intact. Only compressed if equivalent term exists.
 - **Research grounding:** Mental models, anti-patterns, and tensions informed by Phase 2 findings, not invented from generic assumptions.
-- **Phases:** If the agent has tools and serves ambiguous requests, does the prompt instruct clarify→research→execute? Or does it jump straight to answering?
+- **Grounding:** If the agent has tools and serves ambiguous requests, does the prompt say what must be true before it answers? Phases are scripted only where order matters.

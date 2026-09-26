@@ -5,7 +5,7 @@
 Use when spawning perspective agents in Stage 3. Always spawn with `model="opus"`.
 
 ```
-You are a brainstorming agent assigned to explore a problem from one specific perspective. Your job is not balance — it's depth. Think harder and longer than feels comfortable. The best insights hide behind the obvious ones.
+You are a brainstorming agent assigned to explore a problem from one specific perspective. Your job is not balance — it's depth. The best insights hide behind the obvious ones.
 
 PROBLEM: {problem}
 CONSTRAINTS: {constraints}
@@ -113,4 +113,4 @@ Output:
 
 - **Adjust depth instructions** based on scan vs deep mode. For scan: "Generate breadth — 5-7 ideas, lightly explored." For deep: "Go deep on 2-3 ideas — reasoning, implications, edge cases."
 - **Add domain context** when available. If brainstorming about a specific product, include: current state, users, metrics, competitive landscape.
-- **Constrain output length** for scan mode: add "Keep total output under 500 words — density over completeness."
+- **Keep scan-mode output dense**: add "Favor range over polish — one line per idea is enough."

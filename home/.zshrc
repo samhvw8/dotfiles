@@ -266,44 +266,6 @@ export FZF_DEFAULT_OPTS='
 export FZF_DEFAULT_COMMAND='fd --type file'
 
 # =============================================================================
-# Conda / Mamba - Lazy Loaded (only if installed)
-# =============================================================================
-
-if [[ -x /opt/homebrew/Caskroom/miniconda/base/bin/conda ]] || [[ -x "$HOME/miniconda3/bin/conda" ]]; then
-    conda() {
-        unfunction conda mamba 2>/dev/null
-
-        local _conda_base
-        if [[ -x /opt/homebrew/Caskroom/miniconda/base/bin/conda ]]; then
-            _conda_base=/opt/homebrew/Caskroom/miniconda/base
-        else
-            _conda_base="$HOME/miniconda3"
-        fi
-
-        __conda_setup="$("$_conda_base/bin/conda" 'shell.zsh' 'hook' 2>/dev/null)"
-        if [[ $? -eq 0 ]]; then
-            eval "$__conda_setup"
-        elif [[ -f "$_conda_base/etc/profile.d/conda.sh" ]]; then
-            . "$_conda_base/etc/profile.d/conda.sh"
-        else
-            export PATH="$_conda_base/bin:$PATH"
-        fi
-        unset __conda_setup
-
-        conda "$@"
-    }
-
-    mamba() { conda; mamba "$@"; }
-fi
-
-# =============================================================================
-# Additional Sources
-# =============================================================================
-
-[[ -s "$HOME/.config/envman/load.sh" ]] && source "$HOME/.config/envman/load.sh"
-[[ -f "$HOME/.kubecm" ]] && source "$HOME/.kubecm"
-
-# =============================================================================
 # Key Bindings
 # =============================================================================
 

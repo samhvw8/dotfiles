@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: "Git workflow management with atomic commit principles. Capabilities: commit organization, branching strategies, merge/rebase workflows, PR management, history cleanup, staged change analysis, single-responsibility commits. Actions: commit, push, pull, merge, rebase, branch, stage, stash git operations. Keywords: git commit, git push, git pull, git merge, git rebase, git branch, git stash, atomic commit, commit message, conventional commits, branching strategy, GitFlow, trunk-based, PR, pull request, code review, git history, cherry-pick, squash, amend, interactive rebase, staged changes. Use when: organizing commits, creating branches, merging code, rebasing, writing commit messages, managing PRs, cleaning git history, analyzing staged changes."
+description: "Sam's git conventions: split staged changes into atomic single-responsibility commits, conventional-commit messages, branch naming, and history cleanup without interactive commands. Use when committing (especially many files), writing commit messages, naming branches, preparing a PR, or squashing/rewriting history."
 ---
 
 # Git Workflow & Best Practices
@@ -25,7 +25,7 @@ Activate for any git operation:
 
 ### Single Responsibility Rule ⭐
 
-**CRITICAL:** Before committing, analyze staged changes and divide into atomic commits.
+Before committing, analyze staged changes and divide them into atomic commits.
 
 **Process:**
 1. Run `git status` to see all staged files
@@ -37,11 +37,11 @@ Activate for any git operation:
 
 **Why:** Makes history reviewable, revertable, and maintainable.
 
-### ⛔ MANDATORY Gate Before Commit
+### Gate Before Commit
 
-**Ask yourself:** "If I need to revert ONLY ONE of these changes tomorrow, can I?"
+**Ask:** "If I need to revert only one of these changes tomorrow, can I?"
 
-- **NO** → You have multiple concerns → **MUST split into separate commits**
+- **NO** → multiple concerns → split into separate commits
 - **YES** → Proceed with single commit
 
 **Common trap:** "All files are related to the same feature request" is NOT a valid reason to bundle. Each independently revertable change = separate commit.
@@ -147,7 +147,7 @@ git add \
   src/infrastructure/database/TradingStyleRepository.ts \
   src/infrastructure/database/migrations/create_trading_styles.ts
 
-git commit -m "feat: Add trading style persona system for AI-powered analysis"
+git commit -m "feat: add trading style persona system for AI-powered analysis"
 
 # 3. Commit #2 - History enhancements
 git add \
@@ -156,7 +156,7 @@ git add \
   src/infrastructure/database/TimeseriesRepository.ts \
   src/components/layout/AppLayout.tsx
 
-git commit -m "feat: Add comprehensive search and filtering to history page"
+git commit -m "feat: add search and filtering to history page"
 ```
 
 **Result:** Clean, focused commits that are independently reviewable and revertable.
@@ -274,25 +274,6 @@ git push origin feature/new-feature
 # Create pull request (via GitHub/GitLab UI)
 ```
 
-### Branch Management
-
-```bash
-# List all branches
-git branch -a
-
-# Switch branches
-git checkout branch-name
-
-# Delete local branch
-git branch -d branch-name
-
-# Delete remote branch
-git push origin --delete branch-name
-
-# Rename current branch
-git branch -m new-name
-```
-
 ---
 
 ## Staging Operations
@@ -311,20 +292,16 @@ git add .
 
 # Stage by file extension
 git add *.ts
-
-# Interactive staging (patch mode)
-git add -p file.ts
 ```
 
-### Patch Mode Operations
+### Staging Part of a File
 
-When using `git add -p`:
-- `y` - stage this hunk
-- `n` - don't stage this hunk
-- `s` - split into smaller hunks
-- `e` - manually edit hunk
-- `q` - quit
-- `?` - help
+Interactive commands (`git add -p`, `git add -i`) don't work in this harness. To stage only some hunks, write them to a patch and apply it to the index:
+
+```bash
+git diff path/to/file > /tmp/all.patch   # edit down to the hunks you want
+git apply --cached /tmp/part.patch
+```
 
 ### Unstaging
 
@@ -343,34 +320,6 @@ git restore --staged src/features/
 
 ## History Management
 
-### Viewing History
-
-```bash
-# Compact history
-git log --oneline -10
-
-# Detailed history
-git log -5
-
-# With file changes
-git log --stat -3
-
-# Specific file history
-git log -- path/to/file
-
-# Graph view
-git log --oneline --graph --all
-
-# Search commits
-git log --grep="search term"
-
-# By author
-git log --author="name"
-
-# Date range
-git log --since="2 weeks ago"
-```
-
 ### Amending Commits
 
 ```bash
@@ -384,134 +333,23 @@ git commit --amend -m "new message"
 
 **⚠️ Warning:** Only amend commits that haven't been pushed!
 
-### Interactive Rebase
+### Squashing and Rewriting (non-interactive)
+
+`git rebase -i` needs an editor and doesn't work in this harness. Before pushing:
 
 ```bash
-# Rebase last 3 commits
-git rebase -i HEAD~3
+# Squash the last 3 commits into one
+git reset --soft HEAD~3
+git commit -m "type: combined message"
 
-# Rebase from specific commit
-git rebase -i commit-hash
-```
-
-**Options:**
-- `pick` - keep commit as-is
-- `reword` - change commit message
-- `edit` - modify commit
-- `squash` - combine with previous
-- `fixup` - like squash, discard message
-- `drop` - remove commit
-
-### Squashing Commits
-
-Before pushing:
-```bash
-# Squash last 3 commits
-git rebase -i HEAD~3
-# Mark commits as "squash" or "fixup"
-```
-
-### Cherry-picking
-
-```bash
-# Apply specific commit to current branch
-git cherry-pick commit-hash
-
-# Cherry-pick multiple commits
-git cherry-pick hash1 hash2 hash3
+# Fold a fix into an earlier commit
+git commit --fixup <hash>
+git rebase --autosquash <hash>~1   # git 2.44+ autosquashes without -i
 ```
 
 ---
 
-## Merging & Rebasing
-
-### Merge vs Rebase
-
-**Merge:**
-- Creates merge commit
-- Preserves complete history
-- Use for: integrating feature branches to main
-
-```bash
-git checkout main
-git merge feature/new-feature
-```
-
-**Rebase:**
-- Rewrites history, linear timeline
-- Cleaner history
-- Use for: updating feature branch with main changes
-
-```bash
-git checkout feature/new-feature
-git rebase main
-```
-
-### Merge Strategies
-
-**Fast-forward (default):**
-```bash
-git merge feature/branch
-```
-
-**No fast-forward (always create merge commit):**
-```bash
-git merge --no-ff feature/branch
-```
-
-**Squash (combine all commits):**
-```bash
-git merge --squash feature/branch
-git commit -m "feat: merged feature"
-```
-
-### Resolving Conflicts
-
-```bash
-# Check conflict status
-git status
-
-# View conflicts
-git diff
-
-# After resolving conflicts in editor
-git add resolved-file.ts
-
-# Continue rebase
-git rebase --continue
-
-# Or abort
-git rebase --abort
-```
-
----
-
-## Remote Operations
-
-### Working with Remotes
-
-```bash
-# View remotes
-git remote -v
-
-# Add remote
-git remote add origin https://github.com/user/repo.git
-
-# Update remote URL
-git remote set-url origin new-url
-
-# Fetch from remote
-git fetch origin
-
-# Pull with rebase
-git pull --rebase origin main
-
-# Push to remote
-git push origin branch-name
-
-# Force push (use carefully!)
-git push --force-with-lease origin branch-name
-```
+## Pull Requests
 
 ### Pull Request Workflow
 
@@ -548,145 +386,9 @@ git branch -d feature/new-feature
 
 ---
 
-## Advanced Techniques
+## Recovery
 
-### Stashing
-
-```bash
-# Stash current changes
-git stash
-
-# Stash with message
-git stash save "work in progress"
-
-# List stashes
-git stash list
-
-# Apply last stash
-git stash apply
-
-# Apply and remove stash
-git stash pop
-
-# Apply specific stash
-git stash apply stash@{2}
-
-# Drop stash
-git stash drop stash@{0}
-
-# Clear all stashes
-git stash clear
-```
-
-### Tagging
-
-```bash
-# Create lightweight tag
-git tag v1.0.0
-
-# Create annotated tag
-git tag -a v1.0.0 -m "Release version 1.0.0"
-
-# List tags
-git tag
-
-# Push tag to remote
-git push origin v1.0.0
-
-# Push all tags
-git push origin --tags
-
-# Delete tag
-git tag -d v1.0.0
-git push origin --delete v1.0.0
-```
-
-### Bisect (Finding Bugs)
-
-```bash
-# Start bisect
-git bisect start
-
-# Mark current commit as bad
-git bisect bad
-
-# Mark known good commit
-git bisect good commit-hash
-
-# Git will checkout middle commit
-# Test it, then mark as good or bad
-git bisect good  # or git bisect bad
-
-# Repeat until bug is found
-# Reset after finding
-git bisect reset
-```
-
-### Reflog (Recovery)
-
-```bash
-# View reflog
-git reflog
-
-# Recover lost commit
-git reset --hard commit-hash
-
-# Recover deleted branch
-git checkout -b recovered-branch commit-hash
-```
-
----
-
-## Git Ignore
-
-### .gitignore Patterns
-
-```bash
-# Ignore file
-secret.env
-
-# Ignore directory
-node_modules/
-
-# Ignore by extension
-*.log
-
-# Ignore except specific file
-!important.log
-
-# Ignore in all subdirectories
-**/debug.log
-```
-
-### Common Ignores
-
-```bash
-# Dependencies
-node_modules/
-vendor/
-
-# Build outputs
-dist/
-build/
-*.exe
-
-# Environment
-.env
-.env.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-logs/
-```
+Find the lost commit with `git reflog`, then recover it onto a new branch — `git branch recovered <hash>` — rather than `git reset --hard <hash>`, which also discards uncommitted work in the tree.
 
 ---
 
@@ -815,74 +517,3 @@ git commit -m "wip"
 
 ---
 
-## Quick Reference
-
-### Essential Commands
-
-```bash
-# Status and diff
-git status
-git diff
-git diff --cached
-git diff --stat
-
-# Staging
-git add file.ts
-git add .
-git reset HEAD
-git restore --staged file.ts
-
-# Committing
-git commit -m "message"
-git commit --amend
-
-# Branching
-git branch
-git checkout -b branch-name
-git branch -d branch-name
-
-# History
-git log --oneline -10
-git log --stat
-git show commit-hash
-
-# Remote
-git fetch origin
-git pull --rebase
-git push origin branch-name
-
-# Stashing
-git stash
-git stash pop
-```
-
-### Recovery Commands
-
-```bash
-# Undo last commit (keep changes)
-git reset --soft HEAD~1
-
-# Undo last commit (discard changes)
-git reset --hard HEAD~1
-
-# Undo changes to file
-git restore file.ts
-
-# Recover deleted branch
-git reflog
-git checkout -b branch-name commit-hash
-```
-
----
-
-## Resources
-
-- **Conventional Commits:** https://www.conventionalcommits.org/
-- **Git Book:** https://git-scm.com/book/en/v2
-- **Oh Shit, Git!:** https://ohshitgit.com/
-
----
-
-**Status**: Production-ready ✅
-**Line Count**: ~480 (under 500-line rule) ✅
-**Coverage**: Complete git workflow + atomic commit enforcement ✅

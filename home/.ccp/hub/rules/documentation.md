@@ -6,7 +6,9 @@ by default. This replaces the old `docs/` tree house style.
 
 The `okf` skill is the how, and the only place OKF rules live. This file is the
 why. The `okf-docs` SessionStart hook is the per-repo pointer: it names the
-bundle and hands over its `index.md`, or notes that none exists yet.
+bundle and hands over its `index.md`, or notes that none exists yet. The
+`okf-stop` Stop hook is the backstop: once per repo per session, it stops you when
+a repo you touched has changes outside its bundle and none inside.
 
 | Do | Don't |
 |----|-------|

@@ -5,7 +5,7 @@ description: "The zsh and tmux configuration: plugin manager, the three plugins,
 resource: https://github.com/samhvw8/dotfiles/blob/main/home/.zshrc
 tags: [zsh, tmux, shell]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T09:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-09-25T15:30:00Z }
 sources:
   - id: zshrc
     resource: https://github.com/samhvw8/dotfiles/blob/main/home/.zshrc
@@ -27,7 +27,7 @@ sources:
 | Fuzzy finder | fzf from mise via `fzf --zsh` (Ctrl-T, Alt-C); `FZF_DEFAULT_COMMAND` uses fd; fzf-tab reuses `FZF_DEFAULT_OPTS` |
 | Directory jumping | zoxide as `j`, init cached; its `j <Tab>` completion is queued with `zicompdef` because compinit runs later, in turbo |
 | Completions | `_cached_comp` writes each tool's own completion (mise, kubectl, uv, bat, delta, atuin, rg, fd, starship, rustup, cargo) to `~/.cache/zsh/completions/`, regenerated only when the tool's resolved binary changes. `_compinit_fresh` rebuilds the dump when any fpath dir is newer than it, then zcompiles it. The dump lives at `$ZSH_COMPDUMP` because `ZI[ZCOMPDUMP_PATH]` is set before zi loads |
-| PATH | `typeset -U path` removes duplicates |
+| PATH | `typeset -U path` removes duplicates. `.zprofile` runs `brew shellenv` before `mise activate --shims`, so non-interactive login shells (IDEs, GUI apps, scripts) find mise's tools ahead of Homebrew's `python3` and `kubectl`; interactive shells re-activate mise in `.zshrc`. Python environments come from mise (`python`, `uv`), not conda |
 | Tool init | `_cached_init <name> <cmd>` caches init scripts per tool version[^zshrc] |
 | Aliases | 35 in total. `g=git`, and `ll`/`l`/`la` as `ls -lh`/`ls -lah`/`ls -lAh`, the definitions that were really in effect when OMZ still overrode `.zshrc` |
 

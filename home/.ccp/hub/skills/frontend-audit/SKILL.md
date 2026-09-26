@@ -1,6 +1,6 @@
 ---
 name: frontend-audit
-description: Visual design verification loop for matching a goal PNG to a live render. Use when the user shares a design mock / goal image and asks to match the UI to it, asks to "iterate on this design" or "match this 1:1", or calls out visual drift in a previous UI iteration. Provides histogram color sampling, shape inspection (radius/border/shadow/bg-mode/fill-vs-context), computed-style checking on the live render, snap, and side-by-side diff. After every UI change the assistant MUST snap the live render and Read the snap with the Read tool before reporting the change done — skipping that is the #1 regression vector. Also handles regions auto-generation: the user only drops PNGs into design/, the assistant looks at each PNG and writes a sibling <name>.regions.json.
+description: "Visual design verification loop for matching a goal PNG to a live render. Use when the user shares a design mock / goal image and asks to match the UI to it, asks to \"iterate on this design\" or \"match this 1:1\", or calls out visual drift in a previous UI iteration. Provides histogram color sampling, shape inspection (radius/border/shadow/bg-mode/fill-vs-context), computed-style checking on the live render, snap, and side-by-side diff, gated by a blocking audit script. Also generates the per-PNG regions files: the user only drops PNGs into design/."
 user_invocable: true
 ---
 
@@ -145,7 +145,7 @@ bun ~/.claude/skills/frontend-audit/scripts/bootstrap-regions.mjs --image=design
    - `{ "text": "Ship now" }` — exact visible text (last semantic resort)
    - `{ "css": "main > div:nth-of-type(2) > button:first-of-type" }` — structural CSS path with NO class names (fallback when nothing semantic is available)
 
-   **Prefer not to author locators by hand — use `bind-selectors.mjs` (Step 0.5 below) to generate them from the live DOM automatically.** Hand-authored class-based selectors are the documented brittleness vector this skill is fighting; the bind step generates locators that survive Tailwind class refactors, Svelte scoped-style mangling, and CSS Modules hash suffixes.
+   **Prefer not to author locators by hand — use `bind-selectors.mjs` (item 7 below) to generate them from the live DOM automatically.** Hand-authored class-based selectors are the documented brittleness vector this skill is fighting; the bind step generates locators that survive Tailwind class refactors, Svelte scoped-style mangling, and CSS Modules hash suffixes.
 
 6. Write the result to `design/<name>.regions.json` (sibling to the PNG). The file should look like:
    ```json
@@ -233,8 +233,6 @@ Boots headless Chromium against the configured `devUrl`, runs `getComputedStyle(
 
 ### Step 5 — snap the live render WITH `--goal`, then READ EVERY DIFF
 
-**This step is the whole point of the skill. It is not optional.**
-
 **Always pass `--goal=<path-to-goal.png>`** — `snap.mjs` will then auto-generate **four** diff PNGs: the full side-by-side AND three band zooms (header, middle, footer). Without `--goal`, you'll have only the bare snap, and you cannot reliably remember the goal's structure well enough to catch what's missing.
 
 ```bash
@@ -317,7 +315,7 @@ Exit code: **0** iff every region passes AND no structural drift is detected. **
 
 > **Do not tell the user the section matches the goal while `audit.mjs` exits non-zero. Re-run it after every code change. If it FAILs, address each line in the "Failure details" output, then re-run.**
 
-This replaces every prior "visually verify each element" instruction. The reason: prose instructions are advisory — the assistant can rationalize a half-check as "close enough" at thumb size. The audit produces measured deltas that cannot be argued with. If the user sees a button that does not match the goal, the audit either flagged it (and the assistant ignored the gate) or the region for that button is missing — both are catchable failures, not subjective.
+The gate, not a visual check, decides. The reason: prose instructions are advisory — the assistant can rationalize a half-check as "close enough" at thumb size. The audit produces measured deltas that cannot be argued with. If the user sees a button that does not match the goal, the audit either flagged it (and the assistant ignored the gate) or the region for that button is missing — both are catchable failures, not subjective.
 
 #### Binding regions to the live DOM (`bind-selectors.mjs`)
 

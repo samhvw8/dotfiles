@@ -1,6 +1,6 @@
 ---
 name: code-quality
-description: "Code quality improvement: review, refactoring, debugging. Phases: review feedback, systematic refactoring, root cause debugging, verification. Capabilities: SOLID/DRY compliance, code smell detection, complexity reduction, bug investigation, verification gates. Actions: review, refactor, debug, verify, validate code. Keywords: code review, refactor, debug, SOLID, DRY, code smell, bug fix, root cause, verification, technical debt, extract method, test failure, completion claim. Use when: reviewing code changes, improving code quality, fixing bugs, reducing technical debt, validating before merge/commit."
+description: "Review, refactor, and debug code with verification before claiming done. Use when responding to review feedback, requesting a review, refactoring or reducing technical debt, root-causing a bug or failing test, or checking work before a merge, commit, or completion claim."
 ---
 
 # Code Quality
@@ -57,16 +57,14 @@ Systematic code improvement through review, refactoring, and debugging with veri
 
 **Process:**
 1. Get SHAs: `BASE_SHA=$(git rev-parse HEAD~1)`, `HEAD_SHA=$(git rev-parse HEAD)`
-2. Dispatch code-reviewer subagent with: WHAT, PLAN, SHAs, DESCRIPTION
+2. Dispatch a reviewer with the Agent tool (`deep-reviewer`) or run `/code-review`, passing: WHAT, PLAN, SHAs, DESCRIPTION
 3. Fix Critical immediately, Important before proceeding, note Minor
 
 ### Verification Gates
 
-**Iron Law:** NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+Claim a result only after running the command that proves it in this session and reading its output — a claim without that evidence is a guess.
 
 **Gate:** IDENTIFY → RUN → READ → VERIFY → THEN claim
-
-Skip any step = lying, not verifying.
 
 ---
 

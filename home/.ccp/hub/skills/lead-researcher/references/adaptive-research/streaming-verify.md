@@ -19,7 +19,7 @@ Finding A can be at `verify` while B is still being `gather`ed — no barrier.
 | Check | Method | Verdict |
 |---|---|---|
 | Liveness | URL resolves / not 404 | dead → refuted |
-| Tier | source priority (elite>github>official>blog>farm) | farm-only → weak |
+| Tier | source priority within the confirmed stack (elite/primary > analysis > blog > farm) | farm-only → weak |
 | Claim-evidence | does quoted evidence support the claim? | unsupported → weak |
 | Diagnosticity (ACH) | does it discriminate between hypotheses? | non-diagnostic → tag, no knowledge credit |
 | Recency | last-commit / date | stale → flag |

@@ -1,0 +1,5 @@
+name: okf-stop
+type: Stop
+timeout: 10
+command: okf-stop.sh
+interpreter: bash
