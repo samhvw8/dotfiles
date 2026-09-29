@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-09-28
+* **Update**: mise installs `npm:` tools with pnpm (`settings.npm.package_manager`) instead of aube, and aube is gone from the tool list. [Troubleshooting](/workflows/troubleshooting.md) marks the aube `trust downgrade` row as applying only while aube was the npm installer.
+
 ## 2026-09-26
 * **Update**: [Troubleshooting](/workflows/troubleshooting.md) notes that `ccp unlink` of a hook leaves its command in the profile's `settings.json`, which then errors on every matching tool call.
 
