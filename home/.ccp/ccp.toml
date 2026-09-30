@@ -166,6 +166,16 @@ commit = 'd8393f329c97836980566c1cf4e4aa4fe47dc111'
 updated = 2026-09-13T22:42:21.463162+07:00
 installed = ['skills/okf', 'skills/validate', 'skills/visualize', 'skills/backfill']
 
+[sources.'trycua/cua']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/trycua/cua.git'
+path = 'sources/trycua--cua'
+ref = 'main'
+commit = '477d2d87cd11bc0ed315b76ac080b3e936bbc40a'
+updated = 2026-09-30T23:15:48.990731+07:00
+installed = ['skills/gui-automation']
+
 [sources.'tw93/waza']
 registry = 'github'
 provider = 'git'
