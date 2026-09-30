@@ -3,7 +3,8 @@
 # =============================================================================
 # Claude Code profile link (full install, mise bootstrap post-tools hook)
 # ccp owns ~/.claude: `ccp use -g <profile>` repoints it, so mise does not
-# manage it. This only creates the link when ~/.claude does not exist yet.
+# manage it. This only creates the link when ~/.claude does not exist yet, then
+# fetches the skills installed from ccp sources (listed in ~/.ccp/ccp.toml).
 # =============================================================================
 
 set -euo pipefail
@@ -25,3 +26,4 @@ if ! command -v ccp >/dev/null 2>&1; then
 fi
 
 ccp use -g default
+ccp bootstrap

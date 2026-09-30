@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-09-30
+* **Update**: Added the `arena` skill from the `Jakeschincariol/arena-skill` ccp source to the default profile, and [new-machine setup](/workflows/new-machine-setup.md) now runs `ccp bootstrap` automatically when `setup-ccp.sh` creates `~/.claude`, so source-installed skills arrive without a manual step.
+
 ## 2026-09-29
 * **Update**: Slimmed the default ccp profile for newer models. Unlinked 20 skills with no use in 90 days of transcripts or duplicated by plugins (the taste/imagegen/design-style set, `output-skill`, `canvas-design`, `guizang-ppt-skill`, `ast-grep`, `gsap-core`, `pug-ui`, `visualize`, the hyperframes cluster) and 9 persona agents, keeping `gatherer`, `cto-advisor` and `heavy-thinker`. Folded the `se`, `cognitive-framework` and `surgical-changes` rules into a Working style section of the profile's `CLAUDE.md`, trimmed `delegation-protocol.md`, and dropped the disabled ponytail and frontend-design plugin entries. Unlinked items stay in the hub; `ccp link default <type>/<name>` restores one.
 

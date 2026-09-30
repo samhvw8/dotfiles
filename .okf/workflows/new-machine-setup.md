@@ -33,7 +33,7 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/main/setup.sh | bash 
 # Afterwards
 
 * Open a new shell (`exec zsh`).
-* Full install: run `ccp bootstrap` once to fetch skills installed from ccp sources.
+* Full install: `setup-ccp.sh` runs `ccp bootstrap` when it creates `~/.claude`, fetching the skills installed from ccp sources. On a machine where `~/.claude` already existed, run it once by hand.
 * Recreate `[env]` secrets in `config.local.toml`.
 * A machine that still has chezmoi should use the [migration](/workflows/migrate-from-chezmoi.md) instead.
 
