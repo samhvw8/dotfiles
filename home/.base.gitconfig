@@ -4,7 +4,6 @@
 	pager             = delta
 	precomposeunicode = true
 	quotePath         = false
-	attributesfile = ~/.gitattributes
 [interactive]
     diffFilter = delta --color-only
 [delta]
@@ -78,6 +77,3 @@
 
 [merge]
     conflictStyle = "diff3"
-[merge "mergiraf"]
-    name = mergiraf
-    driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L

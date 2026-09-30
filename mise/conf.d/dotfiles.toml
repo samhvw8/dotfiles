@@ -25,7 +25,6 @@
 "~/.base.gitconfig" = { source = "~/.dotfiles/home/.base.gitconfig", mode = "symlink" }
 "~/.condarc" = { source = "~/.dotfiles/home/.condarc", mode = "symlink" }
 "~/.envrc" = { source = "~/.dotfiles/home/.envrc", mode = "symlink" }
-"~/.gitattributes" = { source = "~/.dotfiles/home/.gitattributes", mode = "symlink" }
 "~/.gitignore" = { source = "~/.dotfiles/home/.gitignore", mode = "symlink" }
 "~/.ideavimrc" = { source = "~/.dotfiles/home/.ideavimrc", mode = "symlink" }
 "~/.profile" = { source = "~/.dotfiles/home/.profile", mode = "symlink" }
