@@ -1,20 +1,18 @@
 ---
-description: Route structural code questions to the codegraph / sem MCP graph tools instead of grep
+description: Route structural code questions to the codegraph MCP graph tool instead of grep
 alwaysApply: true
 ---
 
 # Codegraph
 
-Two MCP servers answer structural code questions from a real symbol graph instead
-of a text search. Both beat grep for anything about *code*; grep still wins for
-text.
+The `codegraph` MCP server ([colbymchenry/codegraph](https://github.com/colbymchenry/codegraph))
+answers structural code questions from a real symbol graph instead of a text
+search. It keeps a per-repo SQLite index; `codegraph_explore` takes a
+natural-language question and returns the relevant symbols' verbatim source, the
+call paths between them, and a blast-radius summary. It beats grep for anything
+about *code*; grep still wins for text.
 
-| Server | Shape |
-|--------|-------|
-| `codegraph` ([colbymchenry/codegraph](https://github.com/colbymchenry/codegraph)) | Per-repo SQLite index. `codegraph_explore` takes a natural-language question and returns the relevant symbols' verbatim source, the call paths between them, and a blast-radius summary |
-| `sem` | Entity-level, no per-repo index step. `sem_context` reads a function/class *with* its callers and callees; `sem_impact` answers "what breaks if I change this"; `sem_entities` finds text inside entity bodies |
-
-How you reach them depends on the harness:
+How you reach it depends on the harness:
 
 - **omp** — registered in `~/.omp/agent/mcp.json` and mounted as `xd://` *devices*,
   not top-level tools. Call one by writing to its path with the JSON args as the
@@ -28,17 +26,17 @@ How you reach them depends on the harness:
   `projectPath` is required — pass the repo root holding `.codegraph/`. If a device
   is missing, `/mcp list` and `/mcp test <name>` show why.
 - **Claude Code** — deferred: load with `ToolSearch` before first use in a
-  session, then call them as `mcp__codegraph__*` / `mcp__sem__*`.
+  session, then call them as `mcp__codegraph__*`.
 
 ## Choosing
 
-Ask a code question → graph tool. Ask a text question → grep.
+Ask a code question → codegraph. Ask a text question → grep.
 
 | Question | Tool |
 |----------|------|
 | "How does X work?" / "how does X reach Y?" | `codegraph_explore` |
-| "Read/understand function X" | `sem_context` — returns the body plus its dependencies |
-| "What calls X? What breaks if I change it?" | `sem_impact` |
+| "Read/understand function X" | `codegraph_explore` — returns the body plus its call paths |
+| "What calls X? What breaks if I change it?" | `codegraph_explore` — its blast-radius summary |
 | Survey an area, map an unfamiliar subsystem | `codegraph_explore` |
 | Exact string in logs or error output | grep |
 | `TODO:`/`FIXME:` comments, config keys, READMEs | grep |
@@ -52,7 +50,7 @@ If you fall back to grep on a structural question, say why.
 ## Practicalities
 
 - **Index location** — codegraph keeps `.codegraph/` at the project root and
-  auto-syncs on file changes, so it's never stale. `sem` needs no per-repo setup.
+  auto-syncs on file changes, so it's never stale.
 - **Other repos** — pass `projectPath` to reach a monorepo sub-service or a second
   indexed repo in the same session.
 - **Not indexed?** Ask before running `codegraph init` — it's the user's call, and

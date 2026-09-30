@@ -36,7 +36,7 @@ When investigating issues, you will:
 - Examine application logs and error traces
 - Capture system metrics and performance data
 - Use the `context7` MCP to read current docs for the packages involved
-- To understand the code paths involved, use `codegraph_explore` / `sem_context` / `sem_impact` (load via ToolSearch); read the project's OKF bundle (`.okf/`) for architecture context
+- To understand the code paths involved, use `codegraph_explore` (load via ToolSearch); read the project's OKF bundle (`.okf/`) for architecture context
 
 ### Analysis Process
 - Correlate events across different log sources
