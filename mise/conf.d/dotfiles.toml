@@ -46,6 +46,8 @@
 "brew:wget" = { os = "macos" }
 "brew:sshuttle" = { os = "macos" }
 "brew:htop" = { os = "macos" }
+"brew:ffmpeg" = { os = "macos" }
+"brew:tree" = { os = "macos" }
 "brew-cask:macfuse" = { os = "macos" }
 "brew-cask:calibre" = { os = "macos" }
 "brew-cask:iterm2" = { os = "macos" }

@@ -27,7 +27,7 @@ otherwise it links `mise/config.toml`.[^setup] Both load the shared
 
 | | Full | Minimal |
 |---|------|---------|
-| Tools | 55 tools incl. fzf, fd, bat, atuin, claude, ccp | jq, ripgrep, yq, node, python, uv[^minimal] |
+| Tools | 43 tools incl. fzf, fd, bat, atuin, claude, ccp | jq, ripgrep, yq, node, python, uv[^minimal] |
 | `~/.zshrc` | `home/.zshrc` | `home/.zshrc_minimal` |
 | Extra apt packages | build-essential, python3-pip, gnupg, terminator, zip, … | none |
 | tpm repo | yes | no |

@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-09-30
+* **Update**: [Install variants](/architecture/install-variants.md) now count 43 tools in the full install. Removed k9s, vhs, zellij, rclone, opengrep, flyctl, cloudflared, ast-grep, worktrunk, playwriter, ruff and unofficial-davinci-mcp, which shell history and 90 days of agent transcripts showed were unused. Added hyperfine from `github:sharkdp/hyperfine` (the aqua entry installs the x86_64 build on Apple Silicon) and `brew:ffmpeg` and `brew:tree` to the macOS bootstrap packages. pandoc tracks `latest`; its four-part pin `3.9.0.2` made `mise up` warn about versioning. Dropped mergiraf along with its git wiring (the `[merge "mergiraf"]` driver, `core.attributesfile` and the linked `~/.gitattributes`); `pipx:it2` stays because Claude Code drives iTerm2 through it.
 * **Update**: Added the `arena` skill from the `Jakeschincariol/arena-skill` ccp source to the default profile, and [new-machine setup](/workflows/new-machine-setup.md) now runs `ccp bootstrap` automatically when `setup-ccp.sh` creates `~/.claude`, so source-installed skills arrive without a manual step.
 
 ## 2026-09-29
