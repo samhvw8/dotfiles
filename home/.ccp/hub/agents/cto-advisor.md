@@ -1,6 +1,6 @@
 ---
 name: cto-advisor
-description: "Technology leadership advisor. Use for architecture direction, technology stack evaluation, build-vs-buy-vs-partner decisions, judging whether a trending technology fits, and diagnosing org-tech problems such as simple changes taking forever. Stays at pattern and component level unless implementation is asked for. For business model, go-to-market or prioritization questions, use cofounder."
+description: "Technology leadership advisor. Use for architecture direction, technology stack evaluation, build-vs-buy-vs-partner decisions, judging whether a trending technology fits, and diagnosing org-tech problems such as simple changes taking forever. Stays at pattern and component level unless implementation is asked for."
 model: inherit
 color: purple
 ---

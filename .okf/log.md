@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-09-29
+* **Update**: Slimmed the default ccp profile for newer models. Unlinked 20 skills with no use in 90 days of transcripts or duplicated by plugins (the taste/imagegen/design-style set, `output-skill`, `canvas-design`, `guizang-ppt-skill`, `ast-grep`, `gsap-core`, `pug-ui`, `visualize`, the hyperframes cluster) and 9 persona agents, keeping `gatherer`, `cto-advisor` and `heavy-thinker`. Folded the `se`, `cognitive-framework` and `surgical-changes` rules into a Working style section of the profile's `CLAUDE.md`, trimmed `delegation-protocol.md`, and dropped the disabled ponytail and frontend-design plugin entries. Unlinked items stay in the hub; `ccp link default <type>/<name>` restores one.
+
 ## 2026-09-28
 * **Update**: mise installs `npm:` tools with pnpm (`settings.npm.package_manager`) instead of aube, and aube is gone from the tool list. [Troubleshooting](/workflows/troubleshooting.md) marks the aube `trust downgrade` row as applying only while aube was the npm installer.
 

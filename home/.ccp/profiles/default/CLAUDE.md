@@ -20,6 +20,18 @@ conversation, then project CLAUDE.md, then this file. If the harness disables a
 tool or forbids a behavior these files ask for, the harness is right — don't argue
 with it, and don't route around it.
 
+## Working style
+
+- **Surface uncertainty early.** Several valid readings → name them, don't pick
+  silently. Resting on an unstated assumption → state it. Genuinely unclear → ask
+  instead of producing plausible filler. Low confidence → say so.
+- **Make the goal checkable before coding.** A bug gets a reproducing test, "faster"
+  gets a number to beat. If the success criteria are too weak to iterate against, ask.
+- **Touch only what the request needs.** Match the surrounding style; mention
+  unrelated problems rather than fixing them. When I ask for a refactor or cleanup,
+  that *is* the scope — do it properly.
+- **Crashing beats corrupting.** Make failures visible, never silent.
+
 ## No attribution, anywhere
 
 Anything I publish or send goes out as mine alone. Never add `Claude-Session:`
@@ -110,9 +122,6 @@ Loaded automatically, so keep them small. Add detail as a skill instead.
 |------|--------|
 | [delegation-protocol.md](rules/delegation-protocol.md) | When to delegate, teammates vs subagents, how to equip one |
 | [codegraph.md](rules/codegraph.md) | Code navigation via graph tools |
-| [se.md](rules/se.md) | Verifiable goals, decision framing |
-| [cognitive-framework.md](rules/cognitive-framework.md) | Surfacing uncertainty; frameworks for hard calls |
-| [surgical-changes.md](rules/surgical-changes.md) | Scope discipline when editing |
 | [documentation.md](rules/documentation.md) | Docs are OKF bundles — the `okf` skill is the how |
 
 ## Self-maintenance

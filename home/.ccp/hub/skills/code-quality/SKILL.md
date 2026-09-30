@@ -57,7 +57,7 @@ Systematic code improvement through review, refactoring, and debugging with veri
 
 **Process:**
 1. Get SHAs: `BASE_SHA=$(git rev-parse HEAD~1)`, `HEAD_SHA=$(git rev-parse HEAD)`
-2. Dispatch a reviewer with the Agent tool (`deep-reviewer`) or run `/code-review`, passing: WHAT, PLAN, SHAs, DESCRIPTION
+2. Run `/code-review`, passing: WHAT, PLAN, SHAs, DESCRIPTION
 3. Fix Critical immediately, Important before proceeding, note Minor
 
 ### Verification Gates

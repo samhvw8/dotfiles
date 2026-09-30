@@ -27,17 +27,7 @@
     ]
   },
   "enabledPlugins": {
-    "code-modernization@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": false,
-    "ponytail@ponytail": false
-  },
-  "extraKnownMarketplaces": {
-    "ponytail": {
-      "source": {
-        "repo": "DietrichGebert/ponytail",
-        "source": "github"
-      }
-    }
+    "code-modernization@claude-plugins-official": true
   },
   "inputNeededNotifEnabled": true,
   "model": "claude-fable-5-1[1m]",

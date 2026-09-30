@@ -18,8 +18,3 @@ a repo you touched has changes outside its bundle and none inside.
 
 **Out of scope:** READMEs, changelogs, issue templates, and agent config
 (CLAUDE.md, SKILL.md, these rule files) keep their own conventions.
-
-## Related
-
-- [surgical-changes.md](surgical-changes.md) — scope discipline
-- [se.md](se.md) — verifiable goals

@@ -2,11 +2,11 @@ version = 3
 name = 'default'
 settings-template = 'base'
 created = 2026-02-02T22:25:02.966428+07:00
-updated = 2026-09-29T12:10:31.751449+07:00
+updated = 2026-09-29T21:32:19.307246+07:00
 
 [hub]
-skills = ['ast-grep', 'bento-slides', 'brandkit', 'browser-history', 'brutalist-skill', 'canvas-design', 'ccp', 'code-quality', 'council', 'debate', 'deep-gather', 'frontend-audit', 'frontend-design', 'git-workflow', 'github-search', 'gpt-tasteskill', 'gsap-core', 'guizang-ppt-skill', 'heavy-think', 'hyperframes', 'hyperframes-animation', 'hyperframes-cli', 'hyperframes-core', 'hyperframes-creative', 'hyperframes-media', 'hyperframes-registry', 'image-to-code-skill', 'imagegen-frontend-mobile', 'imagegen-frontend-web', 'impeccable', 'lead-researcher', 'minimalist-skill', 'mise-expert', 'output-skill', 'phone-harness', 'prompt-architect', 'pug-ui', 'redesign-skill', 'soft-skill', 'stitch-skill', 'taste-skill', 'taste-skill-v1', 'okf', 'validate', 'visualize', 'backfill', 'browser-skill', 'huashu-design', 'typesafe-ai', 'cua-driver']
-agents = ['cofounder.md', 'copywriter.md', 'cto-advisor.md', 'database-admin.md', 'debugger.md', 'deep-reviewer.md', 'devops-architect.md', 'gatherer.md', 'heavy-thinker.md', 'quality-engineer.md', 'requirements-analyst.md', 'security-engineer.md', 'ui-ux-designer.md']
+skills = ['bento-slides', 'browser-history', 'ccp', 'code-quality', 'council', 'debate', 'deep-gather', 'frontend-audit', 'frontend-design', 'git-workflow', 'github-search', 'heavy-think', 'impeccable', 'lead-researcher', 'mise-expert', 'phone-harness', 'prompt-architect', 'okf', 'validate', 'backfill', 'browser-skill', 'huashu-design', 'typesafe-ai', 'cua-driver']
+agents = ['cto-advisor.md', 'gatherer.md', 'heavy-thinker.md']
 hooks = ['codegraph-remind', 'okf-docs', 'okf-stop']
-rules = ['codegraph.md', 'cognitive-framework.md', 'delegation-protocol.md', 'documentation.md', 'se.md', 'surgical-changes.md']
+rules = ['codegraph.md', 'delegation-protocol.md', 'documentation.md']
 bundles = ['impeccable']
