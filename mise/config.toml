@@ -16,16 +16,16 @@ binstall = true
 credential_command = "gh auth token"
 
 [tools]
-go = "1.27.1"
+go = "1.27"
 jq = "latest"
-node = "22"
-python = "3.11"
+node = "24"
+python = "3.14"
 rust = "latest"
 shellcheck = "latest"
 uv = "latest"
 yt-dlp = { version = "latest", rename_exe = "yt-dlp" }
 yq = "latest"
-neovim = "0.11.4"
+neovim = "0.12"
 rg = "latest"
 starship = "latest"
 zoxide = "latest"
