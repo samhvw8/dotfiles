@@ -113,11 +113,13 @@ description = "Show uncommitted changes in ~/.dotfiles and dotfiles waiting to b
 run = ["mise dot diff", "git -C $HOME/.dotfiles diff HEAD"]
 
 [tasks."dot:update"]
-description = "Pull the latest main, link new dotfiles and check the result"
+description = "Pull the latest main, link new dotfiles, fetch ccp source skills and check the result"
 tools = { python = "3.11" }
 run = [
   "bash $HOME/.dotfiles/mise/scripts/dot-pull.sh",
   "mise dot apply --yes",
+  # A pull only brings ccp.toml; skills installed from ccp sources are fetched here.
+  "if command -v ccp >/dev/null; then ccp bootstrap; else echo 'ccp not installed; skipped ccp bootstrap'; fi",
   "python3 $HOME/.dotfiles/mise/scripts/dot-check.py",
 ]
 
