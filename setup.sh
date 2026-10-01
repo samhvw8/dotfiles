@@ -265,6 +265,15 @@ toml_string() {
     printf '"%s"' "${value//\"/\\\"}"
 }
 
+# Machine-local values (API keys and the like) live in config.local.toml, which
+# is never committed. Scaffold it from the template, or add the keys it lacks,
+# and list what is still to fill in. Runs before the git identity, which appends
+# [vars] to the same file.
+setup_local_config() {
+    MISE_CONFIG_DIR="$MISE_CONFIG_DIR" DOTFILES_DIR="$DOTFILES_DIR" \
+        bash "$DOTFILES_DIR/mise/scripts/local-config.sh"
+}
+
 # The git identity is machine-local: it goes into config.local.toml, which is
 # never committed, and is rendered into ~/.gitconfig by mise.
 setup_git_identity() {
@@ -393,6 +402,7 @@ main() {
     setup_mise
     clone_dotfiles
     setup_repo_hooks
+    setup_local_config
     setup_git_identity
     link_mise_config
     backup_existing_targets

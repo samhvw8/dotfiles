@@ -35,7 +35,9 @@ change behavior, update the concept that describes it and add an entry to
   links it back. The pre-commit hook runs `dot:check`, which fails on anything
   left unlinked.
 - **Never commit secrets or per-machine values.** Those go in
-  `~/.config/mise/config.local.toml`, which is never committed.
+  `~/.config/mise/config.local.toml`, which is never committed. A new
+  `[env]` key also goes, commented out and without its value, into
+  `mise/config.local.example.toml`, so `dot:local` offers it to other machines.
 - **Don't let mise manage `~/.claude`.** ccp owns that link.
   `home/.ccp/hub/` holds only the hub items made by hand; items installed from
   a source are fetched by `ccp bootstrap`.
@@ -48,12 +50,13 @@ change behavior, update the concept that describes it and add an entry to
 
 ```bash
 mise run dot:check         # unlinked files, unsaved ccp hub items
+mise run dot:local         # scaffold config.local.toml, list keys still to fill in
 mise run dot:save          # commit everything with an "Update <file>" message (never pushes)
 mise run dot:pull          # pull main from origin, rebasing local commits
 mise run dot:cd            # open a shell in ~/.dotfiles
 mise run dot:status        # unapplied dotfiles + uncommitted changes (like chezmoi status)
 mise run dot:diff          # git diff HEAD + mise dot diff
-mise run dot:update        # dot:pull, mise dot apply, ccp bootstrap, dot:check
+mise run dot:update        # dot:pull, mise dot apply, dot:local, ccp bootstrap, dot:check
 mise run dot:rm <path>     # stop managing; ~ keeps a real copy (chezmoi forget)
 mise run dot:destroy <path> # delete from ~ and home/ (chezmoi destroy)
 mise run dot:add <path>    # move a path from ~ into home/ and link it back

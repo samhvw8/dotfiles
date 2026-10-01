@@ -6,7 +6,9 @@
 # or only the files with `mise dot apply`.
 #
 # Machine-local values live in ~/.config/mise/config.local.toml, which is
-# never committed:
+# never committed. `mise run dot:local` scaffolds it from
+# mise/config.local.example.toml ([env] keys, commented out until filled in);
+# setup.sh adds the git identity:
 #
 #   [vars]
 #   git_name = "Your Name"
@@ -118,10 +120,16 @@ tools = { python = "3.11" }
 run = [
   "bash $HOME/.dotfiles/mise/scripts/dot-pull.sh",
   "mise dot apply --yes",
+  # A pull may bring new keys to the template; add them, commented, to the local file.
+  "bash $HOME/.dotfiles/mise/scripts/local-config.sh",
   # A pull only brings ccp.toml; skills installed from ccp sources are fetched here.
   "if command -v ccp >/dev/null; then ccp bootstrap; else echo 'ccp not installed; skipped ccp bootstrap'; fi",
   "python3 $HOME/.dotfiles/mise/scripts/dot-check.py",
 ]
+
+[tasks."dot:local"]
+description = "Scaffold ~/.config/mise/config.local.toml from the template, add missing keys, list what to fill in"
+run = "bash $HOME/.dotfiles/mise/scripts/local-config.sh"
 
 [tasks."dot:check"]
 description = "Check that every file in home/ is linked; list ccp hub items missing from the repository"

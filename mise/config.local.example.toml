@@ -1,0 +1,29 @@
+# Template for ~/.config/mise/config.local.toml: per-machine values, never committed.
+#
+# `mise run dot:local` (and setup.sh) copies this file there when it is missing,
+# and adds any key below that the local file lacks, commented out. It never
+# changes a value. Uncomment each line this machine needs and fill it in.
+#
+# Keep the lines commented until they have a value: an empty string still sets
+# the variable, and a template that reads a missing file breaks every mise call.
+# setup.sh appends the [vars] table (git identity) itself.
+
+[env]
+# --- Parallax: web search and scraper MCP
+# PARALLAX_MCP_KEY = ""
+# PARALLAX_SCRAPER_URL = ""
+# PARALLAX_SCRAPER_TOKEN = ""
+# PARALLAX_TWITTER_KEY = ""
+# TWITTER_API_KEY = "{{env.PARALLAX_TWITTER_KEY}}"   # the name the parallax CLI reads
+# oh-my-pi (omp) web_search: its SearXNG provider speaks the Parallax scraper's /search API
+# SEARXNG_ENDPOINT = "{{env.PARALLAX_SCRAPER_URL}}/omni"
+# SEARXNG_TOKEN = "{{env.PARALLAX_SCRAPER_TOKEN}}"
+
+# --- OpenRouter: the Parallax scraper's LLM provider (source of truth: ~/creds/openrouter-uben)
+# OPENROUTER_API_KEY = ""
+# OPENROUTER_MODEL = "deepseek/deepseek-v4.1-flash"
+# OPENROUTER_ROUTING = '{"order":["deepseek","together","fireworks"],"only":["deepseek","together","fireworks"],"allow_fallbacks":true}'
+# LLM_REASONING = "low"   # off|low|high|max; unset = provider default
+
+# --- TypeSafe (Jev): arena's card relevance. Uncomment only once ~/creds holds the file.
+# TYPESAFE_API_KEY = "{{ exec(command='cat ~/creds/typesafe-jev-api') }}"
