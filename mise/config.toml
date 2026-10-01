@@ -48,7 +48,7 @@ pandoc = "latest"
 pi = "latest"
 "npm:@companion-ai/feynman" = { version = "latest", trust_policy_excludes = ["pi-subagents@0.71.0"] }  # maintainer publishes manually since 0.37.2; 0.71.0 verified vs git tag 2026-09-25
 "github:can1357/oh-my-pi" = { version = "latest", minimum_release_age = "0s" }
-opencode = "latest"
+"npm:@opencode/cli" = { version = "latest", allow_builds = ["@opencode/cli"] }  # postinstall copies the platform binary into bin/
 "npm:@rynfar/meridian" = "latest"
 "github:Tencent/BrowserSkill" = { version = "latest", version_prefix = "cli-v" }
 fzf = "latest"
@@ -85,4 +85,15 @@ post-tools = [
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-ccp.sh",
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-mcp.sh",
     "bash $HOME/.dotfiles/mise/scripts/setup-font-linux.sh",
+]
+
+# cua-driver stays outside [tools]: macOS ties its Accessibility and Screen
+# Recording grants to /Applications/CuaDriver.app, and the canonical installer
+# keeps them across upgrades where a versioned mise install dir would not.
+[tasks."cua:update"]
+description = "Upgrade cua-driver with its own installer (keeps macOS permissions)"
+run = [
+  "cua-driver update --apply",
+  "cua-driver --version",
+  "cua-driver telemetry status | head -2",
 ]

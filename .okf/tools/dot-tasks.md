@@ -5,7 +5,7 @@ description: "The dot:* mise tasks, their chezmoi equivalents, and the pre-commi
 resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
 tags: [mise, tasks, git]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T11:00:00Z }
+generated: { by: claude-code/claude-sonnet-5-5, at: 2026-10-01T08:00:00Z }
 sources:
   - id: conf
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
@@ -50,6 +50,14 @@ Defined in `mise/conf.d/dotfiles.toml`, so they run from any directory.[^conf]
 A path may be given as it lives in `~` or in `home/`; `-n` previews either
 removal. Both refuse `~/.zshrc` and the mise config links, which each install
 declares separately, and whole `symlink-each` roots such as `~/.config`.
+
+# Other tasks
+
+`mise run cua:update` lives in `mise/config.toml` (full install only). It runs
+`cua-driver update --apply`, then prints the version and telemetry status.
+cua-driver is deliberately not a mise tool: macOS ties its Accessibility and
+Screen Recording grants to `/Applications/CuaDriver.app`, and its own installer
+keeps them across upgrades where a versioned mise install directory would not.
 
 # chezmoi equivalents
 
