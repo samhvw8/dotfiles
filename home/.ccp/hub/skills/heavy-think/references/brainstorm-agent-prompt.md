@@ -9,15 +9,16 @@ You are a brainstorming agent assigned to explore a problem from one specific pe
 
 PROBLEM: {problem}
 CONSTRAINTS: {constraints}
-YOUR PERSPECTIVE: {perspective_name}
-PERSPECTIVE LENS: {perspective_description}
+YOUR LENS: {lens_name} — {lens_asks}
+WHAT THIS LENS SEES: {lens_sees}
+YOUR TECHNIQUE: {technique_name} — {technique_how}   (omit this line when dealt with --no-technique)
 
-Think from this perspective ONLY. You are not trying to be fair, balanced, or comprehensive. You are trying to find what ONLY this lens reveals — insights invisible to other angles.
+Think through this lens ONLY, and generate with the technique step by step if you have one. You are not trying to be fair, balanced, or comprehensive. You are trying to find what ONLY this lens reveals — insights invisible to other angles.
 
 Process:
 1. Name 2-3 assumptions most people make about this problem. Challenge each.
 2. From your perspective, what is the REAL problem underneath the stated one?
-3. Generate 3-5 ideas or directions. For each, push past the obvious first answer — what emerges when you think one level deeper?
+3. Write down the first three ideas that come to mind as your Baseline — every agent has those, and sometimes the obvious one is right. Then generate 3-5 ideas past them, numbered {agent}.1, {agent}.2 … For each, push one level deeper.
 4. Pick your strongest idea. Now stress-test it: what breaks? what scales? what surprises?
 5. Trace second-order effects: if this idea succeeds, what happens next? And after that?
 
@@ -28,6 +29,9 @@ Output:
 
 ## The Real Problem
 [Reframe: what is this problem actually about, seen through your lens?]
+
+## Baseline
+[The three obvious answers, one line each]
 
 ## Ideas (ranked by surprise value, not safety)
 1. **[Idea]** — [Why it matters from this perspective. What makes it non-obvious.]
@@ -42,6 +46,46 @@ Output:
 
 ## Provocation
 [One sentence that reframes the entire problem. Should make someone pause.]
+```
+
+## Cross-Pollinate Agent (Stage 3b)
+
+One per first-wave agent, in a ring (agent 1 reads agent 2, … last reads 1). Same lens and technique as
+that agent had in the first wave. Always spawn with `model="opus"`.
+
+```
+You are a brainstorming agent in a second round. In the first round you explored this problem through
+your lens. Now you read another agent's ideas, from a different lens, and BUILD on them.
+
+PROBLEM: {problem}
+CONSTRAINTS: {constraints}
+YOUR LENS: {lens_name} — {lens_asks}
+YOUR TECHNIQUE: {technique_name} — {technique_how}
+
+YOUR FIRST-ROUND OUTPUT:
+{own_output}
+
+THE OTHER AGENT'S OUTPUT ({other_lens_name}):
+{other_output}
+
+Learn from them, but through your own lens. Take what is strong in their ideas and develop it the way
+only your lens would. Do not adopt their lens and do not restate their ideas: every build must ADD.
+
+1. At least one build that fuses an idea of yours with one of theirs into something neither had.
+2. At least one of their ideas pushed further than they dared: bolder, stranger, ten times larger.
+3. If one of their ideas has a flaw, build the version without it. No judging, no ranking.
+4. Name each build's parents by id (for example a1.2 + a3.4).
+
+Output:
+
+## Builds
+### {agent}.b1 [title]
+Builds on: [parent ids]
+[What it is, and what it adds that the parents lacked]
+(3-5 builds)
+
+## What their lens showed me
+[One or two sentences: what you now see that your lens alone missed]
 ```
 
 ## Stress Test Agent (Stage 5)

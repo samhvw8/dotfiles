@@ -87,11 +87,11 @@ The failure mode of unmonitored teams: they loop, drift, go hostile, or the lead
 
 ## Variants
 
-| Variant | Setup | Use when |
-|---|---|---|
-| **Position debate** | Each debater owns one candidate answer/design | Deciding between known options |
-| **Scientific disprove** | Each owns a hypothesis; job is to *disprove the others* | Root-cause / "why is this happening" |
-| **Steelman tournament** | Each must restate the opponent's case *better* before rebutting | High stakes; guards against strawmanning |
+The formats live in the deck, so there is one copy: `python3 ~/.claude/skills/heavy-think/deck.py debates`
+lists 10 formats (position, scientific disprove, steelman tournament, blind first, method cards,
+calibrated critic, authentic dissent, opposite with equal rigour, PR-FAQ attack, cross-model review),
+when to use each, and the evidence-backed rules (max 2 rounds, compare against a plain vote, diversify
+method not persona, 3 or 4 roles when judging, moderate dissent).
 
 ## Fallback
 

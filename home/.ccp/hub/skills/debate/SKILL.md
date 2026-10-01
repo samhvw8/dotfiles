@@ -25,14 +25,15 @@ If either fails, **say so explicitly** — do NOT silently simulate the debate a
 2. **Assign stances.** 2–4 positions that *genuinely conflict* (not shades of agreement). Name each debater.
 3. **Spawn all debaters in ONE message** — `model="opus"`, each given: full context (teammates don't inherit your history), its assigned stance, and its opponents *by name*. Instruct each to argue via `SendMessage`, engage the opponent's LATEST point, make no file edits, spawn nothing.
 4. **Opening round.** Each states its strongest case.
-5. **Cross-examine.** They attack each other directly, round by round. You bound rounds (max 3) and force engagement with the latest argument — never argue a stance yourself.
+5. **Cross-examine.** They attack each other directly, round by round. You bound rounds (max 2) and force engagement with the latest argument — never argue a stance yourself.
 6. **Detect convergence.** Stop when positions stabilize or a crux is isolated.
 7. **Synthesize + shut down.** YOU write the verdict: what survived challenge, what broke, the decision and its conditions. Then shut the teammates down.
 
 ## Rules
 
 - Moderate, don't compete — you steer, you never take a side.
-- Max 3 rounds; beyond that is diminishing returns.
+- Max 2 rounds. Research on multi-agent debate finds the gain peaks at round 1 or 2 and sycophancy grows every round after; most of the gain is what a plain vote would give.
+- Pick the format from the deck: `python3 ~/.claude/skills/heavy-think/deck.py debates` lists 10 formats (position, disprove, steelman, blind-first, method cards, calibrated critic, authentic dissent, opposite with equal rigour, PR-FAQ attack, cross-model review) and the evidence-backed rules.
 - Anti-sycophancy: debaters attack arguments, not flatter each other.
 - The deliverable is YOUR synthesis, not a transcript dump.
 

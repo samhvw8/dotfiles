@@ -1,0 +1,1483 @@
+{
+  "version": 3,
+  "about": "The perspective deck shared by heavy-think (Brainstorm, Unstick, Decompose), the heavy-thinker agent and /council. A card is one lens (who is looking) plus, optionally, one technique (how they generate). Provocations are the facilitator's sparks. Presets are starting lens sets for common question shapes. Reframes feed Unstick mode, decompositions feed Decompose mode, and debates and debate_rules feed /debate, rubrics hold the scoring weights (criteria anchors live in rubric.md). deck.py deals from this file: add an entry and it is picked up. Ids must be unique within a list, and every id a lens, preset or set refers to must exist. Entries added from research carry a 'source'.",
+  "families": {
+    "challenger": "Attacks the framing itself. Every set needs one.",
+    "stakeholder": "Speaks for someone with skin in it: user, operator, payer.",
+    "temporal": "Moves the clock: past precedent or future state.",
+    "systems": "Sees the parts, the loops and what happens second order.",
+    "craft": "Knows how the thing actually gets made or shipped.",
+    "wildcard": "Comes from outside the domain on purpose."
+  },
+  "lenses": [
+    {
+      "id": "first-principles",
+      "family": "challenger",
+      "name": "First Principles",
+      "asks": "What is actually true here, and what is only inherited habit?",
+      "sees": "Requirements that were never requirements; conventions that can be dropped.",
+      "misses": "Why the convention existed in the first place.",
+      "clashes": [
+        "historian",
+        "incumbent"
+      ],
+      "delivers": "The two or three facts nobody can argue with, and the answer rebuilt from them alone."
+    },
+    {
+      "id": "contrarian",
+      "family": "challenger",
+      "name": "Contrarian",
+      "asks": "What if the obvious answer is wrong, and where is everyone not looking?",
+      "sees": "Crowded consensus, underserved angles, the bet nobody is making.",
+      "misses": "That the obvious answer is often obvious because it works.",
+      "clashes": [
+        "user-advocate",
+        "pragmatist"
+      ],
+      "delivers": "The obvious answer, and the strongest case that it is wrong."
+    },
+    {
+      "id": "minimalist",
+      "family": "challenger",
+      "name": "Minimalist",
+      "asks": "What is the 10% of effort that captures 80% of the value, and what can be deleted outright?",
+      "sees": "Scope that adds cost without adding value; the smallest thing that matters.",
+      "misses": "The ambitious version that changes the category.",
+      "clashes": [
+        "moonshot",
+        "completionist"
+      ],
+      "delivers": "What to delete, and the smallest version that still does the job."
+    },
+    {
+      "id": "skeptic",
+      "family": "challenger",
+      "name": "Evidence Skeptic",
+      "asks": "What would we have to observe to believe this, and have we observed it?",
+      "sees": "Claims resting on vibes; the cheapest experiment that would settle them.",
+      "misses": "Ideas whose evidence can only exist after they are built.",
+      "clashes": [
+        "visionary",
+        "storyteller"
+      ],
+      "delivers": "The cheapest observation or test that would settle the key claim."
+    },
+    {
+      "id": "user-advocate",
+      "family": "stakeholder",
+      "name": "User Advocate",
+      "asks": "What does the person living with this actually struggle with, in their words?",
+      "sees": "Real pain versus imagined wants; the moment of friction.",
+      "misses": "Needs users cannot articulate yet.",
+      "clashes": [
+        "contrarian",
+        "operator"
+      ],
+      "delivers": "The user's actual pain in their own words, and the moment it happens."
+    },
+    {
+      "id": "newcomer",
+      "family": "stakeholder",
+      "name": "First-Day Newcomer",
+      "asks": "What does this look like to someone who arrived five minutes ago with no context?",
+      "sees": "Jargon, hidden steps, assumed knowledge, the first wall people hit.",
+      "misses": "What experts need once they are fluent.",
+      "clashes": [
+        "power-user"
+      ],
+      "delivers": "The first wall a new person hits, step by step."
+    },
+    {
+      "id": "power-user",
+      "family": "stakeholder",
+      "name": "Power User",
+      "asks": "What does the person who uses this eight hours a day wish existed?",
+      "sees": "Speed, shortcuts, composability, the ceiling of the current design.",
+      "misses": "Everyone who never gets that far.",
+      "clashes": [
+        "newcomer",
+        "minimalist"
+      ],
+      "delivers": "The ceiling of the current design, and the shortcut that removes it."
+    },
+    {
+      "id": "operator",
+      "family": "stakeholder",
+      "name": "Operator",
+      "asks": "What breaks at 10x, what pages someone at 3am, and what has to be watched forever?",
+      "sees": "Running cost, maintenance surface, failure modes, toil.",
+      "misses": "Upside that is worth some operational pain.",
+      "clashes": [
+        "moonshot",
+        "user-advocate"
+      ],
+      "delivers": "What breaks first at 10x, and what someone must watch forever."
+    },
+    {
+      "id": "economist",
+      "family": "stakeholder",
+      "name": "Economist",
+      "asks": "Who pays, who benefits, and which incentives push the other way?",
+      "sees": "Unit economics, misaligned incentives, where value leaks.",
+      "misses": "Things people do for reasons that are not money.",
+      "clashes": [
+        "craftsperson",
+        "storyteller"
+      ],
+      "delivers": "Who pays, who benefits, and the incentive that pushes the wrong way."
+    },
+    {
+      "id": "adversary",
+      "family": "stakeholder",
+      "name": "Adversary",
+      "asks": "How would a cheater, a competitor or an attacker exploit this?",
+      "sees": "Abuse paths, gaming, competitive responses, trust failures.",
+      "misses": "The honest majority, who never do any of that.",
+      "clashes": [
+        "user-advocate",
+        "community"
+      ],
+      "delivers": "The top abuse or exploit path, and what it costs the attacker."
+    },
+    {
+      "id": "community",
+      "family": "stakeholder",
+      "name": "Community",
+      "asks": "What happens between users, not only to each user alone?",
+      "sees": "Network effects, social proof, norms, who influences whom.",
+      "misses": "Solo use where nobody else matters.",
+      "clashes": [
+        "adversary",
+        "economist"
+      ],
+      "delivers": "The effect between users: who influences whom, and what spreads."
+    },
+    {
+      "id": "historian",
+      "family": "temporal",
+      "name": "Historian",
+      "asks": "What has been tried before, here or elsewhere, and why did it succeed or die?",
+      "sees": "Precedent, graveyards of similar ideas, what changed since they failed.",
+      "misses": "Conditions that are genuinely new.",
+      "clashes": [
+        "first-principles",
+        "futurist"
+      ],
+      "delivers": "The closest precedent, why it lived or died, and what is different now."
+    },
+    {
+      "id": "futurist",
+      "family": "temporal",
+      "name": "Futurist",
+      "asks": "What is true in three years that is not true today, and what does that make possible?",
+      "sees": "Trend lines, enabling shifts, what will look obvious in hindsight.",
+      "misses": "The constraints that still bind this year.",
+      "clashes": [
+        "historian",
+        "pragmatist"
+      ],
+      "delivers": "One shift likely within three years, and what it makes possible here."
+    },
+    {
+      "id": "incumbent",
+      "family": "temporal",
+      "name": "Incumbent",
+      "asks": "What does the current way of doing it get right that a new idea will throw away?",
+      "sees": "Hidden functions of the status quo, switching costs, inertia worth respecting.",
+      "misses": "When the status quo has truly stopped working.",
+      "clashes": [
+        "first-principles",
+        "contrarian"
+      ],
+      "delivers": "What the current way quietly gets right that a new idea would throw away."
+    },
+    {
+      "id": "pre-mortem",
+      "family": "temporal",
+      "name": "Pre-Mortem",
+      "asks": "It is a year later and this failed. What happened?",
+      "sees": "The quiet, probable failure, not the dramatic one.",
+      "misses": "The upside case.",
+      "clashes": [
+        "visionary",
+        "moonshot"
+      ],
+      "delivers": "The most probable quiet failure, written as what happened."
+    },
+    {
+      "id": "systems-thinker",
+      "family": "systems",
+      "name": "Systems Thinker",
+      "asks": "What are the feedback loops, and what happens second and third order?",
+      "sees": "Loops that amplify or dampen, delays, unintended consequences.",
+      "misses": "Simple problems that only need a simple fix.",
+      "clashes": [
+        "minimalist",
+        "pragmatist"
+      ],
+      "delivers": "The main feedback loop, and one second-order effect."
+    },
+    {
+      "id": "ecologist",
+      "family": "systems",
+      "name": "Ecologist",
+      "asks": "What else lives in this environment, and what does this idea do to it?",
+      "sees": "Partners, platforms, dependencies, who gets displaced.",
+      "misses": "Speed: everything is connected, so nothing moves.",
+      "clashes": [
+        "moonshot",
+        "contrarian"
+      ],
+      "delivers": "Who else lives in this environment, and who gets displaced."
+    },
+    {
+      "id": "completionist",
+      "family": "systems",
+      "name": "Completionist",
+      "asks": "What falls between the cracks: the edge case, the unhappy path, the forgotten user?",
+      "sees": "Gaps, seams between pieces, states nobody designed.",
+      "misses": "That covering everything can drown the core.",
+      "clashes": [
+        "minimalist",
+        "speedrunner"
+      ],
+      "delivers": "The unhappy path or edge state nobody designed."
+    },
+    {
+      "id": "pragmatist",
+      "family": "craft",
+      "name": "Pragmatist",
+      "asks": "What could a small team ship by Friday, and what would it learn from it?",
+      "sees": "The shortest path to something real; sequencing.",
+      "misses": "Ideas that need patience to compound.",
+      "clashes": [
+        "futurist",
+        "visionary"
+      ],
+      "delivers": "What a small team could ship by Friday, and what it would teach."
+    },
+    {
+      "id": "craftsperson",
+      "family": "craft",
+      "name": "Craftsperson",
+      "asks": "What would make this genuinely excellent to touch, not just functional?",
+      "sees": "Quality of detail, feel, the difference between fine and loved.",
+      "misses": "Cost and deadline.",
+      "clashes": [
+        "speedrunner",
+        "economist"
+      ],
+      "delivers": "The one detail that would make this loved rather than tolerated."
+    },
+    {
+      "id": "speedrunner",
+      "family": "craft",
+      "name": "Speedrunner",
+      "asks": "Which steps can be skipped, merged or done in parallel?",
+      "sees": "Latency, waiting, wasted handoffs, shortcut routes.",
+      "misses": "Steps that exist for safety.",
+      "clashes": [
+        "craftsperson",
+        "completionist"
+      ],
+      "delivers": "The steps to skip, merge or run in parallel."
+    },
+    {
+      "id": "storyteller",
+      "family": "craft",
+      "name": "Storyteller",
+      "asks": "What is the one-sentence story someone retells to a friend?",
+      "sees": "Narrative, naming, the hook, what makes it spread.",
+      "misses": "Whether the substance backs the story.",
+      "clashes": [
+        "skeptic",
+        "economist"
+      ],
+      "delivers": "The one-sentence story someone retells to a friend."
+    },
+    {
+      "id": "visionary",
+      "family": "wildcard",
+      "name": "Visionary",
+      "asks": "If constraints vanished, what would the ideal end state look like, and what part of it is reachable now?",
+      "sees": "The north star; ideas that reframe the category.",
+      "misses": "The path from here.",
+      "clashes": [
+        "skeptic",
+        "pragmatist"
+      ],
+      "delivers": "The ideal end state, and the part of it reachable now."
+    },
+    {
+      "id": "moonshot",
+      "family": "wildcard",
+      "name": "Moonshot",
+      "asks": "What is the 10x version, the one that makes the current problem disappear?",
+      "sees": "Step changes instead of increments.",
+      "misses": "Feasibility, cost, risk.",
+      "clashes": [
+        "operator",
+        "minimalist"
+      ],
+      "delivers": "The 10x version that makes the problem disappear."
+    },
+    {
+      "id": "outsider",
+      "family": "wildcard",
+      "name": "Outsider From Another Field",
+      "asks": "How would a biologist, a game designer, a logistics manager or a chef solve this?",
+      "sees": "Solved analogues in other vocabularies.",
+      "misses": "Domain constraints the outsider does not know.",
+      "clashes": [
+        "incumbent",
+        "historian"
+      ],
+      "delivers": "A named field that solved the same shape of problem, and its mechanism."
+    },
+    {
+      "id": "child",
+      "family": "wildcard",
+      "name": "Curious Child",
+      "asks": "Why does it have to be this way at all? Why not just...?",
+      "sees": "Naive questions experts stopped asking.",
+      "misses": "Every real constraint.",
+      "clashes": [
+        "incumbent",
+        "operator"
+      ],
+      "delivers": "The naive 'why not just...?' question, answered honestly."
+    },
+    {
+      "id": "trickster",
+      "family": "wildcard",
+      "name": "Trickster",
+      "asks": "What would be the funniest, strangest or most rule-breaking version, and what is secretly good about it?",
+      "sees": "Absurd ideas with a serious core; play as a design tool.",
+      "misses": "When the joke is just a joke.",
+      "clashes": [
+        "skeptic",
+        "operator"
+      ],
+      "delivers": "The strangest version, and the serious idea hiding in it."
+    },
+    {
+      "id": "ethicist",
+      "family": "challenger",
+      "name": "Ethicist",
+      "asks": "Who could be harmed, deceived or left without a choice, even if every metric goes up?",
+      "sees": "Consent, fairness, dark patterns, harms that do not show up in the numbers.",
+      "misses": "That doing nothing also has victims.",
+      "clashes": [
+        "economist",
+        "moonshot"
+      ],
+      "delivers": "Who could be harmed or left without a choice, even if metrics go up."
+    },
+    {
+      "id": "regulator",
+      "family": "stakeholder",
+      "name": "Regulator",
+      "asks": "What would a regulator, auditor or lawyer ask for before signing off?",
+      "sees": "Compliance, liability, data residency, audit trails, licences.",
+      "misses": "Grey areas where the law has not caught up and moving first is the advantage.",
+      "clashes": [
+        "speedrunner",
+        "trickster"
+      ],
+      "delivers": "The question an auditor or lawyer would ask first, and the answer."
+    },
+    {
+      "id": "accessibility",
+      "family": "stakeholder",
+      "name": "Accessibility Advocate",
+      "asks": "Who is shut out: by disability, language, slow devices, bad connections or low literacy?",
+      "sees": "Exclusion built into defaults; designs that work better for everyone once they work for the edges.",
+      "misses": "Trade-offs where the mainstream experience genuinely gets worse.",
+      "clashes": [
+        "power-user",
+        "craftsperson"
+      ],
+      "delivers": "Who is shut out, and the change that lets them in."
+    },
+    {
+      "id": "support-desk",
+      "family": "stakeholder",
+      "name": "Support Desk",
+      "asks": "What will people complain about, get stuck on, or ask the same question about a hundred times?",
+      "sees": "Confusion at scale, recovery paths, the cost of every unclear state.",
+      "misses": "Users who never write in.",
+      "clashes": [
+        "visionary",
+        "minimalist"
+      ],
+      "delivers": "The question support will get a hundred times, and how to remove it."
+    },
+    {
+      "id": "competitor",
+      "family": "stakeholder",
+      "name": "Rival",
+      "asks": "If our strongest competitor had our assets, what would they build, and how would they answer our move?",
+      "sees": "Competitive response, moats, what is easy to copy.",
+      "misses": "Customers who do not compare.",
+      "clashes": [
+        "user-advocate",
+        "craftsperson"
+      ],
+      "delivers": "The rival's best response, and what is easy for them to copy."
+    },
+    {
+      "id": "maintainer",
+      "family": "temporal",
+      "name": "Future Maintainer",
+      "asks": "Two years from now, someone new inherits this with no context. What do they curse us for?",
+      "sees": "Hidden coupling, tribal knowledge, tuning knobs, the cost of keeping it alive.",
+      "misses": "Things that will be thrown away long before then.",
+      "clashes": [
+        "speedrunner",
+        "moonshot"
+      ],
+      "delivers": "What the person inheriting this in two years will curse."
+    },
+    {
+      "id": "data-steward",
+      "family": "systems",
+      "name": "Data Steward",
+      "asks": "What data does this create, move or depend on, and what happens when it is wrong, late or leaked?",
+      "sees": "Sources of truth, data quality, privacy, sync steps and their failure modes.",
+      "misses": "Problems that are not about data at all.",
+      "clashes": [
+        "speedrunner",
+        "trickster"
+      ],
+      "delivers": "The source of truth, and what happens when its data is wrong, late or leaked."
+    },
+    {
+      "id": "anthropologist",
+      "family": "wildcard",
+      "name": "Anthropologist",
+      "asks": "What rituals, status games and unwritten rules shape how people really behave here?",
+      "sees": "Culture, habits, identity, why people say one thing and do another.",
+      "misses": "Hard technical limits.",
+      "clashes": [
+        "first-principles",
+        "economist"
+      ],
+      "delivers": "The unwritten rule or status game that explains real behaviour."
+    },
+    {
+      "id": "bottleneck",
+      "family": "systems",
+      "name": "Bottleneck Hunter",
+      "asks": "What single constraint limits the whole result right now?",
+      "sees": "The one place where effort pays; everything else is waiting on it.",
+      "misses": "That the bottleneck moves once it is fixed.",
+      "clashes": [
+        "completionist",
+        "visionary"
+      ],
+      "delivers": "The constraint, how to exploit it with what exists, and what moves once it is fixed.",
+      "source": "Goldratt, Theory of Constraints (five focusing steps)"
+    }
+  ],
+  "techniques": [
+    {
+      "id": "scamper",
+      "name": "SCAMPER",
+      "how": "Run the subject through Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse. One idea per verb at least; keep the two that surprise you."
+    },
+    {
+      "id": "reverse-brainstorm",
+      "name": "Reverse brainstorm",
+      "how": "Generate the worst possible ideas: how to make the problem much worse. Mark which ones you already do in some form, stop those, then invert the rest and keep the inversions that are not obvious.",
+      "source": "Liberating Structures: Making Space with TRIZ (the reckoning step)"
+    },
+    {
+      "id": "random-entry",
+      "name": "Random entry",
+      "how": "Pick three unrelated nouns (an object, a place, a profession). Force a connection from each to the problem and develop the strongest."
+    },
+    {
+      "id": "forced-mashup",
+      "name": "Forced mashup",
+      "how": "Combine the problem with a product or institution from a completely different industry. Ask what the hybrid would look like and what it would do better."
+    },
+    {
+      "id": "constraint-injection",
+      "name": "Constraint injection",
+      "how": "Re-solve under extreme constraints: zero budget, one day, ten times the users, no screen, no software. Keep what still works without the constraint."
+    },
+    {
+      "id": "constraint-removal",
+      "name": "Constraint removal",
+      "how": "List every constraint you assume. Delete them one at a time and solve as if each were gone. Then check which deletions were actually possible."
+    },
+    {
+      "id": "assumption-reversal",
+      "name": "Assumption reversal",
+      "how": "Write down the five assumptions everyone makes about this. Flip each to its opposite and build an idea that only works in the flipped world."
+    },
+    {
+      "id": "analogy-transfer",
+      "name": "Analogy transfer",
+      "how": "Find a field that solved a problem with the same shape (biology, games, logistics, cities, markets). Port its mechanism over and fix where the analogy breaks."
+    },
+    {
+      "id": "extreme-user",
+      "name": "Extreme users",
+      "how": "Design for the extremes: the heaviest user, the most reluctant one, the most constrained one. Ideas that serve extremes often serve everyone."
+    },
+    {
+      "id": "morphological",
+      "name": "Morphological box",
+      "how": "Split the problem into 3 to 5 dimensions, list 3 to 4 options per dimension, then combine one option from each into unusual configurations. Keep the strangest one that holds up."
+    },
+    {
+      "id": "triz-contradiction",
+      "name": "Contradiction resolution",
+      "how": "Name the core contradiction (we need X but X causes Y). Resolve it without compromise: separate in time, in space, by condition, or by system level."
+    },
+    {
+      "id": "subtraction",
+      "name": "Subtraction",
+      "how": "Remove an essential-looking component and ask what the thing becomes without it. Some of the best products are an old product minus one part."
+    },
+    {
+      "id": "scale-shift",
+      "name": "Scale shift",
+      "how": "Solve it for one person, then for a million, then for a single second and for ten years. Notice which ideas only appear at one scale."
+    },
+    {
+      "id": "backcasting",
+      "name": "Backcasting",
+      "how": "Describe the ideal outcome in concrete detail as if it already happened, then work backwards to the first move available this week."
+    },
+    {
+      "id": "jobs-to-be-done",
+      "name": "Jobs to be done",
+      "how": "State the job the person is hiring a solution to do, including the emotional and social job. Generate ideas that do the job better, even if they look nothing like the current solution."
+    },
+    {
+      "id": "provocation-po",
+      "name": "Lateral provocation",
+      "how": "Write a deliberately unreasonable statement starting with PO (cars have square wheels). Use it as a stepping stone: what useful idea moves away from it?"
+    },
+    {
+      "id": "role-storming",
+      "name": "Role storming",
+      "how": "Answer as three specific named archetypes would (a regulator, a teenager, a rival CEO). Keep the idea that only one of them would have."
+    },
+    {
+      "id": "ten-x",
+      "name": "10x not 10%",
+      "how": "Refuse incremental answers. For each idea ask what would make it ten times better, not ten percent better, and follow the one that requires a different approach."
+    },
+    {
+      "id": "verbalized-sampling",
+      "name": "Verbalized sampling",
+      "how": "Ask for five ideas together with how likely each one is, sampled from the tails where each is under 10% likely. Keep the unlikely ones that still hold up.",
+      "source": "Zhang et al. 2025, arXiv 2510.01171: 1.6 to 2.1x diversity in creative writing"
+    },
+    {
+      "id": "ordinary-personas",
+      "name": "Ordinary people",
+      "how": "Imagine three specific, ordinary people (a night-shift nurse, a retired bus driver, a first-year student). Generate one idea through each one's day, not through a famous creative.",
+      "source": "arXiv 2602.20408: ordinary personas beat famous-creative personas for idea diversity"
+    },
+    {
+      "id": "random-words",
+      "name": "Random words",
+      "how": "Pick five unrelated words (nouns, verbs, adjectives). Use each as an inspiration word and force one idea from it.",
+      "source": "LLM homogenization study (kiaghods.com): diversity rose for every model tested"
+    },
+    {
+      "id": "fifteen-percent",
+      "name": "15% solutions",
+      "how": "List what can be done right now, with no new resources and no one's permission. Start from the one most in reach.",
+      "source": "Liberating Structures: 15% Solutions"
+    },
+    {
+      "id": "boldest-first-step",
+      "name": "Boldest idea, first step",
+      "how": "Write the idea you would push if you were ten times bolder, then its very first concrete step. The step is what makes it real.",
+      "source": "Liberating Structures: 25/10 Crowd Sourcing"
+    },
+    {
+      "id": "evaporating-cloud",
+      "name": "Evaporating cloud",
+      "how": "State the shared goal, the two conflicting wants, the need behind each want, and the assumption linking them. Break one assumption and the conflict disappears.",
+      "source": "Goldratt, Theory of Constraints thinking processes"
+    },
+    {
+      "id": "mandal-art",
+      "name": "Nine-grid",
+      "how": "Put the goal in the centre of a 3x3 grid and force exactly eight sub-themes around it. Promote the most promising one to the centre of its own grid.",
+      "source": "Mandal-Art (曼陀羅思考法), Taiwanese and Japanese practice"
+    },
+    {
+      "id": "defect-listing",
+      "name": "Defect listing",
+      "how": "List every flaw, annoyance and omission of the current thing, then fix them one by one, worst first.",
+      "source": "Defect listing (缺點列舉法)"
+    },
+    {
+      "id": "wish-listing",
+      "name": "Wish listing",
+      "how": "Write 'I wish it could...' ten times without judging, then build an idea for each wish that is not obviously impossible.",
+      "source": "Wish-point listing (希望點列舉法)"
+    },
+    {
+      "id": "taking-out",
+      "name": "Take it out",
+      "how": "Find the part that causes the harm and pull it out, or keep only the part that matters and drop the rest.",
+      "source": "TRIZ principle 2: Taking out"
+    },
+    {
+      "id": "local-quality",
+      "name": "Local quality",
+      "how": "Stop treating the whole uniformly. Give each part the conditions and the job that suit it best.",
+      "source": "TRIZ principle 3: Local quality"
+    },
+    {
+      "id": "universality",
+      "name": "One part, many jobs",
+      "how": "Make one component do several jobs, so that other components can go.",
+      "source": "TRIZ principle 6: Universality"
+    },
+    {
+      "id": "preliminary-action",
+      "name": "Do it beforehand",
+      "how": "Do the work, or place the safeguard, before it is needed, when it is cheap.",
+      "source": "TRIZ principles 10 and 11: Preliminary action, Beforehand cushioning"
+    },
+    {
+      "id": "blessing-in-disguise",
+      "name": "Blessing in disguise",
+      "how": "Use the harmful factor as the resource, or amplify it until it cancels itself out.",
+      "source": "TRIZ principle 22: Blessing in disguise"
+    },
+    {
+      "id": "cheap-disposable",
+      "name": "Cheap and disposable",
+      "how": "Replace the expensive, durable thing with many cheap, short-lived ones.",
+      "source": "TRIZ principle 27: Cheap short-living objects"
+    },
+    {
+      "id": "self-service",
+      "name": "Self-service",
+      "how": "Make the system maintain, repair or feed itself from its own by-products.",
+      "source": "TRIZ principle 25: Self-service"
+    },
+    {
+      "id": "intermediary",
+      "name": "Go-between",
+      "how": "Insert a temporary intermediary between the two things that do not fit.",
+      "source": "TRIZ principle 24: Intermediary"
+    }
+  ],
+  "provocations": [
+    {
+      "id": "free-forever",
+      "text": "What if it had to be free forever? Who pays then, and what changes?"
+    },
+    {
+      "id": "one-day",
+      "text": "What if it had to ship tomorrow with what already exists?"
+    },
+    {
+      "id": "no-software",
+      "text": "What if software were not allowed? What does the analogue version teach us?"
+    },
+    {
+      "id": "hostile-user",
+      "text": "What would a hostile or lazy user love about it?"
+    },
+    {
+      "id": "delete-core",
+      "text": "Delete the feature everyone thinks is the core. What is left, and is it better?"
+    },
+    {
+      "id": "opposite",
+      "text": "What if the opposite of the current best idea were true?"
+    },
+    {
+      "id": "competitor",
+      "text": "Our strongest competitor just shipped the leading idea. What do we do instead?"
+    },
+    {
+      "id": "million",
+      "text": "It has a million users in a week. What breaks first and what becomes possible?"
+    },
+    {
+      "id": "kid",
+      "text": "Explain the leading idea to a ten-year-old. What did you have to cut, and should it go for real?"
+    },
+    {
+      "id": "ten-years",
+      "text": "It is ten years later and this is everywhere. What did it replace?"
+    },
+    {
+      "id": "missing-person",
+      "text": "Who is not in this room and would hate every idea so far?"
+    },
+    {
+      "id": "combine-two",
+      "text": "Take the two ideas furthest apart in the pool and force them into one."
+    },
+    {
+      "id": "wrong-question",
+      "text": "What if the question itself is the wrong one? Write the better question."
+    },
+    {
+      "id": "boring",
+      "text": "Which idea is boring but would quietly work? Make it exciting without losing what works."
+    },
+    {
+      "id": "honor-error",
+      "text": "Honor thy error as a hidden intention. What if the mistake is the idea?",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "emphasize-flaws",
+      "text": "Emphasize the flaws. What if the weakest part became the point?",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "embarrassing",
+      "text": "Look closely at the most embarrassing details and amplify them.",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "cut-connection",
+      "text": "Cut a vital connection. Which link does everyone assume, and what happens without it?",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "do-nothing",
+      "text": "Do nothing for as long as possible. What happens if we never act?",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "do-both",
+      "text": "Faced with a choice, do both. What would that look like?",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "last-mistakes",
+      "text": "What mistakes did you make last time?",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "change-nothing",
+      "text": "Change nothing and continue with immaculate consistency. What is the case for that?",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "what-wouldnt",
+      "text": "What wouldn't you do? Do that.",
+      "source": "Eno and Schmidt, Oblique Strategies (1975)"
+    },
+    {
+      "id": "stop-doing",
+      "text": "What must we stop doing to make progress on what we care about most?",
+      "source": "Liberating Structures: Making Space with TRIZ"
+    },
+    {
+      "id": "no-permission",
+      "text": "What can be done right now, with no more resources and no one's permission?",
+      "source": "Liberating Structures: 15% Solutions"
+    },
+    {
+      "id": "flip-assumption",
+      "text": "Which single assumption, if wrong, flips the whole plan?",
+      "source": "Critical Uncertainties; Evaporating cloud"
+    },
+    {
+      "id": "for-what-purpose",
+      "text": "For what purpose? Ask it three times, going up a level each time.",
+      "source": "Practitioner alternative to Five Whys (HN 19625754)"
+    },
+    {
+      "id": "wicked",
+      "text": "How is it that we are ___ while at the same time ___? Name the paradox we are living in.",
+      "source": "Liberating Structures: Wicked Questions"
+    },
+    {
+      "id": "press-release",
+      "text": "It is launch day. What is the first line of the press release, and the hardest question in the FAQ?",
+      "source": "Amazon Working Backwards, PR-FAQ"
+    },
+    {
+      "id": "kill-shot",
+      "text": "Name the one thing that, if true, kills this.",
+      "source": "Practitioner anti-sycophancy prompts"
+    },
+    {
+      "id": "least-welcome",
+      "text": "What is the counterview we would least want to accept? Not the easiest one to digest.",
+      "source": "經理人 (Manager Today) anti-sycophancy prompt"
+    },
+    {
+      "id": "score-to-ten",
+      "text": "Score the leading idea 1 to 10. What exactly would make it a 10?",
+      "source": "r/ClaudeAI practitioner consensus"
+    }
+  ],
+  "presets": [
+    {
+      "id": "product-direction",
+      "shape": "What should we build next?",
+      "lenses": [
+        "user-advocate",
+        "minimalist",
+        "adversary"
+      ],
+      "deep_add": [
+        "futurist",
+        "economist",
+        "competitor"
+      ],
+      "rubric": "creative"
+    },
+    {
+      "id": "architecture",
+      "shape": "Which technical approach should we take?",
+      "lenses": [
+        "operator",
+        "first-principles",
+        "minimalist"
+      ],
+      "deep_add": [
+        "historian",
+        "futurist"
+      ],
+      "rubric": "decision"
+    },
+    {
+      "id": "go-to-market",
+      "shape": "How should we enter this market?",
+      "lenses": [
+        "economist",
+        "contrarian",
+        "user-advocate"
+      ],
+      "deep_add": [
+        "competitor",
+        "outsider"
+      ],
+      "rubric": "creative"
+    },
+    {
+      "id": "naming",
+      "shape": "What should we call this?",
+      "lenses": [
+        "storyteller",
+        "contrarian",
+        "futurist"
+      ],
+      "deep_add": [
+        "newcomer",
+        "trickster"
+      ],
+      "rubric": "creative"
+    },
+    {
+      "id": "prioritization",
+      "shape": "What should we do first?",
+      "lenses": [
+        "economist",
+        "user-advocate",
+        "operator"
+      ],
+      "deep_add": [
+        "minimalist",
+        "pre-mortem"
+      ],
+      "rubric": "decision"
+    },
+    {
+      "id": "process",
+      "shape": "How should we work differently?",
+      "lenses": [
+        "first-principles",
+        "contrarian",
+        "historian"
+      ],
+      "deep_add": [
+        "systems-thinker",
+        "community"
+      ],
+      "rubric": "decision"
+    },
+    {
+      "id": "greenfield",
+      "shape": "What could we build / how might we...?",
+      "lenses": [
+        "visionary",
+        "user-advocate",
+        "pragmatist"
+      ],
+      "deep_add": [
+        "outsider",
+        "trickster",
+        "moonshot"
+      ],
+      "rubric": "creative"
+    },
+    {
+      "id": "growth",
+      "shape": "How do we get more people to use this?",
+      "lenses": [
+        "community",
+        "newcomer",
+        "economist"
+      ],
+      "deep_add": [
+        "storyteller",
+        "anthropologist",
+        "support-desk"
+      ],
+      "rubric": "creative"
+    },
+    {
+      "id": "experience",
+      "shape": "How should this feel to use?",
+      "lenses": [
+        "craftsperson",
+        "newcomer",
+        "power-user"
+      ],
+      "deep_add": [
+        "child",
+        "speedrunner",
+        "accessibility"
+      ],
+      "rubric": "creative"
+    },
+    {
+      "id": "risk",
+      "shape": "What could go wrong, and what do we do about it?",
+      "lenses": [
+        "pre-mortem",
+        "adversary",
+        "operator"
+      ],
+      "deep_add": [
+        "systems-thinker",
+        "completionist"
+      ],
+      "rubric": "decision"
+    },
+    {
+      "id": "migration",
+      "shape": "How do we move from the old system to the new one?",
+      "lenses": [
+        "maintainer",
+        "operator",
+        "incumbent"
+      ],
+      "deep_add": [
+        "data-steward",
+        "pre-mortem"
+      ],
+      "rubric": "decision"
+    },
+    {
+      "id": "policy",
+      "shape": "What rules or limits should we set?",
+      "lenses": [
+        "regulator",
+        "ethicist",
+        "user-advocate"
+      ],
+      "deep_add": [
+        "adversary",
+        "anthropologist"
+      ],
+      "rubric": "decision"
+    }
+  ],
+  "reframes": [
+    {
+      "id": "inversion",
+      "name": "Inversion",
+      "how": "What if the opposite of the core assumption is true? If they assume X must be done, what if X should not be done at all? If Y looks like the constraint, what if Y is the solution?"
+    },
+    {
+      "id": "abstraction-shift",
+      "name": "Abstraction shift",
+      "how": "Go up one level: what is the goal behind the goal? Go down one level: what concrete sub-problem hides inside the vague one? Solve at whichever level moves."
+    },
+    {
+      "id": "constraint-flip",
+      "name": "Constraint flip",
+      "how": "List what is assumed fixed and what is assumed variable. Test each: maybe the fixed thing can move and the variable thing is actually fixed."
+    },
+    {
+      "id": "adjacent-domain",
+      "name": "Adjacent domain",
+      "how": "Find a field outside theirs that solved a problem with the same structure. Map the structure across; the answer may exist in another vocabulary."
+    },
+    {
+      "id": "first-principles",
+      "name": "First principles",
+      "how": "Strip away convention and precedent. What is provably true? Most stuckness comes from inherited assumptions, not physical laws. Rebuild from what is left."
+    },
+    {
+      "id": "temporal-shift",
+      "name": "Temporal shift",
+      "how": "What would you do with ten times more time? What if it had to ship tomorrow? The urgency frame often hides what actually matters."
+    },
+    {
+      "id": "stakeholder-swap",
+      "name": "Stakeholder swap",
+      "how": "Re-describe the problem from the point of view of someone else in it: the user, the operator, the person paying, the person who loses. Stuck problems often belong to someone else."
+    },
+    {
+      "id": "smallest-instance",
+      "name": "Smallest instance",
+      "how": "Solve the tiniest real instance of the problem by hand, end to end. Whatever was blocking the general case usually shows up, or disappears, at that size."
+    },
+    {
+      "id": "dissolve",
+      "name": "Dissolve the problem",
+      "how": "Instead of solving it, make it irrelevant: remove the need, change the process that creates it, or accept it and design around it."
+    },
+    {
+      "id": "redefine-done",
+      "name": "Redefine done",
+      "how": "The stuckness may come from the definition of success. Write three different, legitimate definitions of done and see which one has an obvious next step."
+    },
+    {
+      "id": "how-might-we",
+      "name": "How might we",
+      "how": "Restate the problem as 'How might we [outcome] for [who] so that [why]?', narrow enough to act on and wide enough to leave room.",
+      "source": "IDEO / Stanford d.school"
+    },
+    {
+      "id": "wicked-question",
+      "name": "Wicked question",
+      "how": "Name two things that are both true and pull against each other, and ask how both can hold. Stuckness often comes from pretending one of them is false.",
+      "source": "Liberating Structures: Wicked Questions"
+    },
+    {
+      "id": "critical-uncertainties",
+      "name": "Critical uncertainties",
+      "how": "Pick the two most uncertain, most impactful factors as axes of a 2x2. Find the move that is sound in all four corners.",
+      "source": "Liberating Structures: Critical Uncertainties"
+    },
+    {
+      "id": "domain-check",
+      "name": "Domain check",
+      "how": "Decide whether the problem is clear, complicated, complex or chaotic. Clear: apply best practice. Complicated: ask experts. Complex: run small safe experiments. Chaotic: act to stabilise first.",
+      "source": "Snowden, Cynefin framework (a method selector, not evidence-backed science)"
+    },
+    {
+      "id": "ladder-of-inference",
+      "name": "Ladder of inference",
+      "how": "Walk the disagreement down: conclusions, assumptions, meanings, selected data, raw data. Find the rung where the views split.",
+      "source": "Argyris and Senge"
+    },
+    {
+      "id": "principal-contradiction",
+      "name": "Principal contradiction",
+      "how": "List the tensions in the situation and find the one that, once resolved, makes the others easy. Work only on that one.",
+      "source": "Mao, On Contradiction (抓主要矛盾); close to Theory of Constraints"
+    }
+  ],
+  "reframe_sets": [
+    {
+      "id": "every-option-wrong",
+      "when": "Every option feels wrong",
+      "reframes": [
+        "inversion",
+        "constraint-flip",
+        "first-principles"
+      ],
+      "deep_add": [
+        "redefine-done",
+        "dissolve"
+      ]
+    },
+    {
+      "id": "going-in-circles",
+      "when": "Going in circles",
+      "reframes": [
+        "abstraction-shift",
+        "adjacent-domain",
+        "temporal-shift"
+      ],
+      "deep_add": [
+        "stakeholder-swap",
+        "smallest-instance"
+      ]
+    },
+    {
+      "id": "no-next-step",
+      "when": "Cannot see the next step",
+      "reframes": [
+        "first-principles",
+        "constraint-flip",
+        "abstraction-shift"
+      ],
+      "deep_add": [
+        "smallest-instance",
+        "how-might-we"
+      ]
+    },
+    {
+      "id": "too-hard",
+      "when": "A solution exists but feels too hard",
+      "reframes": [
+        "temporal-shift",
+        "inversion",
+        "adjacent-domain"
+      ],
+      "deep_add": [
+        "dissolve",
+        "smallest-instance"
+      ]
+    },
+    {
+      "id": "politics",
+      "when": "Blocked by people, not by the problem",
+      "reframes": [
+        "stakeholder-swap",
+        "redefine-done",
+        "abstraction-shift"
+      ],
+      "deep_add": [
+        "dissolve",
+        "inversion"
+      ]
+    },
+    {
+      "id": "disagreement",
+      "when": "Smart people disagree and talk past each other",
+      "reframes": [
+        "ladder-of-inference",
+        "wicked-question",
+        "stakeholder-swap"
+      ],
+      "deep_add": [
+        "redefine-done",
+        "critical-uncertainties"
+      ]
+    },
+    {
+      "id": "too-many-unknowns",
+      "when": "Too many unknowns to plan",
+      "reframes": [
+        "domain-check",
+        "critical-uncertainties",
+        "smallest-instance"
+      ],
+      "deep_add": [
+        "temporal-shift",
+        "principal-contradiction"
+      ]
+    }
+  ],
+  "decompositions": [
+    {
+      "id": "functional",
+      "name": "Functional",
+      "how": "Decompose by capability or responsibility. Each component owns one coherent set of behaviours."
+    },
+    {
+      "id": "temporal",
+      "name": "Temporal",
+      "how": "Decompose by sequence and dependency: what must happen first, second, third. Focus on ordering, prerequisites and the critical path."
+    },
+    {
+      "id": "risk",
+      "name": "Risk",
+      "how": "Decompose by uncertainty and difficulty. Separate known from unknown and easy from hard; group by confidence."
+    },
+    {
+      "id": "data-flow",
+      "name": "Data flow",
+      "how": "Decompose by information movement: where data originates, where it flows, how it transforms. Boundaries are where data changes shape."
+    },
+    {
+      "id": "user-journey",
+      "name": "User journey",
+      "how": "Decompose by what the user does, step by step. Each component is a stage in their journey."
+    },
+    {
+      "id": "failure-mode",
+      "name": "Failure mode",
+      "how": "Decompose by what can go wrong. Each component groups the failure modes that share a domain."
+    },
+    {
+      "id": "interface-first",
+      "name": "Interface first",
+      "how": "Define the contracts between pieces before the pieces. Let the components emerge from what lives on each side of each interface."
+    },
+    {
+      "id": "ownership",
+      "name": "Ownership",
+      "how": "Decompose by who will build, own and be paged for each piece. Boundaries follow teams, so the seams are where handoffs and misunderstandings happen."
+    },
+    {
+      "id": "reversibility",
+      "name": "Reversibility",
+      "how": "Split the decisions into one-way doors (expensive to undo) and two-way doors (cheap to undo). Sequence the one-way doors carefully and move fast through the rest."
+    },
+    {
+      "id": "constraint",
+      "name": "Constraint",
+      "how": "Find the one constraint that limits the whole system. Exploit it, make everything else serve it, then raise it, and look for the next one.",
+      "source": "Goldratt, Theory of Constraints: five focusing steps"
+    },
+    {
+      "id": "is-is-not",
+      "name": "Is / is not",
+      "how": "State what, where, when and how much the problem IS, and what it IS NOT though it could be. Any cause must explain that difference.",
+      "source": "Kepner-Tregoe problem analysis"
+    },
+    {
+      "id": "value-chain",
+      "name": "Value chain",
+      "how": "Start from the user need, list the components that serve it and their dependencies, and mark each as novel, custom, product or commodity. Build only the novel and custom parts.",
+      "source": "Wardley mapping"
+    },
+    {
+      "id": "ecocycle",
+      "name": "Ecocycle",
+      "how": "Place every activity in birth, maturity, creative destruction or renewal. Look for the phase where things pile up, and what should be let go.",
+      "source": "Liberating Structures: Ecocycle Planning"
+    }
+  ],
+  "decomposition_sets": [
+    {
+      "id": "technical-system",
+      "when": "Technical systems",
+      "decompositions": [
+        "functional",
+        "data-flow",
+        "risk"
+      ],
+      "deep_add": [
+        "interface-first",
+        "failure-mode"
+      ]
+    },
+    {
+      "id": "project-plan",
+      "when": "Projects and plans",
+      "decompositions": [
+        "temporal",
+        "risk",
+        "functional"
+      ],
+      "deep_add": [
+        "ownership",
+        "reversibility"
+      ]
+    },
+    {
+      "id": "product",
+      "when": "Products",
+      "decompositions": [
+        "user-journey",
+        "functional",
+        "risk"
+      ],
+      "deep_add": [
+        "data-flow",
+        "reversibility"
+      ]
+    },
+    {
+      "id": "debugging",
+      "when": "Debugging complex failures",
+      "decompositions": [
+        "is-is-not",
+        "failure-mode",
+        "data-flow"
+      ],
+      "deep_add": [
+        "temporal",
+        "interface-first"
+      ]
+    },
+    {
+      "id": "migration",
+      "when": "Migrations and rewrites",
+      "decompositions": [
+        "reversibility",
+        "data-flow",
+        "temporal"
+      ],
+      "deep_add": [
+        "ownership",
+        "failure-mode"
+      ]
+    },
+    {
+      "id": "strategy",
+      "when": "Strategy and portfolio choices",
+      "decompositions": [
+        "value-chain",
+        "ecocycle",
+        "risk"
+      ],
+      "deep_add": [
+        "constraint",
+        "reversibility"
+      ]
+    },
+    {
+      "id": "throughput",
+      "when": "Something is too slow or stuck",
+      "decompositions": [
+        "constraint",
+        "data-flow",
+        "temporal"
+      ],
+      "deep_add": [
+        "ownership",
+        "failure-mode"
+      ]
+    }
+  ],
+  "debates": [
+    {
+      "id": "position",
+      "name": "Position debate",
+      "how": "Each debater owns one candidate answer and argues for it against the others.",
+      "when": "Choosing between known options.",
+      "source": "heavy-think team-debate protocol"
+    },
+    {
+      "id": "disprove",
+      "name": "Scientific disprove",
+      "how": "Each debater owns one hypothesis, and the job is to disprove the others with evidence.",
+      "when": "Root cause: why is this happening.",
+      "source": "heavy-think team-debate protocol"
+    },
+    {
+      "id": "steelman",
+      "name": "Steelman tournament",
+      "how": "Before rebutting, each debater must restate the opponent's case better than the opponent did.",
+      "when": "High stakes; guards against strawmen.",
+      "source": "heavy-think team-debate protocol"
+    },
+    {
+      "id": "blind-first",
+      "name": "Blind first, one reveal",
+      "how": "Everyone answers alone first, then sees the others once, then revises once. Report the spread, not just the consensus.",
+      "when": "Default for anything with a checkable answer.",
+      "source": "Voting or Consensus (arXiv 2502.19130); Demystifying MAD (2601.19921)"
+    },
+    {
+      "id": "method-cards",
+      "name": "Method cards",
+      "how": "Each debater uses a different reasoning method (first principles, analogy, base rates, working backwards), not a different persona.",
+      "when": "Reasoning problems where everyone keeps making the same mistake.",
+      "source": "DMAD, ICLR 2025 (Breaking Mental Set)"
+    },
+    {
+      "id": "calibrated-critic",
+      "name": "Calibrated critic",
+      "how": "One critic is strict but not absolute: it must find real flaws and may concede. A separate judge breaks ties.",
+      "when": "Evaluating a draft or decision.",
+      "source": "DEBATE (arXiv 2405.09935): +6.4pp over G-Eval; MAD (2305.19118): modest disagreement beats total"
+    },
+    {
+      "id": "authentic-dissent",
+      "name": "Authentic dissent (red team)",
+      "how": "Give one debater a genuinely conflicting goal (the competitor's, the customer's, the budget owner's) and the job of defeating the plan. The decider rules after both sides fight.",
+      "when": "Strategy and plans where everyone already agrees.",
+      "source": "Nemeth 2001 (authentic dissent beats an assigned devil's advocate); Huawei blue army (蓝军)"
+    },
+    {
+      "id": "opposite-rigor",
+      "name": "Opposite with equal rigour",
+      "how": "After the case for, demand the case against with the same rigour and the same length.",
+      "when": "A one-sided recommendation.",
+      "source": "r/ClaudeAI practitioner consensus"
+    },
+    {
+      "id": "pr-faq",
+      "name": "PR-FAQ attack",
+      "how": "Write the launch press release and the hardest customer and internal FAQ first. Reviewers attack only the FAQ answers.",
+      "when": "Product and launch decisions.",
+      "source": "Amazon Working Backwards"
+    },
+    {
+      "id": "cross-model",
+      "name": "Cross-model review",
+      "how": "A different model family reviews the work. Every claim needs evidence, and no concession without a reason.",
+      "when": "Code review and anything where one model's blind spot matters.",
+      "source": "Milvus code-review test: 53% of bugs solo vs 80% with 5 models (15 PRs, directional)"
+    }
+  ],
+  "debate_rules": [
+    {
+      "rule": "Stop after one or two rounds. More rounds add sycophancy, not accuracy.",
+      "source": "MAD (2305.19118); Voting or Consensus (2502.19130); Peacemaker (2509.23055)"
+    },
+    {
+      "rule": "Compare against a plain vote. Most of a debate's gain is the vote, at two to three times the tokens.",
+      "source": "Debate or Vote (2508.17536); Should we be going MAD (ICML 2024)"
+    },
+    {
+      "rule": "Diversify the reasoning method, not the persona. Personas do not raise accuracy.",
+      "source": "DMAD (ICLR 2025); Personas in system prompts (EMNLP 2024 Findings)"
+    },
+    {
+      "rule": "Use 3 or 4 distinct roles when judging; quality drops at 5 and with near-duplicate roles.",
+      "source": "ChatEval (2308.07201)"
+    },
+    {
+      "rule": "Keep dissent moderate. 'Disagree with everything' does worse than none.",
+      "source": "MAD (2305.19118); M3MAD-Bench (2601.02854)"
+    },
+    {
+      "rule": "Never let the author review its own work in the same context.",
+      "source": "Self-preference and drift studies (31.7% of own drift missed)"
+    },
+    {
+      "rule": "Harvest each member's unique ideas before any merge or vote. Plain councils lose about three quarters of them.",
+      "source": "Strange Loop Canon, LLM councils show groupthink (16 prompts, blind judges)"
+    },
+    {
+      "rule": "Treat LLM idea rankings as a sort, not a verdict. LLM idea judgments are near chance against human reviewers.",
+      "source": "Si et al. 2409.04109 (53.3% vs 56.1% human agreement)"
+    }
+  ],
+  "rubrics": {
+    "creative": {
+      "use_for": "Ideation: open questions, naming, product ideas, 'how might we'.",
+      "weights": {
+        "novelty": 30,
+        "value": 30,
+        "feasibility": 20,
+        "specificity": 10,
+        "emergence": 10
+      }
+    },
+    "decision": {
+      "use_for": "Choosing a direction: architecture, strategy, prioritization, anything that ships and has to be run.",
+      "weights": {
+        "value": 35,
+        "feasibility": 25,
+        "running_cost": 20,
+        "novelty": 10,
+        "specificity": 10
+      }
+    }
+  },
+  "composition_rules": [
+    "At least one challenger family lens.",
+    "At least one stakeholder family lens.",
+    "At least one temporal family lens.",
+    "Every lens should clash with at least one other lens in the set.",
+    "No two lenses that would say roughly the same thing.",
+    "Sets of 4 or more get one wildcard family lens.",
+    "A lens written for this specific problem beats any lens in the deck. Add custom lenses as 'Name: the question it asks'.",
+    "For judging or deciding, keep it to 3 or 4 distinct lenses; more lenses only pay off when generating ideas.",
+    "A lens changes the question and the required output, never the claimed expertise. Expert personas do not raise accuracy."
+  ]
+}

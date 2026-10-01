@@ -10,16 +10,6 @@ base_url = 'https://skills.sh'
 limit = 10
 
 [sources]
-[sources.'Jakeschincariol/arena-skill']
-registry = 'github'
-provider = 'git'
-url = 'https://github.com/Jakeschincariol/arena-skill.git'
-path = 'sources/Jakeschincariol--arena-skill'
-ref = 'main'
-commit = 'df07b8e518e10cdecd8cd7712d9958b6f396250e'
-updated = 2026-09-30T08:35:17.940739+07:00
-installed = ['skills/arena']
-
 [sources.'Leonxlnx/taste-skill']
 registry = 'github'
 provider = 'git'

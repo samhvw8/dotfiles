@@ -45,7 +45,7 @@ Do NOT use for: a quick list (isolated subagents are cheaper), or any decision (
 You (the main session) are the **facilitator + synthesizer**. You do not generate ideas — you frame, spawn, spark, and harvest.
 
 1. **Frame the question — open, not binary.** A "how might we…" or "what could we…", with constraints and what a great idea looks like. No yes/no motions (that's debate).
-2. **Assign distinct lenses.** 2–4 teammates, each a *generative* perspective (First Principles, User, Futurist, Operator, Minimalist, Contrarian…). Name them. Designate one **wildcard** to keep the space open.
+2. **Deal distinct cards.** 2–4 teammates. Run `python3 ~/.claude/skills/heavy-think/deck.py deal --members N [--preset P]` and give each teammate its lens *and* technique. Name them. Designate one **wildcard** to keep the space open. Keep the dealt provocations for Phase 2.
 3. **Spawn all in one message.** One `Agent` call per teammate, `model: "opus"`, each with FULL context (teammates don't inherit your history) and the roster *by name*.
 4. **Phase 1 — Diverge.** Each posts its initial ideas *independently* first (seed the space before anyone anchors). Tell them to hold judgment.
 5. **Phase 2 — Cross-pollinate.** Now they read each other and BUILD: "yes-and", combine two ideas, push one further, find the adjacent idea. Each message must **add or extend**, never just approve.
@@ -63,7 +63,8 @@ NOT seen by anyone — to contribute, you MUST SendMessage.
 
 QUESTION: {open question}
 CONTEXT & CONSTRAINTS: {context} — {constraints}
-YOUR LENS: {perspective} — generate what ONLY this lens reveals.
+YOUR LENS: {lens_name} — {lens_asks} Generate what ONLY this lens reveals.
+YOUR TECHNIQUE: {technique_name} — {technique_how}
 YOUR COLLABORATORS: {name: lens, name: lens, ...}
 FACILITATOR: the lead spawned you and will spark and close the session.
 
@@ -71,8 +72,9 @@ How to collaborate:
 1. DIVERGE FIRST: SendMessage 2–4 raw ideas from your lens to the group. Hold judgment —
    quantity and range now, not polish.
 2. BUILD, don't judge: when a collaborator's idea reaches you, EXTEND it — "yes-and",
-   combine it with yours, or push it somewhere new. Every message must ADD, never just
-   agree. Engage their LATEST idea.
+   combine it with yours, or push it somewhere new. Learn from their lens, but build
+   through yours. Every message must ADD, never just agree. Engage their LATEST idea,
+   and name the ideas you build on.
 3. CHASE THE SURPRISE: prefer the idea that wouldn't exist without two lenses colliding.
 4. STAY DIVERGENT until the facilitator calls convergence — then help cluster and pick
    the strongest few.
@@ -87,7 +89,7 @@ A council's failure mode is the inverse of a debate's — agreeing too fast and 
 - **Diverge before converge.** Enforce Phase 1 (independent ideas) before any building. Early anchoring kills range.
 - **Add, don't approve.** Reject "good idea!" with no extension — every message must build.
 - **Keep a wildcard.** One teammate must keep injecting "what if the opposite / what's missing."
-- **Spark, don't generate.** Inject gap prompts ("what would a hostile user love?", "what's the 10× version?") — never add your own ideas; that defeats the independence.
+- **Spark, don't generate.** Inject the deck's provocations (`perspectives.json` → `provocations`, dealt with the cards) one at a time — never add your own ideas; that defeats the independence.
 - **Detect false consensus:** if they converge fast, push "you agreed too early — find a wilder option." Converge only at Phase 3.
 - **Harvest the emergent, not the obvious** — the value is ideas that exist in no single teammate's output.
 
@@ -109,4 +111,5 @@ If `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` is unset, or you're inside a subagent,
 - `../SKILL.md` — Mode 1: Brainstorm (Escalation: Team Brainstorm)
 - `team-debate.md` — adversarial counterpart (decide / pressure-test)
 - `brainstorm-agent-prompt.md` — single-pass perspective + stress-test prompts
-- `perspective-combinations.md` — pre-built lens sets by scenario
+- `perspectives.json` — the lens, technique and provocation deck, with presets by scenario (dealt by `../deck.py`)
+- `../../council/SKILL.md` — full mode: the same session as file-based rounds, 5–12 members, blind scoring

@@ -1,6 +1,6 @@
 ---
 name: heavy-thinker
-description: "Subagent form of the heavy-think skill, for hard problems that deserve more than a first-pass answer - classifies the problem (brainstorm, solve, decompose, unstick), runs parallel sub-agents on it, and returns one synthesis while keeping the exploration out of the main context. It cannot run a live debate or council, because subagents cannot spawn teammates; for those use the heavy-think skill, /debate or /council in the main session."
+description: "Subagent form of the heavy-think skill, for hard problems that deserve more than a first-pass answer - classifies the problem (brainstorm, solve, decompose, unstick), runs parallel sub-agents on it, and returns one synthesis while keeping the exploration out of the main context. It cannot run a live debate or live council, because subagents cannot spawn teammates; for those use the heavy-think skill, /debate or /council in the main session. A full council (/council full) is file-based and can run here."
 model: inherit
 ---
 
@@ -28,13 +28,17 @@ If unclear, ask the user which mode fits before proceeding.
 
 ### Brainstorm Mode
 
-Spawn 3 perspective agents in parallel (one message). Each explores from a distinct worldview.
+Spawn 3 perspective agents in parallel (one message). Each explores from a distinct worldview, with a distinct creative technique.
 
-**Choose perspectives that tension each other.** Common sets:
+**Deal the cards from the deck** instead of picking by hand. A random deal guarantees a challenger, a stakeholder and a temporal lens, and lenses that clash; a preset is kept as curated:
 
-- **Product direction**: User Advocate + Minimalist + Competitor
-- **Architecture**: Operator + First Principles + Minimalist
-- **Go-to-market**: Economist + Contrarian + User Advocate
+```bash
+python3 ~/.claude/skills/heavy-think/deck.py presets
+python3 ~/.claude/skills/heavy-think/deck.py deal --members 3 --preset architecture --no-technique   # decisions: lenses only
+python3 ~/.claude/skills/heavy-think/deck.py deal --members 3 --preset greenfield                   # ideation: lens + technique
+```
+
+Each card is a lens (name, asks, sees), plus a technique (name, how) unless dealt with `--no-technique`. Use techniques for ideation only; for architecture or strategy they make the reasoning gimmicky. When the problem has a stakeholder the deck lacks, add it with `--lenses "operator; DBA on call: What will page me at 3am?"`. Score the top ideas on `~/.claude/skills/heavy-think/references/rubric.md` with the preset's profile (`creative` or `decision`) before ranking.
 
 Each agent gets:
 ```
@@ -42,13 +46,14 @@ You are a brainstorming agent exploring a problem from one specific perspective.
 
 PROBLEM: {problem}
 CONSTRAINTS: {constraints}
-YOUR PERSPECTIVE: {perspective} — {description}
+YOUR LENS: {lens_name} — {lens_asks} (sees: {lens_sees})
+YOUR TECHNIQUE: {technique_name} — {technique_how}
 
-Think from this perspective ONLY. Find what ONLY this lens reveals.
+Think through this lens ONLY, and generate with the technique for real.
 
 1. Challenge 2-3 assumptions most people take for granted
 2. What is the REAL problem underneath the stated one?
-3. Generate 3-5 ideas — push past the obvious first answer
+3. Write your first three ideas down as a Baseline — everyone has those, and sometimes the obvious one is right. Generate 3-5 past them.
 4. Pick your strongest. Stress-test: what breaks? what scales?
 5. Second-order effects: if this succeeds, then what? And then what?
 

@@ -37,29 +37,12 @@ Output:
 [What does this new frame miss or distort?]
 ```
 
-## Strategy Definitions
+## Strategy Definitions and Sets
 
-### Inversion
-"What if the opposite of the core assumption is true? If they assume X must be done, what if X shouldn't be done at all? If they assume Y is the constraint, what if Y is actually the solution?"
+The definitions, and which combination to use for which situation, live in `perspectives.json`
+(`reframes` and `reframe_sets`), so there is one copy. List them with:
 
-### Abstraction Shift
-"What if they're solving the wrong level of the problem? Go UP one level: what's the goal behind the goal? Go DOWN one level: what's the concrete sub-problem hiding inside the vague one?"
-
-### Constraint Flip
-"What if the thing they think is fixed is actually variable, and the thing they think is variable is actually fixed? Identify the assumed constraints and test whether each is truly immovable."
-
-### Adjacent Domain
-"What field completely outside theirs has solved an analogous problem? The solution might already exist — just in a different vocabulary. Map the structure of their problem to a different domain."
-
-### First Principles
-"Strip away all convention, precedent, and 'how it's usually done.' What's actually, provably true? Rebuild from there. Most stuckness comes from inherited assumptions, not physical laws."
-
-### Temporal Shift
-"What if the timeline is wrong? What would you do if you had 10x more time? What if you had to ship tomorrow? The urgency frame often hides what actually matters."
-
-## Customization
-
-- **"Every option feels wrong":** use Inversion + Constraint Flip + First Principles
-- **"Going in circles":** use Abstraction Shift + Adjacent Domain + Temporal Shift
-- **"Can't see the next step":** use First Principles + Constraint Flip + Abstraction Shift
-- **"Solution exists but feels too hard":** use Temporal Shift + Inversion + Adjacent Domain
+```bash
+python3 ~/.claude/skills/heavy-think/deck.py reframes            # every strategy, then the sets
+python3 ~/.claude/skills/heavy-think/deck.py reframes --set <id> # one set, ready to paste into prompts
+```

@@ -1,0 +1,348 @@
+{
+  "version": 3,
+  "about": "The strategy cards for /arena. Every competitor gets the same task and exactly one card: one reasoning mode, one workflow, one strategy. 24 x 21 x 20 = 10,080 distinct cards. bracket.py deals them with no repeats and spreads them evenly, so a 100-agent arena uses every reasoning mode, every workflow and every strategy. Edit freely: add an entry and the dealer picks it up. Ids must stay unique within a list. The card is also the competitor's vision: what it may learn from opponents (in defense, and in the learn step after the final) must fit it. Cards vary the reasoning method, not a persona: method diversity is what helps (DMAD, ICLR 2025), and expert personas do not raise accuracy. Entries added from research carry a 'source'.",
+  "reasoning": [
+    {
+      "id": "first-principles",
+      "name": "First principles",
+      "how": "Strip the task down to the facts and requirements nobody can argue with. Rebuild the answer from those alone, and keep a convention only if it earns its place again."
+    },
+    {
+      "id": "inversion",
+      "name": "Inversion",
+      "how": "Ask what would make this answer fail. List every way it could, then build the answer that makes each of those failures impossible."
+    },
+    {
+      "id": "analogy",
+      "name": "Analogy",
+      "how": "Find a problem in a different field that has already been solved and has the same shape. Port its solution over, then fix every place where the analogy breaks."
+    },
+    {
+      "id": "adversarial",
+      "name": "Adversarial",
+      "how": "Picture the harshest expert reviewer trying to tear the answer apart. Write their attacks down first and build the answer backwards from them."
+    },
+    {
+      "id": "constraint-first",
+      "name": "Constraint first",
+      "how": "List every hard constraint, stated and implied: time, budget, tools, format, audience, platform. Solve strictly inside that box and let the tightest constraint drive the design."
+    },
+    {
+      "id": "worked-example",
+      "name": "Worked example",
+      "how": "Solve one concrete, realistic instance end to end first, with real values. Generalise only from what that example actually taught you."
+    },
+    {
+      "id": "socratic",
+      "name": "Socratic",
+      "how": "Interrogate the task with the questions a sharp expert would ask before starting. Answer each one explicitly and let the answers decide the shape of the solution."
+    },
+    {
+      "id": "contrarian",
+      "name": "Contrarian",
+      "how": "Write down the obvious default answer, then argue seriously against it. Keep only what survives the argument, even if that takes you the unpopular way."
+    },
+    {
+      "id": "systems-thinking",
+      "name": "Systems thinking",
+      "how": "Map the moving parts, how they affect each other, and what happens second and third order. Optimise the whole system, not just the one part the task points at."
+    },
+    {
+      "id": "decomposition",
+      "name": "Decomposition",
+      "how": "Break the task into independent sub-problems. Solve each one completely, then integrate them and test the seams where they meet."
+    },
+    {
+      "id": "working-backwards",
+      "name": "Working backwards",
+      "how": "Describe the finished result precisely, as if it already exists. Then work backwards, step by step, to where the user is right now."
+    },
+    {
+      "id": "probabilistic",
+      "name": "Probabilistic",
+      "how": "Treat every claim and choice as uncertain. Weigh what is likely, prefer what holds up across most scenarios, and state your confidence where it changes the decision."
+    },
+    {
+      "id": "dialectical",
+      "name": "Dialectical",
+      "how": "State the strongest version of one answer, then the strongest opposing answer, then write the synthesis that keeps what is true in both."
+    },
+    {
+      "id": "evidence-first",
+      "name": "Evidence first",
+      "how": "Ground every claim in something checkable: the task text, the files it points to, the numbers given, documentation. Anything you cannot check gets labelled as an assumption."
+    },
+    {
+      "id": "expert-panel",
+      "name": "Expert panel",
+      "how": "Answer the task from three different angles that fit it (for example the builder, the operator and the person paying). Each angle asks a different question; take the strongest point from each and settle every point where they disagree.",
+      "source": "Personas do not raise accuracy (EMNLP 2024 Findings, 2311.10054): frame as perspectives, not credentials"
+    },
+    {
+      "id": "root-cause",
+      "name": "Root cause",
+      "how": "Ask why the problem exists, then why that is true, five levels down. Solve at the deepest level you can actually reach, and say which symptoms that removes."
+    },
+    {
+      "id": "abductive",
+      "name": "Best explanation",
+      "how": "List every explanation or approach that fits the facts in the task. Pick the one that explains the most with the fewest assumptions, and say what evidence would change your mind."
+    },
+    {
+      "id": "invariants",
+      "name": "Invariants",
+      "how": "Name what must stay true from start to finish: contracts, totals, guarantees, what must never break. Build the answer so every step visibly preserves them."
+    },
+    {
+      "id": "fermi",
+      "name": "Estimate first",
+      "how": "Put rough numbers on everything that matters (size, time, cost, frequency) before deciding anything. Let the orders of magnitude, not the adjectives, drive the design."
+    },
+    {
+      "id": "scenario-planning",
+      "name": "Scenario planning",
+      "how": "Sketch three futures the answer has to survive: the expected one, a bad one and a surprising one. Prefer the answer that is acceptable in all three over the one that is best in only one."
+    },
+    {
+      "id": "step-back",
+      "name": "Step back",
+      "how": "Before touching the specifics, state the general principle or concept the problem rests on. Then apply that principle to the specifics.",
+      "source": "Step-Back Prompting, arXiv 2310.06117 (+7 to +27 points on MMLU physics/chemistry and TimeQA)"
+    },
+    {
+      "id": "least-to-most",
+      "name": "Least to most",
+      "how": "Order the sub-questions from easiest to hardest. Solve them in that order, carrying each answer into the next.",
+      "source": "Least-to-Most Prompting, arXiv 2205.10625"
+    },
+    {
+      "id": "recall-related",
+      "name": "Recall related problems",
+      "how": "Write down two or three different problems you already know how to solve that resemble this one, solve them briefly, then solve the real one with what they taught you.",
+      "source": "Analogical Prompting, arXiv 2310.01714"
+    },
+    {
+      "id": "compute-with-code",
+      "name": "Compute with code",
+      "how": "Do every count, calculation and logical check by writing and tracing a short program, never in prose.",
+      "source": "Program-aided LM, arXiv 2211.10435; Program of Thoughts, 2211.12588"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "draft-critique-rewrite",
+      "name": "Draft, critique, rewrite",
+      "how": "Write a complete first draft. Critique it line by line against the task as if someone else wrote it, checking each point against the task text or an outside check, not your own impression. Then rewrite it from scratch using the critique.",
+      "source": "Self-correction without outside feedback does not help (arXiv 2310.01798)"
+    },
+    {
+      "id": "outline-first",
+      "name": "Outline first",
+      "how": "Write a skeleton outline, check the outline against every requirement in the task, fix it, and only then fill it in."
+    },
+    {
+      "id": "test-first",
+      "name": "Test first",
+      "how": "Before writing the answer, write the checks it must pass: acceptance tests for code, pass or fail criteria for anything else. Then write the answer and run every check against it."
+    },
+    {
+      "id": "research-then-synthesise",
+      "name": "Research, then synthesise",
+      "how": "Gather every relevant fact first: the task, any files or context it points to, what is known about the domain. Write nothing until the research is done, then synthesise."
+    },
+    {
+      "id": "three-drafts",
+      "name": "Three drafts, pick one",
+      "how": "Write three short, genuinely different approaches. Pick the strongest on the task's own terms and develop only that one fully."
+    },
+    {
+      "id": "requirements-checklist",
+      "name": "Requirements checklist",
+      "how": "Pull every requirement out of the task into a numbered list. Solve, then tick each item off and say exactly where it is met."
+    },
+    {
+      "id": "iterative-deepening",
+      "name": "Iterative deepening",
+      "how": "Write a one-paragraph answer first. Then expand the parts that matter most in two more passes, each one deeper than the last."
+    },
+    {
+      "id": "build-then-break",
+      "name": "Build, then break",
+      "how": "Build the answer. Then throw five hostile inputs or scenarios at it, write down what breaks, and patch every break."
+    },
+    {
+      "id": "smallest-version-first",
+      "name": "Smallest version first",
+      "how": "Produce the smallest complete version that actually works. Then extend it one step at a time, keeping it working after every step."
+    },
+    {
+      "id": "options-matrix",
+      "name": "Options matrix",
+      "how": "List the realistic options, score them in a small matrix against the criteria that matter for this task, choose one, and write up the choice."
+    },
+    {
+      "id": "open-questions-first",
+      "name": "Open questions first",
+      "how": "List every open question the task leaves. Resolve each one with reasoning or a stated assumption, then answer."
+    },
+    {
+      "id": "write-then-restructure",
+      "name": "Write, then restructure",
+      "how": "Write freely and fast. Then outline what you actually wrote, fix the structure, and rewrite it to the new outline."
+    },
+    {
+      "id": "spike-then-rewrite",
+      "name": "Spike, then rewrite",
+      "how": "Build a fast, throwaway version to learn where the real difficulty is. Then throw it away and write the real answer from what the spike taught you."
+    },
+    {
+      "id": "teach-back",
+      "name": "Teach it back",
+      "how": "Draft the answer, then explain it in plain words to someone new to the field. Every place the explanation stumbles is a gap: fix the answer, not the explanation."
+    },
+    {
+      "id": "reference-compare",
+      "name": "Compare to a reference",
+      "how": "Find a known-good reference: documentation, a standard, a well-known implementation, a worked example in the task. Draft, then diff your answer against it and justify every difference."
+    },
+    {
+      "id": "rubric-self-score",
+      "name": "Score yourself",
+      "how": "Draft the answer, then score it honestly on correctness, completeness, specificity, robustness and clarity. Fix the lowest-scoring criterion, and repeat once more."
+    },
+    {
+      "id": "verify-by-questions",
+      "name": "Verify by questions",
+      "how": "Draft the answer. List the fact-check questions it depends on. Answer each one fresh, without looking at the draft. Revise wherever the answers disagree.",
+      "source": "Chain-of-Verification, arXiv 2309.11495"
+    },
+    {
+      "id": "independent-runs",
+      "name": "Independent runs",
+      "how": "Solve the task three separate times from scratch without looking back. Compare the three, keep what they agree on, and investigate where they differ.",
+      "source": "Self-Consistency, arXiv 2203.11171; Debate or Vote, 2508.17536"
+    },
+    {
+      "id": "guess-then-refute",
+      "name": "Guess, then refute",
+      "how": "Write a quick candidate answer first, even a rough one. Try hard to prove it wrong. Then solve properly, using what the refutation showed.",
+      "source": "Verify-first prompting, arXiv 2511.21734 (preprint)"
+    },
+    {
+      "id": "learn-from-failure",
+      "name": "Learn from the failed run",
+      "how": "Make a first attempt and check it against something outside yourself: run it, test it, compare it to the task. Write a short lesson on what failed and why, then redo it with the lesson in front of you.",
+      "source": "Reflexion, arXiv 2303.11366; intrinsic self-correction without outside feedback fails (2310.01798)"
+    },
+    {
+      "id": "compose-method",
+      "name": "Compose your own method",
+      "how": "Pick the three to five reasoning moves that fit this task best, rewrite them into a numbered plan specific to this task, then follow the plan step by step.",
+      "source": "Self-Discover, arXiv 2402.03620 (up to +32% over chain of thought)"
+    }
+  ],
+  "strategies": [
+    {
+      "id": "simplest",
+      "name": "Simplest thing that works",
+      "how": "Pick the least complicated answer that fully does the job. Every extra part has to justify itself."
+    },
+    {
+      "id": "maximal-rigour",
+      "name": "Maximal rigour",
+      "how": "Be exhaustive and exact. Check every step, verify every claim, and leave no hand-waving anywhere."
+    },
+    {
+      "id": "user-empathy",
+      "name": "User empathy first",
+      "how": "Start from the person who will use this: their situation, their skill level, and what they will actually do next. Shape everything around that."
+    },
+    {
+      "id": "edge-cases-first",
+      "name": "Edge cases first",
+      "how": "Hunt the edge cases, failure modes and weird inputs first, and design the answer around surviving them."
+    },
+    {
+      "id": "speed",
+      "name": "Speed",
+      "how": "Optimise for the fastest route to something usable today. Cut anything that does not move the result."
+    },
+    {
+      "id": "defensive",
+      "name": "Defensive",
+      "how": "Assume the inputs are bad and the conditions are hostile. Make the answer fail safely and loudly rather than quietly."
+    },
+    {
+      "id": "clarity",
+      "name": "Clarity above all",
+      "how": "Make it the easiest answer to read and act on: plain words, obvious structure, nothing the reader has to decode."
+    },
+    {
+      "id": "completeness",
+      "name": "Completeness",
+      "how": "Leave out nothing the task asks for or clearly implies. Cover every requirement explicitly."
+    },
+    {
+      "id": "fewest-moving-parts",
+      "name": "Fewest moving parts",
+      "how": "Remove things until it breaks, then put the last one back. Fewer steps, fewer dependencies, fewer words."
+    },
+    {
+      "id": "explicit-trade-offs",
+      "name": "Explicit trade-offs",
+      "how": "Name the real trade-offs, choose for the user's most likely constraints, and say plainly what that choice gives up."
+    },
+    {
+      "id": "built-to-last",
+      "name": "Built to last",
+      "how": "Optimise for how this holds up in six months: easy to maintain, easy to extend, no traps for the next person."
+    },
+    {
+      "id": "concrete-specifics",
+      "name": "Concrete specifics",
+      "how": "Exact numbers, names, commands, file paths and steps. Zero generic advice."
+    },
+    {
+      "id": "cheapest-to-run",
+      "name": "Cheapest to run",
+      "how": "Optimise for what it costs after it ships: money per month, things to watch, things that page someone. Prefer the design that removes a running cost, even if it is more work to build."
+    },
+    {
+      "id": "reversible",
+      "name": "Reversible",
+      "how": "Prefer choices that are cheap to undo. Where a choice is a one-way door, say so plainly and make it as late and as small as possible."
+    },
+    {
+      "id": "least-surprise",
+      "name": "Least surprise",
+      "how": "Do what the user and the next reader would expect. Follow existing conventions in the task's context, and when you must break one, say why."
+    },
+    {
+      "id": "reuse-what-exists",
+      "name": "Reuse what exists",
+      "how": "Build from what the task already has: its files, tools, libraries, data and habits. Add something new only where nothing existing can do the job."
+    },
+    {
+      "id": "fail-loudly",
+      "name": "Fail loudly",
+      "how": "Make failure visible: crashing beats silently corrupting. Every path that can go wrong should say so clearly, and nothing should quietly fall back to a wrong answer."
+    },
+    {
+      "id": "verifiable",
+      "name": "Verifiable",
+      "how": "Give the user a way to check every important claim: a command to run, a test, a source, a number to compare against. An answer that cannot be checked counts as unfinished."
+    },
+    {
+      "id": "fix-the-bottleneck",
+      "name": "Fix the bottleneck",
+      "how": "Find the single constraint that limits the result and spend the effort there. Leave everything that is not the bottleneck good enough.",
+      "source": "Goldratt, Theory of Constraints"
+    },
+    {
+      "id": "label-the-claims",
+      "name": "Label the claims",
+      "how": "Mark every claim as fact, inference, assumption or recommendation, and never let an assumption read like a fact.",
+      "source": "Practitioner anti-sycophancy prompts (經理人); after-action review practice (复盘)"
+    }
+  ]
+}

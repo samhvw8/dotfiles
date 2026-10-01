@@ -36,32 +36,12 @@ Output:
 [What does this decomposition miss or awkwardly split?]
 ```
 
-## Strategy Definitions
+## Strategy Definitions and Sets
 
-### Functional
-"Decompose by capability or responsibility. What are the distinct functional areas? Each component should own one coherent set of behaviors."
+The definitions, and which combination to use for which situation, live in `perspectives.json`
+(`decompositions` and `decomposition_sets`), so there is one copy. List them with:
 
-### Temporal
-"Decompose by sequence and dependency. What must happen first, second, third? Focus on ordering, prerequisites, and the critical path."
-
-### Risk
-"Decompose by uncertainty and difficulty. Separate what's known from unknown, easy from hard. Group by confidence level."
-
-### Data-Flow
-"Decompose by information movement. What data originates where, flows to where, and transforms how? Boundaries are where data changes shape."
-
-### User-Journey
-"Decompose by user experience. What does the user do step by step? Each component is a stage in their journey."
-
-### Failure-Mode
-"Decompose by what can go wrong. What are the independent failure domains? Each component groups related failure modes."
-
-### Interface-First
-"Decompose by contracts between pieces. Don't define the pieces first — define the interfaces, then let the pieces emerge from what lives on each side."
-
-## Customization
-
-- **For technical systems:** prefer Functional + Data-Flow + Risk
-- **For projects/plans:** prefer Temporal + Risk + Functional
-- **For products:** prefer User-Journey + Functional + Risk
-- **For debugging complex failures:** prefer Failure-Mode + Data-Flow + Temporal
+```bash
+python3 ~/.claude/skills/heavy-think/deck.py decompositions            # every strategy, then the sets
+python3 ~/.claude/skills/heavy-think/deck.py decompositions --set <id> # one set, ready to paste into prompts
+```

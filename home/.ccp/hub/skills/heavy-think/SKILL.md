@@ -47,26 +47,35 @@ MODE: scan (3 agents, breadth-first) | deep (up to 5 agents, depth-first)
 
 ### Stage 2: Design Perspectives
 
-Choose 3-5 perspectives that **collide productively** — tension, not redundancy.
+Choose 3-5 perspectives that **collide productively**: tension, not redundancy. Each agent gets a
+**card**: a lens (who is looking), and for ideation a technique (how it generates).
 
-| Perspective | Explores |
-|-------------|----------|
-| First Principles | What's actually true vs assumed? |
-| User Advocate | What does the person experiencing this actually need? |
-| Contrarian | What if the obvious answer is wrong? |
-| Futurist | What's true in 3 years that isn't today? |
-| Operator | What breaks at scale? Maintenance burden? |
-| Economist | Incentives? Who pays, who benefits? |
-| Minimalist | 10% effort that captures 80% value? |
-| Historian | What's been tried? Why did it fail/succeed? |
+The deck is `references/perspectives.json`, dealt by `deck.py` in this skill's folder: 35 lenses in six
+families (challenger, stakeholder, temporal, systems, craft, wildcard), 18 creative techniques,
+provocations, and 12 presets by question shape (product direction, architecture, go-to-market, naming,
+prioritization, process, greenfield, growth, experience, risk, migration, policy). Each preset names
+its rubric.
 
-Rules: MUST include ≥1 challenger. MUST span ≥2 of: user, business, technical, temporal.
+```bash
+DECK = python3 ~/.claude/skills/heavy-think/deck.py
+DECK presets                                              # which preset fits, and its rubric
+DECK deal --members 3 --preset architecture --no-technique   # a decision: lenses only
+DECK deal --members 5 --preset greenfield                    # ideation: lens + technique
+DECK deal --members 4 --lenses "operator; maintainer; EU regulator: Would this pass a GDPR review?"
+```
 
-See `references/perspective-combinations.md` for pre-built sets by scenario.
+- **Techniques: ideation only.** For architecture, strategy and other technical or decision problems,
+  deal with `--no-technique`. A forced technique (random entry, lateral provocation) helps generate
+  ideas and hurts reasoning about trade-offs (see `references/tensions.md`, independence vs diversity).
+- **Custom lenses beat the deck.** When the problem has a stakeholder the deck lacks (a DBA on call,
+  an EU regulator, the finance team), write it as `Name: the question it asks` and mix it in.
+- A random deal always seats ≥1 challenger, ≥1 stakeholder, ≥1 temporal lens, a wildcard from 4 up,
+  and lenses that clash with each other. A preset or `--lenses` is kept as chosen; missing families
+  are added only into spare seats.
 
 ### Stage 3: Spawn Parallel Agents
 
-Launch all of them (up to 5) in **one message**, `model="opus"`. Each gets the same problem, distinct lens.
+Launch all of them (up to 5) in **one message**, `model="opus"`. Each gets the same problem and a different card. With `--no-technique`, drop the TECHNIQUE line.
 
 See `references/brainstorm-agent-prompt.md` for full prompt. Core structure:
 
@@ -74,34 +83,53 @@ See `references/brainstorm-agent-prompt.md` for full prompt. Core structure:
 You are a brainstorming agent exploring from one specific perspective.
 
 PROBLEM: {problem} | CONSTRAINTS: {constraints}
-YOUR PERSPECTIVE: {perspective_name} — {perspective_description}
+YOUR LENS: {lens_name} — {lens_asks} (sees: {lens_sees})
+YOUR TECHNIQUE: {technique_name} — {technique_how}
 
-Think from this perspective ONLY. Find what ONLY this lens reveals.
+Think through this lens ONLY, and generate with the technique for real.
 
 1. Challenge 2-3 assumptions most people take for granted
 2. What is the REAL problem underneath the stated one?
-3. Generate 3-5 ideas — push past the obvious first answer
+3. Write your first three ideas down as a Baseline (everyone has those, and sometimes the obvious one is right). Generate 3-5 past them, numbered {agent}.1, {agent}.2 …
 4. Pick strongest. Stress-test: what breaks? what scales?
 5. Second-order effects: if this succeeds, then what? And then what?
 
-Output: ## Core Insight → ## The Real Problem → ## Ideas → ## Second-Order Effects → ## Hidden Risk → ## Provocation
+Output: ## Core Insight → ## The Real Problem → ## Baseline → ## Ideas → ## Second-Order Effects → ## Hidden Risk → ## Provocation
 ```
+
+### Stage 3b (Optional): Cross-Pollinate
+
+Isolated agents collide only once, in your head. One extra wave lets ideas compound without agent
+teams: give each agent's output to one other agent (a ring: 1→2, 2→3, …, last→1) with the
+cross-pollinate prompt in `references/brainstorm-agent-prompt.md`. Each builds on what it read *through
+its own lens* — learn from the other, keep your own perspective — and names the parent ideas of
+every build. Costs K more calls. Use it in deep mode, or whenever the first wave came back as K
+separate lists.
 
 ### Stage 4: Synthesize (YOU — never delegate)
 
 1. **Map** — territory each perspective covered, overlap vs divergence
 2. **Collide** — where perspectives directly contradict (deepest insight lives here)
-3. **Extract surprises** — what exists in NO single output but emerges from combining
+3. **Extract surprises** — what exists in NO single output but emerges from combining (with 3b: the builds whose parents come from two lenses)
 4. **Second-order cascade** — trace strongest ideas: then what? and then what?
-5. **Converge** — landscape → key insights (ranked by surprise) → tensions worth holding → recommendation → what to kill
+5. **Score before you rank** — rate the top candidates (baselines included) on `references/rubric.md` with the right profile: `creative` (novelty 30, value 30, feasibility 20, specificity 10, emergence 10) for ideation, `decision` (value 35, feasibility 25, running cost 20, novelty 10, specificity 10) for anything that ships and has to be run. The preset names it. A baseline that wins under `decision` is a fine answer: say so.
+6. **Converge** — landscape → key insights (ranked by surprise) → tensions worth holding → recommendation → what to kill
 
 ### Stage 5 (Optional): Stress Test
 
 For high stakes, spawn 1-2 agents to attack synthesis: Red team ("find every way this fails") or Pre-mortem ("it's 1 year later and this failed — what happened?"). See `references/brainstorm-agent-prompt.md` for templates.
 
+### Escalation: Full Council (creative full mode)
+
+When the question deserves real range — 5–12 perspectives, several rounds of building on each other,
+a shortlist picked by blind judges rather than by you, and a record on disk — run **`/council full`**.
+It is this mode scaled up and made resumable: diverge → cross-pollinate rounds → cluster → blind
+scoring → develop → stress-test. No agent-teams flag needed. See `../council/SKILL.md` (council needs
+this skill linked beside it: it deals from this deck).
+
 ### Escalation: Team Brainstorm (collaborative teammates)
 
-Stages 1–5 use **isolated** parallel agents — they collide once, in your synthesis. When you want ideas to *compound* (each builds on the others live), escalate to a collaborative **council**: named teammates that cross-pollinate via `SendMessage`, then YOU harvest the expanded set. (Per the teammates-vs-subagents heuristic above — agents that build on each other need to talk.)
+Stages 1–5 use **isolated** parallel agents — they collide once, in your synthesis (or once more, with 3b). When you want ideas to *compound* (each builds on the others live), escalate to a collaborative **council**: named teammates that cross-pollinate via `SendMessage`, then YOU harvest the expanded set. (Per the teammates-vs-subagents heuristic above — agents that build on each other need to talk.)
 
 Full protocol, spawn template, anti-groupthink rules, and variants: **`references/team-brainstorm.md`**. Adversarial counterpart: `references/team-debate.md`.
 
@@ -181,6 +209,9 @@ GOAL: [What does a good decomposition enable? Parallel work? Clarity? Prioritiza
 ```
 
 ### Stage 2: Spawn 3 Decomposition Agents
+
+Pick the strategies from the deck: `DECK decompositions --set <technical-system|project-plan|product|debugging|migration>`
+(9 strategies, including Ownership and Reversibility). The tables below are the common defaults.
 
 Launch all in **one message**, `model="opus"`:
 
@@ -275,6 +306,10 @@ WHAT YOU'VE TRIED: [What approaches have been attempted or considered?]
 ```
 
 ### Stage 2: Spawn 3 Reframe Agents
+
+Pick the reframes from the deck: `DECK reframes --set <every-option-wrong|going-in-circles|no-next-step|too-hard|politics>`
+(10 reframes, including Stakeholder swap, Smallest instance, Dissolve the problem and Redefine done).
+The tables below are the common defaults.
 
 Launch all in **one message**, `model="opus"`:
 
@@ -401,7 +436,7 @@ Use only when teams are unavailable (flag off, or you're inside a subagent). Wea
 
 ### Constraints (both mechanisms)
 
-- Max 3 debate rounds. Beyond that, diminishing returns.
+- Max 2 debate rounds. Gains peak at round 1 or 2; sycophancy grows after (see `deck.py debates` for the rules and sources).
 - Each agent/teammate uses `model="opus"` for depth.
 - Spawn in parallel — subagents ≤6 in flight (rolling, not waves); debate teammates all in one message.
 - Always state: "Escalating to debate because [reason]."
@@ -438,7 +473,8 @@ State the chain upfront: "I'll decompose first, then brainstorm on the hardest p
 - `references/team-debate.md` — Agent-teams debate: spawn named teammates that argue via SendMessage (preferred), with legacy fallback
 - `references/team-brainstorm.md` — Agent-teams council: named teammates that build on each other's ideas via SendMessage (collaborative ideation)
 - `references/brainstorm-agent-prompt.md` — Brainstorm + stress test agent prompts
-- `references/perspective-combinations.md` — Pre-built perspective sets by scenario
+- `references/perspectives.json` — The deck: lenses, techniques, provocations, presets, reframes, decompositions, rubric weights (dealt by `deck.py`)
+- `references/rubric.md` — Idea rubric: creative and decision profiles, criteria anchors
 - `references/compute.md` — Cost analysis, K selection, non-monotonic performance
 - `references/tensions.md` — Design tensions: consensus vs minority, width vs depth
 - `references/landscape.md` — How Solve mode compares to Best-of-N, Self-Consistency, Forest-of-Thought
