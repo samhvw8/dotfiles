@@ -104,8 +104,10 @@ pulls every member toward it.
 COUNCIL init --brief-file .council/brief.md [--members N | --quick] [--preset P | --lenses "a; Name: question"] [--rubric creative|decision] [--no-technique] [--seed S]
 ```
 
-It deals the cards, seats members in a ring where neighbours come from different families, and
-writes `council.json`.
+It fits the deck to the brief, deals the cards, seats members in a ring where neighbours come from
+different families, and writes `council.json`. The fit is heavy-think's: Jev when
+`TYPESAFE_API_KEY` is set, else BM25, else the whole pool at random where too little fits. It
+prints what it used and kept, and the scores stay in `relevance.json`. `--relevance off` skips it.
 
 ### Step 4: the loop
 

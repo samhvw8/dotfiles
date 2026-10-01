@@ -579,11 +579,21 @@ def cmd_init(args):
         raise CouncilError("the brief is empty")
     seed = args.seed if args.seed is not None else random.randrange(1, 10 ** 6)
     explicit = D.parse_lens_spec(args.lenses, deck) if args.lenses else None
+    # Fit the deck to the brief before dealing: Jev, else BM25, else the whole pool (deck.py).
+    full = deck
+    deck, relevance = D.fit_deck(deck, brief, s["members"], mode=args.relevance, minimum=args.relevance_min,
+                                 techniques=not args.no_technique, preset=args.preset, key=D._key())
     name = time.strftime("%Y%m%d-%H%M%S")
     run_dir = os.path.join(ROOT, name)
     os.makedirs(run_dir, exist_ok=False)
     state = new_state(s["members"], seed, deck, run_dir, s["cross"], s["judges"], s["shortlist"],
                       s["parallel"], args.preset, explicit, rubric=args.rubric, techniques=not args.no_technique)
+    state["relevance"] = ({k: relevance.get(k) for k in ("method", "model", "minimum", "fallback", "notes")}
+                          if relevance else None)
+    if relevance:
+        with open(os.path.join(run_dir, "relevance.json"), "w", encoding="utf-8") as fh:
+            json.dump(relevance, fh, indent=1)
+            fh.write("\n")
     with open(os.path.join(run_dir, "brief.md"), "w", encoding="utf-8") as fh:
         fh.write(brief.rstrip("\n") + "\n")
     with open(RUBRIC_PATH, encoding="utf-8") as src, \
@@ -595,6 +605,8 @@ def cmd_init(args):
     total = sum(n for _, n in plan_rows(s["members"], s["cross"], s["judges"], s["shortlist"]))
     print("council %s: %d members, seed %s, %s rubric, %d calls"
           % (state["dir"], s["members"], seed, state["rubric"], total))
+    for line in D.report_lines(relevance, full):
+        print(line)
     for m in sorted(state["members"]):
         print("  %s  %s" % (m, _card_line(state["members"][m]["card"])))
     print("next: %s" % _cmd("next"))
@@ -727,6 +739,7 @@ def build_parser():
     s.add_argument("--lenses", help="deck ids and/or custom 'Name: question'")
     s.add_argument("--no-technique", action="store_true")
     s.add_argument("--seed")
+    D.add_relevance_args(s)
     sub.add_parser("presets", help="list preset lens sets")
     s = sub.add_parser("init", parents=[sizes], help="deal the cards and write council.json")
     s.add_argument("--brief-file")
@@ -736,6 +749,11 @@ def build_parser():
     s.add_argument("--rubric", choices=("creative", "decision"), help="default: the preset's, else creative")
     s.add_argument("--no-technique", action="store_true", help="lenses only")
     s.add_argument("--seed")
+    s.add_argument("--relevance", choices=("auto", "jev", "bm25", "off"), default="auto",
+                   help="fit the deck to the brief first: auto (default) uses Jev if TYPESAFE_API_KEY is "
+                        "set, else BM25. jev: Jev or fail. bm25: BM25 only. off: the whole deck")
+    s.add_argument("--relevance-min", type=float, default=D.RELEVANCE_MIN,
+                   help="the bar an entry must clear (default %g)" % D.RELEVANCE_MIN)
     sub.add_parser("next", parents=[common], help="what to do now")
     for name in ("prompts", "check"):
         s = sub.add_parser(name, parents=[common])

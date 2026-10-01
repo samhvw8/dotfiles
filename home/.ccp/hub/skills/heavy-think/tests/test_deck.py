@@ -1,0 +1,74 @@
+"""Tests for heavy-think/deck.py's relevance fit. Standard library only, never calls Jev.
+
+    python3 -m unittest discover -s tests -v
+"""
+import os
+import sys
+import unittest
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import deck as D  # noqa: E402
+
+
+def answers(qs, fits):
+    return {"model": "jev-test", "answers": {q: {"type": "noul", "noul": 0.9 if fits(q) else 0.1} for q in qs}}
+
+
+class Fit(unittest.TestCase):
+    def setUp(self):
+        self.deck = D.load_deck()
+
+    def test_jev_keeps_only_fitting_entries(self):
+        keep = {l["id"] for l in self.deck["lenses"][:12]} | {t["id"] for t in self.deck["techniques"][:6]} \
+            | {p["id"] for p in self.deck["provocations"][:6]}
+        ask = lambda state, qs, key: answers(qs, lambda q: q.split(":", 1)[1] in keep)
+        out, rep = D.fit_deck(self.deck, "q", 4, key="k", ask=ask)
+        self.assertEqual(rep["method"], "jev")
+        self.assertTrue({t["id"] for t in out["techniques"]} <= keep)
+        self.assertTrue({p["id"] for p in out["provocations"]} <= keep)
+        cards = D.deal_cards(4, 1, out)
+        for c in cards:
+            self.assertIn(c["technique"]["id"], keep)
+
+    def test_every_required_family_can_still_be_seated(self):
+        challengers = {l["id"] for l in self.deck["lenses"] if l["family"] == "challenger"}
+        ask = lambda state, qs, key: answers(qs, lambda q: q.startswith("lenses:") and q[7:] not in challengers)
+        out, rep = D.fit_deck(self.deck, "q", 3, key="k", ask=ask)
+        fams = [c["lens"]["family"] for c in D.deal_cards(3, 1, out)]
+        self.assertIn("challenger", fams)
+        self.assertTrue(any("challenger" in n for n in rep["notes"]))
+
+    def test_thin_pools_fall_back_to_the_whole_pool(self):
+        ask = lambda state, qs, key: answers(qs, lambda q: False)
+        out, rep = D.fit_deck(self.deck, "q", 4, key="k", ask=ask)
+        for pool in ("lenses", "techniques", "provocations"):
+            self.assertEqual(len(out[pool]), len(self.deck[pool]))
+            self.assertIsNone(rep["kept"][pool])
+
+    def test_preset_lenses_are_always_kept(self):
+        ask = lambda state, qs, key: answers(qs, lambda q: False if q.startswith("lenses:") else True)
+        out, _ = D.fit_deck(self.deck, "q", 3, key="k", ask=ask, preset="architecture")
+        D.deal_cards(3, 1, out, preset="architecture")   # no KeyError on a filtered-out preset lens
+
+    def test_fallbacks(self):
+        def broken(state, qs, key):
+            raise D.DeckError("HTTP 500")
+        _, rep = D.fit_deck(self.deck, "postgres migration", 3, key="k", ask=broken)
+        self.assertEqual(rep["method"], "bm25")
+        self.assertIn("Jev failed", rep["fallback"])
+        _, rep = D.fit_deck(self.deck, "postgres migration", 3, key=None)
+        self.assertIn("not set", rep["fallback"])
+        with self.assertRaises(D.DeckError):
+            D.fit_deck(self.deck, "q", 3, mode="jev", key=None)
+        self.assertEqual(D.fit_deck(self.deck, "q", 3, mode="off"), (self.deck, None))
+
+    def test_bm25_prefers_shared_words(self):
+        pools = {"reframes": [{"id": "a", "name": "Stakeholder swap", "how": "See it as the customer."},
+                              {"id": "b", "name": "Database", "how": "Think about the schema migration."}]}
+        sc = D.bm25_scores("our database schema migration keeps failing", pools)
+        self.assertEqual(sc["reframes"]["b"], 1.0)
+        self.assertEqual(sc["reframes"]["a"], 0.0)
+
+
+if __name__ == "__main__":
+    unittest.main()

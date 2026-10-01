@@ -59,11 +59,18 @@ its rubric.
 ```bash
 DECK = python3 ~/.claude/skills/heavy-think/deck.py
 DECK presets                                              # which preset fits, and its rubric
-DECK deal --members 3 --preset architecture --no-technique   # a decision: lenses only
-DECK deal --members 5 --preset greenfield                    # ideation: lens + technique
+DECK deal --members 3 --preset architecture --no-technique --question "<the problem>"   # a decision: lenses only
+DECK deal --members 5 --preset greenfield --question "<the problem>"                    # ideation: lens + technique
 DECK deal --members 4 --lenses "operator; maintainer; EU regulator: Would this pass a GDPR review?"
 ```
 
+- **Always pass `--question`** (the problem in one or two sentences, or `--question-file`). The deck
+  is fitted to it before dealing, so a lens, technique or provocation about concerns the problem
+  does not have is not dealt: **Jev** (TypeSafe) judges each entry when `TYPESAFE_API_KEY` is set
+  (kept at probability 0.6 or more); otherwise **BM25** ranks entries by shared words (kept at 0.6
+  of the best); a family the deal must seat with no fitting lens, or a pool with too few fitting
+  entries, is dealt from in full, **at random**. It prints what it used and kept. A preset or
+  `--lenses` is always kept. `--relevance bm25|off|jev` and `--relevance-min` override it.
 - **Techniques: ideation only.** For architecture, strategy and other technical or decision problems,
   deal with `--no-technique`. A forced technique (random entry, lateral provocation) helps generate
   ideas and hurts reasoning about trade-offs (see `references/tensions.md`, independence vs diversity).
@@ -210,7 +217,7 @@ GOAL: [What does a good decomposition enable? Parallel work? Clarity? Prioritiza
 
 ### Stage 2: Spawn 3 Decomposition Agents
 
-Pick the strategies from the deck: `DECK decompositions --set <technical-system|project-plan|product|debugging|migration>`
+Pick the strategies from the deck: `DECK decompositions --set <technical-system|project-plan|product|debugging|migration>`, or `DECK decompositions --question "<the problem>"` for the ones that fit it, best first
 (9 strategies, including Ownership and Reversibility). The tables below are the common defaults.
 
 Launch all in **one message**, `model="opus"`:
@@ -307,7 +314,7 @@ WHAT YOU'VE TRIED: [What approaches have been attempted or considered?]
 
 ### Stage 2: Spawn 3 Reframe Agents
 
-Pick the reframes from the deck: `DECK reframes --set <every-option-wrong|going-in-circles|no-next-step|too-hard|politics>`
+Pick the reframes from the deck: `DECK reframes --set <every-option-wrong|going-in-circles|no-next-step|too-hard|politics>`, or `DECK reframes --question "<why they are stuck>"` for the ones that fit, best first
 (10 reframes, including Stakeholder swap, Smallest instance, Dissolve the problem and Redefine done).
 The tables below are the common defaults.
 
