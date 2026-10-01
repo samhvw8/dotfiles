@@ -87,13 +87,9 @@ post-tools = [
     "bash $HOME/.dotfiles/mise/scripts/setup-font-linux.sh",
 ]
 
-# cua-driver stays outside [tools]: macOS ties its Accessibility and Screen
-# Recording grants to /Applications/CuaDriver.app, and the canonical installer
-# keeps them across upgrades where a versioned mise install dir would not.
-[tasks."cua:update"]
-description = "Upgrade cua-driver with its own installer (keeps macOS permissions)"
-run = [
-  "cua-driver update --apply",
-  "cua-driver --version",
-  "cua-driver telemetry status | head -2",
-]
+
+# cua-driver is not a [tools] entry; mise/scripts/cua-driver.sh explains why.
+[tasks."cua:install"]
+description = "Install or upgrade cua-driver with its own installer and register its MCP server"
+alias = "cua:update"
+run = "bash $HOME/.dotfiles/mise/scripts/cua-driver.sh"

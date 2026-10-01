@@ -53,11 +53,20 @@ declares separately, and whole `symlink-each` roots such as `~/.config`.
 
 # Other tasks
 
-`mise run cua:update` lives in `mise/config.toml` (full install only). It runs
-`cua-driver update --apply`, then prints the version and telemetry status.
-cua-driver is deliberately not a mise tool: macOS ties its Accessibility and
-Screen Recording grants to `/Applications/CuaDriver.app`, and its own installer
-keeps them across upgrades where a versioned mise install directory would not.
+`mise run cua:install` (alias `cua:update`, full install only, macOS) runs
+`mise/scripts/cua-driver.sh`. Without `cua-driver` it downloads `_install-rust.sh`
+from the latest `cua-driver-rs-v*` release of `trycua/cua` and runs it with
+telemetry off; with it, it runs `cua-driver update --apply`. Then it disables
+telemetry, registers the `cua-computer-use` MCP server with Claude Code if
+missing, and prints the permission status. Grants still need
+`cua-driver permissions grant`, by hand, once per machine.
+
+cua-driver is not a mise tool. The grants follow the bundle ID and signing team,
+not the path, but `cua-driver mcp` relaunches itself with `open -a CuaDriver`,
+so the app must sit at `/Applications/CuaDriver.app`. `trycua/cua` also releases
+many products from one repository, so `mise ls-remote` never lists the driver
+tags and `mise up` could not find new versions. A `cargo:` build would be
+unsigned and lose the grants on every upgrade.
 
 # chezmoi equivalents
 

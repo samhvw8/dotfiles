@@ -53,7 +53,7 @@ mise run dot:pull          # pull main from origin, rebasing local commits
 mise run dot:cd            # open a shell in ~/.dotfiles
 mise run dot:status        # unapplied dotfiles + uncommitted changes (like chezmoi status)
 mise run dot:diff          # git diff HEAD + mise dot diff
-mise run dot:update        # dot:pull, mise dot apply, dot:check
+mise run dot:update        # dot:pull, mise dot apply, ccp bootstrap, dot:check
 mise run dot:rm <path>     # stop managing; ~ keeps a real copy (chezmoi forget)
 mise run dot:destroy <path> # delete from ~ and home/ (chezmoi destroy)
 mise run dot:add <path>    # move a path from ~ into home/ and link it back
