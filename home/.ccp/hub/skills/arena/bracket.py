@@ -5,9 +5,9 @@ The whole arena lives in one JSON file (arena.json), so the orchestrator never
 loses track of who is alive, who fought whom and what happens next, even if its
 own context gets compacted halfway through a 100-agent run.
 
-    python3 bracket.py plan --agents 100             # rounds, sub-agent calls and waves. Writes nothing.
-    python3 bracket.py init --agents 100 --seed 7 --task-file task.md [--baseline-file old.md]
-    python3 bracket.py init --quick --task "..."     # 16 agents
+    python3 bracket.py plan [--agents N | --quick | --full]   # rounds, sub-agent calls and waves. Writes nothing.
+    python3 bracket.py init --agents 16 --seed 7 --task-file task.md [--baseline-file old.md]
+    python3 bracket.py init --full --task "..."      # 100 agents (--quick: 8)
     python3 bracket.py next                          # what to do now, and the exact command for it
     python3 bracket.py prompts <phase>               # write the sub-agent briefs, list the jobs left, in waves
     python3 bracket.py check <phase>                 # which outputs are still missing
@@ -18,12 +18,20 @@ own context gets compacted halfway through a 100-agent run.
     python3 bracket.py status                        # alive and eliminated, per round
     python3 bracket.py winner                        # the survivor, what it beat, the attacks it survived
     python3 bracket.py card <agent_id>               # one competitor's strategy card
+    python3 bracket.py clean                         # delete the run's scratch/ once it is done
 
 Phases, in order: spawn, then per round attack, defend, judge; then, once there is a
 champion, learn, probe, refine, recheck (the champion learns from the strongest
 competitors it outlasted, is attacked again, and only keeps the result if a blind judge
 prefers it); then final (only when there is a rejected answer to beat). Every command takes --dir; without it, the run
 named in .arena/LATEST is used.
+
+Card relevance: init deals only from the reasoning modes, workflows and strategies that fit
+the task. Jev (TypeSafe) judges the fit when TYPESAFE_API_KEY is set: one yes/no question per
+entry, in a single request. Without the key, or if Jev fails, BM25 ranks the entries by the
+words they share with the task. A list where too few entries clear the bar is dealt from in
+full, at random, and so is the whole deck when the survivors cannot make N distinct cards.
+--relevance off skips all of it.
 
 Python 3.8+, standard library only.
 """
@@ -35,6 +43,8 @@ import random
 import re
 import sys
 import time
+import urllib.error
+import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SELF = os.path.abspath(__file__)
@@ -42,18 +52,28 @@ STRATEGIES_PATH = os.path.join(HERE, "strategies.json")
 SKILL_PATH = os.path.join(HERE, "SKILL.md")
 RUBRIC_PATH = os.path.join(HERE, "rubric.md")
 
-DEFAULT_AGENTS = 100
-QUICK_AGENTS = 16
+DEFAULT_AGENTS = 16
+QUICK_AGENTS = 8
+FULL_AGENTS = 100
 DEFAULT_WAVE = 6           # sub-agents in flight at once: a rolling pool, not batches
 DEFAULT_LEARN_FROM = 6     # competitors the champion studies in the learn step
 ROOT = ".arena"
 LATEST = "LATEST"
 STATE_FILE = "arena.json"
+TEMPLATES_FILE = "templates.md"   # the run's frozen copy of SKILL.md's prompt templates
+NO_OUTPUT = "NO OUTPUT"           # what the orchestrator writes for a job that failed twice
 PHASES = ("spawn", "attack", "defend", "judge", "learn", "probe", "refine", "recheck", "final")
 LEARN_PHASES = ("learn", "probe", "refine", "recheck")
 TEMPLATES = ("competitor", "attacker", "defender", "judge", "learner", "prober", "refiner", "recheck", "final")
 LEARN_CALLS = 5            # learn 1, probe up to 2, refine 1, recheck 1
 CALLS_PER_MATCH = 5        # 2 attacks, 2 defenses, 1 judge
+
+JEV_URL = "https://api.typesafe.ai/v1/systemone"
+JEV_MODEL = "jev-latest"
+RELEVANCE_MIN = 0.5        # Jev: probability it fits. BM25: share of the best score in its list
+RELEVANCE_FLOOR = 4        # a list with fewer parts over the bar is dealt from in full, at random
+RELEVANCE_FILE = "relevance.json"
+DECK_KEYS = (("reasoning", "reasoning mode"), ("workflows", "workflow"), ("strategies", "strategy"))
 
 # Mirrors the table in rubric.md. tests/test_bracket.py checks they agree.
 WEIGHTS = (
@@ -222,6 +242,159 @@ def deal(n, seed, data):
     return dealt
 
 
+# ---------------------------------------------------------------- card relevance (Jev)
+
+def relevance_questions(data):
+    """One Noul per card part. The question ids are for code only; the meaning is all in the text."""
+    questions = {}
+    for key, kind in DECK_KEYS:
+        for it in data[key]:
+            questions["%s:%s" % (key, it["id"])] = {
+                "type": "noul",
+                "instructions": {
+                    "question": ("A capable AI will answer the task in `task` once, from scratch, and has to "
+                                 "follow the %s in `approach` while doing it. Does following this %s fit "
+                                 "what this particular task needs?" % (kind, kind)),
+                    "approach": {"kind": kind, "name": it["name"], "how": it["how"]},
+                },
+                "criteria": {
+                    "true": ("It fits: following it would plausibly lead to a strong answer to this task, "
+                             "because the task values what it optimises for and gives it what it needs."),
+                    "false": ("It does not fit: it optimises for something this task does not value, works "
+                              "against a stated requirement, or needs material or activities the task does "
+                              "not provide. A generic approach that would only make the answer longer is a no."),
+                },
+            }
+    return questions
+
+
+def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL, attempts=3):
+    """POST one System One request. Retries a 429 or a 5xx with backoff; anything else is an error."""
+    body = json.dumps({"state": state, "model": model, "questions": questions}).encode("utf-8")
+    for attempt in range(attempts):
+        req = urllib.request.Request(url, data=body, method="POST", headers={
+            "Authorization": "Bearer %s" % key, "Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if (e.code == 429 or e.code >= 500) and attempt + 1 < attempts:
+                try:
+                    wait = float(e.headers.get("retry-after") or 0)
+                except ValueError:
+                    wait = 0
+                time.sleep(max(wait, 2 ** attempt))
+                continue
+            detail = e.read().decode("utf-8", "replace")[:300]
+            raise ArenaError("Jev returned HTTP %d: %s" % (e.code, detail))
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            if attempt + 1 < attempts:
+                time.sleep(2 ** attempt)
+                continue
+            raise ArenaError("could not reach Jev: %s" % e)
+
+
+def score_relevance(task, data, key, ask=None):
+    """Jev's probability that each card part fits the task: {"reasoning": {id: p}, ...}."""
+    questions = relevance_questions(data)
+    resp = (ask or ask_jev)({"task": task}, questions, key)
+    answers = (resp or {}).get("answers") or {}
+    out = {k: {} for k, _ in DECK_KEYS}
+    for qid in questions:
+        a = answers.get(qid)
+        p = a.get("noul") if isinstance(a, dict) else None
+        if isinstance(p, bool) or not isinstance(p, (int, float)) or not math.isfinite(p):
+            raise ArenaError("Jev gave no usable answer for %s" % qid)
+        key_, iid = qid.split(":", 1)
+        out[key_][iid] = float(p)
+    return {"model": (resp or {}).get("model"), "usage": (resp or {}).get("usage"), "scores": out}
+
+
+_STOP = set("""a an and are as at be been but by can do does for from has have how if in into is it
+its not of on or so than that the their them then there these they this to too was we were what when
+where which who will with you your our must should would could may might also only any all each every
+more most other some such no nor own same very just about above after again against before below
+between both during further here once out over under until while why""".split())
+
+
+def _terms(text):
+    words = re.findall(r"[a-z0-9]+", text.lower())
+    return [w[:-1] if len(w) > 4 and w.endswith("s") else w for w in words if len(w) > 2 and w not in _STOP]
+
+
+def bm25_scores(task, data, k1=1.2, b=0.75):
+    """BM25 of every card part against the task, the task's distinct words as the query and each
+    list as its own corpus. Normalised per list so the best part scores 1.0 (0 when nothing matches)."""
+    query = set(_terms(task))
+    out = {}
+    for key, _ in DECK_KEYS:
+        docs = [(it["id"], _terms("%s %s" % (it["name"], it["how"]))) for it in data[key]]
+        N = len(docs)
+        avg = sum(len(t) for _, t in docs) / float(N) or 1.0
+        df = {}
+        for _, t in docs:
+            for w in set(t):
+                df[w] = df.get(w, 0) + 1
+        raw = {}
+        for iid, t in docs:
+            tf = {}
+            for w in t:
+                tf[w] = tf.get(w, 0) + 1
+            score = 0.0
+            for w in query & set(tf):
+                idf = math.log(1 + (N - df[w] + 0.5) / (df[w] + 0.5))
+                score += idf * tf[w] * (k1 + 1) / (tf[w] + k1 * (1 - b + b * len(t) / avg))
+            raw[iid] = score
+        top = max(raw.values()) if raw else 0.0
+        out[key] = {iid: (v / top if top > 0 else 0.0) for iid, v in raw.items()}
+    return out
+
+
+def pool_deck(data, scores, n, minimum=RELEVANCE_MIN, floor=RELEVANCE_FLOOR):
+    """Keep, per list, the parts scoring at least `minimum`, best first. A list with fewer than
+    `floor` of them is not filtered: it is dealt from in full, at random. If what is left cannot
+    make n distinct cards, the whole deck is used. Returns (data, {key: kept ids or None}, note)."""
+    out, kept, unfiltered = dict(data), {}, []
+    for key, _ in DECK_KEYS:
+        fits = sorted((it for it in data[key] if scores[key][it["id"]] >= minimum),
+                      key=lambda it: (-scores[key][it["id"]], it["id"]))
+        if len(fits) >= floor:
+            out[key], kept[key] = fits, [it["id"] for it in fits]
+        else:
+            kept[key] = None
+            unfiltered.append(key)
+    if combo_count(out) < n:
+        return data, {k: None for k, _ in DECK_KEYS}, "too few fitting cards for %d agents, dealt from the whole deck" % n
+    note = ("fewer than %d fit in %s, dealt from all of them" % (floor, ", ".join(unfiltered))) if unfiltered else ""
+    return out, kept, note
+
+
+def fit_deck(task, data, n, mode="auto", key=None, minimum=RELEVANCE_MIN, ask=None):
+    """Pick the scorer (Jev, else BM25), score the deck, apply the pool rule.
+    Returns (data to deal from, report). mode: auto, jev (no fallback), bm25, off."""
+    if mode == "off":
+        return data, None
+    report = {"method": None, "fallback": None}
+    scores = None
+    if mode in ("auto", "jev") and key:
+        try:
+            r = score_relevance(task, data, key, ask=ask)
+            scores, report["method"], report["model"], report["usage"] = r["scores"], "jev", r["model"], r["usage"]
+        except ArenaError as e:
+            if mode == "jev":
+                raise
+            report["fallback"] = "Jev failed (%s), used BM25" % e
+    elif mode == "jev":
+        raise ArenaError("--relevance jev needs TYPESAFE_API_KEY. Use --relevance auto to fall back to BM25")
+    elif mode == "auto":
+        report["fallback"] = "TYPESAFE_API_KEY is not set, used BM25"
+    if scores is None:
+        scores, report["method"] = bm25_scores(task, data), "bm25"
+    dealt, kept, note = pool_deck(data, scores, n, minimum=minimum)
+    report.update(minimum=minimum, kept=kept, note=note, scores=scores)
+    return dealt, report
+
+
 def agent_ids(n):
     width = max(3, len(str(n)))
     return ["a%0*d" % (width, i) for i in range(1, n + 1)]
@@ -271,7 +444,30 @@ def prompt_path(d, rnd, job_id):
 
 
 def _has_output(path):
+    """The job wrote something, even if only the NO OUTPUT placeholder. Used for 'is this job done'."""
     return os.path.isfile(path) and os.path.getsize(path) > 0
+
+
+def _is_real(path):
+    """The file holds actual work, not empty and not the NO OUTPUT placeholder. Used for 'use this file'."""
+    if not _has_output(path):
+        return False
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        return fh.read(len(NO_OUTPUT) + 64).strip().upper() != NO_OUTPUT
+
+
+def word_count(path):
+    try:
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            return len(fh.read().split())
+    except OSError:
+        return 0
+
+
+def blind_dir(d, label):
+    """A folder that holds only what a blind judge may see: the two copies and the rubric.
+    Nothing else of the run (state, rethink, baseline) sits next to them."""
+    return os.path.join(d, "blind", label)
 
 
 # ---------------------------------------------------------------- the bracket
@@ -451,6 +647,10 @@ def find_match(state, mid):
     for m in rd["matches"]:
         if m["id"] == raw:
             return rd, m
+    named = re.match(r"r(\d+)-", raw)
+    if named and int(named.group(1)) != rd["n"]:
+        raise ArenaError("%s is not in the open round (round %d). Closed rounds cannot be changed"
+                         % (mid, rd["n"]))
     tail = raw.split("-m")[-1].lstrip("m")
     if tail.isdigit():
         for m in rd["matches"]:
@@ -492,7 +692,7 @@ def advance(state):
         loser["eliminated_by"] = m["winner"]
         for aid in (m["a"], m["b"]):
             rev = revised_out(state["dir"], rd["n"], m["id"], aid)
-            if _has_output(rev):
+            if _is_real(rev):
                 state["agents"][aid]["solution"] = rev
         survivors.append(m["winner"])
     if rd["bye"]:
@@ -526,6 +726,8 @@ def weighted_total(scores):
             v = float(v)
         except (TypeError, ValueError):
             return None
+        if not math.isfinite(v):
+            return None
         total += max(0.0, min(10.0, v)) * weight
     return round(total / 10.0, 2)
 
@@ -542,12 +744,16 @@ def extract_json(text):
         return json.loads(text)
     except ValueError:
         pass
-    i, j = text.find("{"), text.rfind("}")
-    if i != -1 and j > i:
+    dec = json.JSONDecoder()
+    i = text.find("{")
+    while i != -1:
         try:
-            return json.loads(text[i:j + 1])
+            obj, _ = dec.raw_decode(text, i)
+            if isinstance(obj, dict):
+                return obj
         except ValueError:
-            return None
+            pass
+        i = text.find("{", i + 1)
     return None
 
 
@@ -571,11 +777,14 @@ def decide(verdict, a, b):
     pick = a if (in_a and not in_b) else b if (in_b and not in_a) else None
     ta, tb = weighted_total(sa), weighted_total(sb)
     totals = {a: ta, b: tb}
+    fa = _truthy(sa.get("fatal")) if isinstance(sa, dict) else False
+    fb = _truthy(sb.get("fatal")) if isinstance(sb, dict) else False
     if ta is None or tb is None:
+        if fa != fb:
+            return (b if fa else a), totals, "scores incomplete, decided by the fatal flag"
         if pick:
             return pick, totals, "scores incomplete, used the judge's pick"
         raise ArenaError("verdict has neither complete scores nor a clear winner")
-    fa, fb = _truthy(sa.get("fatal")), _truthy(sb.get("fatal"))
     if fa != fb:
         winner = b if fa else a
     elif ta != tb:
@@ -759,6 +968,12 @@ _TEMPLATE_RE = re.compile(r"<!-- template:([a-z]+) -->\s*```text\n(.*?)\n```\s*<
 _PLACEHOLDER_RE = re.compile(r"\{\{(\w+)\}\}")
 
 
+def run_templates(state):
+    """The run's frozen templates. Runs made before templates were frozen read SKILL.md."""
+    path = os.path.join(state["dir"], TEMPLATES_FILE)
+    return path if os.path.isfile(path) else SKILL_PATH
+
+
 def load_templates(path=SKILL_PATH):
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
@@ -820,12 +1035,18 @@ def render_job(state, job, templates, task):
         v.update(_card_values(agents[me]["card"]))
         v.update(agent=me, attacker=opp, match=job["match"], round=job["round"],
                  own_solution=agents[me]["solution"], opponent_solution=agents[opp]["solution"],
+                 own_words=word_count(agents[me]["solution"]),
                  attacks=attack_out(d, job["round"], job["match"], opp),
+                 own_attacks=attack_out(d, job["round"], job["match"], me),
                  defense_out=job["outputs"][0], solution_out=job["outputs"][1])
     elif kind == "judge":
         n, mid, a, b = job["round"], job["match"], job["a"], job["b"]
+        def judged(aid):
+            # A defender that failed twice leaves NO OUTPUT: judge the solution it came in with.
+            rev = revised_out(d, n, mid, aid)
+            return rev if _is_real(rev) else agents[aid]["solution"]
         v.update(match=mid, round=n, first=a, second=b,
-                 first_solution=revised_out(d, n, mid, a), second_solution=revised_out(d, n, mid, b),
+                 first_solution=judged(a), second_solution=judged(b),
                  first_attacks=attack_out(d, n, mid, b), second_attacks=attack_out(d, n, mid, a),
                  first_defense=defense_out(d, n, mid, a), second_defense=defense_out(d, n, mid, b),
                  out=job["outputs"][0])
@@ -852,23 +1073,58 @@ def render_job(state, job, templates, task):
                      ledger_out=job["outputs"][0], solution_out=job["outputs"][1])
         elif kind == "refiner":
             v.update(own_solution=learn_out(d, "rethink.md"),
+                     probers_n="one competitor" if len(lr["probers"]) == 1 else "%d competitors" % len(lr["probers"]),
                      attacks="\n".join("- " + learn_out(d, "probe.%s.md" % a) for a in lr["probers"]),
                      defense_out=job["outputs"][0], solution_out=job["outputs"][1])
         elif kind == "recheck":
-            v.update(x_solution=learn_out(d, "X.md"), y_solution=learn_out(d, "Y.md"))
+            b_ = blind_dir(d, "recheck")
+            v.update(x_solution=os.path.join(b_, "X.md"), y_solution=os.path.join(b_, "Y.md"),
+                     rubric=os.path.join(b_, "rubric.md"))
     elif kind == "final":
+        b_ = blind_dir(d, "final")
         v.update(rounds=rounds_played(state),
-                 x_solution=os.path.join(d, "final", "X.md"),
-                 y_solution=os.path.join(d, "final", "Y.md"),
+                 x_solution=os.path.join(b_, "X.md"), y_solution=os.path.join(b_, "Y.md"),
+                 rubric=os.path.join(b_, "rubric.md"),
                  out=job["outputs"][0])
     return fill(templates[kind], v)
+
+
+def _blind_copies(state, label, sources, order):
+    """Write X.md, Y.md and the rubric into a folder of their own. Raises before writing
+    anything if a source is missing, so a half-made blind pair never exists."""
+    for key in order:
+        if not _is_real(sources[key]):
+            raise ArenaError("%s is not written yet (%s). Run %s first"
+                             % (key, sources[key], "refine" if label == "recheck" else "the earlier steps"))
+    b_ = blind_dir(state["dir"], label)
+    os.makedirs(b_, exist_ok=True)
+    for name, key in zip(("X", "Y"), order):
+        with open(sources[key], encoding="utf-8", errors="replace") as src, \
+                open(os.path.join(b_, name + ".md"), "w", encoding="utf-8") as dst:
+            dst.write(src.read())
+    with open(os.path.join(state["dir"], "rubric.md"), encoding="utf-8") as src, \
+            open(os.path.join(b_, "rubric.md"), "w", encoding="utf-8") as dst:
+        dst.write(src.read())
 
 
 def write_prompts(state, phase):
     jobs = phase_jobs(state, phase)
     if not jobs:
         return jobs
-    templates = load_templates()
+    if phase == "recheck":
+        # Blind copies first: the recheck judge never knows which version learned.
+        lr = state["learn"]
+        _blind_copies(state, "recheck",
+                      {"original": lr["original"], "refined": learn_out(state["dir"], "refined.md")},
+                      (lr["X"], lr["Y"]))
+    if phase == "final":
+        # Blind copies: the final judge sees X and Y, never which one is the champion.
+        fin = state["final"]
+        _blind_copies(state, "final",
+                      {"champion": state["agents"][state["champion"]]["solution"],
+                       "baseline": os.path.join(state["dir"], "baseline.md")},
+                      (fin["X"], fin["Y"]))
+    templates = load_templates(run_templates(state))
     task = read_task(state)
     for j in jobs:
         for p in j["outputs"] + [j["prompt"]]:
@@ -879,24 +1135,6 @@ def write_prompts(state, phase):
     if phase == "spawn":
         for aid in state["agents"]:
             os.makedirs(os.path.join(state["dir"], "scratch", aid), exist_ok=True)
-    if phase == "recheck":
-        # Blind copies: the recheck judge never knows which version learned.
-        lr = state["learn"]
-        sources = {"original": lr["original"], "refined": learn_out(state["dir"], "refined.md")}
-        for label in ("X", "Y"):
-            with open(sources[lr[label]], encoding="utf-8", errors="replace") as src, \
-                    open(learn_out(state["dir"], label + ".md"), "w", encoding="utf-8") as dst:
-                dst.write(src.read())
-    if phase == "final":
-        # Blind copies: the final judge sees X and Y, never which one is the champion.
-        fin = state["final"]
-        sources = {"champion": state["agents"][state["champion"]]["solution"],
-                   "baseline": os.path.join(state["dir"], "baseline.md")}
-        os.makedirs(os.path.join(state["dir"], "final"), exist_ok=True)
-        for label in ("X", "Y"):
-            with open(sources[fin[label]], encoding="utf-8", errors="replace") as src, \
-                    open(os.path.join(state["dir"], "final", label + ".md"), "w", encoding="utf-8") as dst:
-                dst.write(src.read())
     return jobs
 
 
@@ -992,10 +1230,12 @@ def _card_line(card):
 # ---------------------------------------------------------------- commands
 
 def _agents_arg(args):
-    if args.quick and args.agents is not None:
-        raise ArenaError("pass --quick or --agents, not both")
+    if sum([bool(args.quick), bool(args.full), args.agents is not None]) > 1:
+        raise ArenaError("pass one of --quick, --full or --agents")
     if args.quick:
         return QUICK_AGENTS
+    if args.full:
+        return FULL_AGENTS
     return DEFAULT_AGENTS if args.agents is None else args.agents
 
 
@@ -1026,6 +1266,9 @@ def cmd_init(args):
     n = _agents_arg(args)
     if args.wave < 1:
         raise ArenaError("--wave must be at least 1")
+    if args.learn_from < 1:
+        raise ArenaError("--learn-from must be at least 1")
+    load_templates()   # fail before writing anything if SKILL.md is broken
     data = load_strategies()
     if n < 1 or n > combo_count(data):
         raise ArenaError("--agents must be between 1 and %d (the number of distinct cards)" % combo_count(data))
@@ -1043,8 +1286,11 @@ def cmd_init(args):
             baseline = fh.read().strip()
         if not baseline:
             raise ArenaError("the baseline file is empty")
+    full_deck = data
+    data, relevance = fit_deck(task, data, n, mode=args.relevance,
+                               key=os.environ.get("TYPESAFE_API_KEY", "").strip() or None,
+                               minimum=args.relevance_min)
     seed = args.seed if args.seed is not None else random.SystemRandom().randrange(1, 1000000)
-    default_dir = not args.dir
     d = os.path.abspath(args.dir or os.path.join(ROOT, "run-%s-s%s" % (time.strftime("%Y%m%d-%H%M%S"), seed)))
     if os.path.exists(os.path.join(d, STATE_FILE)):
         raise ArenaError("%s already has an arena in it. Pick another --dir" % d)
@@ -1059,19 +1305,39 @@ def cmd_init(args):
     with open(RUBRIC_PATH, encoding="utf-8") as src, \
             open(os.path.join(d, "rubric.md"), "w", encoding="utf-8") as dst:
         dst.write(src.read())
-    if args.learn_from < 1:
-        raise ArenaError("--learn-from must be at least 1")
+    # Same for the prompt templates: editing SKILL.md mid-run must not change later briefs.
+    with open(SKILL_PATH, encoding="utf-8") as src, \
+            open(os.path.join(d, TEMPLATES_FILE), "w", encoding="utf-8") as dst:
+        dst.write(src.read())
+    if relevance:
+        with open(os.path.join(d, RELEVANCE_FILE), "w", encoding="utf-8") as fh:
+            json.dump(relevance, fh, indent=1)
+            fh.write("\n")
     state = new_state(n, seed, data, d, wave=args.wave, has_baseline=bool(baseline),
                       learn=not args.no_learn, learn_from=args.learn_from)
+    state["relevance"] = ({"method": relevance["method"], "model": relevance.get("model"),
+                           "minimum": relevance["minimum"], "fallback": relevance["fallback"],
+                           "note": relevance["note"],
+                           "kept": {k: (len(v) if v else None) for k, v in relevance["kept"].items()}}
+                          if relevance else None)
     save_state(state)
-    if default_dir:
-        os.makedirs(ROOT, exist_ok=True)
-        with open(os.path.join(ROOT, LATEST), "w", encoding="utf-8") as fh:
-            fh.write(d + "\n")
+    # Always point LATEST at the run just made, so every later command drives this one.
+    os.makedirs(ROOT, exist_ok=True)
+    with open(os.path.join(ROOT, LATEST), "w", encoding="utf-8") as fh:
+        fh.write(d + "\n")
     t = plan_totals(n, args.wave)
     print("arena ready: %s" % d)
     print("seed %s. %d agents, %d distinct cards dealt from %d, no repeats."
           % (seed, n, n, combo_count(data)))
+    if relevance:
+        by = (relevance.get("model") or JEV_MODEL) if relevance["method"] == "jev" else "BM25"
+        print("cards fitted to the task by %s: %s. Scores: %s"
+              % (by, ", ".join("%s of %d %s" % (len(v) if v else "all", len(full_deck[k]), k)
+                               for k, v in ((k, relevance["kept"][k]) for k, _ in DECK_KEYS)),
+                 os.path.join(d, RELEVANCE_FILE)))
+        for line in (relevance["fallback"], relevance["note"]):
+            if line:
+                print("  note: %s" % line)
     extra = (LEARN_CALLS if (state["learn_on"] and n > 1) else 0) + (1 if baseline else 0)
     print("%d rounds (%s). About %d sub-agent calls, at most %d in flight%s."
           % (t["rounds"], " -> ".join(str(s) for s in bracket_sizes(n)), t["calls"] + extra, args.wave,
@@ -1309,6 +1575,11 @@ def cmd_winner(args):
         print("learned   from %s. Ledger: %s" % (", ".join(lr["teachers"]), learn_out(state["dir"], "ledger.md")))
         print("          recheck: %s version kept, refined %s vs original %s. %s"
               % (r["better"], _fmt(r["refined_total"]), _fmt(r["original_total"]), r["reason"]))
+    scratch = os.path.join(state["dir"], "scratch")
+    if os.path.isdir(scratch):
+        size, files = _tree_size(scratch)
+        if files:
+            print("scratch   %.1f MB in %d file(s). Delete it with: %s" % (size / 1e6, files, _cmd("clean")))
     fin = rep["final"]
     if fin:
         verdict = ("the winner beats it" if fin["better"] == "champion"
@@ -1331,6 +1602,33 @@ def cmd_card(args):
     return 0
 
 
+def _tree_size(path):
+    total, files = 0, 0
+    for root, _, names in os.walk(path):
+        for name in names:
+            try:
+                total += os.path.getsize(os.path.join(root, name))
+                files += 1
+            except OSError:
+                pass
+    return total, files
+
+
+def cmd_clean(args):
+    state = load_state(args)
+    if next_action(state)[0] != "done" and not args.force:
+        raise ArenaError("the run is not done yet. Pass --force to delete scratch/ anyway")
+    scratch = os.path.join(state["dir"], "scratch")
+    if not os.path.isdir(scratch):
+        print("no scratch/ in %s" % state["dir"])
+        return 0
+    size, files = _tree_size(scratch)
+    import shutil
+    shutil.rmtree(scratch)
+    print("deleted %s: %d file(s), %.1f MB" % (scratch, files, size / 1e6))
+    return 0
+
+
 def build_parser():
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--dir", help="the arena run directory (default: the one in .arena/LATEST)")
@@ -1341,6 +1639,7 @@ def build_parser():
     s = sub.add_parser("plan", help="rounds, sub-agent calls and waves for N agents")
     s.add_argument("--agents", type=int)
     s.add_argument("--quick", action="store_true")
+    s.add_argument("--full", action="store_true")
     s.add_argument("--wave", type=int, default=DEFAULT_WAVE)
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=cmd_plan)
@@ -1348,6 +1647,7 @@ def build_parser():
     s = sub.add_parser("init", parents=[common], help="deal the cards and write arena.json")
     s.add_argument("--agents", type=int, help="number of competitors (default %d)" % DEFAULT_AGENTS)
     s.add_argument("--quick", action="store_true", help="%d competitors" % QUICK_AGENTS)
+    s.add_argument("--full", action="store_true", help="%d competitors" % FULL_AGENTS)
     s.add_argument("--seed", type=int, help="fixes the cards and the pairings (default: random, recorded)")
     s.add_argument("--task-file", help="the task, word for word, as every competitor will get it")
     s.add_argument("--task", help="the task as a string, instead of --task-file")
@@ -1355,6 +1655,12 @@ def build_parser():
     s.add_argument("--wave", type=int, default=DEFAULT_WAVE,
                    help="sub-agents in flight at once, as a rolling pool (default %d)" % DEFAULT_WAVE)
     s.add_argument("--no-learn", action="store_true", help="skip the learn step after the final")
+    s.add_argument("--relevance", choices=("auto", "jev", "bm25", "off"), default="auto",
+                   help="fit the deck to the task first. auto (default): Jev if TYPESAFE_API_KEY is set, "
+                        "else BM25. jev: Jev or fail. bm25: BM25 only. off: the whole deck")
+    s.add_argument("--relevance-min", type=float, default=RELEVANCE_MIN,
+                   help="the bar a card part must clear: Jev's probability that it fits, or for BM25 "
+                        "its share of the best score in its list (default %g)" % RELEVANCE_MIN)
     s.add_argument("--learn-from", type=int, default=DEFAULT_LEARN_FROM,
                    help="competitors the champion studies in the learn step (default %d)" % DEFAULT_LEARN_FROM)
     s.set_defaults(func=cmd_init)
@@ -1396,6 +1702,10 @@ def build_parser():
     s = sub.add_parser("card", parents=[common], help="one competitor's strategy card")
     s.add_argument("agent_id")
     s.set_defaults(func=cmd_card)
+
+    s = sub.add_parser("clean", parents=[common], help="delete the run's scratch/ once it is done")
+    s.add_argument("--force", action="store_true", help="even if the run is not done")
+    s.set_defaults(func=cmd_clean)
     return p
 
 

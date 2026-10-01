@@ -27,9 +27,12 @@ import bracket as B  # noqa: E402
 EM_DASH, EN_DASH = chr(0x2014), chr(0x2013)   # spelled as code points so this file stays clean
 
 
+OFFLINE = {k: v for k, v in os.environ.items() if k != "TYPESAFE_API_KEY"}   # never call Jev from tests
+
+
 def cli(*args):
     return subprocess.run([sys.executable, BRACKET] + [str(a) for a in args],
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, env=OFFLINE)
 
 
 def write(path, text):
@@ -50,8 +53,11 @@ def load(d):
 class TempDir(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="arena-test-")
+        self.cwd = os.getcwd()
+        os.chdir(self.tmp)   # init writes .arena/LATEST into the working directory
 
     def tearDown(self):
+        os.chdir(self.cwd)
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     def ok(self, *args):
@@ -351,7 +357,9 @@ class FullPipelineWithFakeAgents(TempDir):
             self.assertIn("refined by %s" % state["champion"], read(champ["solution"]))
         else:
             self.assertEqual(champ["solution"], lr["original"])
-        pair = {read(os.path.join(d, "final", "X.md")).strip(), read(os.path.join(d, "final", "Y.md")).strip()}
+        blind = B.blind_dir(d, "final")
+        self.assertEqual(sorted(os.listdir(blind)), ["X.md", "Y.md", "rubric.md"], "nothing else beside the blind pair")
+        pair = {read(os.path.join(blind, "X.md")).strip(), read(os.path.join(blind, "Y.md")).strip()}
         self.assertIn("The sea is big.", pair)
         self.assertIn(read(champ["solution"]).strip(), pair, "the final check sees the post-learn champion")
         rep = json.loads(self.ok("winner", "--json", "--dir", d))
@@ -361,7 +369,7 @@ class FullPipelineWithFakeAgents(TempDir):
 
     def test_spawn_briefs_share_one_task_and_differ_in_card(self):
         d = os.path.join(self.tmp, "run16")
-        self.ok("init", "--quick", "--seed", 4, "--task", self.TASK, "--dir", d)
+        self.ok("init", "--seed", 4, "--task", self.TASK, "--dir", d)
         self.ok("prompts", "spawn", "--dir", d)
         blocks, cards = set(), set()
         for name in sorted(os.listdir(os.path.join(d, "prompts", "r0"))):
@@ -397,10 +405,12 @@ class Guards(TempDir):
         self.assertEqual(cli("init", "--quick", "--agents", 8, "--task", "t", "--dir", d + "4").returncode, 2)
         self.assertEqual(cli("init", "--agents", 4, "--task", "   ", "--dir", d + "5").returncode, 2)
 
-    def test_quick_is_16(self):
-        d = os.path.join(self.tmp, "quick")
-        self.ok("init", "--quick", "--task", "t", "--dir", d)
-        self.assertEqual(load(d)["agents_n"], 16)
+    def test_sizes(self):
+        for flag, n in ((None, 16), ("--quick", 8), ("--full", 100)):
+            d = os.path.join(self.tmp, "size-%s" % n)
+            self.ok("init", *([flag] if flag else []), "--task", "t", "--dir", d)
+            self.assertEqual(load(d)["agents_n"], n)
+        self.assertEqual(cli("init", "--quick", "--full", "--task", "t", "--dir", d + "x").returncode, 2)
 
     def test_record_rejects_an_outsider(self):
         d = os.path.join(self.tmp, "rec")
@@ -486,3 +496,238 @@ class Learn(TempDir):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class AuditFixes(TempDir):
+    """One test per bug found in the audit."""
+
+    def fresh(self, n=4, seed=2, name="run"):
+        d = os.path.join(self.tmp, name)
+        self.ok("init", "--agents", n, "--seed", seed, "--task", "t", "--dir", d)
+        for aid in load(d)["agents"]:
+            os.makedirs(os.path.join(d, "r0"), exist_ok=True)
+            write(os.path.join(d, "r0", aid + ".md"), "solution of %s" % aid)
+        return d
+
+    def win_round(self, d):
+        for m in load(d)["rounds"][-1]["matches"]:
+            self.ok("record", m["id"], m["a"], "--dir", d)
+        self.ok("advance", "--dir", d)
+
+    def test_a_closed_rounds_match_id_is_refused(self):
+        d = self.fresh()
+        self.win_round(d)
+        m = load(d)["rounds"][-1]["matches"][0]
+        r = cli("record", "r1-m01", m["a"], "--dir", d)
+        self.assertEqual(r.returncode, 2, r.stdout)
+        self.assertIn("not in the open round", r.stderr)
+        self.assertIsNone(load(d)["rounds"][-1]["matches"][0]["winner"])
+        self.ok("record", "m1", m["a"], "--dir", d)   # the bare number still works
+
+    def test_init_with_dir_points_latest_at_the_new_run(self):
+        cwd = os.path.join(self.tmp, "proj")
+        os.makedirs(cwd)
+        for name in ("one", "two"):
+            r = subprocess.run([sys.executable, BRACKET, "init", "--agents", "2", "--task", "t", "--dir",
+                                os.path.join(cwd, ".arena", name)], cwd=cwd, capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, r.stderr)
+        r = subprocess.run([sys.executable, BRACKET, "status"], cwd=cwd, capture_output=True, text=True)
+        self.assertIn(os.path.join(".arena", "two"), r.stdout)
+
+    def test_no_output_never_replaces_a_solution(self):
+        d = self.fresh()
+        st = load(d)
+        m = st["rounds"][0]["matches"][0]
+        for aid in (m["a"], m["b"]):
+            p = B.revised_out(d, 1, m["id"], aid)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            write(p, "NO OUTPUT\n")
+        # the judge brief points at the solution each side came in with
+        jobs = B.write_prompts(load(d), "judge")
+        brief = read(next(j["prompt"] for j in jobs if j["match"] == m["id"]))
+        self.assertIn(os.path.join(d, "r0", m["a"] + ".md"), brief)
+        self.assertNotIn(B.revised_out(d, 1, m["id"], m["a"]), brief)
+        self.win_round(d)
+        self.assertEqual(load(d)["agents"][m["a"]]["solution"], os.path.join(d, "r0", m["a"] + ".md"))
+
+    def test_nan_scores_and_trailing_braces(self):
+        nan = {k: 7 for k, _ in B.WEIGHTS}
+        nan["correctness"] = float("nan")
+        self.assertIsNone(B.weighted_total(nan))
+        text = '```json\n{"winner": "a001", "scores": {}}\n```\nNote: see {standing} above.'
+        self.assertEqual(B.extract_json(text)["winner"], "a001")
+
+    def test_incomplete_scores_still_obey_the_fatal_rule(self):
+        v = {"scores": {"a001": {"correctness": 9, "fatal": True}, "a002": {"correctness": 2}}, "winner": "a001"}
+        self.assertEqual(B.decide(v, "a001", "a002")[0], "a002")
+
+    def test_recheck_before_refine_is_a_clean_error(self):
+        d = self.fresh(n=2)
+        self.win_round(d)
+        r = cli("prompts", "recheck", "--dir", d)
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("Run refine first", r.stderr)
+        self.assertNotIn("Traceback", r.stderr)
+
+    def test_bad_learn_from_writes_nothing(self):
+        d = os.path.join(self.tmp, "nope")
+        self.assertEqual(cli("init", "--agents", 4, "--task", "t", "--learn-from", 0, "--dir", d).returncode, 2)
+        self.assertFalse(os.path.exists(d))
+
+    def test_templates_are_frozen_per_run(self):
+        d = self.fresh()
+        self.assertTrue(os.path.isfile(os.path.join(d, B.TEMPLATES_FILE)))
+        frozen = os.path.join(d, B.TEMPLATES_FILE)
+        write(frozen, read(frozen).replace("Only one of you gets out of this match.", "FROZEN-MARKER"))
+        jobs = B.write_prompts(load(d), "attack")
+        self.assertIn("FROZEN-MARKER", read(jobs[0]["prompt"]))
+
+    def test_defender_sees_its_own_attacks_and_word_count(self):
+        d = self.fresh()
+        jobs = B.write_prompts(load(d), "defend")
+        j = jobs[0]
+        brief = read(j["prompt"])
+        self.assertIn(B.attack_out(d, 1, j["match"], j["agent"]), brief)
+        self.assertIn("(3 words)", brief)
+
+    def test_refiner_names_one_prober_when_there_is_one(self):
+        d = self.fresh(n=2)
+        self.win_round(d)
+        st = load(d)
+        self.assertEqual(len(st["learn"]["probers"]), 1)
+        for name in ("ledger.md", "rethink.md", "probe.%s.md" % st["learn"]["probers"][0]):
+            os.makedirs(os.path.join(d, "learn"), exist_ok=True)
+            write(os.path.join(d, "learn", name), "x")
+        jobs = B.write_prompts(st, "refine")
+        brief = read(jobs[0]["prompt"])
+        self.assertIn("attacked by one competitor you eliminated", brief)
+
+    def test_clean_waits_for_done_then_deletes_scratch(self):
+        d = self.fresh(n=2)
+        self.ok("prompts", "spawn", "--dir", d)
+        write(os.path.join(d, "scratch", "a001", "big.bin"), "x" * 1000)
+        self.assertEqual(cli("clean", "--dir", d).returncode, 2)
+        self.ok("clean", "--force", "--dir", d)
+        self.assertFalse(os.path.exists(os.path.join(d, "scratch")))
+
+
+class Relevance(TempDir):
+    """Jev fits the deck to the task. The HTTP call is stubbed; the policy is tested for real."""
+
+    def fake_scores(self, data, fits):
+        """fits(key, item) -> probability."""
+        return {k: {it["id"]: fits(k, it) for it in data[k]} for k, _ in B.DECK_KEYS}
+
+    def test_questions_cover_every_card_part_with_its_text(self):
+        data = B.load_strategies()
+        qs = B.relevance_questions(data)
+        self.assertEqual(len(qs), sum(len(data[k]) for k, _ in B.DECK_KEYS))
+        it = data["strategies"][0]
+        q = qs["strategies:%s" % it["id"]]
+        self.assertEqual(q["type"], "noul")
+        self.assertEqual(q["instructions"]["approach"]["how"], it["how"])
+        self.assertIn("`task`", q["instructions"]["question"])
+
+    def test_keeps_what_fits_best_first(self):
+        data = B.load_strategies()
+        good = {k: set(it["id"] for it in data[k][:6]) for k, _ in B.DECK_KEYS}
+        scores = self.fake_scores(data, lambda k, it: 0.9 if it["id"] in good[k] else 0.1)
+        out, kept, note = B.pool_deck(data, scores, 16)
+        for k, _ in B.DECK_KEYS:
+            self.assertEqual(set(kept[k]), good[k])
+        self.assertEqual(note, "")
+
+    def test_a_thin_list_is_dealt_in_full(self):
+        data = B.load_strategies()
+        scores = self.fake_scores(data, lambda k, it: 0.9 if (k != "strategies" or it["id"] == data[k][0]["id"]) else 0.1)
+        out, kept, note = B.pool_deck(data, scores, 16)
+        self.assertIsNone(kept["strategies"])
+        self.assertEqual(len(out["strategies"]), len(data["strategies"]))
+        self.assertEqual(len(out["reasoning"]), len(data["reasoning"]))
+        self.assertIn("strategies", note)
+
+    def test_too_few_cards_means_the_whole_deck(self):
+        data = B.load_strategies()
+        top = {k: set(it["id"] for it in data[k][:4]) for k, _ in B.DECK_KEYS}
+        scores = self.fake_scores(data, lambda k, it: 0.9 if it["id"] in top[k] else 0.1)
+        out, kept, note = B.pool_deck(data, scores, 100)   # 4 x 4 x 4 = 64 < 100
+        self.assertIs(out, data)
+        self.assertTrue(all(v is None for v in kept.values()))
+        self.assertIn("whole deck", note)
+
+    def test_bm25_ranks_the_part_that_shares_the_tasks_words(self):
+        data = {"reasoning": [{"id": "r1", "name": "Security audit", "how": "Hunt for injection, auth bypass and secrets."},
+                              {"id": "r2", "name": "Poetry", "how": "Write with rhythm, imagery and metaphor."}],
+                "workflows": [{"id": "w1", "name": "Draft", "how": "Write a draft."}],
+                "strategies": [{"id": "s1", "name": "Speed", "how": "Ship fast."}]}
+        sc = B.bm25_scores("Audit this login handler for injection and auth bypass bugs.", data)
+        self.assertEqual(sc["reasoning"]["r1"], 1.0)
+        self.assertLess(sc["reasoning"]["r2"], 0.5)
+        self.assertEqual(sc["strategies"]["s1"], 0.0, "no shared words, no score")
+
+    def test_jev_failure_falls_back_to_bm25_in_auto_but_not_in_jev(self):
+        data = B.load_strategies()
+
+        def broken(state, qs, key):
+            raise B.ArenaError("HTTP 500")
+        dealt, rep = B.fit_deck("t", data, 16, mode="auto", key="k", ask=broken)
+        self.assertEqual(rep["method"], "bm25")
+        self.assertIn("Jev failed", rep["fallback"])
+        with self.assertRaises(B.ArenaError):
+            B.fit_deck("t", data, 16, mode="jev", key="k", ask=broken)
+        with self.assertRaises(B.ArenaError):
+            B.fit_deck("t", data, 16, mode="jev", key=None)
+        self.assertEqual(B.fit_deck("t", data, 16, mode="off"), (data, None))
+
+    def test_bad_answer_is_an_error_not_a_guess(self):
+        data = B.load_strategies()
+        ask = lambda state, qs, key: {"answers": {q: {"type": "noul", "noul": 0.7} for q in list(qs)[1:]}}
+        with self.assertRaises(B.ArenaError):
+            B.score_relevance("t", data, "k", ask=ask)
+
+    def test_init_deals_only_fitting_cards(self):
+        data = B.load_strategies()
+        good = {k: set(it["id"] for it in data[k][-5:]) for k, _ in B.DECK_KEYS}
+        seen = {}
+
+        def fake(state, qs, key):
+            seen["state"], seen["n"] = state, len(qs)
+            return {"model": "jev-test", "answers": {
+                q: {"type": "noul", "noul": 0.8 if q.split(":", 1)[1] in good[q.split(":", 1)[0]] else 0.2}
+                for q in qs}}
+        old_ask, old_key = B.ask_jev, os.environ.get("TYPESAFE_API_KEY")
+        B.ask_jev, os.environ["TYPESAFE_API_KEY"] = fake, "test-key"
+        try:
+            d = os.path.join(self.tmp, "fit")
+            self.assertEqual(B.main(["init", "--agents", "16", "--seed", "3", "--task", "Write a haiku.", "--dir", d]), 0)
+        finally:
+            B.ask_jev = old_ask
+            if old_key is None:
+                os.environ.pop("TYPESAFE_API_KEY", None)
+            else:
+                os.environ["TYPESAFE_API_KEY"] = old_key
+        self.assertEqual(seen["state"], {"task": "Write a haiku."})
+        self.assertEqual(seen["n"], 65)
+        st = load(d)
+        names = {"reasoning": "reasoning", "workflows": "workflow", "strategies": "strategy"}
+        for a in st["agents"].values():
+            for k, _ in B.DECK_KEYS:
+                self.assertIn(a["card"][names[k]]["id"], good[k])
+        self.assertEqual(st["relevance"]["method"], "jev")
+        self.assertEqual(st["relevance"]["model"], "jev-test")
+        self.assertTrue(os.path.isfile(os.path.join(d, B.RELEVANCE_FILE)))
+
+    def test_without_a_key_auto_uses_bm25_and_jev_refuses(self):
+        env = dict(OFFLINE)
+        run = lambda *a: subprocess.run([sys.executable, BRACKET] + list(a), capture_output=True, text=True, env=env)
+        r = run("init", "--agents", "4", "--task", "t", "--dir", os.path.join(self.tmp, "auto"))
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("by BM25", r.stdout)
+        self.assertIn("TYPESAFE_API_KEY is not set", r.stdout)
+        self.assertEqual(load(os.path.join(self.tmp, "auto"))["relevance"]["method"], "bm25")
+        r = run("init", "--agents", "4", "--task", "t", "--relevance", "jev", "--dir", os.path.join(self.tmp, "req"))
+        self.assertEqual(r.returncode, 2)
+        self.assertFalse(os.path.exists(os.path.join(self.tmp, "req")), "nothing written")
+        r = run("init", "--agents", "4", "--task", "t", "--relevance", "off", "--dir", os.path.join(self.tmp, "off"))
+        self.assertNotIn("fitted", r.stdout)
+        self.assertIsNone(load(os.path.join(self.tmp, "off"))["relevance"])

@@ -1,8 +1,8 @@
 ---
 name: arena
 description: >-
-  Make 100 versions of Claude fight to the death over one task. Spins up N
-  sub-agents (default 100, --quick for 16), gives every one the exact same
+  Make many versions of Claude fight to the death over one task. Spins up N
+  sub-agents (default 16, --quick for 8, --full for 100), gives every one the exact same
   task plus a different strategy card (reasoning mode, workflow, strategy),
   then runs a single-elimination bracket: they attack each other's solutions,
   defend and revise (borrowing from the opponent only what fits their own
@@ -12,7 +12,7 @@ description: >-
   keeps the rethink if a blind judge prefers it. Use when the user is not satisfied with an answer,
   calls it a bad answer, says try again or do better, says "arena", or asks
   to make them compete.
-argument-hint: "[--agents N | --quick] [--seed S] [--no-learn] <task>"
+argument-hint: "[--agents N | --quick | --full] [--seed S] [--no-learn] <task>"
 ---
 
 # arena
@@ -46,8 +46,9 @@ Read the flags out of the request. Everything that is not a flag is the task.
 
 | flag | meaning |
 | --- | --- |
-| `--agents N` | N competitors. Default 100. |
-| `--quick` | 16 competitors. The everyday setting. |
+| `--agents N` | N competitors. Default 16, the everyday setting. |
+| `--quick` | 8 competitors. |
+| `--full` | 100 competitors. Only when the user asks for it by name or by size. |
 | `--seed S` | Fixes the cards and the pairings. Default: random, and recorded. |
 | `--wave W` | Sub-agents in flight at once, as a rolling pool. Default 6. |
 | `--no-learn` | Skip the learn step after the final. |
@@ -56,15 +57,19 @@ Read the flags out of the request. Everything that is not a flag is the task.
 No task text at all means: the task is the user's most recent request in this conversation, and your
 last answer to it is the baseline to beat.
 
-Run `ARENA plan --agents N` (or `--quick`). It prints the rounds and the sub-agent calls.
+Run `ARENA plan` with the same size flags. It prints the rounds and the sub-agent calls.
 
 - **The user asked for the arena** (typed `/arena`, said "arena", or asked to make them compete):
-  tell them in one line how big it is, for example "100 agents, 7 rounds, 600 sub-agent calls", and
+  tell them in one line how big it is, for example "16 agents, 4 rounds, 96 sub-agent calls", and
   start.
 - **This skill fired because the user is unhappy** ("that's wrong", "try again", "bad answer") and
-  never mentioned the arena: ask once before spending anything. Offer three options: the full arena
-  (100 agents, 600 sub-agent calls), `--quick` (16 agents, 96 calls), or an ordinary retry. Wait for
-  the answer.
+  never mentioned the arena: ask once before spending anything. Offer three options: the default
+  arena (16 agents, 96 calls), `--quick` (8 agents, 48 calls), or an ordinary retry. Wait for the
+  answer.
+
+Every arena is expensive: even 16 agents can use up a session's usage limit before the final. Say so
+in the same line as the size. Nothing is lost when the limit hits: the whole run is on disk. When
+the user comes back, run `ARENA status`, then `ARENA next`, and carry on from there.
 
 Sub-agents write their work into `.arena/` in the current directory. In the default permission mode
 that is one approval per file, which is hundreds on a big run. Before the spawn phase, suggest
@@ -106,6 +111,20 @@ ARENA init --agents N --seed S --task-file .arena/task.md --baseline-file .arena
 Leave out `--baseline-file` when there is nothing to beat, and `--seed` to get a random one. `init`
 copies the task into the run folder, deals every competitor a different strategy card with no
 repeats, pairs round 1, and writes `arena.json`.
+
+`init` first fits the deck to the task, so a card like "speed" or "fewest moving parts" is not dealt
+to a task that does not value it:
+
+1. **Jev**, when `TYPESAFE_API_KEY` is set: one TypeSafe request, one yes/no question per reasoning
+   mode, workflow and strategy. A part fits at a probability of 0.5 or more.
+2. **BM25**, when there is no key or Jev fails: parts are ranked by the words they share with the
+   task. A part fits at half the best score in its list or more.
+3. **Random**: a list where fewer than 4 parts fit is dealt from in full, and if the fitting parts
+   cannot make N distinct cards, the whole deck is.
+
+`init` prints which of these it used and what it kept, and the scores stay in `relevance.json`.
+Tell the user in one line. `--relevance jev` makes Jev required, `bm25` skips Jev, `off` skips all
+of it, and `--relevance-min` moves the bar.
 
 ## Step 4: the loop
 
@@ -153,7 +172,8 @@ up the rest of a batch. Raise `--wave` only if the user asks.
 ## Step 5: the result
 
 Run `ARENA winner`, then read the champion's solution file at the path it prints, and the learn
-ledger if it prints one. Those are the only files you read in the whole run. Give the user:
+ledger if it prints one. If `winner` reports a large scratch folder, offer to delete it with
+`ARENA clean`. Those are the only files you read in the whole run. Give the user:
 
 1. **The winning solution**, in full.
 2. **Why it won**: the attacks it survived, from `winner`, as a short list. Its card on one line
@@ -185,6 +205,10 @@ If the solution changes files in the user's project, do not apply it. Ask: apply
 - Run every `ARENA` command from the directory you ran `init` in. That is where `.arena/LATEST`
   lives.
 - Sub-agents only write inside `.arena/`. If one wrote anywhere else, tell the user.
+- Sub-agents never drive a live production site. If the task needs the running product, put a local
+  URL or local build in the task file, and say in it that the production URL is off limits.
+- The run freezes its own copy of the templates and the rubric at `init`. Editing this file mid-run
+  changes the next run, not the one in progress.
 - If the user says stop, stop. `ARENA status` shows where it got to, and `ARENA next` resumes it
   later.
 
@@ -217,9 +241,11 @@ How to work:
 3. You cannot ask the user anything. Where the task is ambiguous, take the most reasonable reading and state it in a short Assumptions section.
    Do not search the web. The facts you need are in the task and the files it points to. If a fact you need is missing, state your best belief as an assumption, so attackers and judges can check it.
 4. Expect attacks: concrete flaws, counterexamples, missed requirements. Close those holes before you submit.
-5. Do not create, edit or delete anything outside {{arena_dir}}. Read whatever the task points to. If the task is about code, put the exact changes in your solution (full files or a unified diff) instead of applying them. If your workflow needs scratch space, use {{arena_dir}}/scratch/{{agent}}/.
+5. Do not create, edit or delete anything outside {{arena_dir}}. Read whatever the task points to. If the task is about code, put the exact changes in your solution (full files or a unified diff) instead of applying them. If your workflow needs scratch space, use {{arena_dir}}/scratch/{{agent}}/, and delete any browser profile or other bulky leftovers there before you finish.
+6. Never drive a live production site: no logins, form submissions, load or automated browsing against it. If the task needs the running product, use the local URL or build the task names. If it names none, work from the files.
+7. Write at the length the task needs. Longer does not score better, and your strategy's trade-offs decide what to leave out.
 
-Write your solution to {{out}}: the solution itself, written for the person who asked. Leave out your drafts and your working. Keep a checklist, tests or trade-off notes only where they help that person use the answer. Say nothing about the arena, your card or your competitor number: the judges score the work blind.
+Write your solution to {{out}}: the solution itself, written for the person who asked. Leave out your drafts and your working. Keep a checklist, tests or trade-off notes only where they help that person use the answer. Say nothing about the arena, attacks, your card or your competitor number, and do not use your card's names as headings: the judges score the work blind.
 
 When the file is written, reply with this one line and nothing else:
 DONE {{agent}} <number of words in your solution>
@@ -254,7 +280,7 @@ Rules:
 - Every attack must be specific and checkable: point at the exact part, say what is wrong and why.
 - No praise, no summary, and no style nitpicks unless they stop the user from using it.
 - Do not invent requirements the task does not state. Do not attack the approach, only what it gets wrong.
-- At most 7 attacks, strongest first. If you only find 2 real ones, write 2.
+- At most 5 attacks, strongest first. If you only find 2 real ones, write 2. Filling the list with weak attacks makes your opponent's answer longer, not better, and a judge discounts them.
 - Label each FATAL (wrong or unusable for the task), MAJOR (a real gap) or MINOR.
 - If an attack rests on a factual claim the task and its files cannot settle (a version, an API, a number, a date, a rule), you may check it on the web to prove it. Load them with ToolSearch first: mcp__parallax__web_search and mcp__parallax__fetch_page. If those are not available, use WebSearch and WebFetch. Search only to prove a specific attack, not to research the task, and put the URL in that attack's Problem line.
 - Do not create, edit or delete any file except the one below.
@@ -285,15 +311,17 @@ Reasoning mode: {{reasoning_name}}. {{reasoning_how}}
 Workflow: {{workflow_name}}. {{workflow_how}}
 Strategy: {{strategy_name}}. {{strategy_how}}
 
-Your current solution: {{own_solution}}
+Your current solution ({{own_words}} words): {{own_solution}}
 The attacks against it: {{attacks}}
-Your opponent's current solution, which you may learn from: {{opponent_solution}}
+Your opponent's solution, which you may learn from: {{opponent_solution}}
+The attacks you made on it: {{own_attacks}}
+That is their solution as it was before this round. They are fixing the flaws you found right now, so nothing you attacked in it is borrowable.
 
 Do this:
-1. Take every attack in turn and decide honestly. CONCEDE if it is right, and fix it. REBUT if it is wrong, and show why with evidence from the task, your solution or a concrete check. A rebuttal that only insists you are right counts as a concession. Conceding a real flaw and fixing it scores better than defending it.
+1. Take every attack in turn and decide honestly. CONCEDE if it is right, and fix it. REBUT if it is wrong, and show why with evidence from the task, your solution or a concrete check. A rebuttal that only insists you are right counts as a concession. Conceding a real flaw and fixing it scores better than defending it. Conceding a wrong attack and "fixing" it makes your answer worse: the judge scores a correct rebuttal the same as a fix.
 2. Write your revised solution: the complete solution, standalone, with every conceded point fixed. The judge reads only this file, so never write "see the previous version". Say nothing about the arena or your card.
-3. Fix what was attacked and anything the attacks made you notice. Do not start again from scratch.
-4. Learn from your opponent, but stay yourself. You may BORROW at most two things from their solution, and only where they meet a requirement of the task better than you do, you can check that against the task text, and you can rewrite it in your own reasoning mode and strategy so your solution still reads as one answer. Never take their approach wholesale, never take something you attacked them for, and never take something that only adds length. Declare every borrowing in your defense.
+3. Fix what was attacked and anything the attacks made you notice. Do not start again from scratch. Make each fix the smallest change that closes the attack. Grow only where an attack proves a stated requirement is missing, and cut anything the attacks showed is padding. A revision much longer than {{own_words}} words needs a reason in your defense.
+4. Learn from your opponent, but stay yourself. You may BORROW at most two things from their solution, and only where they meet a requirement of the task better than you do, you can check that against the task text, and you can rewrite it in your own reasoning mode and strategy so your solution still reads as one answer. Never take their approach wholesale, never take anything your attacks above point at, and never take something that only adds length. Declare every borrowing in your defense.
 5. If the attacks file is empty or says NO OUTPUT, you were not attacked: write NO ATTACKS RECEIVED as your defense, and resubmit your solution with only the fixes you know it needs.
 6. Do not create, edit or delete anything outside {{arena_dir}}.
 
@@ -333,12 +361,12 @@ Solution {{second}}
 - its defense: {{second_defense}}
 
 How to judge:
-1. Read both revised solutions in full before you score either one.
+1. Read both revised solutions in full before you score either one. Then write down, for yourself, the three differences between them that matter most for the task. Score from those.
 2. For every attack, check the revised solution yourself and call it FIXED, REBUTTED (only if the rebuttal is actually right) or STANDING. A defense that says "fixed" is not proof. Look.
 3. Look for flaws the attackers missed, too.
-4. Score each criterion from 0 to 10 using the rubric's anchors. Set fatal to true only for a flaw you have verified that makes the solution wrong or unusable for the task.
+4. Score each criterion from 0 to 10 using the rubric's anchors. Use the whole scale: where one solution is clearly better on a criterion, the scores must show it. Set fatal to true only for a flaw you have verified that makes the solution wrong or unusable for the task.
 5. The winner is the higher weighted total (the weights are in the rubric). A fatal solution cannot beat one that is not fatal. On an exact tie, fewer standing attacks wins, then higher correctness.
-6. Judge the work, not the writing about the work. Length is not quality. You do not know either competitor's strategy and should not guess it.
+6. Judge the work, not the writing about the work. Length is not quality: length the task does not need is a cost, scored under clarity. You do not know either competitor's strategy and should not guess it.
 7. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Load them with ToolSearch first: mcp__parallax__web_search and mcp__parallax__fetch_page. If those are not available, use WebSearch and WebFetch. Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
 8. Each side may have borrowed up to two things from the other, declared in its defense. That is allowed. Judge each revised solution as it stands; a borrowed part that clashes with the rest of its solution is a flaw.
 9. Do not create, edit or delete any file except the verdict. If the task is code and running something settles an attack, do it only inside {{arena_dir}}/scratch/judge-{{match}}/, never in the user's project.
@@ -460,7 +488,7 @@ PROBED {{agent}} <number of attacks> (<number that are FATAL> fatal)
 
 <!-- template:refiner -->
 ```text
-You are competitor {{agent}}, the champion. Your rethought solution has been attacked by two competitors you eliminated. Defend and revise, as in every round. A blind judge will then compare your refined solution with your solution from before the rethink, and keeps whichever is better. Learning only counts if it made the answer better.
+You are competitor {{agent}}, the champion. Your rethought solution has been attacked by {{probers_n}} you eliminated. Defend and revise, as in every round. A blind judge will then compare your refined solution with your solution from before the rethink, and keeps whichever is better. Learning only counts if it made the answer better.
 
 === THE TASK (identical for every competitor) ===
 {{task}}
@@ -515,7 +543,7 @@ How to judge:
 4. The winner is the higher weighted total. A fatal solution cannot beat one that is not fatal.
 5. Judge the work, not the writing about the work. Longer is not better: an addition that does not make the answer better for the task is a cost, scored under clarity.
 6. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Load them with ToolSearch first: mcp__parallax__web_search and mcp__parallax__fetch_page. If those are not available, use WebSearch and WebFetch. Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
-7. Do not create, edit or delete any file except the verdict.
+7. Do not create, edit or delete any file except the verdict. Read only the files named in this brief and the files the task points to: nothing else in the arena folder.
 
 Write this JSON, and nothing else, to {{out}}:
 {
@@ -554,7 +582,7 @@ How to judge:
 4. The winner is the higher weighted total. A fatal solution cannot beat one that is not fatal.
 5. Judge the work, not the writing about the work. Length is not quality.
 6. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Load them with ToolSearch first: mcp__parallax__web_search and mcp__parallax__fetch_page. If those are not available, use WebSearch and WebFetch. Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
-7. Do not create, edit or delete any file except the verdict.
+7. Do not create, edit or delete any file except the verdict. Read only the files named in this brief and the files the task points to: nothing else in the arena folder.
 
 Write this JSON, and nothing else, to {{out}}:
 {

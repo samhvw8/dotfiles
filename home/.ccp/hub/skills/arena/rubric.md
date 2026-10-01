@@ -20,7 +20,9 @@ That gives a number from 0 to 100.
 
 ## Anchors
 
-Use the whole scale. A 7 is not a polite default.
+Use the whole scale. A 7 is not a polite default. When one solution is clearly better than the other
+on a criterion, their scores on it must differ: two solutions that both get 8 everywhere were not
+compared.
 
 **Correctness**
 - 10: nothing wrong that you can find after checking it yourself.
@@ -50,7 +52,7 @@ A missing attack file means the opponent raised nothing. Score robustness on the
 
 **Clarity**
 - 10: the shape makes it obvious how to use it. No padding.
-- 7: fine, with some padding or one confusing section.
+- 7: fine, with some padding or one confusing section, or noticeably longer than the task needs.
 - 4: the user has to dig for the answer.
 - 0 to 2: hard to follow at all.
 
