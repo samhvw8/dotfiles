@@ -1,7 +1,12 @@
 # Delegation Protocol
 
 `Task` delegates work to an agent. `Skill` loads guidance for you to follow
-yourself. They are not interchangeable. Run at most 3 agents in parallel.
+yourself. They are not interchangeable.
+
+**Concurrency: at most 6 agents in flight, as a rolling pool — not waves.**
+Subagents run in the background and notify on completion, so when one finishes,
+launch the next queued job right away; never hold new work until a whole batch
+drains. The cap counts agents running at once, not agents per message or total.
 
 ## Teammates vs subagents
 

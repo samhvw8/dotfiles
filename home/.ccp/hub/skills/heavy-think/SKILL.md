@@ -42,7 +42,7 @@ Parallel perspective agents explore the same problem from different worldviews. 
 PROBLEM: [One sentence — what are we trying to figure out?]
 CONSTRAINTS: [What's fixed? Budget, timeline, team size, tech stack...]
 SUCCESS LOOKS LIKE: [How will we know a good answer when we see it?]
-MODE: scan (3 agents, breadth-first) | deep (up to 5 agents in waves of 3, depth-first)
+MODE: scan (3 agents, breadth-first) | deep (up to 5 agents, depth-first)
 ```
 
 ### Stage 2: Design Perspectives
@@ -66,7 +66,7 @@ See `references/perspective-combinations.md` for pre-built sets by scenario.
 
 ### Stage 3: Spawn Parallel Agents
 
-Launch up to 3 in **one message**, `model="opus"`; a 4th and 5th go in a second wave. Each gets the same problem, distinct lens.
+Launch all of them (up to 5) in **one message**, `model="opus"`. Each gets the same problem, distinct lens.
 
 See `references/brainstorm-agent-prompt.md` for full prompt. Core structure:
 
@@ -119,12 +119,12 @@ K independent agents solve the same verifiable problem from scratch. Deliberatio
 
 ### Stage 1: Parallel Reasoning
 
-Spawn **K independent agents**, at most 3 per message (parallel waves). Zero sibling knowledge.
+Spawn **K independent agents**, all in one message (≤6 in flight). Zero sibling knowledge.
 
 | K | When |
 |---|------|
 | 3 | Standard — most problems |
-| 5 | High-stakes — competition math, critical correctness (two waves: 3 + 2) |
+| 5 | High-stakes — competition math, critical correctness |
 
 ```
 Solve this problem. Write out the full derivation in your answer — it will be audited against other solvers' — and arrive at a final answer.
@@ -284,7 +284,7 @@ Launch all in **one message**, `model="opus"`:
 | Abstraction Shift | "What if you're solving the wrong level of the problem? Go up one level or down one level." |
 | Constraint Flip | "What if the thing you think is fixed is actually variable, and vice versa?" |
 
-For deeper stuck-ness, add (as a second wave — max 3 agents per message):
+For deeper stuck-ness, add (alongside the first three — ≤6 in flight):
 | Agent | Reframe Strategy |
 |-------|-----------------|
 | Adjacent Domain | "What field outside yours has solved an analogous problem?" |
@@ -403,7 +403,7 @@ Use only when teams are unavailable (flag off, or you're inside a subagent). Wea
 
 - Max 3 debate rounds. Beyond that, diminishing returns.
 - Each agent/teammate uses `model="opus"` for depth.
-- Spawn in parallel — subagents at most 3 per message; debate teammates all in one message.
+- Spawn in parallel — subagents ≤6 in flight (rolling, not waves); debate teammates all in one message.
 - Always state: "Escalating to debate because [reason]."
 
 ---

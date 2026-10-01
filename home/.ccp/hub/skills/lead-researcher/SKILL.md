@@ -223,7 +223,7 @@ Every phase runs on EVERY research task. The brain scales depth/breadth freely, 
 | **Phase 0** (Triage) | **NEVER** — catches ambiguous terms, wrong targets |
 | **Phase 1** (Confirm plan) | ONLY if user specified all params explicitly |
 | **Phase 2** (Plan) | **NEVER** |
-| **Phase 3** (Gather) | **NEVER** — brain decides how many waves |
+| **Phase 3** (Gather) | **NEVER** — brain decides how many agents |
 | **Phase 4** (Brain — REFLECT + gem extraction) | **NEVER** — even a quick research runs 1 REFLECT pass |
 | **Phase 5** (Synthesize) | **NEVER** |
 
@@ -351,23 +351,24 @@ The failure mode lens is the most commonly skipped and highest value.
 
 **Agent assignment: 1 language + 1 sub-topic per agent (atomic)**
 
-Each agent has a single, clear job. If you have 2 sub-topics and 3 languages, that's 6 agents — batch into waves of 3.
+Each agent has a single, clear job. If you have 2 sub-topics and 3 languages, that's 6 agents — run them as a rolling pool, ≤6 in flight; when one returns, launch the next queued agent immediately.
 
 Example for "compare auth solutions":
 
 ```
-Wave 1 (parallel, max 3):
+In flight (≤6, launched together):
   Agent 1: EN + "OAuth/OIDC providers comparison"
-  Agent 2: ZH + "OAuth/OIDC providers comparison"  
+  Agent 2: ZH + "OAuth/OIDC providers comparison"
   Agent 3: ZH-TW + "OAuth/OIDC providers comparison"
-
-Wave 2 (parallel):
   Agent 4: EN + "self-hosted auth libraries"
   Agent 5: ZH + "self-hosted auth libraries"
-  (brain decides if more languages/sub-topics needed)
+
+Queued (each starts the moment any slot frees):
+  Agent 6: ZH-TW + "self-hosted auth libraries"
+  (brain may add follow-up agents as early results land)
 ```
 
-Simple question? 2 agents may suffice. Complex landscape? 10+ agents across waves. **Brain decides — no preset.**
+Simple question? 2 agents may suffice. Complex landscape? 10+ agents through the rolling pool. **Brain decides — no preset.**
 
 ### Elite Forum Targeting
 
@@ -398,7 +399,7 @@ ZH: T00ls, 看雪, 先知社区 (xz.aliyun.com), 52pojie. RU: wasm.in, Codeby. E
 
 ### Phase 3: GATHER (the loop's gather step)
 
-This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. Brain decides how many waves and agents.
+This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. Brain decides how many agents.
 
 Spawn `gatherer` agents. Each prompt:
 
@@ -424,7 +425,7 @@ Prioritize GEM findings. Report NOISE count but don't expand on them.
 RECOMMENDED SKILLS: deep-gather - use for search-fetch loop methodology
 ```
 
-**Max 3 agents per wave.** Fire all in a single message.
+**Max 6 agents in flight — rolling, not waves.** Fire the first batch (up to 6) in a single message; as each completes, launch the next queued agent without waiting for the rest.
 
 ### Phase 4: CONTROL — Reflect & Steer (the forager brain)
 
@@ -517,7 +518,7 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | Spawning without plan | MUST decompose first |
 | Skipping Phase 4 | Phase 4 = real research. NEVER skip. |
 | Hardcoded output path | Use cwd-relative paths |
-| More than 3 agents per wave | Batch into waves |
+| More than 6 agents in flight, or waiting for a whole batch before launching more | Rolling pool: ≤6 running, refill a slot as soon as one frees |
 | Researching vague/unscoped requests | Route to heavy-think first (Phase 0 triage) |
 | Using heavy-think for every multi-part topic | Only fire when *framing* is contested, not when a clear topic has parts |
 | Blurring Phase 0 and Phase 1 | Phase 0 = "is this researchable?" Phase 1 = "confirm my plan parameters" |
