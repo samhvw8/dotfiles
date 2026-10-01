@@ -2,9 +2,9 @@ version = 3
 name = 'nextjs'
 description = 'Cloned from default'
 created = 2026-02-05T22:54:04.098562+07:00
-updated = 2026-09-29T16:57:27.894873+07:00
+updated = 2026-10-01T07:33:14.411685+07:00
 
 [hub]
 skills = ['backend-development', 'canvas-design', 'databases', 'design-principles', 'docs-discovery', 'frontend-development', 'git-workflow', 'github-search', 'infra-engineer', 'mise-expert', 'playwriter', 'problem-solving', 'ui-ux-pro-max']
-agents = ['brainstormer.md', 'cofounder.md', 'cto-advisor.md', 'database-admin.md', 'debugger.md', 'devops-architect.md', 'docs-manager.md', 'gemini-orchestrator.md', 'nodejs-expert.md', 'planner.md', 'project-manager.md', 'react-next-architect.md', 'refactoring-expert.md', 'requirements-analyst.md', 'gatherer.md', 'scout.md', 'security-engineer.md', 'system-architect.md', 'tester.md']
+agents = ['brainstormer.md', 'cofounder.md', 'cto-advisor.md', 'database-admin.md', 'debugger.md', 'devops-architect.md', 'docs-manager.md', 'gemini-orchestrator.md', 'planner.md', 'project-manager.md', 'refactoring-expert.md', 'requirements-analyst.md', 'gatherer.md', 'scout.md', 'security-engineer.md', 'system-architect.md', 'tester.md']
 hooks = ['force-agent-skills-eval', 'session-start']
