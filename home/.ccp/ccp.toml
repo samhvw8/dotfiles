@@ -98,6 +98,16 @@ commit = '9b0e00ad1b941165e2506545bbfddafa34cf2cb8'
 updated = 2026-07-02T22:39:04.711776+07:00
 installed = ['skills/ultrathink']
 
+[sources.'kaankiziltug/logo-design-skill']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/kaankiziltug/logo-design-skill.git'
+path = 'sources/kaankiziltug--logo-design-skill'
+ref = 'main'
+commit = '0ecf52e9a4b3ac92b714f7cc6e3148ab8c774134'
+updated = 2026-10-02T21:20:26.69823+07:00
+installed = ['skills/logo-design']
+
 [sources.'nextlevelbuilder/ui-ux-pro-max-skill']
 registry = 'github'
 provider = 'git'

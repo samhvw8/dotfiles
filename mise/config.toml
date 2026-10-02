@@ -45,7 +45,7 @@ gcloud = "584.0.0"
 "pipx:fal" = "1.78.1"
 antigravity-cli = "latest"
 pandoc = "latest"
-pi = "latest"
+pi = { version = "latest", minimum_release_age = "0s" }
 "npm:@companion-ai/feynman" = { version = "latest", trust_policy_excludes = ["pi-subagents@0.71.0"] }  # maintainer publishes manually since 0.37.2; 0.71.0 verified vs git tag 2026-09-25
 "github:can1357/oh-my-pi" = { version = "latest", minimum_release_age = "0s" }
 "npm:@opencode/cli" = { version = "latest", allow_builds = ["@opencode/cli"] }  # postinstall copies the platform binary into bin/
