@@ -6,6 +6,8 @@ The headline test drives a full 100-agent tournament through the real command
 line with random winners and checks it ends with exactly one survivor.
 """
 import collections
+import contextlib
+import io
 import json
 import os
 import random
@@ -27,7 +29,11 @@ import bracket as B  # noqa: E402
 EM_DASH, EN_DASH = chr(0x2014), chr(0x2013)   # spelled as code points so this file stays clean
 
 
-OFFLINE = {k: v for k, v in os.environ.items() if k != "TYPESAFE_API_KEY"}   # never call Jev from tests
+# Never call Jev or Clef from tests: no keys, and no `cf` CLI on the PATH of a subprocess.
+OFFLINE = {k: v for k, v in os.environ.items()
+           if k not in ("TYPESAFE_API_KEY", "CLOUDFLARE_AI_TOKEN", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID")}
+OFFLINE["PATH"] = os.path.dirname(sys.executable)
+B.cloudflare_auth = lambda: None   # in-process: tests that want Clef stub it themselves
 
 
 def cli(*args):
@@ -393,6 +399,10 @@ class FullPipelineWithFakeAgents(TempDir):
         self.assertIn("unreadable", r.stdout)
         self.assertFalse(os.path.exists(path))
         self.assertTrue(os.path.exists(path + ".unreadable"))
+        self.assertIn("arena warn:", r.stderr, "the orchestrator sees it on stderr")
+        r = cli("log", "--level", "warn", "--dir", d)
+        self.assertIn("verdict.unreadable", r.stdout)
+        self.assertIn(m["id"], r.stdout)
 
 
 class Guards(TempDir):
@@ -623,7 +633,7 @@ class Relevance(TempDir):
         qs = B.relevance_questions(data)
         self.assertEqual(len(qs), sum(len(data[k]) for k, _ in B.DECK_KEYS))
         it = data["strategies"][0]
-        q = qs["strategies:%s" % it["id"]]
+        q = qs["strategies.%s" % it["id"]]
         self.assertEqual(q["type"], "noul")
         self.assertEqual(q["instructions"]["approach"]["how"], it["how"])
         self.assertIn("`task`", q["instructions"]["question"])
@@ -679,6 +689,55 @@ class Relevance(TempDir):
             B.fit_deck("t", data, 16, mode="jev", key=None)
         self.assertEqual(B.fit_deck("t", data, 16, mode="off"), (data, None))
 
+    def test_clef_comes_first_then_jev_then_bm25(self):
+        data = B.load_strategies()
+        ok = lambda model: (lambda state, qs, cred: {"model": model, "answers": {q: {"type": "noul", "noul": 0.9} for q in qs}})
+
+        def broken(state, qs, cred):
+            raise B.ArenaError("HTTP 429: daily free allocation used up")
+        _, rep = B.fit_deck("t", data, 16, key="k", ask=ok("jev"), cf_auth=("tok", "acc"), ask_cf=ok("clef"))
+        self.assertEqual((rep["method"], rep["model"], rep["fallback"]), ("clef", "clef", None))
+        _, rep = B.fit_deck("t", data, 16, key="k", ask=ok("jev"), cf_auth=("tok", "acc"), ask_cf=broken)
+        self.assertEqual(rep["method"], "jev")
+        self.assertIn("Clef failed", rep["fallback"])
+        self.assertTrue(rep["fallback"].endswith("used Jev"))
+        _, rep = B.fit_deck("t", data, 16, key="k", ask=broken, cf_auth=("tok", "acc"), ask_cf=broken)
+        self.assertEqual(rep["method"], "bm25")
+        self.assertIn("Clef failed", rep["fallback"])
+        self.assertIn("Jev failed", rep["fallback"])
+        _, rep = B.fit_deck("t", data, 16, key="k", ask=ok("jev"), cf_auth=None)
+        self.assertEqual(rep["method"], "jev")
+        self.assertIn("no Cloudflare login", rep["fallback"])
+        with self.assertRaises(B.ArenaError):
+            B.fit_deck("t", data, 16, mode="clef", key="k", ask=ok("jev"), cf_auth=("tok", "acc"), ask_cf=broken)
+        with self.assertRaises(B.ArenaError):
+            B.fit_deck("t", data, 16, mode="clef", key="k", ask=ok("jev"), cf_auth=None)
+
+    def test_clef_splits_the_deck_into_requests_of_at_most_64(self):
+        data = B.load_strategies()
+        qs = B.relevance_questions(data)
+        sent = []
+
+        def fake_post(name, url, token, state, model, questions, attempts=3):
+            sent.append((url, token, len(questions)))
+            return {"success": True, "result": {"answers": {q: {"type": "noul", "noul": 0.5} for q in questions},
+                                                "usage": {"input_tokens": 100, "output_tokens": 0}}}
+        old = B.post_systemone
+        B.post_systemone = fake_post
+        try:
+            resp = B.ask_clef({"task": "t"}, qs, ("tok", "acc"), model="clef-flash")
+        finally:
+            B.post_systemone = old
+        self.assertGreater(len(qs), B.CLEF_MAX_QUESTIONS)
+        self.assertTrue(all(n <= B.CLEF_MAX_QUESTIONS for _, _, n in sent))
+        self.assertEqual(sum(n for _, _, n in sent), len(qs))
+        self.assertEqual(set(resp["answers"]), set(qs))
+        self.assertEqual(resp["usage"]["input_tokens"], 100 * len(sent))
+        self.assertEqual(resp["model"], "@cf/cloudflare/clef-flash")
+        self.assertIn("/accounts/acc/ai/run/@cf/cloudflare/clef-flash", sent[0][0])
+        self.assertEqual(sent[0][1], "tok")
+        self.assertTrue(all(re.fullmatch(r"[A-Za-z0-9_.-]{1,100}", q) for q in qs), "Clef's question id pattern")
+
     def test_bad_answer_is_an_error_not_a_guess(self):
         data = B.load_strategies()
         ask = lambda state, qs, key: {"answers": {q: {"type": "noul", "noul": 0.7} for q in list(qs)[1:]}}
@@ -693,7 +752,7 @@ class Relevance(TempDir):
         def fake(state, qs, key):
             seen["state"], seen["n"] = state, len(qs)
             return {"model": "jev-test", "answers": {
-                q: {"type": "noul", "noul": 0.8 if q.split(":", 1)[1] in good[q.split(":", 1)[0]] else 0.2}
+                q: {"type": "noul", "noul": 0.8 if q.split(".", 1)[1] in good[q.split(".", 1)[0]] else 0.2}
                 for q in qs}}
         old_ask, old_key = B.ask_jev, os.environ.get("TYPESAFE_API_KEY")
         B.ask_jev, os.environ["TYPESAFE_API_KEY"] = fake, "test-key"
@@ -724,10 +783,70 @@ class Relevance(TempDir):
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertIn("by BM25", r.stdout)
         self.assertIn("TYPESAFE_API_KEY is not set", r.stdout)
+        self.assertIn("no Cloudflare login", r.stdout)
         self.assertEqual(load(os.path.join(self.tmp, "auto"))["relevance"]["method"], "bm25")
         r = run("init", "--agents", "4", "--task", "t", "--relevance", "jev", "--dir", os.path.join(self.tmp, "req"))
         self.assertEqual(r.returncode, 2)
         self.assertFalse(os.path.exists(os.path.join(self.tmp, "req")), "nothing written")
+        r = run("init", "--agents", "4", "--task", "t", "--relevance", "clef", "--dir", os.path.join(self.tmp, "reqc"))
+        self.assertEqual(r.returncode, 2)
+        self.assertFalse(os.path.exists(os.path.join(self.tmp, "reqc")), "nothing written")
         r = run("init", "--agents", "4", "--task", "t", "--relevance", "off", "--dir", os.path.join(self.tmp, "off"))
         self.assertNotIn("fitted", r.stdout)
         self.assertIsNone(load(os.path.join(self.tmp, "off"))["relevance"])
+
+
+class Log(TempDir):
+    """Failures in the tooling are logged: warn and error on stderr, everything in <run>/log.jsonl."""
+
+    def events(self, d):
+        with open(os.path.join(d, B.LOG_FILE), encoding="utf-8") as fh:
+            return [json.loads(line) for line in fh]
+
+    def test_a_scorer_failure_reaches_stderr_and_the_run_log(self):
+        def broken(state, qs, cred):
+            raise B.ArenaError("HTTP 429: daily free allocation used up")
+        old_auth, old_ask, old_key = B.cloudflare_auth, B.ask_clef, os.environ.pop("TYPESAFE_API_KEY", None)
+        B.cloudflare_auth, B.ask_clef = (lambda: ("tok", "acc")), broken
+        err = io.StringIO()
+        try:
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                d = os.path.join(self.tmp, "fell")
+                self.assertEqual(B.main(["init", "--agents", "4", "--task", "t", "--dir", d]), 0)
+        finally:
+            B.cloudflare_auth, B.ask_clef = old_auth, old_ask
+            if old_key is not None:
+                os.environ["TYPESAFE_API_KEY"] = old_key
+        self.assertIn("arena warn: Clef failed", err.getvalue())
+        ev = self.events(d)
+        failed = [e for e in ev if e["event"] == "relevance.failed"]
+        self.assertEqual(len(failed), 1, "logged before the run folder existed, written once it did")
+        self.assertEqual((failed[0]["level"], failed[0]["scorer"], failed[0]["cmd"]), ("warn", "clef", "init"))
+        self.assertEqual([e for e in ev if e["event"] == "init"][0]["relevance"]["method"], "bm25")
+
+    def test_errors_are_logged_without_a_second_stderr_line(self):
+        d = os.path.join(self.tmp, "r")
+        self.ok("init", "--agents", "2", "--seed", "1", "--task", "t", "--dir", d)
+        r = cli("record", "nope", "a001", "--dir", d)
+        self.assertEqual(r.returncode, 2)
+        self.assertEqual(r.stderr.count("\n"), 1, r.stderr)
+        self.assertEqual(self.events(d)[-1]["event"], "command.error")
+        self.assertEqual(self.events(d)[-1]["level"], "error")
+
+    def test_health_finds_failed_jobs_and_unreadable_verdicts(self):
+        d = os.path.join(self.tmp, "h")
+        self.ok("init", "--agents", "2", "--seed", "1", "--task", "t", "--dir", d)
+        write(os.path.join(d, "a001.md"), B.NO_OUTPUT + "\n")
+        write(os.path.join(d, "v.json.unreadable"), "x")
+        os.makedirs(os.path.join(d, "scratch"))
+        write(os.path.join(d, "scratch", "ignored.md"), B.NO_OUTPUT)
+        h = B.run_health(d)
+        self.assertEqual(h, {"no_output": ["a001.md"], "unreadable": ["v.json.unreadable"]})
+
+    def test_nothing_is_logged_outside_the_run(self):
+        d = os.path.join(self.tmp, "x")
+        self.ok("init", "--agents", "2", "--seed", "1", "--task", "t", "--dir", d)
+        self.assertTrue(os.path.isfile(os.path.join(d, B.LOG_FILE)))
+        r = cli("init", "--agents", "2", "--task", "t", "--relevance", "jev", "--dir", os.path.join(self.tmp, "y"))
+        self.assertEqual(r.returncode, 2)
+        self.assertFalse(os.path.exists(os.path.join(self.tmp, "y")), "a failed init leaves no folder or log")

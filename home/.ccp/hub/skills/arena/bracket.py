@@ -18,6 +18,7 @@ own context gets compacted halfway through a 100-agent run.
     python3 bracket.py status                        # alive and eliminated, per round
     python3 bracket.py winner                        # the survivor, what it beat, the attacks it survived
     python3 bracket.py card <agent_id>               # one competitor's strategy card
+    python3 bracket.py log [--level warn]            # what went wrong in the tooling: fallbacks, bad verdicts, failed jobs
     python3 bracket.py clean                         # delete the run's scratch/ once it is done
 
 Phases, in order: spawn, then per round attack, defend, judge; then, once there is a
@@ -27,8 +28,10 @@ prefers it); then final (only when there is a rejected answer to beat). Every co
 named in .arena/LATEST is used.
 
 Card relevance: init deals only from the reasoning modes, workflows and strategies that fit
-the task. Jev (TypeSafe) judges the fit when TYPESAFE_API_KEY is set: one yes/no question per
-entry, in a single request. Without the key, or if Jev fails, BM25 ranks the entries by the
+the task: one yes/no question per entry. Clef (Cloudflare Workers AI, free daily allocation)
+asks them when Cloudflare credentials are found: the `cf` CLI's login, else
+CLOUDFLARE_AI_TOKEN (or CLOUDFLARE_API_TOKEN) and CLOUDFLARE_ACCOUNT_ID. If Clef is unavailable
+or fails, Jev (TypeSafe) asks them when TYPESAFE_API_KEY is set. If neither works, BM25 ranks the entries by the
 words they share with the task. A list where too few entries clear the bar is dealt from in
 full, at random, and so is the whole deck when the survivors cannot make N distinct cards.
 --relevance off skips all of it.
@@ -41,8 +44,11 @@ import math
 import os
 import random
 import re
+import shutil
+import subprocess
 import sys
 import time
+import traceback
 import urllib.error
 import urllib.request
 
@@ -70,9 +76,15 @@ CALLS_PER_MATCH = 5        # 2 attacks, 2 defenses, 1 judge
 
 JEV_URL = "https://api.typesafe.ai/v1/systemone"
 JEV_MODEL = "jev-latest"
-RELEVANCE_MIN = 0.5        # Jev: probability it fits. BM25: share of the best score in its list
+CLEF_URL = "https://api.cloudflare.com/client/v4/accounts/%s/ai/run/@cf/cloudflare/%s"
+CLEF_MODEL = os.environ.get("ARENA_CLEF_MODEL", "").strip() or "clef"   # or clef-flash: ~1/3 the neurons
+CLEF_MAX_QUESTIONS = 64    # Clef's per-request limit; the deck has more, so it goes in chunks
+CF_CONFIG = os.path.expanduser("~/.config/cloudflare/config/default.json")
+RELEVANCE_MIN = 0.5        # Clef/Jev: probability it fits. BM25: share of the best score in its list
 RELEVANCE_FLOOR = 4        # a list with fewer parts over the bar is dealt from in full, at random
 RELEVANCE_FILE = "relevance.json"
+LOG_FILE = "log.jsonl"     # one JSON object per event, in the run folder
+LOG_LEVELS = ("info", "warn", "error")
 DECK_KEYS = (("reasoning", "reasoning mode"), ("workflows", "workflow"), ("strategies", "strategy"))
 
 # Mirrors the table in rubric.md. tests/test_bracket.py checks they agree.
@@ -87,6 +99,42 @@ WEIGHTS = (
 
 class ArenaError(Exception):
     pass
+
+
+# ---------------------------------------------------------------- log
+
+_LOG = {"run": None, "cmd": None, "pending": []}
+
+
+def log(level, event, msg, echo=True, **fields):
+    """Record something the tooling did or failed to do, so the orchestrator and later sessions can
+    see it. warn and error also go to stderr as one "arena <level>: ..." line. Events go to the run's
+    log.jsonl; before the run folder exists (early in init) they wait and are written once it does."""
+    rec = dict({"ts": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "level": level, "cmd": _LOG["cmd"],
+                "event": event, "msg": msg}, **fields)
+    if level != "info" and echo:
+        print("arena %s: %s [%s]" % (level, msg, event), file=sys.stderr)
+    if _LOG["run"]:
+        _write_log([rec])
+    else:
+        _LOG["pending"].append(rec)
+
+
+def _write_log(recs):
+    try:
+        with open(os.path.join(_LOG["run"], LOG_FILE), "a", encoding="utf-8") as fh:
+            for r in recs:
+                fh.write(json.dumps(r, default=str) + "\n")
+    except OSError as e:
+        print("arena warn: could not write %s: %s" % (LOG_FILE, e), file=sys.stderr)
+
+
+def log_to(run_dir):
+    """Send events to this run's log from now on, with any that were waiting for it."""
+    _LOG["run"] = run_dir
+    pending, _LOG["pending"] = _LOG["pending"], []
+    if pending:
+        _write_log(pending)
 
 
 # ---------------------------------------------------------------- the cards
@@ -242,14 +290,14 @@ def deal(n, seed, data):
     return dealt
 
 
-# ---------------------------------------------------------------- card relevance (Jev)
+# ---------------------------------------------------------------- card relevance (Clef, Jev)
 
 def relevance_questions(data):
     """One Noul per card part. The question ids are for code only; the meaning is all in the text."""
     questions = {}
     for key, kind in DECK_KEYS:
         for it in data[key]:
-            questions["%s:%s" % (key, it["id"])] = {
+            questions["%s.%s" % (key, it["id"])] = {
                 "type": "noul",
                 "instructions": {
                     "question": ("A capable AI will answer the task in `task` once, from scratch, and has to "
@@ -268,12 +316,12 @@ def relevance_questions(data):
     return questions
 
 
-def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL, attempts=3):
+def post_systemone(name, url, token, state, model, questions, attempts=3):
     """POST one System One request. Retries a 429 or a 5xx with backoff; anything else is an error."""
     body = json.dumps({"state": state, "model": model, "questions": questions}).encode("utf-8")
     for attempt in range(attempts):
         req = urllib.request.Request(url, data=body, method="POST", headers={
-            "Authorization": "Bearer %s" % key, "Content-Type": "application/json"})
+            "Authorization": "Bearer %s" % token, "Content-Type": "application/json"})
         try:
             with urllib.request.urlopen(req, timeout=90) as resp:
                 return json.loads(resp.read().decode("utf-8"))
@@ -283,19 +331,80 @@ def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL, attempts=3):
                     wait = float(e.headers.get("retry-after") or 0)
                 except ValueError:
                     wait = 0
+                log("info", "relevance.retry", "%s HTTP %d, retrying" % (name, e.code), scorer=name,
+                    status=e.code, attempt=attempt + 1)
                 time.sleep(max(wait, 2 ** attempt))
                 continue
             detail = e.read().decode("utf-8", "replace")[:300]
-            raise ArenaError("Jev returned HTTP %d: %s" % (e.code, detail))
+            raise ArenaError("%s returned HTTP %d: %s" % (name, e.code, detail))
         except (urllib.error.URLError, OSError, ValueError) as e:
             if attempt + 1 < attempts:
+                log("info", "relevance.retry", "%s unreachable (%s), retrying" % (name, e), scorer=name,
+                    attempt=attempt + 1)
                 time.sleep(2 ** attempt)
                 continue
-            raise ArenaError("could not reach Jev: %s" % e)
+            raise ArenaError("could not reach %s: %s" % (name, e))
 
 
-def score_relevance(task, data, key, ask=None):
-    """Jev's probability that each card part fits the task: {"reasoning": {id: p}, ...}."""
+def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL):
+    return post_systemone("Jev", url, key, state, model, questions)
+
+
+def cloudflare_auth():
+    """(token, account id) for Workers AI, or None. The `cf` CLI's OAuth login comes first: `cf auth
+    whoami` refreshes it when it has expired, so it is never stale. Without it, CLOUDFLARE_AI_TOKEN
+    (or CLOUDFLARE_API_TOKEN) and CLOUDFLARE_ACCOUNT_ID. Logs why each source was not usable."""
+    account = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
+    cf = shutil.which("cf")
+    why = "the cf CLI is not on PATH"
+    if cf:
+        try:
+            out = subprocess.run([cf, "auth", "whoami", "-q"], capture_output=True, text=True, timeout=30)
+            who = json.loads(out.stdout)
+            with open(CF_CONFIG, encoding="utf-8") as fh:
+                token = json.load(fh).get("oauth_token", "")
+            accounts = [a.get("id") for a in who.get("accounts") or [] if isinstance(a, dict)]
+            acc = account or (accounts[0] if len(accounts) == 1 else "")
+            if who.get("tokenValid") and token and acc:
+                return token, acc
+            why = ("cf login is not valid (run: cf auth login)" if not (who.get("tokenValid") and token) else
+                   "cf login has %d accounts; set CLOUDFLARE_ACCOUNT_ID" % len(accounts))
+        except subprocess.TimeoutExpired:
+            why = "cf auth whoami timed out after 30s"
+        except (OSError, ValueError, AttributeError, subprocess.SubprocessError) as e:
+            why = "cf auth whoami failed: %s: %s" % (type(e).__name__, str(e)[:200])
+    token = (os.environ.get("CLOUDFLARE_AI_TOKEN", "") or os.environ.get("CLOUDFLARE_API_TOKEN", "")).strip()
+    if token and account:
+        log("info", "cloudflare.auth", "using the token from the environment (%s)" % why)
+        return token, account
+    log("info", "cloudflare.auth", "no Cloudflare credentials: %s, and no CLOUDFLARE_AI_TOKEN + "
+        "CLOUDFLARE_ACCOUNT_ID" % why)
+    return None
+
+
+def ask_clef(state, questions, auth, model=None):
+    """Clef takes at most 64 questions a request: split evenly, merge the answers, sum the usage."""
+    token, account = auth
+    model = model or CLEF_MODEL
+    ids = list(questions)
+    chunks = -(-len(ids) // CLEF_MAX_QUESTIONS)
+    size = -(-len(ids) // chunks)
+    answers, usage = {}, {}
+    for i in range(0, len(ids), size):
+        part = {q: questions[q] for q in ids[i:i + size]}
+        resp = post_systemone("Clef", CLEF_URL % (account, model), token, state, model, part)
+        if not (resp or {}).get("success", True):
+            raise ArenaError("Clef failed: %s" % json.dumps(resp.get("errors"))[:300])
+        res = (resp or {}).get("result", resp) or {}
+        answers.update(res.get("answers") or {})
+        for k, v in (res.get("usage") or {}).items():
+            if isinstance(v, (int, float)):
+                usage[k] = usage.get(k, 0) + v
+    return {"model": "@cf/cloudflare/%s" % model, "answers": answers, "usage": usage}
+
+
+def score_relevance(task, data, key, ask=None, name="Jev"):
+    """The scorer's probability that each card part fits the task: {"reasoning": {id: p}, ...}."""
     questions = relevance_questions(data)
     resp = (ask or ask_jev)({"task": task}, questions, key)
     answers = (resp or {}).get("answers") or {}
@@ -304,8 +413,8 @@ def score_relevance(task, data, key, ask=None):
         a = answers.get(qid)
         p = a.get("noul") if isinstance(a, dict) else None
         if isinstance(p, bool) or not isinstance(p, (int, float)) or not math.isfinite(p):
-            raise ArenaError("Jev gave no usable answer for %s" % qid)
-        key_, iid = qid.split(":", 1)
+            raise ArenaError("%s gave no usable answer for %s" % (name, qid))
+        key_, iid = qid.split(".", 1)
         out[key_][iid] = float(p)
     return {"model": (resp or {}).get("model"), "usage": (resp or {}).get("usage"), "scores": out}
 
@@ -369,25 +478,41 @@ def pool_deck(data, scores, n, minimum=RELEVANCE_MIN, floor=RELEVANCE_FLOOR):
     return out, kept, note
 
 
-def fit_deck(task, data, n, mode="auto", key=None, minimum=RELEVANCE_MIN, ask=None):
-    """Pick the scorer (Jev, else BM25), score the deck, apply the pool rule.
-    Returns (data to deal from, report). mode: auto, jev (no fallback), bm25, off."""
+def fit_deck(task, data, n, mode="auto", key=None, minimum=RELEVANCE_MIN, ask=None,
+             cf_auth=None, ask_cf=None):
+    """Pick the scorer (Clef, else Jev, else BM25), score the deck, apply the pool rule.
+    Returns (data to deal from, report). mode: auto, clef or jev (no fallback), bm25, off."""
     if mode == "off":
         return data, None
     report = {"method": None, "fallback": None}
-    scores = None
-    if mode in ("auto", "jev") and key:
+    scores, skipped = None, []
+    for method, name, cred, asker, missing in (
+            ("clef", "Clef", cf_auth, ask_cf or ask_clef, "no Cloudflare login (cf auth login, or "
+                                                          "CLOUDFLARE_AI_TOKEN + CLOUDFLARE_ACCOUNT_ID)"),
+            ("jev", "Jev", key, ask or ask_jev, "TYPESAFE_API_KEY is not set")):
+        if mode not in ("auto", method):
+            continue
+        if not cred:
+            if mode == method:
+                raise ArenaError("--relevance %s needs %s. Use --relevance auto to fall back"
+                                 % (method, missing.replace(" is not set", "")))
+            skipped.append(missing)
+            continue
+        t0 = time.time()
         try:
-            r = score_relevance(task, data, key, ask=ask)
-            scores, report["method"], report["model"], report["usage"] = r["scores"], "jev", r["model"], r["usage"]
+            r = score_relevance(task, data, cred, ask=asker, name=name)
+            scores, report["method"], report["model"], report["usage"] = r["scores"], method, r["model"], r["usage"]
+            log("info", "relevance.scored", "%s scored the deck" % name, scorer=method, model=r["model"],
+                usage=r["usage"], seconds=round(time.time() - t0, 1))
+            break
         except ArenaError as e:
-            if mode == "jev":
+            log("warn" if mode != method else "error", "relevance.failed", "%s failed: %s" % (name, e),
+                scorer=method, seconds=round(time.time() - t0, 1))
+            if mode == method:
                 raise
-            report["fallback"] = "Jev failed (%s), used BM25" % e
-    elif mode == "jev":
-        raise ArenaError("--relevance jev needs TYPESAFE_API_KEY. Use --relevance auto to fall back to BM25")
-    elif mode == "auto":
-        report["fallback"] = "TYPESAFE_API_KEY is not set, used BM25"
+            skipped.append("%s failed (%s)" % (name, e))
+    if skipped:
+        report["fallback"] = "%s, used %s" % ("; ".join(skipped), {"clef": "Clef", "jev": "Jev"}.get(report["method"], "BM25"))
     if scores is None:
         scores, report["method"] = bm25_scores(task, data), "bm25"
     dealt, kept, note = pool_deck(data, scores, n, minimum=minimum)
@@ -828,6 +953,7 @@ def collect(state):
             w, totals, note = decide(v, "x", "y")
         except ArenaError as e:
             os.replace(path, path + ".unreadable")
+            log("warn", "verdict.unreadable", "recheck verdict unreadable: %s" % e, path=path + ".unreadable")
             return [("recheck", "unreadable", str(e))]
         better = lr[w.upper()]
         refined = learn_out(d, "refined.md")
@@ -855,6 +981,7 @@ def collect(state):
             w, totals, note = decide(v, "x", "y")
         except ArenaError as e:
             os.replace(path, path + ".unreadable")
+            log("warn", "verdict.unreadable", "final verdict unreadable: %s" % e, path=path + ".unreadable")
             return [("final", "unreadable", str(e))]
         better = fin[w.upper()]
         fin["result"] = {
@@ -881,6 +1008,8 @@ def collect(state):
             winner, totals, note = decide(v, m["a"], m["b"])
         except ArenaError as e:
             os.replace(path, path + ".unreadable")
+            log("warn", "verdict.unreadable", "%s verdict unreadable: %s" % (m["id"], e),
+                match=m["id"], round=rd["n"], path=path + ".unreadable")
             results.append((m["id"], "unreadable", str(e)))
             continue
         survived = v.get("survived") if isinstance(v.get("survived"), list) else []
@@ -1206,6 +1335,7 @@ def load_state(args):
     path = os.path.join(d, STATE_FILE)
     if not os.path.isfile(path):
         raise ArenaError("no %s in %s" % (STATE_FILE, d))
+    log_to(d)
     with open(path, encoding="utf-8") as fh:
         return json.load(fh)
 
@@ -1289,12 +1419,16 @@ def cmd_init(args):
     full_deck = data
     data, relevance = fit_deck(task, data, n, mode=args.relevance,
                                key=os.environ.get("TYPESAFE_API_KEY", "").strip() or None,
-                               minimum=args.relevance_min)
+                               minimum=args.relevance_min,
+                               cf_auth=cloudflare_auth() if args.relevance in ("auto", "clef") else None)
     seed = args.seed if args.seed is not None else random.SystemRandom().randrange(1, 1000000)
     d = os.path.abspath(args.dir or os.path.join(ROOT, "run-%s-s%s" % (time.strftime("%Y%m%d-%H%M%S"), seed)))
     if os.path.exists(os.path.join(d, STATE_FILE)):
         raise ArenaError("%s already has an arena in it. Pick another --dir" % d)
     os.makedirs(d, exist_ok=True)
+    log_to(d)
+    log("info", "init", "arena created", agents=n, seed=seed,
+        relevance=relevance and {k: relevance.get(k) for k in ("method", "model", "fallback", "note")})
     with open(os.path.join(d, "task.md"), "w", encoding="utf-8") as fh:
         fh.write(task + "\n")
     if baseline:
@@ -1330,7 +1464,7 @@ def cmd_init(args):
     print("seed %s. %d agents, %d distinct cards dealt from %d, no repeats."
           % (seed, n, n, combo_count(data)))
     if relevance:
-        by = (relevance.get("model") or JEV_MODEL) if relevance["method"] == "jev" else "BM25"
+        by = relevance.get("model") or relevance["method"] if relevance["method"] != "bm25" else "BM25"
         print("cards fitted to the task by %s: %s. Scores: %s"
               % (by, ", ".join("%s of %d %s" % (len(v) if v else "all", len(full_deck[k]), k)
                                for k, v in ((k, relevance["kept"][k]) for k, _ in DECK_KEYS)),
@@ -1580,12 +1714,55 @@ def cmd_winner(args):
         size, files = _tree_size(scratch)
         if files:
             print("scratch   %.1f MB in %d file(s). Delete it with: %s" % (size / 1e6, files, _cmd("clean")))
+    health = run_health(state["dir"])
+    if health["no_output"] or health["unreadable"]:
+        log("warn", "run.health", "%d job output(s) were NO OUTPUT (a sub-agent failed twice) and %d verdict(s) "
+            "were unreadable" % (len(health["no_output"]), len(health["unreadable"])), **health)
     fin = rep["final"]
     if fin:
         verdict = ("the winner beats it" if fin["better"] == "champion"
                    else "the answer you rejected scored higher. Say so")
         print("vs the answer you rejected: winner %s, rejected %s, %s. %s"
               % (_fmt(fin["champion_total"]), _fmt(fin["baseline_total"]), verdict, fin["reason"]))
+    return 0
+
+
+def run_health(d):
+    """Outputs the orchestrator had to replace with NO OUTPUT, and verdicts collect could not read."""
+    no_output, unreadable = [], []
+    for root, dirs, names in os.walk(d):
+        dirs[:] = [x for x in dirs if x != "scratch"]
+        for name in names:
+            path = os.path.join(root, name)
+            if name.endswith(".unreadable"):
+                unreadable.append(os.path.relpath(path, d))
+            elif name.endswith((".md", ".json")) and _has_output(path) and not _is_real(path):
+                no_output.append(os.path.relpath(path, d))
+    return {"no_output": sorted(no_output), "unreadable": sorted(unreadable)}
+
+
+def cmd_log(args):
+    state = load_state(args)
+    path = os.path.join(state["dir"], LOG_FILE)
+    floor = LOG_LEVELS.index(args.level)
+    shown = 0
+    if os.path.isfile(path):
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue
+                if LOG_LEVELS.index(r.get("level", "info")) < floor:
+                    continue
+                shown += 1
+                if args.json:
+                    print(json.dumps(r))
+                else:
+                    print("%s %-5s %-8s %-20s %s" % (r.get("ts", ""), r.get("level"), r.get("cmd") or "",
+                                                     r.get("event"), r.get("msg")))
+    if not shown:
+        print("no %s events in %s" % ("logged" if floor == 0 else args.level + "+", path))
     return 0
 
 
@@ -1655,11 +1832,13 @@ def build_parser():
     s.add_argument("--wave", type=int, default=DEFAULT_WAVE,
                    help="sub-agents in flight at once, as a rolling pool (default %d)" % DEFAULT_WAVE)
     s.add_argument("--no-learn", action="store_true", help="skip the learn step after the final")
-    s.add_argument("--relevance", choices=("auto", "jev", "bm25", "off"), default="auto",
-                   help="fit the deck to the task first. auto (default): Jev if TYPESAFE_API_KEY is set, "
-                        "else BM25. jev: Jev or fail. bm25: BM25 only. off: the whole deck")
+    s.add_argument("--relevance", choices=("auto", "clef", "jev", "bm25", "off"), default="auto",
+                   help="fit the deck to the task first. auto (default): Clef if Cloudflare is logged in, "
+                        "else Jev if TYPESAFE_API_KEY is set, else BM25. clef / jev: that one or fail. "
+                        "bm25: BM25 only. off: the whole deck. Clef model: ARENA_CLEF_MODEL (default clef; "
+                        "clef-flash uses about a third of the free daily neurons)")
     s.add_argument("--relevance-min", type=float, default=RELEVANCE_MIN,
-                   help="the bar a card part must clear: Jev's probability that it fits, or for BM25 "
+                   help="the bar a card part must clear: Clef's or Jev's probability that it fits, or for BM25 "
                         "its share of the best score in its list (default %g)" % RELEVANCE_MIN)
     s.add_argument("--learn-from", type=int, default=DEFAULT_LEARN_FROM,
                    help="competitors the champion studies in the learn step (default %d)" % DEFAULT_LEARN_FROM)
@@ -1673,6 +1852,11 @@ def build_parser():
         s = sub.add_parser(name, parents=[common], help=hlp)
         s.add_argument("phase", choices=PHASES)
         s.set_defaults(func=fn)
+
+    s = sub.add_parser("log", parents=[common], help="the run's log: fallbacks, unreadable verdicts, failed jobs, crashes")
+    s.add_argument("--level", choices=LOG_LEVELS, default="info", help="show this level and above (default info)")
+    s.add_argument("--json", action="store_true")
+    s.set_defaults(func=cmd_log)
 
     s = sub.add_parser("pairings", parents=[common], help="this round's matches, including the bye")
     s.add_argument("--json", action="store_true")
@@ -1711,11 +1895,17 @@ def build_parser():
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
+    _LOG.update(cmd=args.cmd, run=None, pending=[])
     try:
         return args.func(args)
     except ArenaError as e:
         print("error: %s" % e, file=sys.stderr)
+        log("error", "command.error", str(e), echo=False)   # already on stderr above
         return 2
+    except Exception as e:
+        log("error", "command.crash", "%s crashed: %s: %s" % (args.cmd, type(e).__name__, e),
+            traceback=traceback.format_exc()[-2000:])
+        raise
 
 
 if __name__ == "__main__":

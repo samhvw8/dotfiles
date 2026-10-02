@@ -113,18 +113,9 @@ copies the task into the run folder, deals every competitor a different strategy
 repeats, pairs round 1, and writes `arena.json`.
 
 `init` first fits the deck to the task, so a card like "speed" or "fewest moving parts" is not dealt
-to a task that does not value it:
-
-1. **Jev**, when `TYPESAFE_API_KEY` is set: one TypeSafe request, one yes/no question per reasoning
-   mode, workflow and strategy. A part fits at a probability of 0.5 or more.
-2. **BM25**, when there is no key or Jev fails: parts are ranked by the words they share with the
-   task. A part fits at half the best score in its list or more.
-3. **Random**: a list where fewer than 4 parts fit is dealt from in full, and if the fitting parts
-   cannot make N distinct cards, the whole deck is.
-
-`init` prints which of these it used and what it kept, and the scores stay in `relevance.json`.
-Tell the user in one line. `--relevance jev` makes Jev required, `bm25` skips Jev, `off` skips all
-of it, and `--relevance-min` moves the bar.
+to a task that does not value it. `bracket.py` picks the scorer and falls back on its own (the
+order and the flags are in `ARENA init --help`). `init` prints which scorer it used, what it kept
+and why it fell back, and the scores stay in `relevance.json`. Tell the user in one line.
 
 ## Step 4: the loop
 
@@ -209,6 +200,9 @@ If the solution changes files in the user's project, do not apply it. Ask: apply
   URL or local build in the task file, and say in it that the production URL is off limits.
 - The run freezes its own copy of the templates and the rubric at `init`. Editing this file mid-run
   changes the next run, not the one in progress.
+- An `arena warn:` or `arena error:` line on stderr is a fault in the tooling, not in the
+  competitors' work. Keep going, and at the end run `ARENA log --level warn` and tell the user what
+  went wrong in one line each, so the skill can be fixed.
 - If the user says stop, stop. `ARENA status` shows where it got to, and `ARENA next` resumes it
   later.
 
