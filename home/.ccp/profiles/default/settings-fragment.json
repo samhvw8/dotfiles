@@ -47,5 +47,6 @@
   "switchModelsOnFlag": true,
   "worktree": {
     "baseRef": "head"
-  }
+  },
+  "outputStyle": "STE Lite"
 }
