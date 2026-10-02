@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "about": "The perspective deck shared by heavy-think (Brainstorm, Unstick, Decompose), the heavy-thinker agent and /council. A card is one lens (who is looking) plus, optionally, one technique (how they generate). Provocations are the facilitator's sparks. Presets are starting lens sets for common question shapes. Reframes feed Unstick mode, decompositions feed Decompose mode, and debates and debate_rules feed /debate, rubrics hold the scoring weights (criteria anchors live in rubric.md). deck.py deals from this file: add an entry and it is picked up. Ids must be unique within a list, and every id a lens, preset or set refers to must exist. Entries added from research carry a 'source'.",
+  "about": "The perspective deck shared by heavy-think (Brainstorm, Perspectives, Unstick, Decompose), the heavy-thinker agent and /council. A card is one lens (who is looking) plus, optionally, one technique (how they generate). Provocations are the facilitator's sparks. Presets are starting lens sets for common question shapes; the *-review presets seat a review panel when the Perspectives ask is review. Reframes feed Unstick mode, decompositions feed Decompose mode, and debates and debate_rules feed /debate, rubrics hold the scoring weights (criteria anchors live in rubric.md). deck.py deals from this file: add an entry and it is picked up. Ids must be unique within a list, and every id a lens, preset or set refers to must exist. Entries added from research carry a 'source'.",
   "families": {
     "challenger": "Attacks the framing itself. Every set needs one.",
     "stakeholder": "Speaks for someone with skin in it: user, operator, payer.",
@@ -477,6 +477,71 @@
       ],
       "delivers": "The constraint, how to exploit it with what exists, and what moves once it is fixed.",
       "source": "Goldratt, Theory of Constraints (five focusing steps)"
+    },
+    {
+      "id": "correctness",
+      "family": "challenger",
+      "name": "Correctness",
+      "asks": "Does it actually do what it claims, on every path, including the ones nobody exercised?",
+      "sees": "Off-by-one and boundary slips, unhandled states, wrong assumptions about inputs, promises the implementation does not keep.",
+      "misses": "Whether the thing is worth doing at all.",
+      "clashes": [
+        "visionary",
+        "pragmatist"
+      ],
+      "delivers": "Each defect as its location, the input or state that triggers it, and the wrong result it produces."
+    },
+    {
+      "id": "fact-checker",
+      "family": "challenger",
+      "name": "Fact Checker",
+      "asks": "Which claims stand without evidence, and does each cited source actually say what it is cited for?",
+      "sees": "Unsupported numbers, stale facts, conclusions bigger than their data, citations that do not back the sentence they sit under.",
+      "misses": "Whether a well-supported argument is the right argument to make.",
+      "clashes": [
+        "storyteller",
+        "visionary"
+      ],
+      "delivers": "Each claim that fails, quoted, with what the evidence actually shows, or that there is none."
+    },
+    {
+      "id": "literalist",
+      "family": "challenger",
+      "name": "Literalist",
+      "asks": "What happens if this is followed exactly as written, word for word, with no intent filled in?",
+      "sees": "Ambiguity, sections that contradict each other, instructions that only work if you already know what the author meant.",
+      "misses": "Whether the author's intent is itself right.",
+      "clashes": [
+        "storyteller",
+        "child"
+      ],
+      "delivers": "Each passage a literal reader would follow somewhere the author did not mean, with the wrong action it leads to."
+    },
+    {
+      "id": "scope-keeper",
+      "family": "stakeholder",
+      "name": "Requester",
+      "asks": "Does this deliver what was asked for: all of it, and nothing nobody asked for?",
+      "sees": "Missing requirements, silent scope creep, a goal quietly redefined into an easier one.",
+      "misses": "Whether the original ask was the right ask.",
+      "clashes": [
+        "moonshot",
+        "first-principles"
+      ],
+      "delivers": "A requirement-by-requirement trace (met, partly met, missing), plus everything added that was not asked for."
+    },
+    {
+      "id": "cost-tracer",
+      "family": "systems",
+      "name": "Cost Tracer",
+      "asks": "Where do time, memory, money or quota grow faster than the input?",
+      "sees": "Quadratic loops, N+1 calls, unbounded growth, metered calls inside loops, cost cliffs at a quota.",
+      "misses": "Readability and correctness when the cost is fine.",
+      "clashes": [
+        "craftsperson",
+        "visionary"
+      ],
+      "delivers": "Each cost hotspot with the input size where it starts to hurt and what it costs there."
     }
   ],
   "techniques": [
@@ -994,6 +1059,118 @@
         "anthropologist"
       ],
       "rubric": "decision"
+    },
+    {
+      "id": "code-review",
+      "shape": "Is this code change correct, safe and keepable?",
+      "lenses": [
+        "correctness",
+        "adversary",
+        "maintainer"
+      ],
+      "deep_add": [
+        "cost-tracer",
+        "operator",
+        "completionist"
+      ],
+      "rubric": "review",
+      "wildcard": false
+    },
+    {
+      "id": "design-review",
+      "shape": "Will this design, RFC or architecture hold up once built and run?",
+      "lenses": [
+        "operator",
+        "pre-mortem",
+        "minimalist"
+      ],
+      "deep_add": [
+        "maintainer",
+        "adversary",
+        "incumbent"
+      ],
+      "rubric": "review",
+      "wildcard": false
+    },
+    {
+      "id": "plan-review",
+      "shape": "Will this plan get us where it says, on the time and people it assumes?",
+      "lenses": [
+        "scope-keeper",
+        "pre-mortem",
+        "bottleneck"
+      ],
+      "deep_add": [
+        "skeptic",
+        "economist",
+        "completionist"
+      ],
+      "rubric": "review",
+      "wildcard": false
+    },
+    {
+      "id": "proposal-review",
+      "shape": "Should we accept this proposal or decision as written?",
+      "lenses": [
+        "skeptic",
+        "economist",
+        "pre-mortem"
+      ],
+      "deep_add": [
+        "contrarian",
+        "scope-keeper",
+        "incumbent"
+      ],
+      "rubric": "review",
+      "wildcard": false
+    },
+    {
+      "id": "writing-review",
+      "shape": "Does this document land with its reader, and is it true?",
+      "lenses": [
+        "newcomer",
+        "fact-checker",
+        "maintainer"
+      ],
+      "deep_add": [
+        "minimalist",
+        "storyteller",
+        "accessibility"
+      ],
+      "rubric": "review",
+      "wildcard": false
+    },
+    {
+      "id": "ux-review",
+      "shape": "Can the people it is for actually use this?",
+      "lenses": [
+        "newcomer",
+        "minimalist",
+        "pre-mortem"
+      ],
+      "deep_add": [
+        "power-user",
+        "accessibility",
+        "support-desk"
+      ],
+      "rubric": "review",
+      "wildcard": false
+    },
+    {
+      "id": "prompt-review",
+      "shape": "Will a model reading this prompt, skill or spec cold do what the author meant?",
+      "lenses": [
+        "literalist",
+        "newcomer",
+        "maintainer"
+      ],
+      "deep_add": [
+        "minimalist",
+        "completionist",
+        "scope-keeper"
+      ],
+      "rubric": "review",
+      "wildcard": false
     }
   ],
   "reframes": [
@@ -1467,6 +1644,14 @@
         "novelty": 10,
         "specificity": 10
       }
+    },
+    "review": {
+      "use_for": "Ranking review findings on an existing artifact: impact if left unfixed, how sure we are it is real, and how clearly it can be acted on. Confidence below 4 is a gate, not a low score: verify or drop.",
+      "weights": {
+        "impact": 45,
+        "confidence": 35,
+        "actionability": 20
+      }
     }
   },
   "composition_rules": [
@@ -1478,6 +1663,7 @@
     "Sets of 4 or more get one wildcard family lens.",
     "A lens written for this specific problem beats any lens in the deck. Add custom lenses as 'Name: the question it asks'.",
     "For judging or deciding, keep it to 3 or 4 distinct lenses; more lenses only pay off when generating ideas.",
-    "A lens changes the question and the required output, never the claimed expertise. Expert personas do not raise accuracy."
+    "A lens changes the question and the required output, never the claimed expertise. Expert personas do not raise accuracy.",
+    "For a review, seat lenses whose findings would differ: a defect lens, a stakeholder who lives with the artifact, and a time lens. Never techniques, never a wildcard (the review presets set \"wildcard\": false)."
   ]
 }

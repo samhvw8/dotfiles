@@ -163,6 +163,10 @@ def new_state(n, seed, deck, run_dir, cross, judges, shortlist, parallel, preset
     run_dir = os.path.abspath(run_dir)
     ids = member_ids(n)
     rubric = rubric or D.preset_rubric(deck, preset) or "creative"
+    if rubric not in ("creative", "decision"):
+        # The review rubric ranks findings on an existing artifact, not concepts.
+        raise CouncilError("preset '%s' scores with the '%s' rubric, which council judges cannot use: pass "
+                           "--rubric creative|decision, or use heavy-think Perspectives mode with ASK review" % (preset, rubric))
     weights = D.rubric_weights(deck, rubric)
     agents = {}
     for mid, card in zip(ids, deal_cards(n, seed, deck, preset, explicit, techniques=techniques)):

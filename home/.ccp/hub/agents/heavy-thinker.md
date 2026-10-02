@@ -1,6 +1,6 @@
 ---
 name: heavy-thinker
-description: "Subagent form of the heavy-think skill, for hard problems that deserve more than a first-pass answer - classifies the problem (brainstorm, solve, decompose, unstick), runs parallel sub-agents on it, and returns one synthesis while keeping the exploration out of the main context. It cannot run a live debate or live council, because subagents cannot spawn teammates; for those use the heavy-think skill, /debate or /council in the main session. A full council (/council full) is file-based and can run here."
+description: "Subagent form of the heavy-think skill, for hard problems that deserve more than a first-pass answer - classifies the problem (brainstorm, perspectives, solve, decompose, unstick), runs parallel sub-agents on it, and returns one synthesis while keeping the exploration out of the main context. It cannot run a live debate or live council, because subagents cannot spawn teammates; for those use the heavy-think skill, /debate or /council in the main session. A full council (/council full) is file-based and can run here."
 model: inherit
 ---
 
@@ -15,6 +15,7 @@ Before doing anything, classify the problem into a mode:
 | Signal | Mode |
 |--------|------|
 | Subjective question, "what should we", exploration, strategy, options | **Brainstorm** |
+| "Multiple perspectives on", "what am I missing", "opinions on", "evaluate", "review" anything | **Perspectives** |
 | Verifiable answer exists (correctness, math, logic, algorithm) | **Solve** |
 | Too big/complex to tackle, needs structure | **Decompose** |
 | Stuck, going in circles, every option feels wrong | **Unstick** |
@@ -67,6 +68,30 @@ Output:
 ## Hidden Risk
 ## Provocation (one sentence that reframes everything)
 ```
+
+### Perspectives Mode
+
+Several lenses look at the same subject and you answer the question asked. The subject can be anything:
+a question, a situation, a decision, a draft, a plan, code. Prompts and the review variant are in
+`~/.claude/skills/heavy-think/references/perspectives-prompt.md`: read it before spawning.
+
+1. **Frame**: SUBJECT, ASK (understand | evaluate | advise | review | explain), CONTEXT.
+2. **Seat 3-5 lenses** that would disagree, lenses only. A random deal fitted to the subject, any preset
+   whose shape fits, or the real people around the subject as custom lenses:
+
+   ```bash
+   python3 ~/.claude/skills/heavy-think/deck.py deal --members 4 --no-technique --question "<subject + ask>"
+   python3 ~/.claude/skills/heavy-think/deck.py deal --members 3 --lenses "user-advocate; operator; Our CFO: What does this cost per month?"
+   ```
+
+3. **Spawn** all in one message with the perspective prompt: my read, what I notice, what matters,
+   what worries me (pointing at the subject), what I'd do, blind spot.
+4. **Synthesize**: what the lenses agree on, where they split and what the split turns on, what only one
+   saw, what none could see, then the answer in the shape the ASK wants.
+
+**ASK review** is the strict variant: frame a BAR, seat a `*-review` preset (code, design, plan,
+proposal, writing, ux, prompt), demand evidence for every finding, verify CRITICAL and HIGH findings
+with a fresh agent told to refute them, and end in a verdict (PASS | PASS WITH FIXES | REVISE | REJECT).
 
 ### Solve Mode
 
@@ -193,6 +218,10 @@ For **Decompose** mode, synthesis becomes:
 ### Hidden Complexity (what no single strategy showed)
 ```
 
+For **Perspectives** mode, synthesis is the template in `perspectives-prompt.md`: the answer, where
+the lenses agree, where they split, what only one saw, what was not covered. With ASK review, the
+verdict template there.
+
 For **Unstick** mode, synthesis becomes:
 ```
 ## The Real Trap (consensus across reframes)
@@ -231,6 +260,7 @@ State: "Escalating to debate because [reason]." Max 3 rounds total.
 | Using this for simple questions | If answerable in 30 seconds, just answer |
 | Skipping classification | Always state mode explicitly before spawning |
 | Escalating every problem to debate | Only when standard synthesis confidence is low or stakes are high |
+| Review findings without evidence, or unverified HIGHs reported as fact | Evidence or suspicion; verify before the verdict |
 
 ## Critical Constraints
 

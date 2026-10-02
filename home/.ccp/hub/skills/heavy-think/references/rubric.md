@@ -1,8 +1,9 @@
 # The idea rubric
 
 Used to score ideas and concepts: by the judges of a full council, and by you in heavy-think Brainstorm
-before you rank. The weights live in `perspectives.json` under `rubrics`, so there is one source of
-truth; this page holds the criteria and their anchors.
+before you rank. A review (Perspectives mode, ASK review) scores findings, not ideas, with the `review` profile below. The
+weights live in `perspectives.json` under `rubrics`, so there is one source of truth; this page holds
+the criteria and their anchors.
 
 ## Pick the profile
 
@@ -10,6 +11,7 @@ truth; this page holds the criteria and their anchors.
 | --- | --- | --- |
 | `creative` | Ideation: open questions, naming, product ideas, "how might we" | novelty 30, value 30, feasibility 20, specificity 10, emergence 10 |
 | `decision` | Choosing a direction that ships and has to be run: architecture, strategy, prioritization, migration, policy | value 35, feasibility 25, running cost 20, novelty 10, specificity 10 |
+| `review` | Ranking findings on an existing artifact (Perspectives mode with ASK review, the `*-review` presets). Not for council judges | impact 45, confidence 35, actionability 20 |
 
 A preset names its profile. When in doubt: if someone will have to operate the result, use `decision`.
 Under `creative`, a cheap-to-run boring idea loses to a new one; under `decision`, it should not.
@@ -54,6 +56,28 @@ Each is scored 0 to 10. Use the whole scale. A 7 is not a polite default.
 - 10: the concept exists only because two different ideas collided, and the combination is the point.
 - 5: builds visibly on one earlier idea and improves it.
 - 0: a single idea with nothing added.
+
+## The review criteria
+
+The `review` profile scores a finding, not an idea. Severity (in `perspectives-prompt.md`) sorts first; this
+total orders findings within a severity.
+
+**Impact**: if this is left as is, how much does it cost the people the artifact is for, against its bar?
+- 10: the artifact fails its purpose, or causes harm that is hard to undo.
+- 7: a path that will be taken goes wrong, or a reader acts on something false.
+- 4: an edge path, or a cost that arrives later.
+- 0 to 2: polish.
+
+**Confidence**: how sure are we the finding is real?
+- 10: verified against the artifact: the line, the failing input, the source that contradicts the claim.
+- 7: concrete evidence, not yet verified, or two lenses found it independently.
+- 4: plausible, with one gap in the evidence.
+- 0 to 3: a hunch. This is a gate, not a score: verify it or move it to Suspicions. It never ranks.
+
+**Actionability**: does the author know what to change?
+- 10: the location and the fix direction are both clear.
+- 5: the problem is clear, the fix needs a decision.
+- 0 to 2: "this feels off".
 
 ## The off-brief rule
 

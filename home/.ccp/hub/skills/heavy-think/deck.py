@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """deck.py: deal from the perspective deck (references/perspectives.json).
 
-Used by heavy-think (Brainstorm, Unstick, Decompose), the heavy-thinker agent and
+Used by heavy-think (Brainstorm, Perspectives, Unstick, Decompose), the heavy-thinker agent and
 /council, which imports it.
 
     python3 deck.py presets                                    # lens sets by question shape, with their rubric
     python3 deck.py deal --members 3 [--preset P] [--seed S] --question "the problem"   # lens + technique cards
     python3 deck.py deal --members 3 --no-technique            # lenses only (decisions, technical problems)
     python3 deck.py deal --lenses "operator,EU regulator: Would this pass a GDPR review?"
+    python3 deck.py deal --members 3 --preset code-review --no-technique --lenses "DBA on call: What pages me?"   # a review panel; --lenses take the first seats, the preset fills the rest
     python3 deck.py reframes [--set every-option-wrong]        # Unstick strategies
     python3 deck.py decompositions [--set technical-system]    # Decompose strategies
     python3 deck.py debates                                    # debate formats and the evidence-backed rules
@@ -154,15 +155,18 @@ def deal_lenses(n, rng, deck, preset=None, explicit=None):
     if n < 1:
         raise DeckError("deal at least 1 lens")
     chosen = []
-    if explicit:
-        for l in explicit:
-            if l["id"] not in [c["id"] for c in chosen]:
-                chosen.append(dict(l))
-    elif preset:
+    p = None
+    for l in explicit or []:
+        if l["id"] not in [c["id"] for c in chosen]:
+            chosen.append(dict(l))
+    if preset:
+        # Explicit lenses take the first seats; the preset fills the rest.
         p = _by_id(deck["presets"]).get(preset)
         if not p:
             raise DeckError("no preset called '%s' (run presets)" % preset)
-        chosen = [dict(lenses[x]) for x in dict.fromkeys(p["lenses"] + p.get("deep_add", []))]
+        for x in dict.fromkeys(p["lenses"] + p.get("deep_add", [])):
+            if x not in [c["id"] for c in chosen]:
+                chosen.append(dict(lenses[x]))
     chosen = chosen[:n]
     if n > len(chosen) + sum(1 for lid in lenses if lid not in [c["id"] for c in chosen]):
         raise DeckError("the deck has %d lenses, not enough for %d members" % (len(lenses), n))
@@ -183,7 +187,9 @@ def deal_lenses(n, rng, deck, preset=None, explicit=None):
         pool.sort(key=lambda lid: -clash_score(lid))
         return dict(lenses[pool[0]])
 
-    required = list(REQUIRED_FAMILIES) + (["wildcard"] if n >= 4 else [])
+    # A preset with "wildcard": false (the review panels) never seats one: a moonshot finds no defects.
+    wild = not (p and p.get("wildcard") is False)
+    required = list(REQUIRED_FAMILIES) + (["wildcard"] if n >= 4 and wild else [])
     for fam in required:
         if any(c["family"] == fam for c in chosen):
             continue
@@ -199,7 +205,7 @@ def deal_lenses(n, rng, deck, preset=None, explicit=None):
             dup = next((c for c in reversed(chosen) if counts[c["family"]] > 1), None)
             if dup:
                 chosen[chosen.index(dup)] = lens
-    families = list(deck["families"])
+    families = [f for f in deck["families"] if wild or f != "wildcard"]
     while len(chosen) < n:
         counts = {f: sum(1 for c in chosen if c["family"] == f) for f in families}
         for fam in sorted(families, key=lambda f: (counts[f], rng.random())):
@@ -651,7 +657,8 @@ def build_parser():
     s = sub.add_parser("deal")
     s.add_argument("--members", type=int, default=3)
     s.add_argument("--preset")
-    s.add_argument("--lenses", help="deck ids and/or custom 'Name: question', comma-separated")
+    s.add_argument("--lenses", help="deck ids and/or custom 'Name: question', comma-separated; with --preset they take "
+                        "the first seats and the preset fills the rest")
     s.add_argument("--no-technique", action="store_true", help="lenses only")
     s.add_argument("--seed")
     add_relevance_args(s)

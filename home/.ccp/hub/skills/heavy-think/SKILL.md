@@ -1,6 +1,6 @@
 ---
 name: heavy-think
-description: "Multi-agent thinking orchestrator: classifies a hard problem and runs parallel opus agents (or live teammates) on it, then synthesizes. Modes: brainstorm, solve (verifiable answers), decompose, unstick (reframe when stuck), debate (live agent-team debate). Use when the user asks for heavy thinking, a deep brainstorm, a decomposition, a pressure-test, or says they're stuck — strategic decisions, hard technical problems, high-stakes calls. Not for simple lookups, mechanical tasks, clear next steps, or implementation work."
+description: "Multi-agent thinking orchestrator: classifies a hard problem and runs parallel opus agents (or live teammates) on it, then synthesizes. Modes: brainstorm, perspectives (look at anything through several lenses to understand, evaluate, advise, explain or review it), solve (verifiable answers), decompose, unstick (reframe when stuck), debate (live agent-team debate). Use when the user asks for heavy thinking, a deep brainstorm, multiple perspectives or opinions on something, a review or critique, a decomposition, a pressure-test, or says they're stuck — strategic decisions, hard technical problems, high-stakes calls. Not for simple lookups, mechanical tasks, clear next steps, or implementation work."
 ---
 
 # Heavy Think
@@ -18,6 +18,7 @@ Classify the problem, pick the mode:
 | Signal | Mode | Pattern |
 |--------|------|---------|
 | "What should we..." / "What are the options" / subjective question | **Brainstorm** | Parallel perspectives → collide → synthesize |
+| "Look at this from multiple perspectives" / "what am I missing" / "opinions on" / "evaluate" / "review" | **Perspectives** | Parallel lenses read the same subject → agree / clash / blind spots → answer the ask |
 | Verifiable answer exists (math, logic, algorithm) | **Solve** | Parallel solution paths → deliberate → verify |
 | "How do we break this down" / too big to tackle | **Decompose** | Parallel decomposition strategies → synthesize best structure |
 | "I'm stuck" / every option feels wrong / going in circles | **Unstick** | Parallel reframes → find the frame that unlocks movement |
@@ -50,11 +51,11 @@ MODE: scan (3 agents, breadth-first) | deep (up to 5 agents, depth-first)
 Choose 3-5 perspectives that **collide productively**: tension, not redundancy. Each agent gets a
 **card**: a lens (who is looking), and for ideation a technique (how it generates).
 
-The deck is `references/perspectives.json`, dealt by `deck.py` in this skill's folder: 35 lenses in six
-families (challenger, stakeholder, temporal, systems, craft, wildcard), 18 creative techniques,
-provocations, and 12 presets by question shape (product direction, architecture, go-to-market, naming,
-prioritization, process, greenfield, growth, experience, risk, migration, policy). Each preset names
-its rubric.
+The deck is `references/perspectives.json`, dealt by `deck.py` in this skill's folder: 41 lenses in six
+families (challenger, stakeholder, temporal, systems, craft, wildcard), 35 creative techniques,
+provocations, and presets by question shape (product direction, architecture, go-to-market, naming,
+prioritization, process, greenfield, growth, experience, risk, migration, policy, plus the `*-review`
+presets for reviews in Perspectives mode). Each preset names its rubric.
 
 ```bash
 DECK = python3 ~/.claude/skills/heavy-think/deck.py
@@ -142,7 +143,106 @@ Full protocol, spawn template, anti-groupthink rules, and variants: **`reference
 
 ---
 
-## Mode 2: Solve
+## Mode 2: Perspectives
+
+Look at one subject through several lenses at once and answer the question asked. The subject can be
+anything: a question, a situation, a decision, a plan, a draft, a codebase, a diff, a person's
+message, a product. Brainstorm *generates options*; Perspectives *reads what is in front of you*: how
+it looks to each lens, what each one notices that the others miss, and where they disagree.
+
+Use it for "look at this from multiple perspectives", "what am I missing", "how would X and Y see
+this", "give me opinions on", "evaluate", "sanity-check", and review or critique of anything.
+
+### Stage 1: Frame
+
+```
+SUBJECT: [What we're looking at, and where: text, paths, a URL, a diff command, or the situation in a few lines]
+ASK: understand | evaluate | advise | review | explain   (what the user wants back; pick the closest)
+CONTEXT: [Who it's for, what's at stake, what's fixed]
+```
+
+| ASK | The user wants | Synthesis ends in |
+|-----|----------------|-------------------|
+| understand | to see the subject more fully | a map: what each lens sees, where they agree and clash, what nobody can see yet |
+| evaluate | to know how good it is, or how it compares | strengths and weaknesses by lens, an overall read with the reasons |
+| advise | to know what to do | a recommendation, the trade-off it accepts, the lens that disagrees most and why |
+| review | problems found in something that exists | findings ranked by severity and a verdict against a stated bar (see Review below) |
+| explain | to explain it to different audiences | one explanation per audience, and what each one needs that the others don't |
+
+Ask the user only if the ASK really cannot be inferred; otherwise state it and go.
+
+### Stage 2: Seat the Lenses
+
+3 lenses by default, 4–5 when the subject is broad. Lenses only (`--no-technique`): techniques are
+for generating ideas. Any way of picking works:
+
+```bash
+DECK deal --members 4 --no-technique --question "<subject + ask>"                  # a random deal fitted to the subject
+DECK deal --members 3 --preset risk --no-technique --question "..."                # any preset whose shape fits
+DECK deal --members 3 --lenses "user-advocate; operator; My cofounder: What does this cost us in focus?"
+```
+
+- **Custom lenses beat the deck.** The real people around the subject (the customer, the on-call
+  engineer, the reader, your manager) usually make the best lenses: `Name: the question it asks`.
+- With `--preset`, `--lenses` take the first seats and the preset fills the rest.
+- Pick lenses that would *disagree*. Three lenses that all care about quality give one opinion three times.
+- When the ASK is review, start from a `*-review` preset (table under Review below).
+
+### Stage 3: Spawn
+
+All in **one message**, `model="opus"`, with the perspective prompt in
+**`references/perspectives-prompt.md`**. Each agent gets the same subject, ask and context and one
+lens with its `delivers`, and returns: its read in one line, what it notices first, what matters most
+and what worries it (pointing at the subject wherever it can), what it would do, and its blind spot.
+For a large subject, point agents at paths or a command rather than pasting it into every prompt.
+
+### Stage 4: Synthesize (YOU — never delegate)
+
+1. **Agreement** — what several lenses saw independently. That's the most robust part of the answer.
+2. **Disagreement** — where lenses pull apart. Name the underlying value or assumption they split on;
+   that's usually the real question.
+3. **Singletons** — what only one lens saw. Keep the ones that matter; say why the others missed it.
+4. **Blind spots** — what no lens could see, and whether that matters for the ask.
+5. **Answer the ASK** in the shape from the Stage 1 table. Don't just list lens outputs: say which
+   lens you weigh most for this subject, and why.
+
+If a claim would change the answer and you're unsure of it, check it before you lean on it: read the
+line, open the source, or for high stakes spawn a fresh agent told to refute it.
+
+### Review (when the ASK is review)
+
+The same mode with stricter output, for when something has to pass a bar: a merge, a publish, an
+approval. For a routine code diff, `/code-review` is cheaper.
+
+- **Frame adds** BAR (what "passes" means) and OUT OF SCOPE. Severity is measured against the bar.
+- **Presets** by artifact (lenses, with deep adds in brackets; no wildcards):
+
+  | Artifact | Preset | Seats |
+  |----------|--------|-------|
+  | Code change | `code-review` | correctness, adversary, maintainer (cost-tracer, operator, completionist) |
+  | Design doc, RFC, architecture | `design-review` | operator, pre-mortem, minimalist (maintainer, adversary, incumbent) |
+  | Project plan, roadmap | `plan-review` | scope-keeper, pre-mortem, bottleneck (skeptic, economist, completionist) |
+  | Proposal, decision as written | `proposal-review` | skeptic, economist, pre-mortem (contrarian, scope-keeper, incumbent) |
+  | Doc, essay, README, post | `writing-review` | newcomer, fact-checker, maintainer (minimalist, storyteller, accessibility) |
+  | UI, flow, onboarding | `ux-review` | newcomer, minimalist, pre-mortem (power-user, accessibility, support-desk) |
+  | Prompt, skill, spec, policy text | `prompt-review` | literalist, newcomer, maintainer (minimalist, completionist, scope-keeper) |
+
+- **Agents** use the review prompt in `perspectives-prompt.md`: findings with severity, location and
+  evidence; hunches go under Suspicions.
+- **Verify** the CRITICAL and HIGH findings before the verdict (yourself, or a fresh agent told to
+  refute the claim); drop what doesn't survive.
+- **Synthesis** merges shared root causes, names fixes that pull against each other, ranks by severity
+  then the `review` rubric, and ends in a verdict: PASS | PASS WITH FIXES | REVISE | REJECT. Review,
+  don't rewrite, unless asked.
+
+### Escalation
+
+- Lenses split on something that decides the answer → [debate](#escalation-agent-debate) that one question.
+- The answer turns out to be "we need options, not opinions" → Brainstorm. Stuck → Unstick.
+
+---
+
+## Mode 3: Solve
 
 K independent agents solve the same verifiable problem from scratch. Deliberation audits reasoning chains and forges new paths from fragments — it produces correct answers absent from ALL trajectories in ~50% of cases.
 
@@ -203,7 +303,7 @@ See `references/compute.md` for cost analysis and K selection. See `references/t
 
 ---
 
-## Mode 3: Decompose
+## Mode 4: Decompose
 
 Parallel agents each decompose the problem using a **different decomposition strategy**. You synthesize the best structure from their outputs.
 
@@ -300,7 +400,7 @@ Output:
 
 ---
 
-## Mode 4: Unstick
+## Mode 5: Unstick
 
 Parallel agents each **reframe the problem** from a different angle. The goal: find the frame that transforms "stuck" into "obvious next step."
 
@@ -378,7 +478,7 @@ Output:
 
 ---
 
-## Mode 5: Analyze
+## Mode 6: Analyze
 
 No agents. Use when the problem needs one careful line of reasoning with revision, not parallel exploration — work it through yourself.
 
@@ -461,6 +561,8 @@ Complex problems often need multiple modes in sequence:
 | Brainstorm → Solve | Explore options → verify the winning approach rigorously |
 | Decompose → Solve (per piece) | Break down → solve each sub-problem with full rigor |
 | Unstick → Decompose | Can't see the structure → reframe → then decompose clearly |
+| Brainstorm → Perspectives | Pick a direction → see how the people it affects would read it |
+| Perspectives → Brainstorm | The lenses agree the current answer is wrong → explore what would work |
 
 State the chain upfront: "I'll decompose first, then brainstorm on the hardest piece."
 
@@ -474,14 +576,18 @@ State the chain upfront: "I'll decompose first, then brainstorm on the hardest p
 | Running all modes "to be thorough" | Pick the mode that fits. Chain only when necessary |
 | Decomposing when you're actually stuck | Stuck ≠ complex. Stuck means you need a reframe, not more structure |
 | Brainstorming when you should be solving | If there's a verifiable answer, solve. Don't ideate around it |
+| Brainstorming when asked for perspectives | Read what exists first; generate alternatives only if asked |
+| Perspectives that all agree | The lenses were too alike: seat one that would disagree |
+| Review findings without evidence | No quote, line or triggering input → it is a suspicion, not a finding |
 
 ## References
 
 - `references/team-debate.md` — Agent-teams debate: spawn named teammates that argue via SendMessage (preferred), with legacy fallback
 - `references/team-brainstorm.md` — Agent-teams council: named teammates that build on each other's ideas via SendMessage (collaborative ideation)
 - `references/brainstorm-agent-prompt.md` — Brainstorm + stress test agent prompts
+- `references/perspectives-prompt.md` — Perspectives mode: the perspective prompt, plus the review variant (severity scale, reviewer and verifier prompts, verdict template)
 - `references/perspectives.json` — The deck: lenses, techniques, provocations, presets, reframes, decompositions, rubric weights (dealt by `deck.py`)
-- `references/rubric.md` — Idea rubric: creative and decision profiles, criteria anchors
+- `references/rubric.md` — Rubric: creative and decision profiles for ideas, review profile for review findings, criteria anchors
 - `references/compute.md` — Cost analysis, K selection, non-monotonic performance
 - `references/tensions.md` — Design tensions: consensus vs minority, width vs depth
 - `references/landscape.md` — How Solve mode compares to Best-of-N, Self-Consistency, Forest-of-Thought

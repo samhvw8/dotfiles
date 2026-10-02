@@ -106,6 +106,27 @@ class Fit(unittest.TestCase):
         self.assertEqual(set(resp["answers"]), set(qs))
         self.assertTrue(all(re.fullmatch(r"[A-Za-z0-9_.-]{1,100}", q) for q in qs), "Clef's question id pattern")
 
+    def test_review_presets_seat_their_lenses_and_score_findings(self):
+        reviews = [p for p in self.deck["presets"] if p["id"].endswith("-review")]
+        self.assertGreaterEqual(len(reviews), 7)
+        for p in reviews:
+            self.assertEqual(p["rubric"], "review")
+            cards = D.deal_cards(3, 1, self.deck, preset=p["id"], techniques=False)
+            self.assertEqual({c["lens"]["id"] for c in cards}, set(p["lenses"]), p["id"])
+            deep = p["lenses"] + p["deep_add"]
+            cards = D.deal_cards(len(deep), 1, self.deck, preset=p["id"], techniques=False)
+            self.assertEqual({c["lens"]["id"] for c in cards}, set(deep), p["id"])
+            cards = D.deal_cards(len(deep) + 2, 1, self.deck, preset=p["id"], techniques=False)
+            self.assertNotIn("wildcard", {c["lens"]["family"] for c in cards}, p["id"])
+        self.assertEqual(dict(D.rubric_weights(self.deck, "review")),
+                         {"impact": 45, "confidence": 35, "actionability": 20})
+
+    def test_custom_lenses_take_the_first_seats_and_the_preset_fills_the_rest(self):
+        explicit = D.parse_lens_spec("DBA on call: What pages me at 3am?; adversary", self.deck)
+        cards = D.deal_cards(4, 1, self.deck, preset="design-review", explicit=explicit, techniques=False)
+        self.assertEqual({c["lens"]["id"] for c in cards},
+                         {"custom-dba-on-call", "adversary", "operator", "pre-mortem"})
+
     def test_bm25_prefers_shared_words(self):
         pools = {"reframes": [{"id": "a", "name": "Stakeholder swap", "how": "See it as the customer."},
                               {"id": "b", "name": "Database", "how": "Think about the schema migration."}]}
