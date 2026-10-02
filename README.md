@@ -94,7 +94,7 @@ mise run dot:pull          # pull the latest main from origin
 mise run dot:cd            # open a shell in ~/.dotfiles (exit to return)
 mise run dot:status        # unapplied dotfiles and uncommitted changes
 mise run dot:diff          # uncommitted changes and dotfiles waiting to be applied
-mise run dot:update        # dot:pull, then link new dotfiles
+mise run dot:update        # dot:pull, link new dotfiles, install new tools
 mise run dot:rm <path>     # stop managing a path; ~ keeps a real copy
 mise run dot:destroy <path> # delete a path from ~ and the repository
 mise run dot:add <path>    # store a file or directory from ~ and link it
@@ -149,7 +149,7 @@ mise gets its GitHub token by running `gh auth token` itself
 ### Update another machine
 
 ```bash
-mise run dot:update   # pull and link; `mise bootstrap` when packages or hooks changed
+mise run dot:update   # pull, link, install new tools; `mise bootstrap` when packages or hooks changed
 ```
 
 ### ccp hub items

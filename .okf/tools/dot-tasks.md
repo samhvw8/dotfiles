@@ -5,7 +5,7 @@ description: "The dot:* mise tasks, their chezmoi equivalents, and the pre-commi
 resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
 tags: [mise, tasks, git]
 status: stable
-generated: { by: claude-code/claude-sonnet-5-5, at: 2026-10-01T08:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-02T10:00:00Z }
 sources:
   - id: conf
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
@@ -42,7 +42,7 @@ Defined in `mise/conf.d/dotfiles.toml`, so they run from any directory.[^conf]
 | `mise run dot:add <path>…` | Moves each path from `~` into `home/`, `git add`s it, runs `mise dot apply`, then `dot:check`[^add] |
 | `mise run dot:status` | Lists dotfiles whose `mise dot status` state is not `applied`, then `git status --short`; prints nothing when both are clean[^status] |
 | `mise run dot:diff [git args]` | `mise dot diff`, then `git diff HEAD` in the repository; extra arguments go to git[^conf] |
-| `mise run dot:update` | `dot:pull`, `mise dot apply --yes`, `ccp bootstrap`, then `dot:check`: files added on another machine get linked, and skills installed from ccp sources are fetched (a pull only brings `ccp.toml`, not the skills)[^conf] |
+| `mise run dot:update` | `dot:pull`, `mise dot apply --yes`, `dot:local`, `mise install`, `ccp bootstrap`, then `dot:check`: files added on another machine get linked, tools added to the config get installed (never upgraded; that stays a deliberate `mise up`), and skills installed from ccp sources are fetched (a pull only brings `ccp.toml`, not the skills)[^conf] |
 | `mise run dot:rm <path>…` | Stops managing each path: links in `~` that point into `home/<path>` become real copies, `home/<path>` is deleted and the deletion staged, and a `[dotfiles]` entry named `~/<path>` is removed[^rm] |
 | `mise run dot:destroy <path>…` | Like `dot:rm`, but deletes the links from `~` instead of copying them. It asks first, and needs `--yes` without a terminal. Files in `~` that are not links into the repository are kept[^rm] |
 | `mise run dot:check` | **Fails** on committed `home/` files that no `[dotfiles]` entry links; **warns** about ccp hub items that are neither source-installed nor in the repository[^check] |
