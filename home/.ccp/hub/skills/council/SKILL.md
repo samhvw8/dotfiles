@@ -105,9 +105,10 @@ COUNCIL init --brief-file .council/brief.md [--members N | --quick] [--preset P 
 ```
 
 It fits the deck to the brief, deals the cards, seats members in a ring where neighbours come from
-different families, and writes `council.json`. The fit is heavy-think's: Jev when
-`TYPESAFE_API_KEY` is set, else BM25, else the whole pool at random where too little fits. It
-prints what it used and kept, and the scores stay in `relevance.json`. `--relevance off` skips it.
+different families, and writes `council.json`. The fit is heavy-think's `deck.py`, which picks the
+scorer and falls back on its own. It prints what it used and kept (and a `deck warn:` line when a
+scorer failed: pass that on to the user), and the scores stay in `relevance.json`.
+`--relevance off` skips it.
 
 ### Step 4: the loop
 

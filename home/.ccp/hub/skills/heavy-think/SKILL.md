@@ -66,11 +66,11 @@ DECK deal --members 4 --lenses "operator; maintainer; EU regulator: Would this p
 
 - **Always pass `--question`** (the problem in one or two sentences, or `--question-file`). The deck
   is fitted to it before dealing, so a lens, technique or provocation about concerns the problem
-  does not have is not dealt: **Jev** (TypeSafe) judges each entry when `TYPESAFE_API_KEY` is set
-  (kept at probability 0.6 or more); otherwise **BM25** ranks entries by shared words (kept at 0.6
-  of the best); a family the deal must seat with no fitting lens, or a pool with too few fitting
-  entries, is dealt from in full, **at random**. It prints what it used and kept. A preset or
-  `--lenses` is always kept. `--relevance bm25|off|jev` and `--relevance-min` override it.
+  does not have is not dealt. `deck.py` picks the scorer and falls back on its own (the order and
+  the flags are in `deck.py deal --help`); a family the deal must seat with no fitting lens, or a
+  pool with too few fitting entries, is dealt from in full, at random. It prints what it used and
+  kept, and a `deck warn:` line when a scorer failed: pass that on to the user. A preset or
+  `--lenses` is always kept.
 - **Techniques: ideation only.** For architecture, strategy and other technical or decision problems,
   deal with `--no-technique`. A forced technique (random entry, lateral provocation) helps generate
   ideas and hurts reasoning about trade-offs (see `references/tensions.md`, independence vs diversity).

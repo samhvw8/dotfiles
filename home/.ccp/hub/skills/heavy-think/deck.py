@@ -15,10 +15,12 @@ Used by heavy-think (Brainstorm, Unstick, Decompose), the heavy-thinker agent an
 
 Pass the problem with --question (or --question-file) and the deck is fitted to it first:
 lenses, techniques and provocations (deal), or reframes and decompositions (their listings),
-keep only the entries that fit. Jev (TypeSafe) judges the fit when TYPESAFE_API_KEY is set,
-one yes/no question per entry in a single request; otherwise BM25 ranks entries by the words
-they share with the question. A pool with too few fitting entries is used in full, at random.
---relevance off skips it. A preset or --lenses is always kept as chosen.
+keep only the entries that fit, one yes/no question per entry. Clef (Cloudflare Workers AI,
+free daily allocation) asks them when the `cf` CLI is logged in, or CLOUDFLARE_AI_TOKEN and
+CLOUDFLARE_ACCOUNT_ID are set. If Clef is unavailable or fails, Jev (TypeSafe) asks them when
+TYPESAFE_API_KEY is set. Otherwise BM25 ranks entries by the words they share with the question.
+A scorer that fails prints a "deck warn:" line on stderr. A pool with too few fitting entries
+is used in full, at random. --relevance off skips it. A preset or --lenses is always kept as chosen.
 
 A lens id from the deck, or a custom lens written as "Name: the question it asks". Separate
 entries with ";" when a custom question contains commas.
@@ -31,6 +33,8 @@ import math
 import os
 import random
 import re
+import shutil
+import subprocess
 import sys
 import time
 import urllib.error
@@ -46,7 +50,12 @@ NO_TECHNIQUE = {"id": "none", "name": "None",
 
 JEV_URL = "https://api.typesafe.ai/v1/systemone"
 JEV_MODEL = "jev-latest"
+CLEF_URL = "https://api.cloudflare.com/client/v4/accounts/%s/ai/run/@cf/cloudflare/%s"
+CLEF_MODEL = os.environ.get("ARENA_CLEF_MODEL", "").strip() or "clef"   # or clef-flash: ~1/3 the neurons
+CLEF_MAX_QUESTIONS = 64    # Clef's per-request limit
+CF_CONFIG = os.path.expanduser("~/.config/cloudflare/config/default.json")
 RELEVANCE_MIN = 0.6    # Jev: probability it fits (it rates most lenses 0.5+). BM25: share of the best score
+CLEF_MIN = 0.5         # Clef spreads its scores wider (0.03 to 0.85 on the lenses), so its bar is lower
 RELEVANCE_FLOOR = 4    # a pool with fewer fitting entries than this (or than the members) is used in full
 
 
@@ -216,7 +225,7 @@ def deal_cards(n, seed, deck, preset=None, explicit=None, techniques=True):
              "provocation": dict(provs[i % len(provs)])} for i, k in enumerate(order)]
 
 
-# ---------------------------------------------------------------- relevance (Jev, BM25, random)
+# ---------------------------------------------------------------- relevance (Clef, Jev, BM25, random)
 #
 # The same chain as the arena skill's card relevance. Each skill keeps its own copy, since a
 # skill is linked on its own and cannot import from another.
@@ -237,7 +246,7 @@ def relevance_questions(pools):
     for pool, items in pools.items():
         for it in items:
             entry = _entry_text(pool, it)
-            questions["%s:%s" % (pool, it["id"])] = {
+            questions["%s.%s" % (pool, it["id"])] = {
                 "type": "noul",
                 "instructions": {
                     "question": ("Someone will think about the problem in `question` using the %s in "
@@ -254,12 +263,17 @@ def relevance_questions(pools):
     return questions
 
 
-def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL, attempts=3):
+def warn(msg):
+    """A scorer problem the caller should see: one line on stderr, the run goes on."""
+    print("deck warn: %s" % msg, file=sys.stderr)
+
+
+def post_systemone(name, url, token, state, model, questions, attempts=3):
     """POST one System One request. Retries a 429 or a 5xx with backoff; anything else is an error."""
     body = json.dumps({"state": state, "model": model, "questions": questions}).encode("utf-8")
     for attempt in range(attempts):
         req = urllib.request.Request(url, data=body, method="POST", headers={
-            "Authorization": "Bearer %s" % key, "Content-Type": "application/json"})
+            "Authorization": "Bearer %s" % token, "Content-Type": "application/json"})
         try:
             with urllib.request.urlopen(req, timeout=90) as resp:
                 return json.loads(resp.read().decode("utf-8"))
@@ -271,15 +285,61 @@ def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL, attempts=3):
                     wait = 0
                 time.sleep(max(wait, 2 ** attempt))
                 continue
-            raise DeckError("Jev returned HTTP %d: %s" % (e.code, e.read().decode("utf-8", "replace")[:300]))
+            raise DeckError("%s returned HTTP %d: %s" % (name, e.code, e.read().decode("utf-8", "replace")[:300]))
         except (urllib.error.URLError, OSError, ValueError) as e:
             if attempt + 1 < attempts:
                 time.sleep(2 ** attempt)
                 continue
-            raise DeckError("could not reach Jev: %s" % e)
+            raise DeckError("could not reach %s: %s" % (name, e))
 
 
-def jev_scores(question, pools, key, ask=None):
+def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL):
+    return post_systemone("Jev", url, key, state, model, questions)
+
+
+def cloudflare_auth():
+    """(token, account id) for Workers AI, or None. The `cf` CLI's OAuth login comes first (`cf auth
+    whoami` refreshes it when expired); else CLOUDFLARE_AI_TOKEN (or CLOUDFLARE_API_TOKEN) and
+    CLOUDFLARE_ACCOUNT_ID. Returns None quietly: having no login is not a fault."""
+    account = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
+    cf = shutil.which("cf")
+    if cf:
+        try:
+            out = subprocess.run([cf, "auth", "whoami", "-q"], capture_output=True, text=True, timeout=30)
+            who = json.loads(out.stdout)
+            with open(CF_CONFIG, encoding="utf-8") as fh:
+                token = json.load(fh).get("oauth_token", "")
+            accounts = [a.get("id") for a in who.get("accounts") or [] if isinstance(a, dict)]
+            acc = account or (accounts[0] if len(accounts) == 1 else "")
+            if who.get("tokenValid") and token and acc:
+                return token, acc
+        except subprocess.TimeoutExpired:
+            warn("cf auth whoami timed out after 30s, skipping Clef")
+        except (OSError, ValueError, AttributeError, subprocess.SubprocessError) as e:
+            warn("cf auth whoami failed (%s: %s), skipping Clef" % (type(e).__name__, str(e)[:200]))
+    token = (os.environ.get("CLOUDFLARE_AI_TOKEN", "") or os.environ.get("CLOUDFLARE_API_TOKEN", "")).strip()
+    return (token, account) if token and account else None
+
+
+def ask_clef(state, questions, auth, model=None):
+    """Clef takes at most 64 questions a request: split evenly and merge the answers."""
+    token, account = auth
+    model = model or CLEF_MODEL
+    ids = list(questions)
+    chunks = max(1, -(-len(ids) // CLEF_MAX_QUESTIONS))
+    size = max(1, -(-len(ids) // chunks))
+    answers = {}
+    for i in range(0, len(ids), size):
+        part = {q: questions[q] for q in ids[i:i + size]}
+        resp = post_systemone("Clef", CLEF_URL % (account, model), token, state, model, part) or {}
+        if not resp.get("success", True):
+            raise DeckError("Clef failed: %s" % json.dumps(resp.get("errors"))[:300])
+        answers.update((resp.get("result", resp) or {}).get("answers") or {})
+    return {"model": "@cf/cloudflare/%s" % model, "answers": answers}
+
+
+def jev_scores(question, pools, key, ask=None, name="Jev"):
+    """The scorer's probability that each entry fits. Jev by default; Clef passes its own ask."""
     questions = relevance_questions(pools)
     resp = (ask or ask_jev)({"question": question}, questions, key) or {}
     answers = resp.get("answers") or {}
@@ -288,8 +348,8 @@ def jev_scores(question, pools, key, ask=None):
         a = answers.get(qid)
         p = a.get("noul") if isinstance(a, dict) else None
         if isinstance(p, bool) or not isinstance(p, (int, float)) or p != p or p in (float("inf"), float("-inf")):
-            raise DeckError("Jev gave no usable answer for %s" % qid)
-        pool, iid = qid.split(":", 1)
+            raise DeckError("%s gave no usable answer for %s" % (name, qid))
+        pool, iid = qid.split(".", 1)
         out[pool][iid] = float(p)
     return out, resp.get("model")
 
@@ -334,28 +394,40 @@ def bm25_scores(question, pools, k1=1.2, b=0.75):
     return out
 
 
-def score_pools(question, pools, mode="auto", key=None, ask=None):
-    """Score the pools with Jev, else BM25. Returns (scores, report) or (None, None) for off.
-    mode: auto (Jev if a key, else BM25; a Jev failure falls back to BM25), jev (no fallback),
-    bm25, off."""
+def score_pools(question, pools, mode="auto", key=None, ask=None, cf_auth=None, ask_cf=None):
+    """Score the pools with Clef, else Jev, else BM25. Returns (scores, report) or (None, None) for
+    off. mode: auto (each in turn; a failure falls back to the next), clef or jev (that one or
+    fail), bm25, off. report["minimum"] is the default bar for the scorer used."""
     if mode == "off":
         return None, None
     report = {"method": None, "model": None, "fallback": None}
-    scores = None
-    if mode in ("auto", "jev") and key:
+    scores, skipped = None, []
+    for method, name, cred, asker, missing in (
+            ("clef", "Clef", cf_auth, ask_cf or ask_clef,
+             "no Cloudflare login (cf auth login, or CLOUDFLARE_AI_TOKEN + CLOUDFLARE_ACCOUNT_ID)"),
+            ("jev", "Jev", key, ask or ask_jev, "TYPESAFE_API_KEY is not set")):
+        if mode not in ("auto", method):
+            continue
+        if not cred:
+            if mode == method:
+                raise DeckError("--relevance %s needs %s. Use --relevance auto to fall back"
+                                % (method, missing.replace(" is not set", "")))
+            skipped.append(missing)
+            continue
         try:
-            scores, report["model"] = jev_scores(question, pools, key, ask=ask)
-            report["method"] = "jev"
+            scores, report["model"] = jev_scores(question, pools, cred, ask=asker, name=name)
+            report["method"] = method
+            break
         except DeckError as e:
-            if mode == "jev":
+            if mode == method:
                 raise
-            report["fallback"] = "Jev failed (%s), used BM25" % e
-    elif mode == "jev":
-        raise DeckError("--relevance jev needs TYPESAFE_API_KEY. Use --relevance auto to fall back to BM25")
-    elif mode == "auto":
-        report["fallback"] = "TYPESAFE_API_KEY is not set, used BM25"
+            warn("%s failed: %s" % (name, e))
+            skipped.append("%s failed (%s)" % (name, e))
     if scores is None:
         scores, report["method"] = bm25_scores(question, pools), "bm25"
+    if skipped:
+        report["fallback"] = "%s, used %s" % ("; ".join(skipped), {"clef": "Clef", "jev": "Jev"}.get(report["method"], "BM25"))
+    report["minimum"] = CLEF_MIN if report["method"] == "clef" else RELEVANCE_MIN
     return scores, report
 
 
@@ -363,20 +435,22 @@ def _fitting(items, scores, minimum):
     return sorted((it for it in items if scores[it["id"]] >= minimum), key=lambda it: (-scores[it["id"]], it["id"]))
 
 
-def fit_deck(deck, question, n, mode="auto", minimum=RELEVANCE_MIN, techniques=True, preset=None,
-             key=None, ask=None):
+def fit_deck(deck, question, n, mode="auto", minimum=None, techniques=True, preset=None,
+             key=None, ask=None, cf_auth=None, ask_cf=None):
     """A copy of the deck whose lenses, techniques and provocations fit the question.
 
     Lenses: fewer than max(n, floor) fit means every lens. Otherwise the fitting ones, plus,
     for each family the deal must seat, that whole family when none of it fits, plus a
     preset's lenses, which are always kept. Techniques and provocations: the fitting ones,
-    or all of them when fewer than max(n, floor) fit. Returns (deck, report or None)."""
+    or all of them when fewer than max(n, floor) fit. minimum None means the scorer's own bar.
+    Returns (deck, report or None)."""
     pools = {"lenses": deck["lenses"], "provocations": deck["provocations"]}
     if techniques:
         pools["techniques"] = deck["techniques"]
-    scores, report = score_pools(question, pools, mode, key=key, ask=ask)
+    scores, report = score_pools(question, pools, mode, key=key, ask=ask, cf_auth=cf_auth, ask_cf=ask_cf)
     if scores is None:
         return deck, None
+    minimum = report["minimum"] if minimum is None else minimum
     out = dict(deck)
     floor = max(n, RELEVANCE_FLOOR)
     notes, kept = [], {}
@@ -416,7 +490,7 @@ def report_lines(report, deck):
     """What the fit did, for the user: one line, plus any notes."""
     if not report:
         return []
-    by = (report.get("model") or JEV_MODEL) if report["method"] == "jev" else "BM25"
+    by = report.get("model") or report["method"] if report["method"] != "bm25" else "BM25"
     parts = ["%s of %d %s" % (len(v) if v is not None else "all", len(deck[k]), k)
              for k, v in report["kept"].items()]
     lines = ["fitted to the question by %s: %s" % (by, ", ".join(parts))]
@@ -433,6 +507,11 @@ def _question(args):
 
 def _key():
     return os.environ.get("TYPESAFE_API_KEY", "").strip() or None
+
+
+def _cf(mode):
+    """Cloudflare credentials, looked up only when the mode may use Clef."""
+    return cloudflare_auth() if mode in ("auto", "clef") else None
 
 
 # ---------------------------------------------------------------- cli
@@ -457,7 +536,8 @@ def cmd_deal(args):
     report = None
     if question and getattr(args, "relevance", "auto") != "off":
         deck, report = fit_deck(deck, question, args.members, mode=args.relevance, minimum=args.relevance_min,
-                                techniques=not args.no_technique, preset=args.preset, key=_key())
+                                techniques=not args.no_technique, preset=args.preset, key=_key(),
+                                cf_auth=_cf(args.relevance))
     cards = deal_cards(args.members, seed, deck, args.preset, explicit, techniques=not args.no_technique)
     rubric = preset_rubric(deck, args.preset)
     print("seed %s%s" % (seed, ", rubric %s" % rubric if rubric else ""))
@@ -477,8 +557,11 @@ def _list_with_sets(items, sets, field, chosen, args=None):
     by = _by_id(items)
     question = _question(args) if args else ""
     if question and args.relevance != "off":
-        scores, report = score_pools(question, {field: items}, args.relevance, key=_key())
+        scores, report = score_pools(question, {field: items}, args.relevance, key=_key(),
+                                     cf_auth=_cf(args.relevance))
         sc = scores[field]
+        minimum = report["minimum"] if args.relevance_min is None else args.relevance_min
+        report["minimum"] = minimum
         report.update(kept={field: None}, notes=[])
         if chosen:
             s = _by_id(sets).get(chosen)
@@ -488,7 +571,7 @@ def _list_with_sets(items, sets, field, chosen, args=None):
             for x in s[field] + s.get("deep_add", []):
                 print("  %.2f  %s. %s" % (sc[x], by[x]["name"], by[x]["how"]))
         else:
-            fits = _fitting(items, sc, args.relevance_min)
+            fits = _fitting(items, sc, minimum)
             floor = min(3, len(items))
             if len(fits) < floor:
                 report["notes"].append("fewer than %d fit, listing all of them" % floor)
@@ -550,12 +633,15 @@ def add_relevance_args(s):
     """--question and the relevance flags. council.py adds them to its own parsers too."""
     s.add_argument("--question", help="the problem: fit the deck to it before dealing or listing")
     s.add_argument("--question-file", help="the problem, read from a file")
-    s.add_argument("--relevance", choices=("auto", "jev", "bm25", "off"), default="auto",
-                   help="with a question: auto (default) uses Jev if TYPESAFE_API_KEY is set, else BM25. "
-                        "jev: Jev or fail. bm25: BM25 only. off: the whole deck")
-    s.add_argument("--relevance-min", type=float, default=RELEVANCE_MIN,
-                   help="the bar an entry must clear: Jev's probability that it fits, or for BM25 its "
-                        "share of the best score in its pool (default %g)" % RELEVANCE_MIN)
+    s.add_argument("--relevance", choices=("auto", "clef", "jev", "bm25", "off"), default="auto",
+                   help="with a question: auto (default) uses Clef if Cloudflare is logged in, else Jev if "
+                        "TYPESAFE_API_KEY is set, else BM25. clef / jev: that one or fail. bm25: BM25 only. "
+                        "off: the whole deck. Clef model: ARENA_CLEF_MODEL (default clef; clef-flash uses "
+                        "about a third of the free daily neurons)")
+    s.add_argument("--relevance-min", type=float, default=None,
+                   help="the bar an entry must clear: Clef's or Jev's probability that it fits, or for BM25 "
+                        "its share of the best score in its pool (default %g for Clef, %g otherwise)"
+                        % (CLEF_MIN, RELEVANCE_MIN))
 
 
 def build_parser():

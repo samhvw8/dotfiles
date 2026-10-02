@@ -579,10 +579,11 @@ def cmd_init(args):
         raise CouncilError("the brief is empty")
     seed = args.seed if args.seed is not None else random.randrange(1, 10 ** 6)
     explicit = D.parse_lens_spec(args.lenses, deck) if args.lenses else None
-    # Fit the deck to the brief before dealing: Jev, else BM25, else the whole pool (deck.py).
+    # Fit the deck to the brief before dealing: Clef, else Jev, else BM25, else the whole pool (deck.py).
     full = deck
     deck, relevance = D.fit_deck(deck, brief, s["members"], mode=args.relevance, minimum=args.relevance_min,
-                                 techniques=not args.no_technique, preset=args.preset, key=D._key())
+                                 techniques=not args.no_technique, preset=args.preset, key=D._key(),
+                                 cf_auth=D._cf(args.relevance))
     name = time.strftime("%Y%m%d-%H%M%S")
     run_dir = os.path.join(ROOT, name)
     os.makedirs(run_dir, exist_ok=False)
@@ -749,11 +750,13 @@ def build_parser():
     s.add_argument("--rubric", choices=("creative", "decision"), help="default: the preset's, else creative")
     s.add_argument("--no-technique", action="store_true", help="lenses only")
     s.add_argument("--seed")
-    s.add_argument("--relevance", choices=("auto", "jev", "bm25", "off"), default="auto",
-                   help="fit the deck to the brief first: auto (default) uses Jev if TYPESAFE_API_KEY is "
-                        "set, else BM25. jev: Jev or fail. bm25: BM25 only. off: the whole deck")
-    s.add_argument("--relevance-min", type=float, default=D.RELEVANCE_MIN,
-                   help="the bar an entry must clear (default %g)" % D.RELEVANCE_MIN)
+    s.add_argument("--relevance", choices=("auto", "clef", "jev", "bm25", "off"), default="auto",
+                   help="fit the deck to the brief first: auto (default) uses Clef if Cloudflare is logged "
+                        "in, else Jev if TYPESAFE_API_KEY is set, else BM25. clef / jev: that one or fail. "
+                        "bm25: BM25 only. off: the whole deck")
+    s.add_argument("--relevance-min", type=float, default=None,
+                   help="the bar an entry must clear (default %g for Clef, %g otherwise)"
+                        % (D.CLEF_MIN, D.RELEVANCE_MIN))
     sub.add_parser("next", parents=[common], help="what to do now")
     for name in ("prompts", "check"):
         s = sub.add_parser(name, parents=[common])

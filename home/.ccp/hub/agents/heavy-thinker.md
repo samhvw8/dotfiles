@@ -38,7 +38,7 @@ python3 ~/.claude/skills/heavy-think/deck.py deal --members 3 --preset architect
 python3 ~/.claude/skills/heavy-think/deck.py deal --members 3 --preset greenfield --question "<the problem>"                   # ideation: lens + technique
 ```
 
-Always pass `--question`: the deck is fitted to the problem first (Jev when `TYPESAFE_API_KEY` is set, else BM25, else the whole pool at random), so off-topic lenses, techniques and provocations are not dealt.
+Always pass `--question`: the deck is fitted to the problem first (`deck.py` picks the scorer; report any `deck warn:` line), so off-topic lenses, techniques and provocations are not dealt.
 
 Each card is a lens (name, asks, sees), plus a technique (name, how) unless dealt with `--no-technique`. Use techniques for ideation only; for architecture or strategy they make the reasoning gimmicky. When the problem has a stakeholder the deck lacks, add it with `--lenses "operator; DBA on call: What will page me at 3am?"`. Score the top ideas on `~/.claude/skills/heavy-think/references/rubric.md` with the preset's profile (`creative` or `decision`) before ranking.
 
