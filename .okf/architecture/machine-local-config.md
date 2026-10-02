@@ -4,7 +4,7 @@ title: "Machine-local config"
 description: "~/.config/mise/config.local.toml: per-machine values that are never committed."
 tags: [mise, secrets, config]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-10-01T15:30:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-02T03:10:00Z }
 sources:
   - id: setup
     resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
@@ -15,6 +15,9 @@ sources:
   - id: local-config
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/local-config.sh
     title: mise/scripts/local-config.sh
+  - id: cf-ai-token
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/cf-ai-token.sh
+    title: mise/scripts/cf-ai-token.sh
 ---
 
 # What goes there
@@ -49,6 +52,12 @@ because setup.sh runs it before any tool is installed.
 Keep a line commented until it has a value: an empty string still sets the
 variable, and a template such as `{{ exec(command='cat ~/creds/…') }}` makes
 every mise call fail when the file it reads is missing.
+
+An `exec` command must never run a tool through a mise shim: the shim re-enters
+mise, which evaluates the same `[env]` and runs the command again, and every mise
+call hangs. Call tools by their install path, as `mise/scripts/cf-ai-token.sh`
+does for `cf` and node. A slow command (that script refreshes an OAuth login)
+takes `cache_key` and `cache_duration`, so mise runs it at most once per window.
 
 # Caveats
 
