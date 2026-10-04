@@ -10,7 +10,7 @@ for eyes, HID-level CGEvents for hands. For task-specific edits, use
 `agent-workspace/agent_helpers.py`. For setup or permission problems, read
 `install.md`.
 
-Checkout: `~/workspace/phone-harness` — `agent-workspace/`, `install.md`, and
+Checkout: `~/workspace/oss/phone-harness` — `agent-workspace/`, `install.md`, and
 `src/phone_harness/helpers.py` are relative to it. `phone-harness` is on PATH.
 
 ## When Not to Use

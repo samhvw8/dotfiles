@@ -30,5 +30,5 @@ the rules that make it stiff.
 - No fixed dictionary. Use any word a non-native engineer knows.
 - Contractions are fine when they read naturally.
 - Tables, lists, and code blocks are welcome. Structure beats prose.
-- Text written as Sam's own voice (proposals, client emails, PR descriptions) follows the writing-tone guidance first; apply only the sentence-length and clarity rules there.
+- Text written as Sam's own voice (proposals, client emails, PR descriptions) follows `~/.dotfiles/home/.ccp/hub/rules/writing-tone.md` first (read it — it is not auto-loaded); apply only the sentence-length and clarity rules there.
 - Never contort a sentence to pass a rule. If a rule makes the text worse, break the rule.

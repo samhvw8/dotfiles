@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-10-03
+* **Update**: Audited the global Claude instructions. `CLAUDE.md` gained a taste checkpoint (warn before building against the cost table; shared services own mechanism, callers own policy), lost the stale model list, and now points edits at the real files under `home/.ccp/`. Archived three unlinked, superseded hub rules (`cognitive-framework`, `se`, `surgical-changes` → `hub/archive/rules/`; their points live in `CLAUDE.md`'s Working style). Fixed `delegation-protocol` (`Task` → `Agent`), `codegraph` (Claude Code tool name), and the STE Lite output style's pointer to `writing-tone.md`, which is not auto-loaded.
+
 ## 2026-10-02
 * **Update**: [opencode configuration](/tools/opencode.md) — default model is now `opencode-go/glm-5.3`. New dummy plugin `plugins/append-system.ts` appends to the system prompt through the opencode 2 session `context` hook; the concept records that `agent.transform` setting `system` replaces the base prompt instead, and that the background service must restart to load plugin changes. The appended text now lives in `system-append.md`, read on every request, so editing it needs no restart.
 * **Update**: `dot:update` runs `mise install` after `dot:local` and before `ccp bootstrap`, so tools a pull adds to the config get installed without a separate step. It never upgrades; `mise up` stays manual so a failing upgrade is not mixed into a pull. [Dotfile tasks](/tools/dot-tasks.md) and [Change, add and sync dotfiles](/workflows/everyday-changes.md) updated.
