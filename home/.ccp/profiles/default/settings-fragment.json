@@ -22,7 +22,7 @@
       "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
       "### User-specific",
       "**Primary use of Claude Code**: software development (personal/hobby projects on a Max subscription)",
-      "**Trusted repo**: The git repository the agent started in (~/workspace/pindrop) — no remote configured, so it is local-only with no push destination; treat as private for commit scoping. Confidential material is fine to commit here; secrets and sensitive personal/entrusted data are never cleared into any repo by its visibility",
+      "**Trusted repo**: The git repository the agent started in (~/workspace/apps/pindrop) — no remote configured, so it is local-only with no push destination; treat as private for commit scoping. Confidential material is fine to commit here; secrets and sensitive personal/entrusted data are never cleared into any repo by its visibility",
       "**Org-specific CLIs**: Personal tooling, routine in this environment: mise (task runner/version manager — 37x in this project, 209x in shell history), ccp (Claude profile manager, 54x in shell history), codegraph (71x in shell history), chezmoi (dotfile manager, 220x in shell history)"
     ]
   },
