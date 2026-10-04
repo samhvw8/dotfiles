@@ -1,0 +1,5 @@
+name: cost-remind
+type: UserPromptSubmit
+timeout: 5
+command: cost-remind.sh
+interpreter: bash

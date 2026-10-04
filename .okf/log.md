@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-10-04
+* **Update**: Compacted the always-loaded Claude instructions from 14.5 KB to 6.1 KB (`CLAUDE.md` 7.7 → 3.6 KB; `codegraph`, `delegation-protocol` and `documentation` rules 6.8 → 2.5 KB), after a transcript audit of 22 sessions showed that specific, checkable rules held (attribution 186 of 194 commits) while the cost table was applied only when Claude compared its own options. The cost section now says build effort is never a reason, counts per-turn tokens and every copy, knob and caller as running cost, and asks for a `Runs:` line on any plan that adds something; the "need that isn't real yet" phrase, which caused a wrong defer, is gone. Working style adds "a question is not an instruction"; corrections end with a `Source fix:` line. `codegraph.md` lost its omp section (omp keeps its own `RULES.md`). The Tools table drops `context7` and makes the Parallax and codegraph MCP servers the defaults for web and code work. New hub hook `cost-remind` (UserPromptSubmit) adds one sentence per prompt: plans that add anything end with a `Runs:` line, and build effort is never a reason.
+
 ## 2026-10-03
 * **Update**: Audited the global Claude instructions. `CLAUDE.md` gained a taste checkpoint (warn before building against the cost table; shared services own mechanism, callers own policy), lost the stale model list, and now points edits at the real files under `home/.ccp/`. Archived three unlinked, superseded hub rules (`cognitive-framework`, `se`, `surgical-changes` → `hub/archive/rules/`; their points live in `CLAUDE.md`'s Working style). Fixed `delegation-protocol` (`Task` → `Agent`), `codegraph` (Claude Code tool name), and the STE Lite output style's pointer to `writing-tone.md`, which is not auto-loaded.
 

@@ -6,6 +6,6 @@ created = 2026-02-02T22:25:02.966428+07:00
 [hub]
 skills = ['bento-slides', 'browser-history', 'ccp', 'code-quality', 'council', 'debate', 'deep-gather', 'frontend-audit', 'frontend-design', 'git-workflow', 'github-search', 'heavy-think', 'impeccable', 'lead-researcher', 'mise-expert', 'phone-harness', 'prompt-architect', 'okf', 'validate', 'backfill', 'browser-skill', 'huashu-design', 'typesafe-ai', 'cua-driver', 'arena', 'gui-automation', 'logo-design']
 agents = ['cto-advisor.md', 'gatherer.md', 'heavy-thinker.md']
-hooks = ['codegraph-remind', 'okf-docs', 'okf-stop']
+hooks = ['codegraph-remind', 'okf-docs', 'okf-stop', 'cost-remind']
 rules = ['codegraph.md', 'delegation-protocol.md', 'documentation.md']
 bundles = ['impeccable']
