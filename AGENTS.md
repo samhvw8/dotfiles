@@ -53,6 +53,7 @@ mise run dot:check         # unlinked files, unsaved ccp hub items
 mise run dot:local         # scaffold config.local.toml, list keys still to fill in
 mise run dot:save          # commit everything with an "Update <file>" message (never pushes)
 mise run dot:pull          # pull main from origin, rebasing local commits
+mise run dot:push          # dot:check, dot:pull, then push main to origin
 mise run dot:cd            # open a shell in ~/.dotfiles
 mise run dot:status        # unapplied dotfiles + uncommitted changes (like chezmoi status)
 mise run dot:diff          # git diff HEAD + mise dot diff

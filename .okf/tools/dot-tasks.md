@@ -16,6 +16,9 @@ sources:
   - id: pull
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/dot-pull.sh
     title: dot-pull.sh
+  - id: push
+    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/dot-push.sh
+    title: dot-push.sh
   - id: rm
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/dot-rm.py
     title: dot-rm.py
@@ -38,6 +41,7 @@ Defined in `mise/conf.d/dotfiles.toml`, so they run from any directory.[^conf]
 |------|------|
 | `mise run dot:save` | Runs `dot:check`, `git add -A`, commits with a chezmoi-style message (`Update .zshrc Add …`); never pushes[^save] |
 | `mise run dot:pull` | Pulls `main` from origin. On `main` it rebases local `dot:save` commits on top and autostashes uncommitted edits; on any other branch it fast-forwards `main` without switching, and refuses a non-fast-forward[^pull] |
+| `mise run dot:push` | Runs `dot:check` and `dot:pull`, lists the commits not yet on origin, then pushes `main`. Uncommitted edits stay local; it says so and points at `dot:save`[^push] |
 | `mise run dot:cd` | Starts `$SHELL` in `~/.dotfiles`; `exit` returns to the previous shell. A task runs in a child process and cannot change the calling shell's directory, so it opens a nested shell instead[^conf] |
 | `mise run dot:add <path>…` | Moves each path from `~` into `home/`, `git add`s it, runs `mise dot apply`, then `dot:check`[^add] |
 | `mise run dot:status` | Lists dotfiles whose `mise dot status` state is not `applied`, then `git status --short`; prints nothing when both are clean[^status] |
@@ -94,6 +98,7 @@ Related: [everyday changes](/workflows/everyday-changes.md),
 [^conf]: Shared dotfiles config
 [^save]: dot-save.sh
 [^pull]: dot-pull.sh
+[^push]: dot-push.sh
 [^rm]: dot-rm.py
 [^status]: dot-status.py
 [^add]: dot-add.sh

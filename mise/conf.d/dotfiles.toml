@@ -82,6 +82,11 @@ run = "bash $HOME/.dotfiles/mise/scripts/dot-save.sh"
 description = "Pull the latest main from origin, rebasing local commits on top"
 run = "bash $HOME/.dotfiles/mise/scripts/dot-pull.sh"
 
+[tasks."dot:push"]
+description = "Check, pull with rebase, then push main to origin"
+tools = { python = "3.11" }
+run = "bash $HOME/.dotfiles/mise/scripts/dot-push.sh"
+
 [tasks."dot:cd"]
 description = "Open a shell in ~/.dotfiles; exit returns to where you were"
 dir = "{{env.HOME}}/.dotfiles"
