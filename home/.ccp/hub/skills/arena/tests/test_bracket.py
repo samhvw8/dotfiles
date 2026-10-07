@@ -31,7 +31,7 @@ EM_DASH, EN_DASH = chr(0x2014), chr(0x2013)   # spelled as code points so this f
 
 # Never call Jev or Clef from tests: no keys, and no `cf` CLI on the PATH of a subprocess.
 OFFLINE = {k: v for k, v in os.environ.items()
-           if k not in ("TYPESAFE_API_KEY", "CLOUDFLARE_AI_TOKEN", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID")}
+           if k not in ("TYPESAFE_API_KEY", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID")}
 OFFLINE["PATH"] = os.path.dirname(sys.executable)
 B.cloudflare_auth = lambda: None   # in-process: tests that want Clef stub it themselves
 

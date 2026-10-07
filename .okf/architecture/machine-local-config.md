@@ -4,7 +4,7 @@ title: "Machine-local config"
 description: "~/.config/mise/config.local.toml: per-machine values that are never committed."
 tags: [mise, secrets, config]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-10-02T03:10:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-07T09:55:00Z }
 sources:
   - id: setup
     resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
@@ -15,9 +15,6 @@ sources:
   - id: local-config
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/local-config.sh
     title: mise/scripts/local-config.sh
-  - id: cf-ai-token
-    resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/cf-ai-token.sh
-    title: mise/scripts/cf-ai-token.sh
 ---
 
 # What goes there
@@ -55,9 +52,15 @@ every mise call fail when the file it reads is missing.
 
 An `exec` command must never run a tool through a mise shim: the shim re-enters
 mise, which evaluates the same `[env]` and runs the command again, and every mise
-call hangs. Call tools by their install path, as `mise/scripts/cf-ai-token.sh`
-does for `cf` and node. A slow command (that script refreshes an OAuth login)
-takes `cache_key` and `cache_duration`, so mise runs it at most once per window.
+call hangs. Call tools by their install path.
+
+Keep `exec` commands fast, or keep the value out of `[env]`. mise runs `[env]`
+on every shell start and every prompt (`hook-env`), so each cache miss of a slow
+command stalls the terminal. A short-lived credential belongs with the tool that
+uses it, fetched when that tool runs. Example: arena and heavy-think get a
+Cloudflare token from `cf auth whoami` themselves, so only `CLOUDFLARE_ACCOUNT_ID`
+is set here. Never set `CLOUDFLARE_API_TOKEN` here: it would override wrangler
+and cf auth everywhere.
 
 # Caveats
 

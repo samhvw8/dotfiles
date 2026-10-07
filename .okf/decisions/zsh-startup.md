@@ -44,6 +44,7 @@ usage_window: { from: 2026-01-10, to: 2026-09-24 }
 * **GitHub token**: `credential_command = "gh auth token"` in `mise/config.toml`;[^full] runs only when mise calls the GitHub API, never at shell start.
 * **Cached init**: `_cached_init` sources starship, fzf, atuin and zoxide init scripts from `~/.cache/zsh/init/`, rebuilt when the tool's resolved binary or the arguments change.[^zshrc]
 * **mise activation is neither deferred nor cached.** Deferring is unsafe (the first command may run with wrong versions).[^zsh-bench] Caching `mise activate zsh` output is also unsafe: it embeds the current `$PATH` literally, so one terminal's PATH would leak into every shell. Shims-only mode would lose per-directory `[env]`. It costs ~14ms once; its per-prompt hook is ~0.1ms when nothing changed.
+* **No slow `exec` in mise `[env]`.** mise evaluates `[env]` at every start and prompt. A `CLOUDFLARE_AI_TOKEN` from `cf auth whoami` (0.8–2.3s) with a 5-minute `cache_duration` made one start or prompt in each 5 minutes take 1–1.4s instead of ~0.22s (2026-10-07, traced with timestamped `zsh -x`). The token was removed; its two users fetch it on demand ([machine-local config](/architecture/machine-local-config.md)).
 * **History**: `SAVEHIST=50000` to match `HISTSIZE`.
 * **atuin** owns Ctrl-R (SQLite history); fzf keeps Ctrl-T/Alt-C. Autosuggestions still read zsh history in-process (same data, no fork).
 

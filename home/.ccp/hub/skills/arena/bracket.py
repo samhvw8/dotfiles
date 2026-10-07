@@ -30,7 +30,7 @@ named in .arena/LATEST is used.
 Card relevance: init deals only from the reasoning modes, workflows and strategies that fit
 the task: one yes/no question per entry. Clef (Cloudflare Workers AI, free daily allocation)
 asks them when Cloudflare credentials are found: the `cf` CLI's login, else
-CLOUDFLARE_AI_TOKEN (or CLOUDFLARE_API_TOKEN) and CLOUDFLARE_ACCOUNT_ID. If Clef is unavailable
+CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID. If Clef is unavailable
 or fails, Jev (TypeSafe) asks them when TYPESAFE_API_KEY is set. If neither works, BM25 ranks the entries by the
 words they share with the task. A list where too few entries clear the bar is dealt from in
 full, at random, and so is the whole deck when the survivors cannot make N distinct cards.
@@ -352,8 +352,8 @@ def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL):
 
 def cloudflare_auth():
     """(token, account id) for Workers AI, or None. The `cf` CLI's OAuth login comes first: `cf auth
-    whoami` refreshes it when it has expired, so it is never stale. Without it, CLOUDFLARE_AI_TOKEN
-    (or CLOUDFLARE_API_TOKEN) and CLOUDFLARE_ACCOUNT_ID. Logs why each source was not usable."""
+    whoami` refreshes it when it has expired, so it is never stale. Without it, CLOUDFLARE_API_TOKEN
+    and CLOUDFLARE_ACCOUNT_ID. Logs why each source was not usable."""
     account = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
     cf = shutil.which("cf")
     why = "the cf CLI is not on PATH"
@@ -373,11 +373,11 @@ def cloudflare_auth():
             why = "cf auth whoami timed out after 30s"
         except (OSError, ValueError, AttributeError, subprocess.SubprocessError) as e:
             why = "cf auth whoami failed: %s: %s" % (type(e).__name__, str(e)[:200])
-    token = (os.environ.get("CLOUDFLARE_AI_TOKEN", "") or os.environ.get("CLOUDFLARE_API_TOKEN", "")).strip()
+    token = os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
     if token and account:
         log("info", "cloudflare.auth", "using the token from the environment (%s)" % why)
         return token, account
-    log("info", "cloudflare.auth", "no Cloudflare credentials: %s, and no CLOUDFLARE_AI_TOKEN + "
+    log("info", "cloudflare.auth", "no Cloudflare credentials: %s, and no CLOUDFLARE_API_TOKEN + "
         "CLOUDFLARE_ACCOUNT_ID" % why)
     return None
 
@@ -488,7 +488,7 @@ def fit_deck(task, data, n, mode="auto", key=None, minimum=RELEVANCE_MIN, ask=No
     scores, skipped = None, []
     for method, name, cred, asker, missing in (
             ("clef", "Clef", cf_auth, ask_cf or ask_clef, "no Cloudflare login (cf auth login, or "
-                                                          "CLOUDFLARE_AI_TOKEN + CLOUDFLARE_ACCOUNT_ID)"),
+                                                          "CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID)"),
             ("jev", "Jev", key, ask or ask_jev, "TYPESAFE_API_KEY is not set")):
         if mode not in ("auto", method):
             continue

@@ -29,7 +29,6 @@
 # TYPESAFE_API_KEY = "{{ exec(command='cat ~/creds/typesafe-jev-api') }}"
 
 # --- Cloudflare Workers AI: Clef, arena's first card-relevance scorer (free 10k neurons/day).
-# The token mirrors the `cf` CLI's OAuth login; uncomment only after `cf auth login`.
-# Not CLOUDFLARE_API_TOKEN: that name would override wrangler/cf auth everywhere.
+# No token here: arena and heavy-think get one on demand from `cf auth whoami` (run `cf auth login` once).
+# Never set CLOUDFLARE_API_TOKEN here: it would override wrangler/cf auth everywhere.
 # CLOUDFLARE_ACCOUNT_ID = ""
-# CLOUDFLARE_AI_TOKEN = "{{ exec(command='~/.dotfiles/mise/scripts/cf-ai-token.sh', cache_key='cf-ai-token', cache_duration='5m') }}"

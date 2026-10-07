@@ -17,7 +17,7 @@ Used by heavy-think (Brainstorm, Perspectives, Unstick, Decompose), the heavy-th
 Pass the problem with --question (or --question-file) and the deck is fitted to it first:
 lenses, techniques and provocations (deal), or reframes and decompositions (their listings),
 keep only the entries that fit, one yes/no question per entry. Clef (Cloudflare Workers AI,
-free daily allocation) asks them when the `cf` CLI is logged in, or CLOUDFLARE_AI_TOKEN and
+free daily allocation) asks them when the `cf` CLI is logged in, or CLOUDFLARE_API_TOKEN and
 CLOUDFLARE_ACCOUNT_ID are set. If Clef is unavailable or fails, Jev (TypeSafe) asks them when
 TYPESAFE_API_KEY is set. Otherwise BM25 ranks entries by the words they share with the question.
 A scorer that fails prints a "deck warn:" line on stderr. A pool with too few fitting entries
@@ -305,7 +305,7 @@ def ask_jev(state, questions, key, url=JEV_URL, model=JEV_MODEL):
 
 def cloudflare_auth():
     """(token, account id) for Workers AI, or None. The `cf` CLI's OAuth login comes first (`cf auth
-    whoami` refreshes it when expired); else CLOUDFLARE_AI_TOKEN (or CLOUDFLARE_API_TOKEN) and
+    whoami` refreshes it when expired); else CLOUDFLARE_API_TOKEN and
     CLOUDFLARE_ACCOUNT_ID. Returns None quietly: having no login is not a fault."""
     account = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
     cf = shutil.which("cf")
@@ -323,7 +323,7 @@ def cloudflare_auth():
             warn("cf auth whoami timed out after 30s, skipping Clef")
         except (OSError, ValueError, AttributeError, subprocess.SubprocessError) as e:
             warn("cf auth whoami failed (%s: %s), skipping Clef" % (type(e).__name__, str(e)[:200]))
-    token = (os.environ.get("CLOUDFLARE_AI_TOKEN", "") or os.environ.get("CLOUDFLARE_API_TOKEN", "")).strip()
+    token = os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
     return (token, account) if token and account else None
 
 
@@ -410,7 +410,7 @@ def score_pools(question, pools, mode="auto", key=None, ask=None, cf_auth=None, 
     scores, skipped = None, []
     for method, name, cred, asker, missing in (
             ("clef", "Clef", cf_auth, ask_cf or ask_clef,
-             "no Cloudflare login (cf auth login, or CLOUDFLARE_AI_TOKEN + CLOUDFLARE_ACCOUNT_ID)"),
+             "no Cloudflare login (cf auth login, or CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID)"),
             ("jev", "Jev", key, ask or ask_jev, "TYPESAFE_API_KEY is not set")):
         if mode not in ("auto", method):
             continue
