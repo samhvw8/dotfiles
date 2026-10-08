@@ -32,7 +32,7 @@ it is safe to re-run.[^mise-bootstrap]
 | 4 | repos | `~/.tmux/plugins/tpm` on full installs[^full] |
 | 5 | dotfiles | Links and managed blocks ([linking model](/architecture/linking-model.md)) |
 | 6 | tools | Everything in `[tools]` |
-| 7 | post-tools hook (full) | `setup-ccp.sh` (creates `~/.claude` only if missing), `setup-claude-mcp.sh` (adds MCP servers found missing with `claude mcp get`), `setup-font-linux.sh` |
+| 7 | post-tools hook (full) | `setup-ccp.sh` (creates `~/.claude` only if missing), `setup-claude-mcp.sh` (adds MCP servers found missing with `claude mcp get`), `setup-claude-trust.sh` (sets `projects[$HOME].hasTrustDialogAccepted` in `~/.claude.json`, because Claude Code never saves trust for the home folder), `setup-font-linux.sh` |
 
 # Notes
 

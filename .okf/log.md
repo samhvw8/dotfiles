@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-10-08
+* **Update**: New post-tools hook `setup-claude-trust.sh` sets `projects[$HOME].hasTrustDialogAccepted: true` in `~/.claude.json`. Claude Code 2.1.292 keeps trust for the home folder for one session only, so every agent-team teammate started in `~` (an iTerm2 split pane runs `cd ~ && claude ...`) showed the trust dialog. The trust check still reads the saved key, so setting it by hand removes the dialog. Non-git folders under `~` inherit that trust; a git repo stops the parent walk at its own root, so cloned repos still ask. The script writes through `mktemp` in the same folder, so the file keeps mode 0600 (it holds the auth token) and is replaced atomically. [Bootstrap flow](/architecture/bootstrap-flow.md) updated.
+
 ## 2026-10-07
 * **Update**: Removed `CLOUDFLARE_AI_TOKEN` and `mise/scripts/cf-ai-token.sh`. The token was an `exec` in `[env]` with a 5-minute cache, and `cf auth whoami` takes 0.8–2.3s, so one shell start or prompt in every 5 minutes stalled for 1–1.4s (normal start ~0.22s). Nothing used it: arena's `bracket.py` and heavy-think's `deck.py` call `cf auth whoami` first and read the env only as a fallback. Their fallback is now `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`, set per tool, never in `[env]`. [Machine-local config](/architecture/machine-local-config.md) and [zsh startup choices](/decisions/zsh-startup.md) updated. Tests: arena 57, heavy-think 10, all pass.
 

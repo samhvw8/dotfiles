@@ -86,6 +86,7 @@ post-tools = [
     # [dotfiles] entry; this only creates it when missing.
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-ccp.sh",
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-mcp.sh",
+    "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-trust.sh",
     "bash $HOME/.dotfiles/mise/scripts/setup-font-linux.sh",
 ]
 
