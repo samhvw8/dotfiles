@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-10-08
+* **Update**: New `dot:up` task: `mise self-update --yes`, `mise up`, `ccp source update`, `ccp hub update --all`, `dot:check`. Shell history showed `mise self-update && mise up` as the most-typed command (~430 runs since January), with the two ccp updates run by hand beside it. `dot:update` stays "match the repo, never upgrade". [Dotfile tasks](/tools/dot-tasks.md) updated.
 * **Update**: New post-tools hook `setup-claude-trust.sh` sets `projects[$HOME].hasTrustDialogAccepted: true` in `~/.claude.json`. Claude Code 2.1.292 keeps trust for the home folder for one session only, so every agent-team teammate started in `~` (an iTerm2 split pane runs `cd ~ && claude ...`) showed the trust dialog. The trust check still reads the saved key, so setting it by hand removes the dialog. Non-git folders under `~` inherit that trust; a git repo stops the parent walk at its own root, so cloned repos still ask. The script writes through `mktemp` in the same folder, so the file keeps mode 0600 (it holds the auth token) and is replaced atomically. [Bootstrap flow](/architecture/bootstrap-flow.md) updated.
 
 ## 2026-10-07

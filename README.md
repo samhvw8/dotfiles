@@ -95,6 +95,7 @@ mise run dot:cd            # open a shell in ~/.dotfiles (exit to return)
 mise run dot:status        # unapplied dotfiles and uncommitted changes
 mise run dot:diff          # uncommitted changes and dotfiles waiting to be applied
 mise run dot:update        # dot:pull, link new dotfiles, install new tools
+mise run dot:up            # upgrade mise, its tools, ccp sources and hub items
 mise run dot:rm <path>     # stop managing a path; ~ keeps a real copy
 mise run dot:destroy <path> # delete a path from ~ and the repository
 mise run dot:add <path>    # store a file or directory from ~ and link it

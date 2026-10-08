@@ -134,6 +134,18 @@ run = [
   "python3 $HOME/.dotfiles/mise/scripts/dot-check.py",
 ]
 
+[tasks."dot:up"]
+description = "Upgrade mise itself, every mise tool within its pin, ccp sources and GitHub-installed hub items, then check the result"
+tools = { python = "3.11" }
+run = [
+  "mise self-update --yes",
+  "mise up",
+  # Sources first, so hub items read the newest source checkouts. Both are needed:
+  # sources and GitHub-installed hub items update separately.
+  "if command -v ccp >/dev/null; then ccp source update && ccp hub update --all; else echo 'ccp not installed; skipped ccp updates'; fi",
+  "python3 $HOME/.dotfiles/mise/scripts/dot-check.py",
+]
+
 [tasks."dot:local"]
 description = "Scaffold ~/.config/mise/config.local.toml from the template, add missing keys, list what to fill in"
 run = "bash $HOME/.dotfiles/mise/scripts/local-config.sh"
