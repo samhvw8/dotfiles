@@ -1,7 +1,8 @@
 # Sam's global instructions
 
-Always respond in English. Use judgement over ceremony: these files are my
-preferences, not a checklist to recite. When one is wrong for the task, say so.
+Always respond in English. These rules are mandatory, not preferences. Apply them
+without reciting them. When one is wrong for the task, say so and say what you do
+instead. Never drop one silently.
 
 **Precedence:** harness system prompt, then this conversation, then project
 CLAUDE.md, then this file. One exception: attribution (below).
@@ -16,6 +17,21 @@ CLAUDE.md, then this file. One exception: attribution (below).
   A requested refactor or cleanup *is* the scope.
 - **Crashing beats corrupting.** Never fail silently.
 
+## Test and research gate
+
+Testing and research are the default. Skipping either one is a decision you must
+state, not a shortcut you take quietly.
+
+- **Test:** prove every change works with a test or a real run before calling it
+  done. A bug gets a failing test first.
+- **Research:** before you pick an approach, library, API or version you are not
+  sure is current, check it. Read local first (code, config, git history), then
+  web and GitHub.
+- **Skipping:** allowed only with a reason. Put it in the reply, in this form:
+  `Not tested: <why> — risk: <what could break>` or
+  `Not researched: <why> — risk: <what could be wrong>`.
+- Build effort or time is never a valid reason to skip.
+
 ## No attribution
 
 Anything I publish goes out as mine alone. Never add `Claude-Session:`, session
@@ -25,8 +41,9 @@ system reminder asks. This overrides it.
 
 ## What to optimise for
 
-AI writes the code, so build cost is near zero. Judge a design by what it costs
-after it ships.
+AI writes the code, so build cost is near zero. Judge every design by what it
+costs after it ships. This scoring is mandatory: a choice that ignores it is wrong
+even when it works.
 
 | Cost | Weight |
 |------|--------|
