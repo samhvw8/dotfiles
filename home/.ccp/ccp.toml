@@ -16,8 +16,8 @@ provider = 'git'
 url = 'https://github.com/Leonxlnx/taste-skill.git'
 path = 'sources/Leonxlnx--taste-skill'
 ref = 'main'
-commit = 'ce26fc25c0e5e8cab638f883de62d9a86ee5e45b'
-updated = 2026-10-01T07:27:01.862989+07:00
+commit = 'b482f7a970abb98c4108d4a9f761e458c64cefc8'
+updated = 2026-10-08T19:55:53.466088+07:00
 installed = ['skills/brandkit', 'skills/brutalist-skill', 'skills/gpt-tasteskill', 'skills/image-to-code-skill', 'skills/imagegen-frontend-mobile', 'skills/imagegen-frontend-web', 'skills/minimalist-skill', 'skills/output-skill', 'skills/redesign-skill', 'skills/soft-skill', 'skills/stitch-skill', 'skills/taste-skill', 'skills/taste-skill-v1']
 
 [sources.'alchaincyf/huashu-design']
@@ -36,8 +36,8 @@ provider = 'git'
 url = 'https://github.com/anthropics/skills.git'
 path = 'sources/anthropics--skills'
 ref = 'main'
-commit = '8a1541c4a3ffa5a20a5a91de0dcf3f0bab1d1ef4'
-updated = 2026-10-01T07:27:15.515001+07:00
+commit = '683bc88e56f3e09ba94f7055977f3d3aa499f202'
+updated = 2026-10-08T19:55:50.363751+07:00
 installed = ['skills/frontend-design']
 
 [sources.'ast-grep/agent-skill']
@@ -84,8 +84,8 @@ provider = 'git'
 url = 'https://github.com/heygen-com/hyperframes.git'
 path = 'sources/heygen-com--hyperframes'
 ref = 'main'
-commit = '097250e11c0d891e201399016f79c484043aa800'
-updated = 2026-10-01T07:27:26.348361+07:00
+commit = '188475aaf2cc94d05a5a641341cab3020c131f16'
+updated = 2026-10-08T19:55:57.609207+07:00
 installed = ['skills/embedded-captions', 'skills/faceless-explainer', 'skills/general-video', 'skills/graphic-overlays', 'skills/hyperframes', 'skills/hyperframes-animation', 'skills/hyperframes-cli', 'skills/hyperframes-core', 'skills/hyperframes-creative', 'skills/hyperframes-media', 'skills/hyperframes-registry', 'skills/motion-graphics', 'skills/pr-to-video', 'skills/product-launch-video', 'skills/remotion-to-hyperframes', 'skills/slideshow', 'skills/website-to-video']
 
 [sources.'intellectronica/agent-skills']
@@ -108,14 +108,24 @@ commit = '0ecf52e9a4b3ac92b714f7cc6e3148ab8c774134'
 updated = 2026-10-02T21:20:26.69823+07:00
 installed = ['skills/logo-design']
 
+[sources.'morluto/rea']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/morluto/rea.git'
+path = 'sources/morluto--rea'
+ref = 'main'
+commit = '6a7650e93cba9169baad95d2c52b11351ae39d0e'
+updated = 2026-10-08T19:55:33.704315+07:00
+installed = ['skills/reverse-engineer-anything']
+
 [sources.'nextlevelbuilder/ui-ux-pro-max-skill']
 registry = 'github'
 provider = 'git'
 url = 'https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git'
 path = 'sources/nextlevelbuilder--ui-ux-pro-max-skill'
 ref = 'main'
-commit = '09170eec67eefd46a7ae85de61b40c194020f997'
-updated = 2026-10-01T07:26:57.618899+07:00
+commit = '1a2c459b35f26116fd165b0a0f30597f252749ff'
+updated = 2026-10-08T19:55:31.09626+07:00
 installed = ['skills/ui-ux-pro-max']
 
 [sources.'nyblnet/bento']
@@ -123,8 +133,8 @@ registry = 'manual'
 provider = 'git'
 url = 'https://github.com/nyblnet/bento'
 path = 'sources/nyblnet--bento'
-commit = '3a26dba7ee53d047b92602efd2c1d83bf443f611'
-updated = 2026-10-01T07:27:07.886982+07:00
+commit = '1f231605f04e877c0e7c8ac9fd7c36d6084819a4'
+updated = 2026-10-08T19:55:39.625389+07:00
 installed = ['skills/bento-slides']
 
 [sources.'pbakaus/impeccable']
@@ -133,8 +143,8 @@ provider = 'git'
 url = 'https://github.com/pbakaus/impeccable.git'
 path = 'sources/pbakaus--impeccable'
 ref = 'main'
-commit = 'c74755d920985f7a92cef691ca970ba95f90126e'
-updated = 2026-10-01T07:26:54.958237+07:00
+commit = '778c8a7b71ccd5bfe3ca6ac68c15d9d872d0f87d'
+updated = 2026-10-08T19:55:23.755894+07:00
 installed = ['skills/impeccable', 'agents/impeccable-manual-edit-applier.md']
 
 [sources.'remorses/playwriter@main']
@@ -143,8 +153,8 @@ provider = 'git'
 url = 'https://github.com/remorses/playwriter.git'
 path = 'sources/remorses--playwriter@main'
 ref = 'main'
-commit = '33d5c5a2c5ebf702e387d94d609e038c98e0acec'
-updated = 2026-10-01T07:27:12.55409+07:00
+commit = '525732a474a14224d46469c2b85737dbcdc23e07'
+updated = 2026-10-08T19:55:28.265046+07:00
 
 [sources.'samhvw8/claude-code-profile']
 registry = 'github'
@@ -152,8 +162,8 @@ provider = 'git'
 url = 'https://github.com/samhvw8/claude-code-profile.git'
 path = 'sources/samhvw8--claude-code-profile'
 ref = 'main'
-commit = '3a8b946c5463ec8bccbe278ff3646739da7fa5df'
-updated = 2026-10-01T07:27:30.57188+07:00
+commit = '3846bdfc263d7b56b18ec3a26c31bd05ee5cda41'
+updated = 2026-10-08T19:55:52.262364+07:00
 installed = ['skills/ccp']
 
 [sources.'scaccogatto/okf-skills']
@@ -172,8 +182,8 @@ provider = 'git'
 url = 'https://github.com/trycua/cua.git'
 path = 'sources/trycua--cua'
 ref = 'main'
-commit = '9545a3d17b44b587b593d59090dc140740876a6e'
-updated = 2026-10-01T07:27:10.708581+07:00
+commit = '2e4736b3ebff61ef99e8c0c74270b5cd75894643'
+updated = 2026-10-08T19:55:47.715814+07:00
 installed = ['skills/gui-automation']
 
 [sources.'tw93/waza']
@@ -182,8 +192,8 @@ provider = 'git'
 url = 'https://github.com/tw93/Waza.git'
 path = 'sources/tw93--waza'
 ref = 'main'
-commit = 'c3b74dd5845b39a80a79c36bb82b028947674a05'
-updated = 2026-10-01T07:27:27.813479+07:00
+commit = '6b6c736561eaf24c4d1c5360c3c90767ab470805'
+updated = 2026-10-08T19:55:25.246146+07:00
 installed = ['skills/think']
 
 [sources.'typesafe-ai/skills']
@@ -221,5 +231,5 @@ provider = 'git'
 url = 'https://github.com/wshobson/agents.git'
 path = 'sources/wshobson--agents'
 ref = 'main'
-commit = '156b7a5e7a8b93642628a339ee4039c925b34c7f'
-updated = 2026-10-01T07:27:05.18683+07:00
+commit = '46891e7e60da0e52baf1050b7b6391b64e84c6d9'
+updated = 2026-10-08T19:55:37.382895+07:00

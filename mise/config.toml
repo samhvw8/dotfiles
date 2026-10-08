@@ -62,6 +62,7 @@ gh = "latest"
 "pipx:cua-cli" = { version = "latest", uvx_args = "--python 3.13" }
 mr-boxington = "latest"
 ninja = "latest"
+"github:justrach/nanobrew" = "0.1.212"
 
 # Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
 [dotfiles]
