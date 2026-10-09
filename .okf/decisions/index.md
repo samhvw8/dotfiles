@@ -4,3 +4,4 @@
 * [ccp owns ~/.claude](ccp-owns-claude-link.md) - Why ~/.claude is not a mise [dotfiles] entry and is only created by ccp when missing.
 * [Per-directory link entries](per-directory-link-entries.md) - Why home/ is linked with one entry per directory plus explicit top-level files.
 * [zsh startup choices](zsh-startup.md) - Measured choices that bring a new zsh to about 0.18s: usage-driven plugin removal, patched forks, cached init and completions.
+* [Subagent model tiering](subagent-model-tiering.md) - Which subagent jobs run on Haiku 5.5, Sonnet 5.5 or Opus 5.5; draft, tracks the gatherer A/B and rollout.

@@ -11,7 +11,7 @@ Single-responsibility units. Side tag: **G** = gather (mechanical), **R** = reas
 | 3 | Decomposer | Split a topic into atomic (topic × language) gather-tasks | topic → tasks | R |
 | 4 | Task Queue | Hold pending gather-tasks with priority | tasks → next batch | C |
 | 5 | Admission Controller | Gate whether a candidate expansion may spawn (the control rod) | candidate → admit/reject | C |
-| 6 | Gather Worker | Run search-fetch loop for ONE task (model: sonnet) | task → findings | G |
+| 6 | Gather Worker | Run search-fetch loop for ONE task (squad: sonnet lead + 3 capped haiku slices; gather-squad.md) | task → findings | G |
 | 7 | Retrieval Toolbelt | Actual web/gh/MCP/crawl fetch inside a worker | query → raw | G |
 | 8 | Finding Normalizer | Raw output → canonical Finding {claim, evidence, url, tier, topic} | raw → Finding[] | G |
 | 9 | Streaming Verifier | Per-finding hygiene as each lands, no barrier (model: sonnet) | Finding → verdict | G |

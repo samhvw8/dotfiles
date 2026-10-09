@@ -52,7 +52,7 @@ A **hypothesis-driven** loop, not a fixed decompose → fan-out → merge. State
 ```
 seed STATE = { hypotheses, topics, knowledge }   (+ Phase-0 budget ceiling)
 while ( !check.stop  &&  gatherBudgetRemaining() > 0 ):
-  GATHER DATA  deep-gather from internet — parallel gatherer agents (topic × language × source)  [sonnet]
+  GATHER DATA  deep-gather from internet — parallel gatherer agents (topic × language × source)  [each assignment = squad: sonnet lead + 3 capped haiku slices]
                + stream per-finding verify (no barrier) + CRITIC refute
   REASONING    brain weighs new data vs each hypothesis: support / refute / new insight           [opus — forager brain]
   EXPAND       grow STATE — add/refine hypotheses, add topics, accumulate knowledge        (admission-controlled: control rod)
@@ -113,10 +113,12 @@ The menu of source types to pick from (with how to query each): [source-types](r
 
 | Agent Role | Model | Why |
 |-----------|-------|-----|
-| Gatherer (search-fetch) | `sonnet` | Mechanical retrieval — Opus is overkill, wastes budget |
+| Gatherer squad, every language (search-fetch) | `sonnet` lead (whole assignment, no cap) + 3 `haiku` slices at `effort: 'high'` (code 20 calls, social 15, docs 15) + a `haiku` opener (10 calls) | Goal: miss nothing, fast. Slices add about half of all gems; the opener reads the leads they listed but never opened |
 | Cross-checker | `sonnet` | Comparison task, not deep reasoning |
 | REASONING brain (per iteration) | `opus` | Weighs findings against hypotheses and owns the exit |
 | Synthesizer | `opus` | Needs deep reasoning to merge N reports into coherent analysis |
+
+Run every gatherer assignment as a squad: see [gather-squad](references/gather-squad.md) for members, slice prompts and merge rules. Never drop the Sonnet lead for a non-English language: Haiku drifts to English and content-farm sources there. Evidence: `~/workspace/knowledge/topics/ai-agents/small-models-as-subagent-workers.md`.
 
 Without tiering, all agents inherit the parent model (usually Opus), consuming ~5x budget before synthesis. This is the #1 cause of incomplete research reports — the synthesis agent never runs.
 
@@ -150,12 +152,22 @@ const ELITE_FORUMS = {
   'ZH-TW': 'PTT (Soft_Job, Programmer boards), iThome 鐵人賽 (ithelp.ithome.com.tw)',
   RU: 'Habr, ODS.AI, linux.org.ru, SQL.ru'
 }
+const SQUAD = [   // references/gather-squad.md
+  { role: 'lead',   model: 'sonnet', slice: null },
+  { role: 'code',   model: 'haiku', effort: 'high', calls: 20, reserve: 5, slice: 'GitHub issues/discussions and X only' },
+  { role: 'social', model: 'haiku', effort: 'high', calls: 15, slice: 'Reddit and social platforms for the language; one Reddit call at a time' },
+  { role: 'docs',   model: 'haiku', effort: 'high', calls: 15, slice: 'official docs, changelogs, vendor blogs, tech media' },
+]
+// exact slice/opener prompt lines: references/gather-squad.md
+const sliceRule = m => m.slice ? `\nYOUR SLICE: ${m.slice}. Other agents cover the rest.\nHARD BUDGET: at most ${m.calls} tool calls in total, then stop and report.${m.reserve ? `\nReserve the last ${m.reserve} calls: stop searching and open the best issues you saw but did not open.` : ''}\nAt the end add UNOPENED LEADS: up to 10 URLs you saw but did not open.` : ''
+// after the three slices return: one opener agent (haiku, effort high, 10 calls) on the union of their UNOPENED LEADS
 
-agent(`...
+const prompt = `...
 Source stack (user-confirmed in Phase 1): ${SOURCE_STACK}
 Elite forums for ${lang.code}: ${ELITE_FORUMS[lang.code]}
 Use site: targeting for at least 2 of these forums.
-...`, { model: 'sonnet', agentType: 'gatherer' })
+...`
+SQUAD.map(m => agent(prompt + sliceRule(m), { model: m.model, effort: m.effort, agentType: 'gatherer', label: `${task}:${lang.code}:${m.role}` }))
 ```
 
 ### Structured Output Schema (RECOMMENDED for workflows)
@@ -177,7 +189,7 @@ const RESEARCH_SCHEMA = {
     unresolved: { type: 'array', items: { type: 'string' } }
   }
 }
-agent(prompt, { schema: RESEARCH_SCHEMA, model: 'sonnet' })
+SQUAD.map(m => agent(prompt + sliceRule(m), { schema: RESEARCH_SCHEMA, model: m.model, effort: m.effort }))
 ```
 
 ### How to trigger the workflow
@@ -196,7 +208,7 @@ Run a workflow as an ADAPTIVE ITERATE LOOP to research [topic]:
 Seed STATE = { hypotheses [list], topics [list], knowledge [] }; languages [list]; CEILING = [value].
 
 Each iteration:
-  GATHER DATA — parallel gatherer agents (1 topic + 1 language each), model sonnet, using deep-gather
+  GATHER DATA — parallel gatherer agents (1 topic + 1 language each), each assignment run as a squad (sonnet lead + 3 haiku slices capped at 15 tool calls; references/gather-squad.md), using deep-gather
                 + stream per-finding verify (no barrier); CRITIC refutes load-bearing claims
   REASONING   — ONE opus sub-agent reads the STATE digest + new findings, weighs each hypothesis,
                 returns: { stop, hypotheses[{h,status}], add_topics[], knowledge[], reason }
@@ -401,12 +413,15 @@ ZH: T00ls, 看雪, 先知社区 (xz.aliyun.com), 52pojie. RU: wasm.in, Codeby. E
 
 This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. Brain decides how many agents.
 
-Spawn `gatherer` agents. Each prompt:
+Spawn `gatherer` agents as plain subagents (no `name`). Spawn each assignment as a squad in one message: a `model: "sonnet"` lead with the prompt below, plus three `model: "haiku", effort: "high"` slices (code, social, docs) with the slice and budget lines from [gather-squad](references/gather-squad.md). When the three slices return, spawn one opener on their `UNOPENED LEADS`. Give each member its own report path. Each prompt:
 
 ```
 Research: [1 specific sub-question]
 Language: [1 assigned language — search ONLY in this language]
 Output: Return findings as structured data, NOT a formatted report. Search until you find gems or exhaust the topic.
+
+PARALLEL: in each turn, send several independent tool calls at once, spread across different sites. Fetch pages in batches with batch_fetch (up to 10 URLs per call). Do not call Reddit; the social helper owns it. Do not run `gh search`; the code helper owns the GitHub search quota. Speed comes from parallel calls, never from stopping early: keep going until new searches stop turning up gems.
+COVERAGE PASS (before you stop): list the sub-areas named in the research question. For each sub-area with fewer than 3 GEMs, run at least 2 more searches on it with different keywords or different sites, and open the best results. Stop only when one full coverage pass adds no new GEM. Put the final per-sub-area GEM counts in the report.
 
 Elite forum targeting: Include at least 2 site:-targeted searches on these forums:
 [list 2-4 forums from the table above for this language]
@@ -417,10 +432,10 @@ Scope: ONLY [sub-topic]. Do NOT investigate [other sub-topics].
 Report path: [./research/YYMMDD-topic/lang-subtopic.md]
 
 Tag each finding as GEM/MEH/NOISE:
-- GEM: specific numbers, pain points, workarounds, real code/config, contradictions with official docs
+- GEM: a number, a named incident, an exact error, or a working workaround — from practitioner experience, on a page you actually fetched. A search snippet or issue title you did not open is MEH at most. A restatement of vendor docs is MEH unless it contradicts a practitioner report.
 - MEH: partial signal, some specifics but also generic
 - NOISE: generic praise, listicles, no downsides, undated, affiliate links, keyword stuffing
-Prioritize GEM findings. Report NOISE count but don't expand on them.
+List each incident once, even if several sources repeat it (cite them together). Prioritize GEM findings. Report NOISE count but don't expand on them.
 
 RECOMMENDED SKILLS: deep-gather - use for search-fetch loop methodology
 ```
@@ -524,7 +539,7 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | Blurring Phase 0 and Phase 1 | Phase 0 = "is this researchable?" Phase 1 = "confirm my plan parameters" |
 | Skipping elite forum targeting | Generic search surfaces content farms. MUST include `site:` targets in agent prompts |
 | Dropping contradictions/warnings in synthesis | Extract ALL structured fields (findings + key_insights + contradictions). Shallow extraction = incomplete report |
-| All workflow agents on same model | Use `model: 'sonnet'` for gatherers/cross-checkers, `model: 'opus'` only for the REASONING brain and synthesis |
+| All workflow agents on same model | Run each gatherer assignment as a squad (sonnet lead + capped haiku slices), use `model: 'sonnet'` for cross-checkers, `model: 'opus'` only for the REASONING brain and synthesis |
 | Synthesis has 0 citations | Raw reports have URLs → synthesis MUST preserve them inline. 0 citations = failed synthesis |
 | No budget guards in workflow | Guard on `(budget.spent() - start) < CEILING - SYNTH_RESERVE` before cross-check and synthesis — `budget.remaining()` is `Infinity` when no target is set |
 | Elite forums not in workflow prompt | The table is in THIS skill but doesn't auto-transfer — MUST paste forum list into each agent prompt |

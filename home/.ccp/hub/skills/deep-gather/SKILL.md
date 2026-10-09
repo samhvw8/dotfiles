@@ -34,7 +34,7 @@ For query templates per language, read `references/query-templates.md`.
 
 ### Query Construction
 
-Write queries in the target language — do not search in English expecting Chinese/Russian results.
+Write queries in the target language — do not search in English expecting Chinese/Russian results. Exception: invariant keywords (product names, model IDs, flags, error strings) stay as written; see Invariant Keywords below.
 
 **English queries:**
 ```
@@ -76,6 +76,18 @@ Write queries in the target language — do not search in English expecting Chin
   4. High-value analysis (arXiv, McKinsey, Deloitte, IDC)
   5. Blog posts, tutorials (secondary — verify against tier 1-4)
   6. Content farms (CSDN reposts, 百家号, Zen.yandex) — DEPRIORITIZE
+
+### Invariant Keywords on Literal-Match Platforms
+
+GitHub (code, issues, repos), X/Twitter, Reddit and most forum search engines match literal tokens, not meaning. Two people describe the same problem in different words and languages, but they paste the same **invariant keywords**: product and library names, model IDs, CLI flags, config keys, error strings, exception names, issue numbers.
+
+| Rule | Example |
+|------|---------|
+| On a literal-match platform, anchor every query on 1-2 invariant keywords | `vllm "CUDA out of memory"`, `--gpu-memory-utilization`, `claude-haiku-5-5 subagent` |
+| Your language assignment means "find content written in that language", not "translate every token" | ZH gatherer on X: `vllm 显存` or `vllm OOM` + `lang:zh`, never a fully translated `大模型推理服务器 内存不足` alone |
+| Add at most one native-language word to steer toward your language | `llama.cpp 踩坑`, `sglang 部署 心得`, `vLLM 實測` |
+| Exact error text in quotes beats any paraphrase | `"KV cache is full"` |
+| Keep fully native, descriptive queries for semantic web search and forum `site:` searches | `site:linux.do vllm 部署 经验` |
 
 **Max 60 search tool calls total.** User may request fewer.
 
@@ -130,7 +142,7 @@ GitHub search matches on repo name + description + README. Compound queries miss
 | **L3: Adjacent categories** | Catch overlapping/dependent tools | `"stealth browser"` / `"反检测浏览器"` |
 | **L4: Language-filtered** | Systems-language tools (Rust/Go/Zig) | same query + `--language rust` |
 
-**Every layer MUST run in your assigned language(s).** Use the correct technical terms for each language.
+**Every layer MUST run in your assigned language(s).** Use the correct technical terms for each language, and keep invariant keywords (names, flags, error strings) untranslated — GitHub matches them literally.
 
 **Why L1 matters most:** A 13k-star Rust headless browser and a 30k-star browser engine were both missed because queries started at L2. The broad query `"headless browser"` caught both immediately. Narrow queries are for precision after broad queries establish the landscape.
 

@@ -6,7 +6,7 @@ Verification runs as a consumer on the findings stream, not a barriered phase. E
 
 ```js
 pipeline(tasks,
-  gatherWorker,    // emits Finding[] per task   (model: sonnet)
+  gatherWorker,    // emits Finding[] per task   (squad per task: sonnet lead + capped haiku slices)
   normalize,       // raw → canonical Finding
   streamingVerify  // per-finding, the moment it lands (model: sonnet)
 )

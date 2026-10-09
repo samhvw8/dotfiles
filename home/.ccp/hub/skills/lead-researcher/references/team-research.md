@@ -22,7 +22,7 @@ The main session is the only one that can spawn (no nested teams), so it spawns 
 |------|-------|-----|-------|
 | **Supervisor** | main session | Spawn team, oversee, approve big pivots, decide verify-on-demand, GOAL-CHECK, final synthesis, shutdown | opus (main) |
 | **Steering-Lead (brain)** | 1 | Forager REASON/EXPAND/CHECK: read streamed findings, weigh hypotheses, steer gatherers, hand claims to verifier, propose exit to supervisor | opus |
-| **Gatherer** | 2–3 | deep-gather search-fetch on its topic×language; **stream findings live** to steering-lead; obey steering | sonnet |
+| **Gatherer** | 2–3 | deep-gather search-fetch on its topic×language; **stream findings live** to steering-lead; obey steering | sonnet lead; capped haiku slices as plain subagents ([gather-squad](gather-squad.md)) |
 | **Verifier** | 1 | **idle until handed a load-bearing claim**, then cross-checks it and returns a verdict | sonnet |
 
 ## Why teams beat fire-and-forget gatherers
@@ -45,7 +45,7 @@ Per the heuristic — *use teammates when the agents need to talk to each other.
 ## The supervisor's playbook
 
 1. **Plan as normal.** Run Phase 0–2 (triage, confirm plan, decompose, language matrix, elite forums). Team venue reuses all of it.
-2. **Spawn the team in one message** — Steering-Lead (opus) + 2–3 Gatherers (sonnet, one topic×language each) + Verifier (sonnet). Each gets FULL context (teammates don't inherit history), the roster *by name*, and the confirmed source stack + elite-forum list.
+2. **Spawn the team in one message** — Steering-Lead (opus) + 2–3 Gatherers (sonnet, one topic×language each; the Steering-Lead may add capped haiku slices as plain subagents per [gather-squad](gather-squad.md)) + Verifier (sonnet). Each gets FULL context (teammates don't inherit history), the roster *by name*, and the confirmed source stack + elite-forum list.
 3. **Let it run.** Gatherers stream findings to the Steering-Lead; it reasons live and steers them; it routes load-bearing claims to the Verifier.
 4. **Supervise.** Approve/redirect when the Steering-Lead proposes a pivot or a new topic; spawn a 4th gatherer for a gap if needed; resolve disputes it escalates.
 5. **Exit by the brain, approved by you.** When the Steering-Lead proposes stop (hypotheses settled / new-info collapsing / coverage met), you confirm.
@@ -75,7 +75,7 @@ Run the forager loop continuously (see references/forager/overview.md):
 Do NOT edit files. Do NOT spawn agents.
 ```
 
-**Gatherer** — `model: "sonnet"`, `agentType: "gatherer"`:
+**Gatherer** — `model: "sonnet"`, `agentType: "gatherer"` (haiku slices run as plain subagents, not teammates):
 
 ```
 You are {name}, a gatherer on a live research team. Run the deep-gather search-fetch loop
