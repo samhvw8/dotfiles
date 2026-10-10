@@ -29,6 +29,9 @@
   "enabledPlugins": {
     "code-modernization@claude-plugins-official": true
   },
+  "env": {
+    "FRAMESIFT_ON": "me.ubuntu.home"
+  },
   "inputNeededNotifEnabled": true,
   "model": "claude-fable-5-1[1m]",
   "modelSettings": {
