@@ -19,10 +19,6 @@ log_success() {
     echo -e "\033[0;32m[SUCCESS]\033[0m $1"
 }
 
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
 setup_folder() {
     local dirs=(
         "$HOME/.local/bin"
@@ -51,21 +47,6 @@ setup_folder() {
     fi
 }
 
-setup_homebrew() {
-    # mise installs brew packages without Homebrew, but ~/.zprofile and
-    # ~/.profile still load `brew shellenv`.
-    if command_exists brew || [[ -x /opt/homebrew/bin/brew ]]; then
-        return 0
-    fi
-
-    log_info "Installing Homebrew"
-    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-        log_error "Failed to install Homebrew"
-        return 1
-    fi
-    log_success "Homebrew installed"
-}
-
 setup_rosetta() {
     [[ "$(uname -m)" == "arm64" ]] || return 0
     pgrep oahd >/dev/null && return 0
@@ -83,7 +64,6 @@ main() {
     setup_folder
 
     if [[ "$(uname -s)" == "Darwin" ]]; then
-        setup_homebrew
         setup_rosetta
     fi
 }

@@ -5,7 +5,7 @@ description: "The ordered phases of mise bootstrap in this repository and the ho
 resource: https://github.com/samhvw8/dotfiles/blob/main/mise/conf.d/dotfiles.toml
 tags: [mise, bootstrap, hooks]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-08T15:00:00Z }
 stale_after: 2027-03-24
 sources:
   - id: conf
@@ -26,8 +26,8 @@ it is safe to re-run.[^mise-bootstrap]
 
 | # | Phase | What runs here |
 |---|-------|----------------|
-| 1 | pre-packages hook | `prepare-host.sh`: XDG directories; Homebrew and Rosetta 2 on macOS |
-| 2 | packages | `brew`/`brew-cask` entries (macOS only via `os`), `apt` entries (skipped where apt is absent)[^conf] |
+| 1 | pre-packages hook | `prepare-host.sh`: XDG directories; Rosetta 2 on macOS |
+| 2 | packages | `brew`/`brew-cask` entries (macOS only via `os`), installed by mise itself into `/opt/homebrew` with no Homebrew (see [mise replaces Homebrew](/decisions/mise-replaces-homebrew.md)); `apt` entries (skipped where apt is absent)[^conf] |
 | 3 | post-packages hook | `finish-host.sh` on Debian/Ubuntu: deb-get (best-effort) and zsh as login shell (read from the account, not `$SHELL`) |
 | 4 | repos | `~/.tmux/plugins/tpm` on full installs[^full] |
 | 5 | dotfiles | Links and managed blocks ([linking model](/architecture/linking-model.md)) |

@@ -242,7 +242,6 @@ add_to_path "$HOME/bin"
 
 if [[ $OSTYPE == darwin* ]]; then
     [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
-    export HOMEBREW_NO_INSTALL_CLEANUP=1
     add_to_path "/usr/local/sbin"
 else
     alias open=xdg-open

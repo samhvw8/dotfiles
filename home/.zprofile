@@ -4,9 +4,12 @@ typeset -U path PATH
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/bin
 
-# brew first, so mise's shims land ahead of Homebrew's python3/kubectl.
+# The Homebrew prefix first, so mise's shims land ahead of its python3/kubectl.
+# mise installs brew packages there; Homebrew itself is not installed.
 if [[ $(uname) == "Darwin" ]]; then
-    eval $(/opt/homebrew/bin/brew shellenv)
+    export HOMEBREW_PREFIX=/opt/homebrew
+    path=(/opt/homebrew/bin /opt/homebrew/sbin $path)
+    fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
 fi
 
 if [ -f "$HOME/.local/bin/mise" ]; then

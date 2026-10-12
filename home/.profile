@@ -3,7 +3,8 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/bin
 
 if [[ $(uname) == "Darwin" ]]; then
-  eval $(/opt/homebrew/bin/brew shellenv)
+  export HOMEBREW_PREFIX=/opt/homebrew
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 else
   :
 fi

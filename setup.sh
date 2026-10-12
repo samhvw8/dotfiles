@@ -62,8 +62,8 @@ wait_for_user() {
 # -----------------------------------------------------------------------------
 # sudo handling
 #
-# Several steps below the surface need root: Homebrew's installer, apt, Rosetta,
-# and the Command Line Tools package. Rather than letting a password prompt
+# Several steps below the surface need root: creating /opt/homebrew for mise's
+# brew packages, pkg casks, apt, Rosetta, and the Command Line Tools package. Rather than letting a password prompt
 # ambush the user 10 minutes into a package install, ask once up front and then
 # refresh the credential in the background so it never expires mid-run.
 # -----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ ensure_sudo() {
     fi
 
     log_info "Administrator access is required for parts of this setup"
-    log_info "  (Homebrew, system packages, Command Line Tools, Rosetta 2)."
+    log_info "  (system packages, Command Line Tools, Rosetta 2)."
     log_info "You will be asked for your password once. It is not stored anywhere."
 
     # sudo reads its own prompt from /dev/tty, so this works under `curl | bash`.
@@ -130,7 +130,7 @@ ensure_sudo() {
 # -----------------------------------------------------------------------------
 # Xcode Command Line Tools (macOS)
 #
-# Homebrew, git and anything that compiles depend on these. macOS ships stub
+# git and anything that compiles depend on these. macOS ships stub
 # binaries at /usr/bin/git etc. that merely pop a GUI dialog when the tools are
 # absent, so `command_exists git` is not a usable test -- probe the active
 # developer directory and ask xcrun to resolve a real tool instead.
@@ -388,7 +388,7 @@ main() {
     fi
 
     # Ask for the password now, while the user is still watching, so the long
-    # unattended stretch below (Homebrew / apt / Rosetta) does not stall
+    # unattended stretch below (packages / apt / Rosetta) does not stall
     # waiting on a prompt nobody is there to answer.
     if ! ensure_sudo; then
         log_info "Continuing without cached administrator access."

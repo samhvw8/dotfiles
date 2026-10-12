@@ -43,16 +43,29 @@
 "~/.gitconfig/identity" = { source = "~/.dotfiles/mise/snippets/git-identity.tera", template = "tera" }
 "~/.gitconfig/base" = { block = "[include]\n\tpath = ~/.base.gitconfig" }
 
+# mise installs brew and brew-cask entries itself; Homebrew is not installed.
+# adopt: take over an app already in /Applications instead of replacing it,
+# which can drop its macOS privacy permissions.
+[bootstrap.brew]
+adopt = true
+
 [bootstrap.packages]
 "brew:telnet" = { os = "macos" }
 "brew:wget" = { os = "macos" }
 "brew:sshuttle" = { os = "macos" }
 "brew:htop" = { os = "macos" }
+"brew:btop" = { os = "macos" }
+"brew:macmon" = { os = "macos" }
 "brew:ffmpeg" = { os = "macos" }
 "brew:tree" = { os = "macos" }
+"brew:sshpass" = { os = "macos" }
 "brew-cask:macfuse" = { os = "macos" }
 "brew-cask:calibre" = { os = "macos" }
 "brew-cask:iterm2" = { os = "macos" }
+"brew-cask:docker-desktop" = { os = "macos" }
+"brew-cask:font-jetbrains-mono" = { os = "macos" }
+"brew-cask:spotify" = { os = "macos" }
+"brew-cask:visual-studio-code" = { os = "macos" }
 "apt:tmux" = "latest"
 "apt:vim" = "latest"
 "apt:git" = "latest"

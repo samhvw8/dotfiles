@@ -60,8 +60,9 @@ linked into `~/.config/mise/conf.d/` on both.
 `mise bootstrap` runs these steps in order. Each one skips work that is already
 done, so it is safe to run again at any time:
 
-1. `prepare-host.sh`: XDG directories, Homebrew and Rosetta 2 on macOS.
-2. System packages: `brew` and `brew-cask` on macOS, `apt` on Linux.
+1. `prepare-host.sh`: XDG directories, and Rosetta 2 on macOS.
+2. System packages: `brew` and `brew-cask` on macOS, `apt` on Linux. mise
+   installs `brew` and `brew-cask` entries itself; Homebrew is not installed.
 3. `finish-host.sh`: deb-get and zsh as the login shell on Linux.
 4. Repositories: `~/.tmux/plugins/tpm` on full installs.
 5. Dotfiles: links and managed blocks.
@@ -133,7 +134,8 @@ hook fail until it has one.
 ### Add a tool or package
 
 - Tool: `mise use -g <tool>` writes to `mise/config.toml` through the link.
-- Package: add `"brew:<name>" = { os = "macos" }` or `"apt:<name>" = "latest"`
+- Package: add `"brew:<name>" = { os = "macos" }`, `"brew-cask:<name>" = { os = "macos" }`
+  or `"apt:<name>" = "latest"`
   to `mise/conf.d/dotfiles.toml` for both installs, or to `mise/config.toml`
   for full installs only, then run `mise bootstrap packages apply`.
 

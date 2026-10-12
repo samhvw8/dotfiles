@@ -4,7 +4,7 @@ title: "Change, add and sync dotfiles"
 description: "Day-to-day loop: edit through the links, save with dot:save, push, and pull on other machines."
 tags: [workflow, git, sync]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-10-02T10:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-08T15:00:00Z }
 sources:
   - id: readme
     resource: https://github.com/samhvw8/dotfiles/blob/main/README.md
@@ -36,7 +36,8 @@ A file directly in `home/` or a new top-level directory also needs an entry in
 
 * Tool for every machine: `mise use -g <tool>` (writes `mise/config.toml` through the link).
 * Tool for this machine only: add it to `[tools]` in [machine-local config](/architecture/machine-local-config.md).
-* Package: add `"brew:<name>" = { os = "macos" }` or `"apt:<name>" = "latest"` to
+* Package: add `"brew:<name>" = { os = "macos" }`, `"brew-cask:<name>" = { os = "macos" }` (apps,
+  fonts) or `"apt:<name>" = "latest"` to
   `mise/conf.d/dotfiles.toml` (both installs) or `mise/config.toml` (full), then
   `mise bootstrap packages apply`.
 

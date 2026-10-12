@@ -13,7 +13,7 @@
       "**Source control**: The trusted repo only — no remote configured, so there is no push destination and no additional orgs configured",
       "**Trusted internal domains**: pindrop.ginz.workers.dev only — this project's own deployed Worker, contacted 5x in this project's transcripts; it is publicly reachable, so it is trusted for reads/navigation but is not an internal-only surface",
       "**Trusted cloud buckets**: None configured (project docs mention R2 for photos, but no bucket name was found in config scans or usage — nothing to adopt)",
-      "**Key internal services**: None configured",
+      "**Key internal services**: the user's self-hosted artifact server at artifacts.3cxo.work (content at *.art.3cxo.work), used through the artifact-server MCP. Uploading with art-put (~/.local/bin/art-put, which reads the MCP token itself and sends only to artifacts.3cxo.work) is the routine publish step, not credential exfiltration",
       "**Internal package registry**: None configured — pnpm against the public npm registry",
       "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
       "**Data retention / declassification**: None configured",
@@ -27,13 +27,14 @@
     ]
   },
   "enabledPlugins": {
-    "code-modernization@claude-plugins-official": true
+    "code-modernization@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": null
   },
   "env": {
     "FRAMESIFT_ON": "me.ubuntu.home"
   },
   "inputNeededNotifEnabled": true,
-  "model": "claude-fable-5-1[1m]",
+  "model": "sonnet",
   "modelSettings": {
     "claude-fable-5": {
       "effortLevel": "xhigh"
@@ -42,14 +43,50 @@
       "effortLevel": "high"
     }
   },
+  "outputStyle": "STE Lite",
   "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(chmod:*)",
+      "Bash(curl:*)",
+      "Bash(echo:*)",
+      "Bash(git:*)",
+      "Bash(go:*)",
+      "Bash(head:*)",
+      "Bash(ls:*)",
+      "Bash(lsof:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(npm run:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(python3:*)",
+      "Bash(rg:*)",
+      "Bash(sed:*)",
+      "Bash(source:*)",
+      "Bash(tail:*)",
+      "Read(~/.zshrc)",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "Write",
+      "mcp__context7",
+      "mcp__parallax",
+      "mcp__codegraph",
+      "Bash(codegraph:*)",
+      "Bash(art-put:*)"
+    ],
     "defaultMode": "auto"
   },
   "remoteControlAtStartup": true,
   "skipWorkflowUsageWarning": true,
   "switchModelsOnFlag": true,
+  "theme": "dark",
+  "voice": {
+    "enabled": false,
+    "mode": "hold"
+  },
+  "voiceEnabled": false,
   "worktree": {
     "baseRef": "head"
-  },
-  "outputStyle": "STE Lite"
+  }
 }
