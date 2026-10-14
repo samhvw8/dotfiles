@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-10-12
+* **Addition**: New hub skill `paper-appraisal` (linked into the default profile with `ccp link default skills/paper-appraisal`; per-file links made by hand until the skill is committed, since the mise `symlink-each` manifest follows git). It judges papers from the full text through Parallax (`fetch_page` on a DOI/arXiv/PMC URL for the open-access full text and a facts header; OpenReview reviews by `forum@group` ref), routes by design to RoB 2, ROBINS-I V2, ROBINS-E, AMSTAR 2/ROBIS, QUADAS-3, PROBAST+AI, GRADE-CERQual, JBI or ML checks, and rates the body of evidence with GRADE; versions checked 2026-10-12 in `references/sources.md`.
 * **Update**: `dotfiles.toml` adds `brew:btop` and `brew:macmon` (macOS) beside `htop`, installed by mise's `brew` manager like the other formulae.
 
 ## 2026-10-09
