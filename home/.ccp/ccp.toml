@@ -114,8 +114,8 @@ provider = 'git'
 url = 'https://github.com/morluto/rea.git'
 path = 'sources/morluto--rea'
 ref = 'main'
-commit = '6a7650e93cba9169baad95d2c52b11351ae39d0e'
-updated = 2026-10-08T19:55:33.704315+07:00
+commit = 'c9f9b83c6f5878f1d5b102ab206a2ce214749258'
+updated = 2026-10-15T18:25:54.189286+07:00
 installed = ['skills/reverse-engineer-anything']
 
 [sources.'nextlevelbuilder/ui-ux-pro-max-skill']

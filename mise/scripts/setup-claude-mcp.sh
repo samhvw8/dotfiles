@@ -51,6 +51,25 @@ setup_claude_mcp() {
     else
         log_success "Claude Notion MCP setup completed"
     fi
+
+    # Setup REA MCP (npm:rea-agents, run from its mise shim)
+    local rea_bin="$HOME/.local/share/mise/shims/rea-agents"
+    if claude mcp get rea >/dev/null 2>&1; then
+        log_info "Claude REA MCP already configured, skipping"
+    elif [[ ! -x "$rea_bin" ]]; then
+        log_info "rea-agents not installed by mise, skipping REA MCP setup"
+    else
+        local rea_env=(-e "JAVA_HOME=$HOME/.local/share/mise/installs/java/temurin-21")
+        # Ghidra is installed by hand; use the newest one if present
+        local ghidra
+        ghidra=$(find "$HOME/.local/share/ghidra" -maxdepth 1 -type d -name 'ghidra_*_PUBLIC' 2>/dev/null | sort -V | tail -1 || true)
+        [[ -n "$ghidra" ]] && rea_env+=(-e "GHIDRA_INSTALL_DIR=$ghidra")
+        if ! claude mcp add rea -s user "${rea_env[@]}" -- "$rea_bin" mcp; then
+            log_error "Failed to add Claude REA MCP server"
+            return 1
+        fi
+        log_success "Claude REA MCP setup completed"
+    fi
 }
 
 setup_claude_mcp
