@@ -83,6 +83,9 @@ directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
 
 - **Models:** trust the harness's model IDs. `[1m]` = 1M-context variant.
 - **mise** replaces asdf, nvm, pyenv, direnv and make; config in `mise.toml`.
+  Install CLI tools and MCP servers globally with `mise use -g` (`npm:`, `pipx:`,
+  `github:` backends), never `npx`/`uvx` in a config. An MCP command points at
+  the shim: `~/.local/share/mise/shims/<bin>`.
 - **ccp:** `~/.claude` holds symlinks into `~/.dotfiles/home/.ccp/` (`hub/` =
   rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings).
   Edit the real file (`readlink -f`). It's git — review with `git diff`.
