@@ -13,13 +13,13 @@ A clinical prediction model goes to `probast-ai.md` first.
 | Baselines | Strong, recent baselines? Same data, compute and tuning budget for baselines as for the method? | Baselines copied from old papers; only the new method tuned; missing obvious simple baseline |
 | Ablations | Is each component's contribution isolated? | Gains attributed to a component never removed |
 | Seeds and variance | Number of runs/seeds stated? Std, CIs or significance tests? | Single run; gains smaller than seed variance; best-of-N reported as typical |
-| Data leakage | Train/validation/test separated? Test used for model selection or early stopping? Preprocessing fit on all data? Near-duplicates across splits? | Tuning on test; no held-out set; temporal leakage |
+| Data leakage | Train/validation/test separated? Test used for model selection or early stopping? Preprocessing fit on all data? Near-duplicates across splits? | Tuning on test; no held-out set; temporal leakage; benchmark without public test labels, so hyperparameters tuned on the same validation split the results report |
 | Benchmark contamination (LLMs) | Could the test set be in pre-training data? Contamination check done (n-gram overlap, canary, post-cutoff test set)? | Public benchmark older than the model's cutoff, no check |
 | Evaluation validity | Does the metric measure the claimed ability? LLM-as-judge validated against humans? Prompt and decoding settings fixed across systems? | Cherry-picked examples; metric gaming; judge from the same model family |
 | Compute | Training and inference compute reported? Is the gain bought with more compute? | Unequal budgets hidden |
-| Reproducibility | Code, data, weights, configs released? Enough detail to reproduce? | "Code available on request"; missing hyperparameters |
+| Reproducibility | Code, data, weights, configs released? Enough detail to reproduce? Which code version do the tables match? | "Code available on request"; missing hyperparameters; author-admitted bug or post-publication data/eval change in the repo (`after-publication.md`) |
 | Statistics | Multiple comparisons across many tasks? Effect sizes, not just bold numbers? | Bold best-in-row with overlapping error bars |
-| Peer review | OpenReview ratings, confidence, reviewer agreement, rebuttal, meta-review, decision | Wide rating spread; unresolved reviewer objections; rejected elsewhere |
+| Public reviews | If the venue publishes them (`after-publication.md`): ratings, confidence, agreement, rebuttal, decision | Wide rating spread; unresolved reviewer objections; rejected elsewhere |
 
 ## NeurIPS paper checklist as a lens
 
@@ -36,15 +36,6 @@ and research with human subjects 15. IRB approvals 16. Declaration of LLM usage
 Read the authors' answers (usually in the appendix) and check items 4-8 against
 the paper. An answer of "No" with a reason is honest; a "Yes" the paper does not
 back up is a flag.
-
-## OpenReview
-
-Find the paper with `social_search platform=openreview`, then
-`social_thread platform=openreview id=<forum@group ref from the hit>` (see
-`retrieval.md` section 3). Record: each reviewer's rating and confidence, the main
-objections, whether the rebuttal answered them, the meta-review, and the outcome
-from the venue line ("ICLR 2025 Poster" vs "Submitted to ICLR 2025"). If the thread
-cannot be read, write "OpenReview reviews: not retrieved" under Could not check.
 
 ## Confidence
 

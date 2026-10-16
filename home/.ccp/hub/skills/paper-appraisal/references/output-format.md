@@ -1,5 +1,32 @@
 # Output format
 
+## Claim ledger (every paper, every field, first)
+
+```markdown
+- Pre-check: <copy read · status · retracted · registration/preregistration · funding>
+
+| Claim (quoted, section) | Test that backs it | Would drop if… | Source | Confidence |
+|-------------------------|--------------------|----------------|--------|------------|
+| "<the abstract's main claim>" (Abstract) | <experiment, analysis or table> | <the condition that would undo it> | paper / registry / data / code / issue / commit / replication | high / moderate / low / very low |
+
+### Found outside the paper
+- Promised vs done: <registration, protocol or preregistration matches / differs (how) / none found>
+- Released vs reported: <data or code matches the paper / differs (commit, date) / keeps a known bug (issue)>
+- <correction, PubPeer thread, letter, replication: one line each, with its source>
+
+### Three things to know before you trust this
+1. <the lowest-confidence row, in plain words, with its source>
+2. ...
+3. ...
+```
+
+One row per claim the user would act on, not per sentence. The three caveats come
+from the ledger's lowest-confidence rows, so the summary cannot drift from the
+table. A replication's result goes in the row it confirms or refutes, as a Source.
+
+When the paper feeds another deliverable, stop here. Otherwise continue with the
+tool tables below.
+
 ## Per paper
 
 ```markdown
@@ -38,6 +65,9 @@ A retracted paper:
 ```
 
 ## For the question overall
+
+For health and other questions GRADE can rate. Skip it for ML and methods papers:
+their ledger confidence is the overall answer.
 
 ```markdown
 ## Certainty of evidence: <outcome>

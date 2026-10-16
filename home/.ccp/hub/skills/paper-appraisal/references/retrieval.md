@@ -63,33 +63,14 @@ If the header says "abstract only": try the preprint (arXiv, bioRxiv, medRxiv),
 the PMC copy, or the author's repository (HAL, Zenodo). If none exists, write
 "not appraised: abstract only".
 
-## 3. Peer review (ML/AI papers)
+## 3. Around and after the paper
 
-1. `social_search` with `platform: "openreview"` and the paper's title or topic.
-   Each hit carries a thread ref of the form `forum@group`, for example
-   `taHwqSrbrb@ICLR.cc/2025/Conference/Submission2019`.
-2. `social_thread` with `platform: "openreview"` and `id: "<that ref>"` returns
-   the submission, every review with its fields as the venue names them (rating,
-   confidence, soundness, strengths, weaknesses…), the author rebuttals, the
-   comments and the meta-review, nested by reply. No login is needed.
-3. The Decision note is not in that route. The venue line ("ICLR 2025 Poster",
-   "Submitted to ICLR 2025" = not accepted or still under review) carries the
-   outcome. A bare forum id or an `openreview.net/forum?id=` URL works only when
-   the scraper has `OPENREVIEW_TOKEN`/`OPENREVIEW_COOKIE`; without it the call
-   names the variables. Use the ref.
+What to check, and in what order, is in `after-publication.md`. Two retrieval
+notes:
 
-OpenReview allows about 20 calls a minute (5 for older venues) per IP. A `429`
-reply says when to retry; do not loop. Reviews are evidence of what experts
-questioned, not a verdict: check each raised weakness in the paper yourself. If a
-thread cannot be read, record "OpenReview reviews: not retrieved" as missing
-evidence. Do not guess the reviews.
-
-## 4. Critique and discussion
-
-`social_search` with the paper URL (DOI or arXiv) as `query` and no platform finds
-Hacker News, Reddit and Lemmy threads about it. Use them to find claimed errors,
-failed replications and author replies. A comment is a lead to check in the paper,
-not evidence by itself. Add `platform`/`tags` to widen (`tags: ["dev"]` for ML).
-
-Also search for: `"<title>" replication`, `"<title>" erratum`, `"<title>" comment`
-(journals publish letters and commentaries), and PubPeer by URL with `fetch_page`.
+- OpenReview reviews: `social_search` with `platform: "openreview"`, then
+  `social_thread` with the `forum@group` ref from the hit. Parallax's own tool
+  descriptions cover the details and rate limits.
+- `social_search` with the paper URL finds Hacker News, Reddit and Lemmy threads.
+  Use it only when the paper drew public attention; for most papers it returns
+  unrelated hits.
