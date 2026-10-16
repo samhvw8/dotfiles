@@ -1,13 +1,13 @@
 ---
 name: mise-expert
-description: "mise — the tool-version manager, env-var loader, and task runner that replaces asdf, direnv, and make. Use for anything touching mise.toml or .tool-versions: installing or pinning tools, choosing a backend (core, aqua, github, cargo, npm, pipx), env vars, tasks, CI setup, migrating from asdf/direnv/make/npm scripts, and install failures — including attestation/cosign/SLSA verification errors."
+description: "mise — the tool-version manager, env-var loader, and task runner that replaces asdf, direnv, and make. Use for anything touching mise.toml or .tool-versions: installing or pinning tools, choosing a backend (core, packslip, aqua, github, cargo, npm, pypi/pipx), env vars, tasks, lockfiles, trust prompts, auto-updates, CI setup, migrating from asdf/direnv/make/npm scripts or off ubi, and install failures — including attestation/cosign/SLSA verification errors."
 ---
 
 # Mise Expert Skill
 
 ## Check live docs first
 
-mise ships several releases a month, and backends, settings, env vars and flags change between them. This file is a snapshot checked against **mise 2026.9.14 (2026-09-25)**; treat it as a map of where to look, not as the current truth.
+mise ships several releases a month, and backends, settings, env vars and flags change between them. This file is a snapshot checked against **mise 2026.10.11 (2026-10-15)** release notes and docs, with settings and backends confirmed on a 2026.10.10 binary; treat it as a map of where to look, not as the current truth.
 
 Before giving syntax, a setting name, an env var, a flag, or a backend recommendation, confirm it against a live source, in this order:
 
@@ -19,50 +19,59 @@ How often each part of this file needs that check:
 
 | Label | Sections | Query live docs |
 |-------|----------|-----------------|
-| **volatile** | Backends, Security Verification, the attestation and `ubi` troubleshooting entries, CI/CD Integration | Every time |
-| **drifts** | Configuration Patterns, Variables and Environment Management, Migration Strategies | When quoting exact keys or syntax |
+| **volatile** | Backends, Security Verification, Trust, the attestation and `ubi` troubleshooting entries, CI/CD Integration | Every time |
+| **drifts** | Recent Features, Configuration Patterns, Variables and Environment Management, Migration Strategies | When quoting exact keys or syntax |
 | **stable** | Task Configuration Principles, Decision Framework, Best Practices Checklist, Anti-Patterns to Avoid | Only if the user reports a mismatch |
 
-Label what you give the user: name the source and version you checked against ("per `mise help use` on 2026.9.14", "per mise.jdx.dev/configuration"). If you could only use this file, say "from the skill's 2026.9.14 snapshot, not verified live". When a live source contradicts this file, follow the live source and tell the user this skill is out of date.
+Label what you give the user: name the source and version you checked against ("per `mise help use` on 2026.10.11", "per mise.jdx.dev/configuration"). If you could only use this file, say "from the skill's 2026.10.11 snapshot, not verified live". When a live source contradicts this file, follow the live source and tell the user this skill is out of date.
 
 ## Backends
 
 mise uses backends to install tools. Backend selection affects security verification, performance, and compatibility.
 
 <backends>
-**Tier 1 (Recommended)**
+`mise backends ls` lists what the installed binary supports. Start with the registry short name (`mise registry <tool>` shows its backend list in order). When you pick a backend yourself, the docs' order is: prefer the publisher's own signed or prebuilt release.
+
+**Preferred (prebuilt releases)**
 
 | Backend | Syntax | Use For |
 |---------|--------|---------|
-| core | `node`, `python`, `go` | Built-in tools (node, python, bun, deno, java, go, erlang, dotnet). Rust-native, best performance. |
-| aqua | `aqua:owner/repo` | Tools in aqua-registry. Native security verification (cosign, SLSA, attestations, minisign). |
-| github | `github:owner/repo` | GitHub releases. Provenance verification, download progress. Replaced ubi. |
+| core | `node`, `python`, `go` (`core:node`) | Built-in tools (node, python, bun, deno, java, go, rust, erlang, ...). |
+| packslip | `packslip:github.com/owner/repo` (`packslip:owner/repo` for GitHub) | Publisher-signed release manifests. mise checks the signer and every artifact digest. Ships completions, man pages and agent skills. Registry already prefers it for hk, usage, fnox, pitchfork, aube, helmfile, timoni, dagu, worktrunk. Option `workflow = [...]` pins the signing workflow. |
+| aqua | `aqua:owner/repo` | Tools in the aqua registry. Native verification (cosign, SLSA, attestations, minisign). Per-tool `libc = "musl"` option. |
+| github / gitlab / forgejo | `github:owner/repo` | Forge release assets. Provenance verification. Replaced ubi. |
+| http / s3 | `http:name` + `url`, `s3:name` + `url = "s3://..."` | Archives you host. `http` takes `headers` for auth; `s3` uses the AWS credential chain. |
 
-**Tier 2 (Stable)**
+**Language packages (when the tool only ships as a package, or needs package options)**
 
 | Backend | Syntax | Use For |
 |---------|--------|---------|
 | cargo | `cargo:crate` | Rust tools from crates.io. Supports cargo-binstall. |
-| npm | `npm:package` | Node packages. Supports npm/pnpm/bun/aube as package managers. |
-| pipx | `pipx:package` | Python CLI tools in isolated envs. Auto-uses `uvx` if uv is on PATH. |
 | go | `go:module` | Go tools via `go install`. |
-| gem | `gem:package` | Ruby gems. |
-| conda | `conda:package` | Conda packages. Graduated from experimental in v2026.5. |
-| vfox | `vfox:plugin` | VersionFox plugins. Embedded Lua in binary for speed. |
-| http | `http:url` | Direct HTTP downloads with Tera templating. |
-| forgejo | `forgejo:owner/repo` | Forgejo/Gitea forge releases. |
-| gitlab | `gitlab:owner/repo` | GitLab releases. |
-| asdf | `asdf:plugin` | Legacy plugin system. Discouraged for new tools — runs arbitrary plugin code. |
+| npm | `npm:package`, `npm:github:owner/repo@ref` | Node packages, also from git. Supports npm/pnpm/bun/aube. |
+| pypi (alias `pipx:`) | `pypi:package`, `pypi:owner/repo`, `pypi:git+https://...#subdirectory=x` | Python CLI apps in isolated envs. Uses uv, or pipx if uv is missing. Builds on mise's Python when mise manages one. `pipx:x` and `pypi:x` are the same tool. |
+| gem | `gem:package` | Ruby gems. `source = "<url>"` for a private registry. |
+| dotnet | `dotnet:Package.Name` | .NET tools from NuGet. |
+| spm | `spm:owner/repo` | Swift package executables. Needs Swift. |
+| conda | `conda:package` | Conda packages and their dependencies. |
+
+**Plugins and the rest**
+
+| Backend | Syntax | Use For |
+|---------|--------|---------|
+| vfox | `vfox:owner/plugin` | Lua plugins, only when install needs custom logic. |
+| spinel | `spinel:owner/repo` | Experimental. Ruby programs AOT-compiled to native. Needs `experimental = true` and the `spinel` compiler. |
+| asdf | `asdf:plugin` | Legacy. Runs arbitrary shell plugin code, no Windows. Avoid for new tools. |
 
 **Deprecated**
 
 | Backend | Replacement | Migration |
 |---------|-------------|-----------|
-| ubi | github | Replace `ubi:owner/repo` → `github:owner/repo`. github backend adds provenance verification, progress reports, fewer deps. |
+| ubi | github / gitlab / http | Warns since 2026.4.0, **removed in mise 2027.1.0**. `ubi:owner/repo` → `github:owner/repo`; `provider = "gitlab"` → `gitlab:`; direct URL → `http:` with `url`. `exe` is usually not needed; `rename_exe` becomes `rename_exe = { "gh" = "gh-cli" }`. Then `mise lock` and `mise uninstall --all ubi:owner/repo`. |
 
-**Resolution order**: Explicit spec → `MISE_BACKENDS_<TOOL>` env var → Registry lookup → Core tools → Fallback.
+**Resolution order for a short name** (an explicit `backend:` prefix always wins): `MISE_BACKENDS_<TOOL>` env var → `[tool_alias]` entry naming a backend (e.g. `node = "core:node"`) → `[plugins]` URL → backend recorded in `mise.lock` (if it serves the version) → installed plugin of the same name → first registry backend that runs here, isn't in `disable_backends`, and serves the version. Check with `mise tool <name> --backend`. `mise backends switch` moves lock entries when the registry changes a tool's backend.
 
-**Recommendation hierarchy**: core > aqua > github > language-native (npm/pipx/cargo/go/gem) > vfox > asdf
+**Recommendation hierarchy**: core > packslip > aqua > github/gitlab/forgejo > http/s3 > language packages (cargo/go/npm/pypi/gem/dotnet) > vfox > asdf
 
 **Backend override example:**
 ```toml
@@ -96,9 +105,16 @@ The aqua backend verifies tool integrity via native Rust implementations — no 
 | Minisign | `MISE_AQUA_MINISIGN` | `aqua.minisign` | true |
 | Checksums | Always on | N/A | Always |
 
-Global toggle across all backends: `MISE_GITHUB_ATTESTATIONS=0`
+Global toggle across all backends: `MISE_GITHUB_ATTESTATIONS=0` (setting `github_attestations`). The github backend has its own `github.github_attestations`.
 
 Extra cosign args: `MISE_AQUA_COSIGN_EXTRA_ARGS="--key /path/to/key.pub"`
+
+**Signer identity is now enforced (2026.9.16 – 2026.10.0)**
+- SLSA provenance must come from the expected signer. Set `slsa_signer_identity` + `slsa_signer_issuer` as tool options on `github:` and `aqua:` tools whose registry entry has none (e.g. `aqua:google/osv-scanner`). Without both, mise skips the SLSA check and uses other methods.
+- Keyless cosign bundles must match the registry's pinned `--certificate-identity`/`--certificate-oidc-issuer`. Key-based (`--key`) is unchanged.
+- GitHub attestation `signer_workflow` matches whole path segments, not a substring.
+
+**Release-age cutoff**: `minimum_release_age` (default `24h`) holds back new releases for tools and for `mise self-update`. Set `0s` per tool with `--tool-option minimum_release_age=0s` to get the newest now. `minimum_release_age_excludes` lists exempt tools.
 
 **When Attestation Verification Fails**
 
@@ -123,6 +139,53 @@ MISE_DEBUG=1 mise install <tool>@<version>
 
 **Known per-tool attestation issues:** some releases were published by hand or predate GitHub attestation support, so they carry no attestations — install an adjacent version, or check the tool's aqua-registry entry for a per-version exemption.
 </security_verification>
+
+## Trust
+
+mise skips or refuses config it doesn't trust. These forms now need `mise trust` before they load:
+
+- Tool keys with inline options (`"github:o/r[api_url=...]"`), in `mise.toml` and in `.tool-versions` — an untrusted file could send `GITHUB_TOKEN` to another host.
+- `path:` tool versions — they put a directory first on `PATH`.
+- `{ ... }` option tables, Tera templates, and remote task files whose `#MISE` headers contain templates.
+
+Plain keys such as `node = "24"` still load untrusted. An untrusted project config no longer breaks `mise activate`: it is skipped with a warning, while `mise run` and `mise x` still error. Paranoid mode: `--yes`/CI auto-confirm does not grant trust. `MISE_SAFE=1` ignores project `[bootstrap]`, `[dotfiles]` and includes.
+
+## Recent Features
+
+Added between 2026.9.15 and 2026.10.11. Check `min_version` before using one in a shared config.
+
+<recent_features>
+**Config**
+- `include = ["./local.toml", "git::<url>//mise.toml?ref=main", "oci::ghcr.io/org/cfg@sha256:..."]` merges shared `[tools]`, `[env]`, `[vars]`, `[hooks]`, `[bootstrap]` and similar below the including file. No tasks or `[settings]` in an include.
+- **Precedence change (2026.10.5):** in one directory, highest first: `mise.<env>.local.toml` > `mise.local.toml` > `mise.<env>.toml` > `mise.toml`.
+- `[vars.<name>]` with `prompt` plus `default` or `required` asks once per machine (`mise vars prompt`) and stores the answer in `$MISE_STATE_DIR/vars.toml`.
+- `~/.config/mise/miserc.local.toml` picks an environment on one machine (`env = ["work"]`).
+- `settings.write_targets` sends new global `[tools]` entries to a `conf.d` file.
+
+**Tools**
+- `auto_update = true | "6h"` on a global tool, or `[settings] tool_update.global_auto = "12h"` for all global tools. Exact pins never move; nothing runs in CI, offline or with `locked`.
+- mise's own updates moved to `self_update.auto` / `self_update.check_duration` (old `auto_update` key still works).
+- `postinstall = { run = "...", when = "always" }` runs on every `mise install`.
+- `mise upgrade --global` / `mise outdated --global` touch only global config.
+- `java@21`, `java@lts`, `java@latest` now install **Temurin** (`java.shorthand_vendor`). Old lock entries need `mise lock --bump java` or `java.shorthand_vendor = "openjdk"`.
+- `install_layout = "identity"` (experimental; on by default on Windows with `experimental = true`) stores installs by content hash. `mise installs ls|select|migrate`.
+- Each tool's install dir has a `global` symlink to the global version — point IDEs there.
+- `mise env --paths` prints only the PATH entries mise adds.
+- Public GitHub metadata (release lists, tags, attestations) now comes from mise-versions (`use_versions_host = true`), so tokenless users rarely hit rate limits.
+
+**Lockfile**
+- New lockfiles are `lockfile_version = 3`; older mise rejects them. Upgrade an old file with `mise lock --upgrade` once every user is on 2026.9.16+.
+- The docs now recommend committing `mise.lock` and installing with `mise install --locked`. `mise lock --platform linux-x64,linux-arm64,macos-arm64` writes entries for every runner.
+- `lockfile_auto_prune = false` keeps entries for tools missing from the active config.
+
+**Tasks**
+- `skip_if = "test -f .initialized"` skips the task when the command exits 0. `mise run --force` ignores it.
+- `confirm = { message = "...", yes = "Deploy", no = "Cancel", default = "no" }`.
+- `secrets = ["DEPLOY_KEY"]` on a task (experimental, fnox 1.39+, `[secrets.fnox]`): only that task gets the values, redacted from output. `mise run --secrets KEY task`.
+- `mise run --affected` is no longer experimental and also counts uncommitted and untracked files. Use `--affected-committed` for the old behavior.
+- `mise tasks validate` now fails on an unparseable `usage` spec.
+- `[monorepo.path_aliases]` gives deep config roots short names (`mise run //123:build`).
+</recent_features>
 
 ## Operational Guidelines
 
@@ -712,15 +775,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - name: Setup mise
-        uses: jdx/mise-action@v2
-        with:
-          version: latest  # or specific version
-
-      - name: Install tools and dependencies
-        run: mise install
+      # Installs mise and the repo's tools. With a committed mise.lock it runs
+      # `mise install --locked` itself. Pin mise with `version:` if needed.
+      - uses: jdx/mise-action@v5
 
       - name: Run tests
         run: mise run test
@@ -729,14 +788,29 @@ jobs:
         run: mise run build
 ```
 
+mise-action v5 does not export the GitHub token to later steps. Pass one to steps that install tools. `mise generate github-action --write --task=ci` writes a starter workflow.
+
+**Cache downloads, not installs** (with a committed `mise.lock`). mise re-hashes each cached download against the lockfile, so a poisoned cache can't change what gets installed. A restored *install* cache is trusted as is.
+
+```yaml
+      - uses: actions/checkout@v7
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/mise/downloads-cas   # macOS: ~/Library/Caches/mise/downloads-cas
+          key: mise-downloads-${{ runner.os }}-${{ hashFiles('mise.lock') }}
+      - uses: jdx/mise-action@v5
+        with:
+          cache: false
+```
+
 **GitLab CI**
 ```yaml
 image: ubuntu:latest
 
 before_script:
-  - curl https://mise.run | sh
+  - curl https://mise.run | sh            # set MISE_VERSION=<x> for a reproducible mise
   - export PATH="$HOME/.local/bin:$PATH"
-  - mise install
+  - mise install --locked
 
 test:
   script:
@@ -759,8 +833,8 @@ ENV PATH="/root/.local/bin:$PATH"
 COPY . /app
 WORKDIR /app
 
-# Install tools and dependencies
-RUN mise install
+# Install tools from the committed lockfile
+RUN mise install --locked
 
 # Run build
 RUN mise run build
@@ -871,9 +945,23 @@ mise use "github:owner/repo@version"         # github backend instead of aqua
 MISE_DEBUG=1 mise install tool@version
 ```
 
+**SLSA "no signer_identity and signer_issuer"**
+```toml
+# Symptom: a locked or SLSA-checked aqua/github tool fails with no expected signer.
+# Fix: refresh the entry with `mise lock`, or set both signer options:
+[tools]
+"aqua:google/osv-scanner" = { version = "latest", slsa_signer_identity = "<cert URI>", slsa_signer_issuer = "https://token.actions.githubusercontent.com" }
+```
+
+**"is not trusted" for a config that used to load**
+```bash
+# Symptom: inline tool options ("tool[opt=x]") or path: versions are skipped.
+mise trust            # in the project directory, after reading the file
+```
+
 **Using Deprecated ubi Backend**
 ```bash
-# Symptom: ubi backend warnings or failures
+# Symptom: ubi backend warnings or failures (ubi is removed in 2027.1.0)
 # Fix: Replace ubi with github backend
 # Old: ubi:owner/repo → New: github:owner/repo
 
@@ -947,6 +1035,8 @@ When editing an existing mise.toml, change only the sections the request touches
 - ❌ Use `ubi:` backend (deprecated — use `github:` instead)
 - ❌ Use `MISE_AQUA_REGISTRY_COSIGN` (wrong env var — use `MISE_AQUA_COSIGN`)
 - ❌ Disable all verification globally when only one method fails
+- ❌ Cache installed tools in CI when a lockfile exists (cache `downloads-cas` instead)
+- ❌ Run `mise trust` on a repo you haven't read — trust now gates `path:` versions and inline tool options
 
 **Do:**
 - ✅ Pin exact tool versions for reproducibility
@@ -962,4 +1052,6 @@ When editing an existing mise.toml, change only the sections the request touches
 - ✅ Prefer `github:` over `ubi:` for GitHub release tools
 - ✅ Run `mise self-update` before debugging attestation failures
 - ✅ Disable only the specific failing verification method, not all
+- ✅ Commit `mise.lock` and install with `--locked` in CI and Docker
+- ✅ Prefer `packslip:` when the publisher signs packslip manifests
 </anti_patterns>
