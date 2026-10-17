@@ -162,8 +162,8 @@ provider = 'git'
 url = 'https://github.com/samhvw8/ambition-skill.git'
 path = 'sources/samhvw8--ambition-skill'
 ref = 'main'
-commit = 'b01a902d5f1de6cc22a48702edef62789dfa0b49'
-updated = 2026-10-17T09:53:13.728651+07:00
+commit = '35edb1922364593b3b3008b2e509d3ea858f6bdf'
+updated = 2026-10-17T10:16:23.791581+07:00
 installed = ['skills/ambition']
 
 [sources.'samhvw8/claude-code-profile']
