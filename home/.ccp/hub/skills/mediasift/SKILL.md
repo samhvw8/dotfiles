@@ -1,0 +1,1 @@
+/Users/samhv/workspace/tools/mediasift/skills/mediasift/SKILL.md

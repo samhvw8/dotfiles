@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/framesift-hint.sh",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/mediasift-hint.sh",
             "timeout": 5
           }
         ]

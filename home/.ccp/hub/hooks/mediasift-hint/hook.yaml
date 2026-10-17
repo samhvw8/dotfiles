@@ -1,5 +1,5 @@
-name: framesift-hint
+name: mediasift-hint
 type: UserPromptSubmit
 timeout: 5
-command: framesift-hint.sh
+command: mediasift-hint.sh
 interpreter: bash

@@ -31,7 +31,7 @@
     "frontend-design@claude-plugins-official": null
   },
   "env": {
-    "FRAMESIFT_ON": "me.ubuntu.home"
+    "MEDIASIFT_ON": "me.ubuntu.home"
   },
   "inputNeededNotifEnabled": true,
   "model": "sonnet",
