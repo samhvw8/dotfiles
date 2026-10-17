@@ -21,6 +21,7 @@
 "~/.ccp" = { source = "~/.dotfiles/home/.ccp", mode = "symlink-each", manifest = "git" }
 "~/.config" = { source = "~/.dotfiles/home/.config", mode = "symlink-each", manifest = "git" }
 "~/.local/bin" = { source = "~/.dotfiles/home/.local/bin", mode = "symlink-each", manifest = "git" }
+"~/.omp/agent" = { source = "~/.dotfiles/home/.omp/agent", mode = "symlink-each", manifest = "git" }
 
 # Files directly in home/. ~/.zshrc differs between installs, so each config
 # declares it.

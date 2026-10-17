@@ -20,7 +20,7 @@ sources:
 
 | Target | How it is managed |
 |--------|-------------------|
-| Files under `home/.ccp`, `home/.config`, `home/.local/bin` | One `symlink-each` entry per directory with `manifest = "git"`: every file committed there is linked one by one; other files in those directories are left alone[^conf] |
+| Files under `home/.ccp`, `home/.config`, `home/.local/bin`, `home/.omp/agent` | One `symlink-each` entry per directory with `manifest = "git"`: every file committed there is linked one by one; other files in those directories are left alone[^conf] |
 | Files directly in `home/` | One explicit `symlink` entry each in `mise/conf.d/dotfiles.toml` |
 | `~/.zshrc` | Declared per install: `.zshrc` (full) or `.zshrc_minimal` (minimal) |
 | `~/.config/mise/config.toml`, `conf.d/dotfiles.toml` | Self-links into the repository |

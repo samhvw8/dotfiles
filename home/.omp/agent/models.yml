@@ -1,0 +1,33 @@
+# DeepSeek V4.1 Flash on OpenRouter is limited to three hosts, tried in this
+# order: DeepSeek's own endpoint (cheapest off-peak, full precision), Together
+# (fastest measured: 1.2s for a 2k-token extraction), Fireworks (cheapest at
+# peak, ~3s). Measured 2026-09-14; see docs/expand/llm-extraction.md in parallax.
+#
+# The account's OpenRouter privacy settings exclude DeepSeek's endpoint ("Paid
+# model training violation"), so requests land on Together until it is allowed
+# at openrouter.ai/settings/privacy.
+providers:
+  openrouter:
+    modelOverrides:
+      deepseek/deepseek-v4.1-flash:
+        compat:
+          openRouterRouting:
+            order: [deepseek, together, fireworks]
+            only: [deepseek, together, fireworks]
+            allow_fallbacks: true
+
+      # GLM on OpenRouter: Z.ai's own endpoint first, then the fastest full-precision
+      # hosts measured 2026-09-14 (GLM-5.3-Flash: streamlake 1.8s, relace 2.3s;
+      # GLM-5.3: gmicloud 1.7s, novita 2.1s, reka 1.7s). No fp4 hosts.
+      z-ai/glm-5.3-flash:
+        compat:
+          openRouterRouting:
+            order: [z-ai, streamlake, relace, together, fireworks]
+            only: [z-ai, streamlake, relace, together, fireworks]
+            allow_fallbacks: true
+      z-ai/glm-5.3:
+        compat:
+          openRouterRouting:
+            order: [z-ai, gmicloud, novita, reka]
+            only: [z-ai, gmicloud, novita, reka]
+            allow_fallbacks: true

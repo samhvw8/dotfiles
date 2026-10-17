@@ -1,0 +1,165 @@
+browser:
+  relay: true
+setupVersion: 2
+modelRoles:
+  slow: google-antigravity/claude-opus-5-5:medium
+  plan: google-antigravity/claude-opus-5-5-high:high
+  advisor: google-antigravity/claude-opus-5-5-medium:medium
+  task: google-antigravity/claude-opus-5-5-medium:medium
+  vision: google-antigravity/gemini-3.8-flash:medium
+  smol: google-antigravity/gemini-3.8-flash:minimal
+  tiny: google-antigravity/gemini-3.8-flash:low
+  commit: google-antigravity/gemini-3.8-flash:low
+  web: web/searxng
+  default: google-antigravity/gemini-4-argon
+  judge: typesafe/jev-latest
+  dictation: local/parakeet-tdt-0.6b-v3
+  speech: local/kokoro
+  image: google-antigravity/gemini-3.1-flash-image
+modelPresets:
+  spread:
+    modelRoles:
+      default: opencode-go/glm-5.3:high
+      slow: opencode-go/deepseek-v4-pro:max
+      plan: opencode-go/deepseek-v4-pro:high
+      advisor: opencode-go/minimax-m3:high
+      task: opencode-go/glm-5.3-flash:high
+      vision: opencode-go/deepseek-v4.1-flash:high
+      smol: opencode-go/deepseek-v4.1-flash:low
+      tiny: opencode-go/mimo-v2.6-flash:low
+      commit: opencode-go/mimo-v2.6-flash:low
+      web: web/searxng
+    defaultThinkingLevel: high
+  cheap:
+    modelRoles:
+      default: opencode-go/deepseek-v4.1-flash:high
+      slow: opencode-go/deepseek-v4-pro:high
+      plan: opencode-go/deepseek-v4-pro:high
+      advisor: opencode-go/minimax-m3:low
+      task: opencode-go/deepseek-v4.1-flash:high
+      vision: opencode-go/deepseek-v4.1-flash:high
+      smol: opencode-go/mimo-v2.6-flash:low
+      tiny: opencode-go/mimo-v2.6-flash:low
+      commit: opencode-go/mimo-v2.6-flash:low
+      web: web/searxng
+    defaultThinkingLevel: high
+  deep:
+    modelRoles:
+      default: opencode-go/glm-5.3:max
+      slow: opencode-go/kimi-k3:max
+      plan: opencode-go/kimi-k3:high
+      advisor: opencode-go/deepseek-v4-pro:max
+      task: opencode-go/deepseek-v4-pro:high
+      vision: opencode-go/deepseek-v4.1-flash:high
+      smol: opencode-go/glm-5.3-flash:low
+      tiny: opencode-go/mimo-v2.6-flash:low
+      commit: opencode-go/mimo-v2.6-flash:low
+      web: web/searxng
+    defaultThinkingLevel: high
+  glm:
+    modelRoles:
+      default: opencode-go/glm-5.3:high
+      vision: opencode-go/glm-5.3-flash:high
+      smol: opencode-go/glm-5.3-flash:low
+      tiny: opencode-go/glm-5.3-flash:low
+      task: opencode-go/glm-5.3-flash:high
+      commit: opencode-go/glm-5.3-flash:low
+      slow: opencode-go/glm-5.3:high
+      plan: opencode-go/glm-5.3:high
+      advisor: opencode-go/glm-5.3:high
+      web: web/searxng
+    defaultThinkingLevel: high
+  default:
+    modelRoles:
+      slow: google-antigravity/claude-opus-5-5:medium
+      plan: google-antigravity/claude-opus-5-5-high:high
+      advisor: google-antigravity/claude-opus-5-5-medium:medium
+      task: google-antigravity/claude-opus-5-5-medium:medium
+      vision: google-antigravity/gemini-3.8-flash:medium
+      smol: google-antigravity/gemini-3.8-flash:minimal
+      tiny: google-antigravity/gemini-3.8-flash:low
+      commit: google-antigravity/gemini-3.8-flash:low
+      web: web/searxng
+      default: google-antigravity/gemini-4-argon
+      judge: typesafe/jev-latest
+      dictation: local/parakeet-tdt-0.6b-v3
+      speech: local/kokoro
+      image: google-antigravity/gemini-3.1-flash-image
+    defaultThinkingLevel: auto
+task:
+  agentModelOverrides:
+    scout: "@smol"
+    docs-manager: "@smol"
+    journal-writer: "@smol"
+    requirements-analyst: "@task"
+    deep-reviewer: "@slow"
+    heavy-thinker: "@slow"
+    cofounder: "@default"
+    cto: "@default"
+    cto-advisor: "@default"
+    system-architect: "@default"
+    impeccable-manual-edit-applier: "@default"
+compaction:
+  thresholdTokens: 200000
+symbolPreset: nerd
+composer:
+  shape: band
+theme:
+  dark: titanium
+dev:
+  autoqaConsent: denied
+retry:
+  fallbackChains:
+    web:
+      - web/parallel
+      - web/hosted
+      - web/exa
+      - web/firecrawl
+      - web/startpage
+      - web/duckduckgo
+      - web/ecosia
+      - web/google
+      - web/mojeek
+      - web/public
+    default:
+      - google-antigravity/claude-opus-5-5
+      - google-antigravity/gemini-3.8-flash
+bashInterceptor:
+  enabled: true
+display:
+  showTokenUsage: true
+  cacheMissMarker: true
+lsp:
+  diagnosticsOnEdit: true
+skills:
+  ignoredSkills:
+    - ast-grep
+    - backend-development
+    - bento-slides
+    - brandkit
+    - browser-history
+    - brutalist-skill
+    - canvas-design
+    - chrome-devtools
+    - databases
+    - design-principles
+    - gpt-tasteskill
+    - guizang-ppt-skill
+    - image-to-code-skill
+    - imagegen-frontend-mobile
+    - imagegen-frontend-web
+    - minimalist-skill
+    - output-skill
+    - payment-integration
+    - phone-harness
+    - pug-ui
+    - react-best-practices
+    - redesign-skill
+    - soft-skill
+    - stitch-skill
+    - taste-skill
+    - taste-skill-v1
+cycleOrder:
+  - smol
+  - slow
+defaultThinkingLevel: auto

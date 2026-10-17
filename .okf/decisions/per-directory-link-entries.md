@@ -19,8 +19,8 @@ sandbox home but on the real machine `mise dot apply --dry-run` walked all of
 
 # Decision
 
-Separate `symlink-each` entries for `~/.ccp`, `~/.config` and `~/.local/bin`
-plus one `symlink` entry per top-level file.[^conf] Measured: each entry's
+Separate `symlink-each` entries for `~/.ccp`, `~/.config`, `~/.local/bin` and
+`~/.omp/agent` plus one `symlink` entry per top-level file.[^conf] Measured: each entry's
 status takes about a second (`~/.ccp` with ~50k entries included).
 
 # Consequence

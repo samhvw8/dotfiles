@@ -54,21 +54,45 @@ setup_claude_mcp() {
 
     # Setup REA MCP (npm:rea-agents, run from its mise shim)
     local rea_bin="$HOME/.local/share/mise/shims/rea-agents"
+    local java_home="$HOME/.local/share/mise/installs/java/temurin-21"
+    # Ghidra may live under mise/installs/ghidra or ~/.local/share/ghidra; use the newest one
+    local ghidra
+    ghidra=$(find "$HOME/.local/share/mise/installs/ghidra" "$HOME/.local/share/ghidra" -maxdepth 1 -type d -name 'ghidra_*_PUBLIC' 2>/dev/null | sort -V | tail -1 || true)
+
     if claude mcp get rea >/dev/null 2>&1; then
         log_info "Claude REA MCP already configured, skipping"
     elif [[ ! -x "$rea_bin" ]]; then
         log_info "rea-agents not installed by mise, skipping REA MCP setup"
     else
-        local rea_env=(-e "JAVA_HOME=$HOME/.local/share/mise/installs/java/temurin-21")
-        # Ghidra is installed by hand; use the newest one if present
-        local ghidra
-        ghidra=$(find "$HOME/.local/share/ghidra" -maxdepth 1 -type d -name 'ghidra_*_PUBLIC' 2>/dev/null | sort -V | tail -1 || true)
+        local rea_env=(-e "JAVA_HOME=$java_home")
         [[ -n "$ghidra" ]] && rea_env+=(-e "GHIDRA_INSTALL_DIR=$ghidra")
         if ! claude mcp add rea -s user "${rea_env[@]}" -- "$rea_bin" mcp; then
             log_error "Failed to add Claude REA MCP server"
             return 1
         fi
         log_success "Claude REA MCP setup completed"
+    fi
+
+    # Keep REA MCP in sync in omp (~/.omp/agent/mcp.json) and agy (~/.gemini/config/mcp_config.json)
+    if [[ -x "$rea_bin" ]] && command -v jq >/dev/null 2>&1; then
+        local cfg tmp
+        for cfg in "$HOME/.omp/agent/mcp.json" "$HOME/.gemini/config/mcp_config.json"; do
+            [[ -f "$cfg" ]] || continue
+            tmp=$(mktemp)
+            if jq --arg cmd "$rea_bin" --arg jh "$java_home" --arg gh "$ghidra" '
+                .mcpServers = (.mcpServers // {}) |
+                .mcpServers.rea = (
+                    (.mcpServers.rea // {})
+                    | .command = $cmd
+                    | .args = ["mcp"]
+                    | .env = ({"JAVA_HOME": $jh} + (if $gh != "" then {"GHIDRA_INSTALL_DIR": $gh} else {} end))
+                )
+            ' "$cfg" > "$tmp" && mv "$tmp" "$cfg"; then
+                log_info "Updated REA MCP in $cfg"
+            else
+                rm -f "$tmp"
+            fi
+        done
     fi
 }
 
