@@ -1,0 +1,2 @@
+# omp writes a lock file next to the resolved config target
+home/.omp/agent/*.lock

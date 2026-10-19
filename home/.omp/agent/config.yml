@@ -11,11 +11,11 @@ modelRoles:
   tiny: google-antigravity/gemini-3.8-flash:low
   commit: google-antigravity/gemini-3.8-flash:low
   web: web/searxng
-  default: google-antigravity/gemini-4-argon
   judge: typesafe/jev-latest
   dictation: local/parakeet-tdt-0.6b-v3
   speech: local/kokoro
   image: google-antigravity/gemini-3.1-flash-image
+  default: google-antigravity/gemini-4-argon
 modelPresets:
   spread:
     modelRoles:
@@ -86,6 +86,23 @@ modelPresets:
       speech: local/kokoro
       image: google-antigravity/gemini-3.1-flash-image
     defaultThinkingLevel: auto
+  gemini-opencode:
+    modelRoles:
+      slow: google-antigravity/claude-opus-5-5:medium
+      plan: google-antigravity/claude-opus-5-5-high:high
+      advisor: google-antigravity/claude-opus-5-5-medium:medium
+      task: google-antigravity/claude-opus-5-5-medium:medium
+      vision: google-antigravity/gemini-3.8-flash:medium
+      smol: google-antigravity/gemini-3.8-flash:minimal
+      tiny: google-antigravity/gemini-3.8-flash:low
+      commit: google-antigravity/gemini-3.8-flash:low
+      web: web/searxng
+      default: google-antigravity/gemini-4-argon
+      judge: typesafe/jev-latest
+      dictation: local/parakeet-tdt-0.6b-v3
+      speech: local/kokoro
+      image: google-antigravity/gemini-3.1-flash-image
+    defaultThinkingLevel: auto
 task:
   agentModelOverrides:
     scout: "@smol"
@@ -122,13 +139,14 @@ retry:
       - web/mojeek
       - web/public
     default:
-      - google-antigravity/claude-opus-5-5
       - google-antigravity/gemini-3.8-flash
+      - opencode-go/deepseek-v4.1-flash
 bashInterceptor:
   enabled: true
 display:
   showTokenUsage: true
   cacheMissMarker: true
+  hideToolActivity: false
 lsp:
   diagnosticsOnEdit: true
 skills:
