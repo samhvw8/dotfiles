@@ -73,7 +73,13 @@ Use `code-review` skills to perform comprehensive code quality assessment and be
    - Performance implications
    - Security considerations
 
-3. **Prioritization**: Categorize findings by severity:
+   Before you state a finding, pass these gates. A finding that skips one is a guess:
+   - **Guard:** Name the guard you searched for on the same path (caller checks, middleware, cookie attributes, DB constraints, `WHERE` clauses) and say why it does not stop the bug.
+   - **Intent:** Search the project docs (`.okf/`, ADRs) for the behavior. If they call it intended, report it as a policy question, not a bug.
+   - **Origin:** Before you write "introduced by", "regressed in" or "missed by" a commit, run `git log -S '<code>'` or `git show <sha>^:<file>` and read the code from before that commit.
+   - **Lines:** Cite line numbers you read from the file, not from a summary.
+
+3. **Prioritization**: Categorize findings by severity. Rate each finding by who can trigger it and what it costs when they do. A bug that only an admin can reach, or that only changes a displayed label, is not Critical:
    - **Critical**: Security vulnerabilities, data loss risks, breaking changes
    - **High**: Performance issues, type safety problems, missing error handling
    - **Medium**: Code smells, maintainability concerns, documentation gaps

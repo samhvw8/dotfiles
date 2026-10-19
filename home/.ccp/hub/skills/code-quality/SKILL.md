@@ -66,6 +66,12 @@ Claim a result only after running the command that proves it in this session and
 
 **Gate:** IDENTIFY → RUN → READ → VERIFY → THEN claim
 
+**Review findings** (yours or a subagent's) need four more checks before you report them:
+1. **Guard:** Name the guard you searched for on the same path, and say why it does not stop the bug.
+2. **Intent:** Search `.okf/` and other project docs for the behavior. Documented as intended → a policy question, not a bug.
+3. **Origin:** Before you blame a commit, run `git log -S` or `git show <sha>^:<file>`. Do not infer old behavior from a commit message.
+4. **Lines:** Cite line numbers you read from the file, not from an agent summary.
+
 ---
 
 ## Refactoring
