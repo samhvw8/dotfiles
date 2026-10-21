@@ -30,16 +30,6 @@ commit = 'dbd4588f9e1033efb41dad4bef2f7947c8993d44'
 updated = 2026-10-21T07:46:47.294656+07:00
 installed = ['skills/frontend-design']
 
-[sources.'kaankiziltug/logo-design-skill']
-registry = 'github'
-provider = 'git'
-url = 'https://github.com/kaankiziltug/logo-design-skill.git'
-path = 'sources/kaankiziltug--logo-design-skill'
-ref = 'main'
-commit = '734090317a2155c5bf1ae8bd4cc85c6848a0128f'
-updated = 2026-10-21T07:46:49.868929+07:00
-installed = ['skills/logo-design']
-
 [sources.'morluto/rea']
 registry = 'github'
 provider = 'git'
@@ -49,15 +39,6 @@ ref = 'main'
 commit = 'd0067ba34a39ea47dd7e11bb2e6169bc0938cc3f'
 updated = 2026-10-21T07:46:39.72677+07:00
 installed = ['skills/reverse-engineer-anything']
-
-[sources.'nyblnet/bento']
-registry = 'manual'
-provider = 'git'
-url = 'https://github.com/nyblnet/bento'
-path = 'sources/nyblnet--bento'
-commit = '2db1c592779a7d42b41148bd5bf39a070b4598f6'
-updated = 2026-10-21T07:46:42.265448+07:00
-installed = ['skills/bento-slides']
 
 [sources.'pbakaus/impeccable']
 registry = 'github'
@@ -98,16 +79,6 @@ ref = 'main'
 commit = '9919c161a7f0dd99a0ecb736efa3fa9e0c9da297'
 updated = 2026-10-21T07:46:44.630776+07:00
 installed = ['skills/okf', 'skills/validate', 'skills/visualize', 'skills/backfill']
-
-[sources.'trycua/cua']
-registry = 'github'
-provider = 'git'
-url = 'https://github.com/trycua/cua.git'
-path = 'sources/trycua--cua'
-ref = 'main'
-commit = '15fa9a4c0cab48ca8a9a047685d3488ffb9ce4c6'
-updated = 2026-10-21T07:46:27.898836+07:00
-installed = ['skills/gui-automation']
 
 [sources.'typesafe-ai/skills']
 registry = 'github'
