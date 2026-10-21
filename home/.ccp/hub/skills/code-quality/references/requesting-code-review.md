@@ -31,7 +31,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 **2. Dispatch code-reviewer subagent:**
 
-Use the Agent tool with `subagent_type: deep-reviewer` (or run `/code-review`), and put these in the prompt:
+Use the Agent tool with `subagent_type: code-reviewer` (or run `/code-review`), and put these in the prompt:
 
 **Placeholders:**
 - `{WHAT_WAS_IMPLEMENTED}` - What you just built
