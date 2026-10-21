@@ -36,8 +36,8 @@ provider = 'git'
 url = 'https://github.com/morluto/rea.git'
 path = 'sources/morluto--rea'
 ref = 'main'
-commit = 'f801b2fbfd28f4e3713adefddc7bd73db44c284c'
-updated = 2026-10-21T16:35:22.402418+07:00
+commit = 'd0067ba34a39ea47dd7e11bb2e6169bc0938cc3f'
+updated = 2026-10-21T07:46:39.72677+07:00
 installed = ['skills/reverse-engineer-anything']
 
 [sources.'pbakaus/impeccable']
@@ -66,8 +66,8 @@ provider = 'git'
 url = 'https://github.com/samhvw8/thinking-skills.git'
 path = 'sources/samhvw8--thinking-skills'
 ref = 'main'
-commit = '45911bc1a564b0c230cf9b71b2a7e7e6a2884846'
-updated = 2026-10-21T16:36:19.801759+07:00
+commit = '149e66cfbba10ed38a96d41349d7aa59c84d4ab0'
+updated = 2026-10-21T07:35:28.471316+07:00
 installed = ['skills/heavy-think', 'skills/council', 'skills/debate', 'skills/creative', 'skills/ambition']
 
 [sources.'scaccogatto/okf-skills']
