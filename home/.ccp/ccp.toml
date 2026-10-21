@@ -156,16 +156,6 @@ ref = 'main'
 commit = '525732a474a14224d46469c2b85737dbcdc23e07'
 updated = 2026-10-08T19:55:28.265046+07:00
 
-[sources.'samhvw8/ambition-skill']
-registry = 'github'
-provider = 'git'
-url = 'https://github.com/samhvw8/ambition-skill.git'
-path = 'sources/samhvw8--ambition-skill'
-ref = 'main'
-commit = '88dcaf060012275ea9bfddddfec56f200aa254ae'
-updated = 2026-10-17T16:29:50.193656+07:00
-installed = ['skills/ambition']
-
 [sources.'samhvw8/claude-code-profile']
 registry = 'github'
 provider = 'git'
@@ -243,3 +233,13 @@ path = 'sources/wshobson--agents'
 ref = 'main'
 commit = '46891e7e60da0e52baf1050b7b6391b64e84c6d9'
 updated = 2026-10-08T19:55:37.382895+07:00
+
+[sources.'samhvw8/thinking-skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/samhvw8/thinking-skills.git'
+path = 'sources/samhvw8--thinking-skills'
+ref = 'main'
+commit = '149e66cfbba10ed38a96d41349d7aa59c84d4ab0'
+updated = 2026-10-21T07:35:28.471316+07:00
+installed = ['skills/heavy-think', 'skills/council', 'skills/debate', 'skills/creative', 'skills/ambition']
