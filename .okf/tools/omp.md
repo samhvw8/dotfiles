@@ -41,6 +41,8 @@ sources:
 
 After `mise bootstrap` links `home/.omp/agent/` and `ccp bootstrap` runs, run `ccp omp sync` once: from then on `ccp` keeps `AGENTS.md`, `RULES.md`, `skills/`, and `agents/` current whenever the active profile changes.
 
+`AGENTS.md` is a link to the profile's `CLAUDE.md`, so a change to the global instructions reaches omp with no sync; `ccp` reports it as "occupied by a file ccp did not create" and leaves it. `ccp` replaces only links it made, so an agent link made another way (for example straight into this repository) goes stale on unlink: delete it and run `ccp omp sync`. omp skips an agent whose frontmatter is not valid YAML (quote a `description:` that contains `: `) or that sets `model: inherit`; Claude Code treats an omitted `model` the same as `inherit` when `CLAUDE_CODE_SUBAGENT_MODEL` is unset, so leave the line out.
+
 [^omp-dir]: home/.omp/agent
 [^dotfiles-conf]: Shared dotfiles config
 [^claude-mcp]: setup-claude-mcp.sh

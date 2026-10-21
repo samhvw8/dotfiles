@@ -1,0 +1,30 @@
+{
+  "skill_name": "project-bootstrap",
+  "notes": "Run with a throwaway workspace root that has the real ~/workspace/CLAUDE.md copied in; tell the agent that root stands for ~/workspace. Script checks are marked script.",
+  "evals": [
+    {
+      "id": "new-tool",
+      "prompt": "create new project in ~/workspace for a small python cli that tracks rising chinese github repos daily. init okf and agent md and claude md for it, mise too",
+      "expected_output": "Creates tools/<kebab-name>/ (a CLI is a tool), git init, a stack .gitignore, mise.toml pinning python with real tasks, AGENTS.md describing the project and the OKF update rule, CLAUDE.md that is only @AGENTS.md, a valid .okf bundle with real concepts, asks before codegraph init, does not commit, gives the full path.",
+      "assertions": [
+        {"text": "project is under tools/ in kebab-case", "script": true},
+        {"text": ".git, .gitignore, mise.toml, AGENTS.md exist", "script": true},
+        {"text": "CLAUDE.md content is exactly @AGENTS.md", "script": true},
+        {"text": "OKF validator passes on .okf", "script": true},
+        {"text": "codegraph init did not run", "script": true},
+        {"text": "no commit was made", "script": true},
+        {"text": "AGENTS.md says to update .okf in the same change", "script": true}
+      ]
+    },
+    {
+      "id": "adopt-existing",
+      "prompt": "move this code into a new project under workspace and setup okf for this project based on exits docs",
+      "expected_output": "Moves the scratch folder (with its README and docs/) into the right category, keeps its git history, builds the OKF concepts from the existing docs instead of copying them wholesale, and writes AGENTS.md and CLAUDE.md.",
+      "assertions": [
+        {"text": "original git history is preserved (same root commit)", "script": true},
+        {"text": "OKF validator passes", "script": true},
+        {"text": "concepts reflect the existing docs' content", "script": false}
+      ]
+    }
+  ]
+}

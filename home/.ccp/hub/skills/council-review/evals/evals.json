@@ -1,0 +1,26 @@
+{
+  "skill_name": "council-review",
+  "notes": "Run in a throwaway repo with a small module, a passing test suite, and a last commit that seeds two real bugs. For the pasted-review case, also give a review with one true and two false claims. Script checks are marked script.",
+  "evals": [
+    {
+      "id": "review-verdict-fix",
+      "prompt": "call council of 3 sonnet to review our last commit then vedict then fix it",
+      "expected_output": "States the scope (the last commit) and the panel (3 sonnet) before spawning, gives reviewers no session conclusions, merges findings, verifies each with a test or probe, fixes only confirmed ones starting from failing tests, reruns the suite, has a fresh reviewer check the fixes, and reports one row per finding.",
+      "assertions": [
+        {"text": "both seeded bugs have a new test that fails before the fix and passes after", "script": true},
+        {"text": "full test suite passes at the end", "script": true},
+        {"text": "no commit was made", "script": true},
+        {"text": "every finding has a verdict with evidence", "script": false}
+      ]
+    },
+    {
+      "id": "pasted-review",
+      "prompt": "[pasted review with 3 claims] vedict this then fix all confirmed bug for me",
+      "expected_output": "Spawns no review panel, checks each pasted claim against the code, confirms the true one with a reproducing test, rejects the two false ones with evidence, and fixes only the true one.",
+      "assertions": [
+        {"text": "only the true claim's code changed", "script": true},
+        {"text": "the two false claims are marked REJECTED with a reason", "script": false}
+      ]
+    }
+  ]
+}

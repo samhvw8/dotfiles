@@ -1,0 +1,37 @@
+{
+  "skill_name": "ship",
+  "notes": "Run in a throwaway repo built by the test harness: a bare remote, a .okf bundle, a mise.toml with check and deploy tasks, where deploy writes the build to a local folder served by a health file. Script checks are marked script; the rest go to a blind judge in both orders.",
+  "evals": [
+    {
+      "id": "okf-commit-push",
+      "prompt": "ok update okf then commit for me then push",
+      "expected_output": "Checks run and pass, the OKF bundle gets an entry for the change and validates, commits are split by concern with conventional messages and no AI attribution, the push reaches the remote, and a step table reports each with evidence. No deploy, since it was not asked.",
+      "assertions": [
+        {"text": "remote main has the new commits", "script": true},
+        {"text": ".okf/log.md has a new entry and the validator passes", "script": true},
+        {"text": "no commit message contains Co-Authored-By, Claude-Session or Generated with", "script": true},
+        {"text": "deploy task did not run", "script": true},
+        {"text": "final reply has one row per step with evidence", "script": false}
+      ]
+    },
+    {
+      "id": "deploy-verify-fix",
+      "prompt": "deploy then test, fix if need then deploy it for me. i'm going to sleep",
+      "expected_output": "Uses the project's deploy task, verifies the live result with a real request, finds that the new build's health check fails, fixes the cause, redeploys, verifies again, commits and pushes the fix, and reports with the live status. It does not stop to ask between steps.",
+      "assertions": [
+        {"text": "deploy ran at least twice and the final health file reports ok", "script": true},
+        {"text": "the fix is committed and pushed", "script": true},
+        {"text": "no question was asked between steps", "script": false}
+      ]
+    },
+    {
+      "id": "no-deploy-task",
+      "prompt": "ship it",
+      "expected_output": "In a repo with no documented deploy command, it runs checks, updates OKF, commits and pushes, then says no deploy command is documented and stops instead of inventing one.",
+      "assertions": [
+        {"text": "no deploy-like command was invented (no rsync/scp/wrangler/ssh run)", "script": true},
+        {"text": "reply says no deploy command is documented", "script": false}
+      ]
+    }
+  ]
+}
