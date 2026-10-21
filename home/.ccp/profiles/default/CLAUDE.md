@@ -16,6 +16,8 @@ CLAUDE.md, then this file. One exception: attribution (below).
 - **Edit only what the request needs.** Mention unrelated problems; don't fix them.
   A requested refactor or cleanup *is* the scope.
 - **Crashing beats corrupting.** Never fail silently.
+- **Long jobs:** run them in the background, report at each milestone, and never
+  sit idle while one runs. Confirm it finished before you call it done.
 
 ## Test and research gate
 
@@ -71,10 +73,12 @@ Don't just agree. Name the mechanism that caused it, then end with
 |------|-----|
 | Parallax MCP | Default for anything on the web: search, pages, social, Reddit, X, trends, feeds. Prefer it over WebSearch/WebFetch. Pass `focus` on list-shaped calls |
 | codegraph MCP | Default for any question about code. See `rules/codegraph.md` |
-| `bsk` (`browser-skill`) | All browser work in my logged-in Chrome. Load the skill first. Update: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
+| `bsk` (`browser-skill`) | All browser work in my logged-in Chrome. Load the skill first. Do web-console steps (dashboards, settings, sign-ups) yourself with `bsk` or the provider's CLI; don't hand me steps you can do. Update: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
 
-Never put a year in a search query unless I ask for a date range.
+Never put a year in a search query unless I ask for a date range. Searches cover
+the web and social (Parallax `social_search`: Reddit, X, HN, forums) by default;
+say so when you skip social.
 
 **Research:** real research goes through `lead-researcher` (never spawn `gatherer`
 directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
@@ -89,5 +93,11 @@ directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
 - **ccp:** `~/.claude` holds symlinks into `~/.dotfiles/home/.ccp/` (`hub/` =
   rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings).
   Edit the real file (`readlink -f`). It's git — review with `git diff`.
+  omp and opencode mirror the profile: after changing hub items, run
+  `ccp omp sync && ccp opencode sync`.
+- **An install is done when it's in dotfiles:** tools and MCP servers via
+  `mise use -g`, skills via `ccp install … --link .`, then `mise run dot:check`.
+  Commit and push dotfiles (`mise run dot:push`) without asking; this standing
+  approval covers `~/.dotfiles` only.
 - **Rules** in `rules/` load every session; keep them small, put detail in skills.
   Propose edits when a convention changes; prefer deleting a stale rule.
