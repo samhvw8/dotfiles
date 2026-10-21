@@ -12,6 +12,14 @@ Every gatherer assignment (1 sub-question × 1 language) runs as a **squad**. Go
 
 Every slice report ends with an `UNOPENED LEADS:` section (up to 10 URLs, 5–10 word reason each). The opener gets the union, issue threads and Reddit threads first.
 
+## Fit the squad to the source stack
+
+The three slices are source slices, so the confirmed source stack decides which ones run. The table above is the full squad for a code or dev topic.
+- **A slice whose sources are out of the stack** is dropped or re-aimed at an in-stack source of the same shape, with the same budget. For a consumer, tax or business topic with GitHub left out, the code slice becomes an app-store reviews + X slice (20 calls, last 5 reserved to open the best reviews and posts it saw). For an academic topic, it becomes X only (15 calls). Say which in the plan, so the user who agreed to "no GitHub" does not get GitHub searches.
+- **Remove the lead-prompt lines for helpers that do not exist.** With no code slice, delete "Do not run `gh search`; the code helper owns the GitHub search quota" and the `gh issue view` line; with no social slice, the lead may call Reddit itself, one call at a time.
+- **A sub-question that primary documents settle** (release notes, version policy, pricing pages, a statute) can run as lead + docs slice + opener (3 agents). Keep the full squad wherever practitioner experience is the evidence: that is where slices add about half the gems (Evidence below).
+- Count the squad you actually run when you size the plan: agents = the sum of members, not assignments × 5 by habit.
+
 ## Evidence (A/B rounds 2026-10-09: `~/workspace/research/261009-squad-r2/result.md`, r3, r4, `261009-squad-v2/result.md`, `261009-squad-r6/result.md`, `261009-squad-r7/result.md`)
 
 | Change | Result | Kept |

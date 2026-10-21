@@ -1,6 +1,6 @@
 ---
 name: lead-researcher
-description: "Entry point for all multi-source research — comparing options, evaluating tools, surveying an ecosystem, deep or 'team research' (live supervised agent-team venue). Orchestrates gatherer agents; the brain decides agent count, languages (default EN + ZH + ZH-TW), iterations, and depth from the question. Never spawn gatherer agents directly — they go through this skill. Not for single-fact lookups ('what version is X', 'is Y deprecated') — those are one WebSearch."
+description: "Entry point for all multi-source research — comparing options, evaluating tools, surveying an ecosystem, deep or 'team research' (live supervised agent-team venue). Orchestrates gatherer agents; the brain sizes the plan to the decision and picks agent count, languages (default EN + ZH + ZH-TW, assigned per sub-question), iterations, and depth from the question. Never spawn gatherer agents directly — they go through this skill. Not for single-fact lookups ('what version is X', 'is Y deprecated') — those are one WebSearch."
 ---
 
 # Lead Researcher
@@ -23,13 +23,13 @@ Format: `[topic]` — everything else (agents, languages, depth) is decided by t
 
 | Parameter | Default | Override |
 |-----------|---------|----------|
-| **Languages** | EN + ZH + ZH-TW | User specifies, or brain adds based on topic |
-| **Agent count** | Brain decides based on sub-topics × languages | No fixed limit — use what the question needs |
+| **Languages** | EN + ZH + ZH-TW as the candidate set | User specifies; brain adds languages the topic needs, and leaves a language off a sub-question it has nothing to add to, with the reason in the plan ([Language per sub-question](#language-per-sub-question)) |
+| **Agent count** | Brain sizes it to the decision ([Size the plan](#size-the-plan-to-the-decision)) | No fixed limit: big, contested, multi-source questions get big plans; a small pick gets a small one |
 | **Iterations** | Brain decides — stop when saturated | No preset count |
 | **Depth** | Brain decides — shallow for simple, deep for complex | Saturation curve, not a mode setting |
 | **Venue** | Inline (brain = main agent) or workflow (brain = opus sub-agent) | Brain picks based on expected complexity |
 
-**The brain (forager) decides everything.** No modes, no preset agent counts, no fixed iterations. The only hard default is languages: EN + ZH + ZH-TW when nothing is specified.
+**The brain (forager) decides everything.** No modes, no preset agent counts, no fixed iterations. The only default is the language set: EN + ZH + ZH-TW when nothing is specified. It is a set to choose from per sub-question, not a multiplier applied to every sub-question.
 
 ## Execution Engine
 
@@ -118,7 +118,7 @@ The menu of source types to pick from (with how to query each): [source-types](r
 | REASONING brain (per iteration) | `opus` | Weighs findings against hypotheses and owns the exit |
 | Synthesizer | `opus` | Needs deep reasoning to merge N reports into coherent analysis |
 
-Run every gatherer assignment as a squad: see [gather-squad](references/gather-squad.md) for members, slice prompts and merge rules. Never drop the Sonnet lead for a non-English language: Haiku drifts to English and content-farm sources there. Evidence: `~/workspace/knowledge/topics/ai-agents/small-models-as-subagent-workers.md`.
+Run every gatherer assignment as a squad: see [gather-squad](references/gather-squad.md) for members, slice prompts and merge rules. The slices are source slices, so they follow the confirmed source stack: a slice whose sources the user left out is dropped or re-aimed at an in-stack source ([gather-squad](references/gather-squad.md), Fit the squad to the source stack). Never drop the Sonnet lead for a non-English language: Haiku drifts to English and content-farm sources there. Evidence: `~/workspace/knowledge/topics/ai-agents/small-models-as-subagent-workers.md`.
 
 Without tiering, all agents inherit the parent model (usually Opus), consuming ~5x budget before synthesis. This is the #1 cause of incomplete research reports — the synthesis agent never runs.
 
@@ -198,7 +198,7 @@ After Phase 1 confirms the plan, if brain picks workflow venue, tell the user:
 
 > "I'll run this as a dynamic workflow (adaptive iterate loop)."
 
-Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, languages, budget ceiling, output path) so the workflow script encodes them.
+Then describe the research task with the word **"workflow"** in your message to trigger the workflow engine. Include ALL the planning details (sub-topics, the assignment table with its languages and squad members, budget ceiling, output path) so the workflow script encodes them. Pass the confirmed ceiling as `args.budgetCeiling`: the `200_000` fallback covers only about 2 full-squad assignments (150k gather ÷ ~75k per squad), so a larger plan left on the fallback SCRAMs before most squads report.
 
 Example trigger prompt (encodes the iterate loop, not a static pipeline):
 
@@ -310,21 +310,29 @@ Yes → Team venue (still do Phase 1 planning first). Requires `CLAUDE_CODE_EXPE
 
 ### Phase 1: Confirm Research Plan with User
 
-Before executing, present your research plan and let the user confirm or adjust. Keep it lightweight — one message, not 4 separate questions:
+Before executing, present your research plan and let the user confirm or adjust. Keep it lightweight — one message, not 4 separate questions. Write it after the Phase 2 decomposition, language assignment and sizing (below), so the message shows the plan you would actually run:
 
 ```
 "Here's my research plan:
 - Target: [what I understand you're asking about — disambiguate if needed]
-- Sub-topics: [list]
-- Languages: EN + ZH + ZH-TW [+ any others brain thinks relevant]
-- Sources: [recommended stack for this topic]
+- Sub-topics: [list — each one traces to something you asked or a criterion your decision turns on]
+- Languages: [per sub-topic, with a short reason for each language; default languages left off, and why]
+- Sources: [recommended stack for this topic; say whether GitHub is in]
+- Size: [N assignments ≈ M agents, ceiling ≈ X tokens]. Smaller option: [what it drops → N′ assignments, ≈ X′]. [Larger option, when the question could use more depth: what it adds → X″]
+[- Not included unless you want it: adjacent angles you think could matter]
 
 Adjust anything, or good to go?"
 ```
 
-The brain decides agent count, iterations, and depth — these are NOT confirmed with the user (implementation detail, not a plan parameter).
+The brain still decides iterations, gap-fill agents and when to stop; the user does not approve agents one by one. But the **size** is shown, because it is the cost of the run and only the user knows what the decision is worth. Recommend one size; always offer a smaller one that names what it gives up.
 
-**What IS confirmed:** the research TARGET (most important — catches wrong search terms), sub-topics, and source priority.
+**What IS confirmed:** the research TARGET (most important — catches wrong search terms), sub-topics, languages, source priority, and size.
+
+**Check that the plan holds together before you send it** (each of these went wrong in real runs):
+- The Size line's arithmetic is right (squad members summed over assignments = agents; the estimate comes from the formula in [Size the plan](#size-the-plan-to-the-decision)), and the ceiling is not below the estimate.
+- The message and the internal plan use the same numbers: agents, ceiling, saturation threshold, languages.
+- The Sources line matches the squads: if GitHub is out, no slice searches it and the lead prompts drop the `gh search` line.
+- Every assignment's language has a reason, and every sub-topic traces to the request.
 
 **Skip Phase 1 ONLY when:** user explicitly specified the target and sub-topics clearly, e.g. "compare Prisma vs Drizzle for PostgreSQL ORM."
 
@@ -333,10 +341,15 @@ The brain decides agent count, iterations, and depth — these are NOT confirmed
 1. **Apply confirmed settings** — use sub-topics, languages, and source stack from Phase 1
 2. **Read `references/language-matrix.md`** — look up T1/T2 languages for the topic's field (if not already done in Phase 1). This determines which languages to assign beyond the EN + ZH + ZH-TW default.
 3. **Identify elite forums per language** — see "Elite Forum Targeting" below. Include `site:` targets in agent prompts.
-4. **Decompose** — break topic into sub-questions using structured decomposition (see below)
-5. **Assign agents** — each agent gets **1 language + 1 sub-topic** (atomic, single responsibility). Use T1 languages from the matrix as primary assignments; add T2 languages when the topic is broad or T1 coverage comes back thin.
-6. **Iterations** — none preset; the brain stops on saturation (Phase 4)
-7. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
+4. **Decompose** — break topic into sub-questions using structured decomposition (see below). Every sub-question stays inside the request (Scope, below)
+5. **Assign agents** — each assignment gets **1 language + 1 sub-topic** (atomic, single responsibility) and runs as a squad. Put a language only on the sub-questions where it has evidence to add ([Language per sub-question](#language-per-sub-question)). Use T1 languages from the matrix as primary assignments; add T2 languages when the topic is broad or T1 coverage comes back thin.
+6. **Size and budget** — check the assignment count against the decision, and compute the ceiling from it ([Size the plan](#size-the-plan-to-the-decision))
+7. **Iterations** — none preset; the brain stops on saturation (Phase 4)
+8. **Set output path** — relative to current working directory: `./research/YYMMDD-<topic>/`
+
+Steps 4–6 come before the Phase 1 message, because that message shows their result; after the user replies, apply what they changed.
+
+**Terms used below:** an **assignment** is 1 sub-question × 1 language. A **squad** is the agents that run one assignment: a full squad is 5 (sonnet lead, 3 haiku slices, haiku opener; [gather-squad](references/gather-squad.md)). **Agents** = the sum of squad members. Keep the three apart in the plan; mixing them up is how a plan ends up with a ceiling for 12 agents and 60 agents to run.
 
 **Structured Decomposition** (any topic with more than one part)
 
@@ -361,26 +374,65 @@ Structured decomposition:
 
 The failure mode lens is the most commonly skipped and highest value.
 
-**Agent assignment: 1 language + 1 sub-topic per agent (atomic)**
+**Scope: every sub-question traces to the request**
 
-Each agent has a single, clear job. If you have 2 sub-topics and 3 languages, that's 6 agents — run them as a rolling pool, ≤6 in flight; when one returns, launch the next queued agent immediately.
+A sub-question is in scope when it answers something the user named, or a criterion their decision turns on ("tight budget" makes real monthly cost a sub-question; "some unmaintained modules" makes legacy-module breakage one). The lenses sharpen those sub-questions: the failure modes of the options asked about, the stakeholders who already use them, an alternative framing of the same decision ("neither: a $5 VPS"). They do not add a new population, market or product the user did not ask about. Asked about Vietnamese small businesses, "Chinese-owned firms in Vietnam" is a new population, and inventing it to give a default language something to do is padding. An adjacent angle you think matters goes in the plan's "Not included unless you want it" line, where the user can add it.
 
-Example for "compare auth solutions":
+When two sub-questions would send gatherers to the same sources (pricing traps and real bills; lock-in and vendor trajectory), merge them: one well-covered sub-question beats two thin ones, and each costs a squad per language.
+
+#### Language per sub-question
+
+EN + ZH + ZH-TW is the candidate set. Put a language on a sub-question when that language's community holds evidence the others don't: practitioner experience written in it, a local market, local vendors or local law. Leave it off when:
+- the sub-question is answered by primary documents in another language (release notes, version support policy, vendor pricing pages, a statute): a ZH squad there re-reads the EN docs;
+- the topic is local to a place outside the set (Vietnamese e-invoicing: VI primary, EN for analysis; ZH only with a concrete reason);
+- your Phase 0 scan already found the language only relays news from elsewhere. Give it the one sub-question where it is most likely to hold something (usually practitioner pain or failure modes), and let REASONING add more if it surprises you. A language you expect to be thin does not get a squad on every sub-question.
+
+Add languages the same way: DE for an evidence question whose main researchers publish in German, JA where a key case is Japanese. Each language in the plan carries a short reason; each default language you left off is listed with why, so the user can put it back.
+
+**Agent assignment: 1 language + 1 sub-topic per assignment (atomic)**
+
+Each assignment has a single, clear job and runs as a squad. With 2 sub-topics, EN on both, ZH on one and ZH-TW on none, that's 3 assignments, about 15 agents. Run them as a rolling pool, ≤6 in flight; when one returns, launch the next queued agent immediately.
+
+Example for "compare auth solutions" (provider docs are EN; ZH practitioners have self-hosting experience):
 
 ```
-In flight (≤6, launched together):
-  Agent 1: EN + "OAuth/OIDC providers comparison"
-  Agent 2: ZH + "OAuth/OIDC providers comparison"
-  Agent 3: ZH-TW + "OAuth/OIDC providers comparison"
-  Agent 4: EN + "self-hosted auth libraries"
-  Agent 5: ZH + "self-hosted auth libraries"
+Assignments:
+  A1: EN + "OAuth/OIDC providers comparison"
+  A2: EN + "self-hosted auth libraries"
+  A3: ZH + "self-hosted auth libraries"
+  (ZH-TW left off: thin community for this topic; REASONING may add it)
 
-Queued (each starts the moment any slot frees):
-  Agent 6: ZH-TW + "self-hosted auth libraries"
-  (brain may add follow-up agents as early results land)
+In flight (≤6): A1 lead + its 3 slices, A2 lead + A2 code slice
+Queued (each starts the moment any slot frees): the rest of A2, then A3, then the openers
+  (brain may add follow-up assignments as early results land)
 ```
 
-Simple question? 2 agents may suffice. Complex landscape? 10+ agents through the rolling pool. **Brain decides — no preset.**
+### Size the plan to the decision
+
+The plan's cost is its assignments: each full squad is about 5 × ~15k = 75k tokens per wave. A plan is the right size when every assignment could change the answer if it came back surprising. Read three things from the request:
+
+| Signal | Points smaller | Points larger |
+|--------|----------------|---------------|
+| What is decided | A pick among a few named options; reversible; small stakes in the user's own words ("small SaaS", "tight budget", "quick") | A survey of an ecosystem; "what does the evidence say"; a migration that is costly to undo |
+| Where the evidence lives | Mostly primary documents (pricing pages, release notes, the law) | Dispersed practitioner experience, contested studies, several countries or communities |
+| How contested | Sources agree | Sources contradict each other, or vendor SEO buries the signal |
+
+Starting points, not caps:
+
+| Question shape | Assignments in wave 1 | Example |
+|----------------|----------------------|---------|
+| Focused pick among named options | 3–5 (15–25 agents) | "Turso vs D1 vs Neon for a small SaaS on a tight budget" |
+| Decision with real switching cost, or one market with several kinds of evidence | 5–8 | "Move our RN app to the New Architecture? 40 native modules"; "what Vietnamese small businesses use for e-invoicing" |
+| Survey, evidence review, multi-country, contested literature | 8–15 | "Full ecosystem survey of MCP servers"; "does productivity hold on a 4-day week" |
+
+Size up when the question earns it: do not starve a survey or a contested evidence question to hit a small number. Within any size, put the depth where the decision is: the sub-question that carries a contested, load-bearing claim gets more languages or an early gap-fill; the sub-question primary docs settle gets one assignment. Phase 4 gap-fill is how a plan grows where gaps show up, which is cheaper than front-loading thin assignments.
+
+**Budget follows the plan, never the other way round:**
+- gather_est = agents × ~15k × expected waves (1 + the gap-fill share you expect); estimate = max(gather_est + 50k, gather_est ÷ 0.8), so that after the script fences its 20% synthesis reserve the gather ceiling still covers the gather you listed. This is the [phase-zero formula](references/adaptive-research/phase-zero-planning.md), counting every squad member as an agent.
+- The ceiling is at least the estimate. Never set it below your own estimate: the gather ceiling then SCRAMs to synthesis before the squads you listed report, and the plan says one thing while the run does another.
+- If the user's budget, or the preset they choose, is lower than the estimate, cut assignments until the estimate fits, and say what you cut.
+- If you think ~15k per agent is wrong for this plan (for example, mostly docs-only squads), change the unit in the formula and show it. Do not discount it silently.
+- The smaller option in Phase 1 is a smaller plan (fewer assignments, languages or squad members), with its own estimate. A plan that is already 1–2 assignments can offer an inline single-pass run instead.
 
 ### Elite Forum Targeting
 
@@ -413,7 +465,7 @@ ZH: T00ls, 看雪, 先知社区 (xz.aliyun.com), 52pojie. RU: wasm.in, Codeby. E
 
 This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. Brain decides how many agents.
 
-Spawn `gatherer` agents as plain subagents (no `name`). Spawn each assignment as a squad in one message: a `model: "sonnet"` lead with the prompt below, plus three `model: "haiku", effort: "high"` slices (code, social, docs) with the slice and budget lines from [gather-squad](references/gather-squad.md). When the three slices return, spawn one opener on their `UNOPENED LEADS`. Give each member its own report path. Each prompt:
+Spawn `gatherer` agents as plain subagents (no `name`). Spawn each assignment as a squad in one message: a `model: "sonnet"` lead with the prompt below, plus three `model: "haiku", effort: "high"` slices (code, social, docs) with the slice and budget lines from [gather-squad](references/gather-squad.md). When the three slices return, spawn one opener on their `UNOPENED LEADS`. Give each member its own report path. Spawn the squad the plan confirmed: a slice dropped or re-aimed for the source stack stays that way, and when there is no code slice (GitHub out of the stack) or no social slice, delete the lead-prompt line that hands that work to the missing helper. Each prompt:
 
 ```
 Research: [1 specific sub-question]
@@ -549,6 +601,11 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 | "It doesn't exist" without questioning your search term | If user implies X is real but data says nothing → YOU likely searched for the wrong thing. Follow search redirects, ask user, or pivot |
 | Reporting single data points without distribution | Report range (min-median-max), flag small sample sizes, note if data is from one source vs cross-verified |
 | Spawning agents with unverified proper nouns | MUST do 2-3 inline searches in Phase 0 to verify targets exist as named. User terms are hypotheses — approximate, misremembered, wrong domain. Wrong search terms = entire research wasted |
+| Every default language on every sub-question | A language goes where its community has evidence to add, with the reason in the plan. Primary-doc sub-questions get the docs' language; a language expected to be thin gets one sub-question, not all |
+| Inventing a sub-topic or population the user did not ask about (often to give a default language work) | Sub-questions trace to the request; adjacent angles go in the "Not included unless you want it" line |
+| A plan sized by the cross product, not the decision; the user never sees the size | Size the plan to the decision; show the Size line with a smaller option |
+| A ceiling below your own estimate, or too small for the squads listed | Ceiling ≥ estimate. If the budget is lower, cut assignments and say what was cut |
+| Sources line says "no GitHub" while squads keep a GitHub code slice | Drop or re-aim the slice and remove its lead-prompt line ([gather-squad](references/gather-squad.md)) |
 | Skipping Target Verification on "quick" research | Target Verification is NEVER skippable — 2-3 searches (~free) vs N wasted agent spawns (~expensive). Quick reduces depth, not verification |
 
 ## Related
