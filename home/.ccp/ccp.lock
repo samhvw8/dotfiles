@@ -1,0 +1,29 @@
+# Written by ccp: the version each source in ccp.toml is locked to.
+# Do not edit by hand; 'ccp source update' moves it.
+
+version = 1
+
+[sources]
+[sources.'alchaincyf/huashu-design']
+commit = '798c4235ebff03d5c45e3c8affdf5e9d18f9dfa7'
+
+[sources.'anthropics/skills']
+commit = 'dbd4588f9e1033efb41dad4bef2f7947c8993d44'
+
+[sources.'morluto/rea']
+commit = 'd0067ba34a39ea47dd7e11bb2e6169bc0938cc3f'
+
+[sources.'pbakaus/impeccable']
+commit = 'dad8dbb3aac21ad1fa236c110315ef4abece23e8'
+
+[sources.'samhvw8/claude-code-profile']
+commit = '3846bdfc263d7b56b18ec3a26c31bd05ee5cda41'
+
+[sources.'samhvw8/thinking-skills']
+commit = '9ee9440f8bd19b3e5cc7e30b80a7807199899363'
+
+[sources.'scaccogatto/okf-skills']
+commit = '9919c161a7f0dd99a0ecb736efa3fa9e0c9da297'
+
+[sources.'typesafe-ai/skills']
+commit = '65a39f393687675ce170e6094757de20370365b9'

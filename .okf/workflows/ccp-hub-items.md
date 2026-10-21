@@ -4,7 +4,7 @@ title: "Keep ccp hub items"
 description: "Which parts of ~/.ccp live in the repository and how to store hub items created by hand."
 tags: [ccp, claude-code]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-10-02T09:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-21T10:30:00Z }
 sources:
   - id: check
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/dot-check.py
@@ -13,7 +13,8 @@ sources:
 
 # What is stored
 
-`home/.ccp` holds `ccp.toml`, the hub (skills, agents, hooks, rules, bundles,
+`home/.ccp` holds `ccp.toml` (the sources and what each installed), `ccp.lock` (the commit each
+source is locked to; written by ccp next to the real `ccp.toml`, never edited by hand), the hub (skills, agents, hooks, rules, bundles,
 output styles)
 and profile files (`settings.json`, `profile.toml`, `CLAUDE.md`). Not stored:
 skills installed from ccp sources (`~/.ccp/sources`, `~/.ccp/store`; `ccp
