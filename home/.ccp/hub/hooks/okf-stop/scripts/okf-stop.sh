@@ -10,8 +10,10 @@
 # background call. The cwd's repo takes every call, since relative paths name no repo.
 # So a repo another session or process changes while this one is idle or only read it
 # is not this session's change. If a repo with .okf/ has counted changes outside .okf/
-# and none inside, block the stop once per repo per session with a pointer to the okf
-# skill. Like okf-docs, it carries no OKF rules: the skill is the source of truth.
+# that are newer than its latest counted .okf/ change, block the stop with a pointer to
+# the okf skill. An early bundle update does not cover later work. After a block, the
+# repo is checked again only for changes newer than the ones reported. Like okf-docs,
+# it carries no OKF rules: the skill is the source of truth.
 
 command -v jq >/dev/null 2>&1 || exit 0
 
@@ -126,34 +128,42 @@ roots=$(cut -f1 "$state/windows" | sort -u)
 report=""
 while IFS= read -r r; do
   [ -z "$r" ] && continue
+  # The marker holds the newest change time already reported for this root.
   marker="$state/$(printf '%s' "$r" | shasum | cut -c1-16)"
-  [ -e "$marker" ] && continue
-  # Keep a change only if its time falls in a window of this root (2s for rounding).
-  changed=$( {
+  mark=0; [ -s "$marker" ] && read -r mark < "$marker"
+  case $mark in ''|*[!0-9]*) mark=0 ;; esac
+  # Keep a change only if its time falls in a window of this root (2s for rounding),
+  # as "<epoch> <path>".
+  timed=$( {
     session_changes "$r"
     [ -n "$since" ] && git -C "$r" log --since="$since" --name-only --format=format:%x01%ct 2>/dev/null \
       | awk 'index($0, "\001") == 1 { t = substr($0, 2); next } NF { print t, $0 }'
   } | awk -v r="$r" '
       FILENAME == ARGV[1] { split($0, a, "\t"); if (a[1] == r) { n++; s[n] = a[2]; e[n] = a[3] }; next }
-      { m = $1; p = $0; sub(/^[0-9]+ /, "", p)
-        for (i = 1; i <= n; i++) if (m >= s[i] - 2 && m <= e[i] + 2) { print p; next } }' \
+      { m = $1
+        for (i = 1; i <= n; i++) if (m >= s[i] - 2 && m <= e[i] + 2) { print; next } }' \
       "$state/windows" - \
-    | grep -v '^$' \
-    | grep -vE '(^|/)(CLAUDE|SKILL|AGENTS|README|CHANGELOG)\.md$|(^|/)rules/[^/]+\.md$|(^|/)\.claude/' \
-    | sort -u )
+    | grep -vE ' (.*/)?(CLAUDE|SKILL|AGENTS|README|CHANGELOG)\.md$| (.*/)?rules/[^/]+\.md$| (.*/)?\.claude/' \
+    | grep -vE ' (.*/)?(uv\.lock|poetry\.lock|package-lock\.json|pnpm-lock\.yaml|yarn\.lock|bun\.lockb?|Cargo\.lock|go\.sum|Gemfile\.lock|composer\.lock|mise\.lock)$' )
+  # A change counts only if it is newer than the latest bundle change and newer than
+  # the last report, so work after an early bundle update is still caught.
+  base=$(printf '%s\n' "$timed" | awk -v m="$mark" '
+    { p = $0; sub(/^[0-9]+ /, "", p) } p ~ /^\.okf\// && $1 > m { m = $1 } END { print m }')
+  changed=$(printf '%s\n' "$timed" | awk -v b="$base" '
+    { p = $0; sub(/^[0-9]+ /, "", p) } NF > 1 && p !~ /^\.okf\// && $1 > b')
   [ -z "$changed" ] && continue
-  printf '%s\n' "$changed" | grep -q '^\.okf/' && continue
-  touch "$marker"
+  printf '%s\n' "$changed" | awk '$1 > m { m = $1 } END { print m }' > "$marker"
+  changed=$(printf '%s\n' "$changed" | sed 's/^[0-9]* //' | sort -u)
   files=$(printf '%s\n' "$changed" | head -n 10 | sed 's/^/  - /')
   more=$(( $(printf '%s\n' "$changed" | wc -l) - 10 ))
   [ "$more" -gt 0 ] && files="$files"$'\n'"  - … and $more more"
-  report="$report"$'\n'"$r/.okf — changed this session, bundle untouched:"$'\n'"$files"
+  report="$report"$'\n'"$r/.okf — changed this session after the bundle's latest update:"$'\n'"$files"
 done <<< "$roots"
 
 [ -z "$report" ] && exit 0
 
 reason="OKF check before stopping:$report
 
-If these changes affect anything the bundle describes, load the \`okf\` skill, update the affected concepts and log.md, and run the validator. If they don't, say so in one line and stop. This check runs once per repo per session."
+If these changes affect anything the bundle describes, load the \`okf\` skill, update the affected concepts and log.md, and run the validator. If they don't, say so in one line and stop. A repo is checked again only for changes newer than these."
 
 jq -n --arg r "$reason" '{decision: "block", reason: $r}'

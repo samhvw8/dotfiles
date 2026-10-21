@@ -1,7 +1,7 @@
 /**
  * okf-stop — omp port of the Claude Code Stop hook in ~/.ccp/hub/hooks/okf-stop.
  * Catches work that changed a repo with an `.okf/` bundle without touching the
- * bundle, and asks for one more turn to update it (once per repo per session).
+ * bundle since its latest bundle change, and asks for one more turn to update it.
  *
  * Runs the hub script itself, so the change detection has one source of truth.
  * The script reads a Claude Code transcript for the session start time and the
@@ -86,7 +86,7 @@ export default function okfStop(pi: ExtensionAPI) {
 			return;
 		}
 		if (!reason) return;
-		// The script marks each repo it reports, so this blocks at most once per repo.
+		// The script records what it reported per repo, so it blocks again only for newer changes.
 		return { decision: "block" as const, reason };
 	});
 

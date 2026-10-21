@@ -78,4 +78,38 @@ r="$tmp/r8"; mkrepo "$r"; t="$tmp/t8.jsonl"
 rm "$r/src/a.txt"; age $((now-800)) "$r/src"
 expect_block "file deleted during this session's tool call" "$(run s8 "$t" "$tmp")"
 
+# 9. The bundle was updated early; code changed after that.
+r="$tmp/r9"; mkrepo "$r"; t="$tmp/t9.jsonl"
+{ start $((now-3600)); call $((now-2000)) c1 "{\"file_path\":\"$r/.okf/index.md\"}"; result $((now-1998)) c1
+  call $((now-1000)) c2 "{\"file_path\":\"$r/src/a.txt\"}"; result $((now-998)) c2; } > "$t"
+echo y > "$r/.okf/index.md"; age $((now-1999)) "$r/.okf/index.md"
+echo b > "$r/src/a.txt"; age $((now-999)) "$r/src/a.txt"
+expect_block "code changed after the bundle was updated" "$(run s9 "$t" "$tmp")"
+
+# 10. Code changed, then the bundle was updated.
+r="$tmp/r10"; mkrepo "$r"; t="$tmp/t10.jsonl"
+{ start $((now-3600)); call $((now-2000)) c1 "{\"file_path\":\"$r/src/a.txt\"}"; result $((now-1998)) c1
+  call $((now-1000)) c2 "{\"file_path\":\"$r/.okf/index.md\"}"; result $((now-998)) c2; } > "$t"
+echo b > "$r/src/a.txt"; age $((now-1999)) "$r/src/a.txt"
+echo y > "$r/.okf/index.md"; age $((now-999)) "$r/.okf/index.md"
+expect_pass "bundle updated after the code change" "$(run s10 "$t" "$tmp")"
+
+# 11-12. After a block: no new change passes; a later change blocks again.
+r="$tmp/r11"; mkrepo "$r"; t="$tmp/t11.jsonl"
+{ start $((now-3600)); call $((now-2000)) c1 "{\"file_path\":\"$r/src/a.txt\"}"; result $((now-1998)) c1; } > "$t"
+echo b > "$r/src/a.txt"; age $((now-1999)) "$r/src/a.txt"
+expect_block "first stop after a change" "$(run s11 "$t" "$tmp")"
+expect_pass "second stop, nothing new" "$(run s11 "$t" "$tmp")"
+{ call $((now-500)) c2 "{\"file_path\":\"$r/src/b.txt\"}"; result $((now-498)) c2; } >> "$t"
+echo n > "$r/src/b.txt"; age $((now-499)) "$r/src/b.txt"
+expect_block "new change after the block" "$(run s11 "$t" "$tmp")"
+
+# 13. Only a lockfile changed after the bundle: lockfiles never need a bundle update.
+r="$tmp/r13"; mkrepo "$r"; t="$tmp/t13.jsonl"
+{ start $((now-3600)); call $((now-2000)) c1 "{\"file_path\":\"$r/.okf/index.md\"}"; result $((now-1998)) c1
+  call $((now-1000)) c2 '{"command":"uv sync"}'; result $((now-990)) c2; } > "$t"
+echo y > "$r/.okf/index.md"; age $((now-1999)) "$r/.okf/index.md"
+echo l > "$r/uv.lock"; age $((now-995)) "$r/uv.lock"
+expect_pass "only a lockfile changed after the bundle" "$(run s13 "$t" "$r")"
+
 exit $fail
