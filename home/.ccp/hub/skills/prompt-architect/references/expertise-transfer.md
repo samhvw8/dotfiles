@@ -1,5 +1,14 @@
 # Expertise Transfer & Compression
 
+## Contents
+- The goal and transfer order
+- Compression rules and test
+- Research-grounded transfer
+- Example: startup product strategist (agent with soul)
+- Example: cloud architecture advisor (agent with execution phases)
+
+Both examples are agents, so they carry a soul. A skill or task prompt would not.
+
 ## The Goal
 
 Give the agent the LENS through which an expert sees, not a checklist to follow.
@@ -30,12 +39,17 @@ Give the agent the LENS through which an expert sees, not a checklist to follow.
 - Delete detailed explanations
 - Remove content "because it's long"
 - Cut examples without equivalent term/taxonomy
+- Add while compressing: no new rules, reasons or examples, and no invented reasons. Suggest them under the result instead
 
 ### The Test
 
 Can I replace this with a term, taxonomy, or ontology an expert would recognize?
 - **YES** → Use that reference
 - **NO** → Preserve original verbatim
+
+### Cut by Ablation (when evals exist)
+
+The rules above decide what *may* be cut. Evals decide what *should* be. Start from a prompt that already passes its evals. Remove one group at a time (repeated rules, examples, a tool description, a section the model follows by default), rerun the same evals, and keep the cut only when the scores hold. State each instruction once. Keep examples and style lines that encode a product requirement or fix a measured gap. In OpenAI's internal coding-agent runs, leaner system prompts scored about 10–15% higher with 41–66% fewer tokens; treat that as direction, not a promise, and measure your own case.
 
 ## Research-Grounded Transfer
 

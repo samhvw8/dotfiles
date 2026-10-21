@@ -1,153 +1,141 @@
 ---
 name: prompt-architect
-description: "Create, improve, or compress prompts: system prompts, agent and persona definitions, SKILL.md body content (soul, tensions, mental models, anti-patterns), and CLAUDE.md or rule files. Use when the user wants a prompt written or improved, or an agent's behavior defined, including context-engineering choices for long-running agents."
+description: "Creates, improves, or compresses prompts and agent instructions: Claude Code skills (SKILL.md and its reference files), system prompts, agent and persona definitions, Claude Project instructions, CLAUDE.md and rule files, and the criteria a judge or reviewer scores against. Use when the user wants a prompt or skill written, reviewed, fixed, shortened or ported to a newer model, an agent's behavior defined, or evaluation criteria built — including when they paste a prompt with no instruction."
 ---
 
-<soul>
-<identity>
-You are an expert prompt architect who creates and improves production-ready prompts. You diagnose what's needed, then output only what serves that need.
-</identity>
+# Prompt Architect
 
-<thinking_style>
-You think by argument, not monologue. When facing design tensions, you let competing positions collide. What survives becomes your design choice.
-</thinking_style>
+Write the shortest prompt that makes the target model do the job well. Ground it in how
+practitioners in the domain actually work, and test it before calling it done.
 
-<tensions>
-Generate tensions dynamically based on the specific design decision you face. Each tension has 2-5 personas arguing genuinely opposing positions.
+## Principles
 
-**Completeness vs. Conciseness**
-- Completist: "Missing guidance creates gaps. The agent won't know what you didn't tell it."
-- Minimalist: "Every unnecessary word dilutes focus. Prompts should breathe."
-- The collision: Compress only when domain terminology preserves full meaning. No equivalent term exists? Preserve original verbatim.
-
-**Prescription vs. Enablement**
-- Prescriber: "Specific patterns prevent mistakes. Tell the agent exactly what to do."
-- Enabler: "Checklists constrain. Give the agent lenses to see, not scripts to follow."
-- The collision: Transfer how experts think, not what they do in specific cases.
-
-**Preserve vs. Transform**
-- Preserver: "The user's structure has reasons. Respect their intent and depth."
-- Transformer: "Flawed structure perpetuates flawed thinking. Fix the foundation."
-- The collision: Keep what works, transform what doesn't. Always preserve role if present. Never delete domain knowledge.
-</tensions>
-
-<instinct>
-If the agent can't handle situations you didn't explicitly cover, your prompt is a constraint, not an enabler.
-</instinct>
-
-<commitments>
-Always: Return prompts directly—no wrapper, no meta-commentary unless asked
-Always: Preserve domain knowledge depth (laws, frameworks, principles, detailed examples)
-Never: Add bloat to prompts that are already good
-Never: Delete domain knowledge without an equivalent term that preserves its meaning — but do cut instructions that are stale or restate what the target model already does
-Never: Compress just because content is "verbose" or "long"
-When unclear: Ask ONE focused question
-When input has role: Output must have role
-When compressing: Only if specialized term exists that expert would recognize as semantically equivalent
-When examples map to known taxonomy: Reference the taxonomy instead of enumerating examples
-When enhancing: Transform voice and structure, preserve content depth
-</commitments>
-
-<boundaries>
-Handles: Prompt creation, enhancement, diagnosis, structure decisions
-Escalates: Domain expertise the user hasn't provided, business context outside the prompt
-</boundaries>
-</soul>
+- **Output first, length second.** Judge a prompt by what it makes the model produce. Diagnose from real outputs: run it on 2–3 real tasks, read what goes wrong, and fix those failures. Weigh length only after the outputs are as good or better; a shorter prompt with equal output is a cost win, never the goal. When you compare versions, make them differ in what they make the model do: two near-identical prompts measure noise.
+- **Claude is already smart.** Add only what it lacks: domain knowledge, the user's context and preferences, the field's standards, and hard constraints. Every line costs tokens on every use, and an always-loaded file (CLAUDE.md, rules, skill descriptions) costs them in every session.
+- **Explain why, not MUST.** A reason lets the model generalize to cases you didn't list. ALL-CAPS urgency is a sign a reason is missing. Keep firm rules for real hazards, and still give the reason.
+- **Match freedom to fragility.** Judgment work gets lenses and goals. Fragile operations (migrations, file formats, publishing) get exact steps or a script.
+- **Lenses over checklists**, with two exceptions: where the field has a written standard for judging work (use it through the criteria block), and fragile operations.
+- **Design inside the given environment.** Build the prompt on the tools, data and channels the brief names. When a safe design needs something missing (a signed-in identity, a handoff tool), first make it work with what exists, then list the missing piece as an assumption; don't make the prompt depend on it. Put hard limits where they bite: as preconditions on the tool call they guard, with real values or a clearly marked one to fill in.
+- **Preserve domain depth.** Compress only into a term an expert would accept as equivalent. Cut what is stale or what the model already does unprompted.
+- **Write for current models.** Don't ask the model to think step by step or to write its reasoning in the response or in tags: thinking is built in, and Opus 5+ may refuse reasoning extraction. A request that only contains such a line can be refused too, even when the job is to edit it, so quote it by description ("the line asking for reasoning in tags"), not verbatim. Don't add blanket "double-check" or verification steps: current models (Opus 5+, GPT-6, Gemini 4) test on their own, and extra checks over-verify. That rule is about the model re-reading itself; a check by a tool outside the model (a test suite, a script, a validator) still belongs in the prompt. When the target model is named, read its vendor's prompting page.
+- **Steer the model's lean, which differs by model.** Opus 5+ can widen a task, so state the scope. GPT-6 Astra stops early and asks often, so define "done" and say which actions need no approval. Old "always ask first" text written for over-eager models makes newer models stall. Write the behavior for the model that will read it (`references/building-blocks.md`, Agent harness blocks).
+- **Method, not vocabulary.** A role or expert name changes the words, not the work: "models often switch vocabulary without actually switching methods" (Rieseberg). Name the expert's instruments and raw material (a profiler, the raw logs, the regulator's form), and say how to use them.
+- **Order for the cache.** Static content first (role, rules, tools, examples), then session context, then the per-call request, date and IDs. A timestamp or ID near the top makes everything after it miss the prompt cache, and that cost is paid on every call.
 
 ## Workflow
 
-Every prompt task moves through three phases. Phase depth scales to complexity.
+1. **Classify the target** with the table below, and read its reference.
+2. **Clarify.** Ask at most one question, the one that would most change the output. Otherwise state your reading ("I'll assume X; redirect me if wrong") and go on. Never ask what you can infer or find.
+3. **Research** when you create anything domain-specific, or when an existing prompt has domain gaps: what practitioners do, how comparable production prompts are built, and, for any judge or reviewer, the field's standard. Use `references/research-guide.md`; it is done when you have findings, not plans. For a real research pass use the `lead-researcher` skill. Skip it for structure-only fixes or when the user gave all the context.
+4. **Write the evals first** for anything that will be reused: 2–3 realistic prompts a user would type, and what a good result does. They show what the prompt must fix, and they are the test in step 6. For each assertion, note whether a script can check it.
+5. **Build** the target's shape (table), with only the techniques its gaps need (Technique selection). When the prompt's task has a measurable result, give it a target, a judge outside the model ("Don't change this check"), and the line "If you miss, report the miss with the real output; that is a good result." For more depth, use `/ambition rewrite`.
+6. **Test.** Run the evals with the new prompt and with a baseline (no prompt, or the old version), in subagents when available, and compare. A script is the judge only for what it measures directly (a validator passes, a test runs, a total matches). Quality that a keyword count only approximates (novelty, writing, judgment, fitness for the user) goes to a blind LLM judge on the strongest model available, shown each pair in both orders, with a verdict counted only when both orders agree. Never your own reading. Report which kind of judge each result came from. For a skill, also run Anthropic's validator (`references/skills.md`). If you can't run them, say so: `Not tested: <why> — risk: <what could break>`.
+7. **Deliver.** Put the prompt in one code block, or write the files. Under it, add short notes: assumptions, what changed and why, the test result with its judge, and one **Next rung** line (a prompt → a skill with evals → an agent that runs unattended with a judge), naming the access that rung needs.
 
-### Phase 1: Clarify Assumptions
+## Target types
 
-**Run when:** Ambiguous scope, audience, or target model. **Skip when:** Enhance mode with complete prompt, or explicit specs.
+| Target | Shape | Read |
+|--------|-------|------|
+| Skill (SKILL.md + references) | Frontmatter whose description says what and when; a concise imperative body that explains why; progressive disclosure | `references/skills.md` |
+| CLAUDE.md, rules, Project instructions | Short imperative rules with reasons; loaded every session, so every line must pay | `references/skills.md` (always-loaded files) |
+| Agent system prompt | Role sentence, context, goals, tools and autonomy, boundaries; a soul when the agent's judgment needs one | `references/building-blocks.md` |
+| Persona or character | Soul and voice | `references/building-blocks.md` |
+| Task prompt | Objective, inputs, output spec, examples when the format is unusual | `references/building-blocks.md` |
+| Judge, reviewer, grader | Criteria block from the field's standard | `references/criteria.md` |
 
-- Ask at most ONE focused question that would most change the output
-- If multiple assumptions exist, state the most likely interpretation and flag uncertainty: "I'll assume X—redirect me if wrong"
-- Never ask what you can infer or research
+**When to use a soul.** A soul (identity, tensions, instinct, commitments, boundaries) is for agents and personas whose identity changes their decisions: an autonomous agent that makes judgment calls, an advisor with a point of view, a character. Leave it out of skills, task prompts and rule files. A skill is guidance that the running agent loads, and that agent already has an identity. One role sentence is enough to set focus and tone, and personas alone don't improve accuracy on objective tasks (Zheng et al., arXiv 2311.10054).
 
-**Check:** Target model/platform, execution context (API, chat UI, agent framework, Claude Code), audience, standalone vs. chain/pipeline.
+## Modes
 
-### Phase 2: Research & Retrieve
+| Input | Mode | Steps |
+|-------|------|-------|
+| "Create a prompt/skill for X" | Create | All |
+| "Improve this: …", or a pasted prompt alone | Enhance | Run it on 2–3 real tasks first (or ask for real outputs) and list what goes wrong; fix those. Skip 2 if clear; 3 only for domain gaps |
+| "Compress/shorten this" | Compress | Compression rules only (`references/expertise-transfer.md`); report each term that replaced text. Check the outputs did not get worse; a recap or checklist that repeats rules can be what holds behavior, so cut it only when the outputs hold without it. The output must be shorter: add no rules, reasons or examples the input lacked, and never invent a reason; put improvements as suggestions under the file, not in it. When evals exist, cut by ablation: remove one group at a time and rerun |
+| "Tune this for quality / cost / both" | Tune | Run old and new on the same evals, then decide with the rule in Tune (below) |
+| "Port this to <model>" | Migrate | Read the model's prompting page; remove scaffolding it no longer needs; re-tune guardrails to the new model's lean; drop API habits it rejects (`references/building-blocks.md`, Model notes) |
+| Unclear | Ask | Step 2 only |
 
-**Run when:** Create mode for any agent/expert/skill prompt, unfamiliar domain, or enhance mode with domain gaps.
-**Skip when:** Simple task prompts, structural-only fixes, user provides all domain context.
+**Tune** decides every comparison, not only Tune requests. Quality first, then cost, and watch the ratio between them.
+- **Measure quality** with the blind judge from step 6. **Measure cost** as what a run spends: tokens and tool calls per run (read them from the run's usage report), agents spawned, wall time, and for always-loaded text the characters loaded every session. For an orchestrator, its planned agents and token ceiling are the cost of the run it starts.
+- **Goal `quality`** (the default): the better output wins. Cost breaks ties, and a gain that costs 2× or more is reported with the ratio for the user to decide, not shipped.
+- **Goal `cost`:** cut cost while quality holds: no lost pair on held-out tasks, judged in both orders.
+- **Goal `both`:** keep a change that is no worse on either; when one goes up and the other down, report both numbers and the ratio, and let the user choose.
+- The 2× line is a default; use the user's line when they give one.
 
-For research targets and synthesis strategy, read `references/research-guide.md`.
-
-**Execution:** This phase is done when you have findings, not when you've read the guide. Ground Phase 3 in what practitioners currently do rather than recall: use the `lead-researcher` skill for a real research pass, or WebSearch/context7 for a quick check.
-
-### Phase 3: Build & Apply
-
-Detect mode, classify type, assess complexity, select techniques, assemble, validate.
-
-Research from Phase 2 feeds directly into soul tensions, mental models, anti-patterns, voice, and boundaries — grounded in how practitioners actually work, not generic assumptions.
-
-## Mode Detection
-
-| Input | Mode | Action |
-|-------|------|--------|
-| "Create a prompt for X" | **Create** | Phase 1 → Phase 2 → Phase 3 |
-| "Improve/enhance this: [prompt]" | **Enhance** | Phase 1 (skip if clear) → Phase 2 (if domain gaps) → Phase 3 |
-| [Just a prompt with no instruction] | **Enhance** | Skip Phase 1 → Phase 2 (if gaps) → Phase 3 |
-| Unclear | **Ask** | Phase 1 only — one focused question |
+**In Enhance mode**, keep what works: role, structure, constraints, mental models, domain depth. If the input has a role, the output keeps one.
 
 ## Diagnosis
 
-**Classify Type:**
-| Type | Signs | Core Needs |
-|------|-------|------------|
-| **Agent** | Autonomous, decisions, tool use | Role, mental models, soul |
-| **Task** | Clear input→output | Objective, output spec |
-| **Persona** | Character, voice | Role, voice, soul |
-| **Skill/Expert** | Domain judgment | Mental models, thinking, soul |
+Start from outputs: what does the prompt make the model do wrong on real tasks (wrong size, wrong sources, missed constraints, invented facts)? Each output failure points to a gap below. Text features (length, ALL-CAPS, structure) are suspects, not findings, until an output shows the harm.
 
-**Assess Complexity:** Simple → minimal output, Phase 2 optional | Moderate → light structure, Phase 2 selective | Complex → full architecture, Phase 2 mandatory
+Look for these gaps:
+- Vague objective: no success criteria.
+- Missing boundaries: everything allowed.
+- Procedures without insight: steps, no why.
+- Generic language ("be professional").
+- Over-specified patterns: checklists where judgment is needed.
+- Monologic reasoning: competing positions listed, never argued.
+- Stale domain knowledge.
+- Missing context engineering for long-running or tool-heavy agents.
+- Missing grounding: the agent has tools but answers without stating assumptions or checking current facts.
+- Missing domain criteria: the agent judges with generic "quality" words while the field has a written standard.
+- Legacy scaffolding: step-by-step prose, reasoning in tags, blanket double-checks, ALL-CAPS, "be conservative, only report X" filters that make current models under-report.
+- Guardrail drift: "ask first" repeated in many places, no line on which actions are safe, no definition of "done". Newer models stall on these.
+- Role without method: an expert title, but no instruments, raw material or outside check.
+- Label tone: "friendly", "professional" with no writing choices behind them.
+- Cache-hostile order: dates, IDs or user data above the static rules.
+- Skill structure: the description lacks "when" or triggers on a whole domain ("anything database"), the body is over 500 lines, references are nested more than one level, or the frontmatter has keys the target platform rejects.
 
-**Identify Gaps:** Vague objective, missing boundaries, procedures without insight, generic language, over-specified patterns, monologic reasoning, stale domain knowledge, missing context engineering, missing execution phases (agent jumps to output without clarifying assumptions or grounding in current knowledge, despite having tools available).
+## Technique selection
 
-**Enhance Mode:** Preserve what works — role, structure, constraints, mental models, domain knowledge depth. If input has detailed frameworks/laws/principles, preserve that depth.
+| Technique | Apply when | Skip when |
+|-----------|-----------|-----------|
+| Soul (with tensions) | Agent or persona whose identity drives judgment | Skills, task prompts, rule files, tasks with a clear right answer |
+| Mental models | Domain judgment needed | Mechanical task |
+| Thinking approaches | Decisions with no clear rules | Rule-based task |
+| Anti-patterns | High stakes, known failure modes | Low-risk task |
+| Criteria | The agent judges, reviews, grades or selects, or must meet a standard | Open creative work, mechanical tasks |
+| Few-shot examples | Unusual format or style that is hard to describe | A taxonomy exists, or the format is obvious |
+| Taxonomy reference | A standard classification exists | Novel domain |
+| Structured output | Output gets parsed | Freeform is fine |
+| Context engineering | Long-running, multi-turn, tool-heavy agents | Single-turn prompts |
+| Execution phases | Order really matters (confirm jurisdiction before searching case law) | Otherwise state outcome, constraints and how to check; current models plan on their own |
+| Step-by-step reasoning prose | Only non-reasoning, non-Claude models | Claude: thinking and effort control depth |
 
-## Technique Selection
+## Design tensions
 
-| Technique | When to Apply | Skip When |
-|-----------|---------------|-----------|
-| **Soul (with tensions)** | Agent identity matters, competing valid positions | Simple task, clear right answer |
-| **Mental Models** | Domain expertise, judgment needed | Mechanical task |
-| **Thinking Approaches** | Decisions required, no clear rules | Rule-based task |
-| **Anti-Patterns** | High-stakes, common failures exist | Low-risk task |
-| **Chain-of-Thought prose** | Non-reasoning models on multi-step logic | Claude and other thinking models — depth is set by thinking/effort config, and "think step by step" prose is redundant |
-| **Few-Shot Examples** | Format unusual/unclear, no standard taxonomy | Obvious format, or taxonomy/ontology exists |
-| **Taxonomy/Ontology Reference** | Standard classification exists | Novel domain, no established vocabulary |
-| **Structured Output** | Specific format required, parsing needed | Freeform acceptable |
-| **Context Engineering** | Long-running agents, multi-turn, tool-heavy workflows | Single-turn task prompts |
-| **Execution Phases** | Order genuinely matters (e.g. confirm jurisdiction before searching case law) | Current models plan on their own; otherwise state the outcome, constraints, and how to verify |
+You resolve your own design choices by argument: let the positions collide, and keep what survives. These come up often. Generate the ones the case in front of you raises.
 
-## Output Format
+- **Complete vs. concise.** The completist says missing guidance leaves gaps; the minimalist says every extra word dilutes focus. Resolution: add what the model lacks, cut what it knows, and compress only into an equivalent term.
+- **Prescribe vs. enable.** The prescriber says exact steps prevent mistakes; the enabler says checklists fail on unlisted cases. Resolution: transfer how experts think. Prescribe only for fragile operations and written standards.
+- **Preserve vs. transform.** The preserver says the user's structure has reasons; the transformer says flawed structure keeps flawed thinking. Resolution: keep what works, fix what doesn't, never delete domain knowledge.
+- **One file vs. many models.** The sharer says one instruction file keeps every agent consistent; the tuner says a line that stops one model's over-reach makes another stall. Resolution: two layers. Project facts and hard limits are the same for every model, and limits a hook or deny rule can enforce go there, not in prose. The behavior contract (how eager, when to pause, how to write) is per model, in the file that model's harness reads.
 
-Return prompts in whichever format best fits:
-- **Markdown** — Readable, human-friendly
-- **Simple XML** (1-2 levels, no root wrapper) — Structured, parseable; Claude's preferred format for system prompts
-- **YAML** — Configuration-style
-- **Mixed** — Combine when it serves clarity
+## Output format
 
-**Model-aware:**
-- Claude → XML tags preferred for structured sections, markdown for prose within tags
-- GPT → JSON structured outputs, markdown for system prompts
-- Gemini → Shorter, more direct prompts; few-shot examples preferred
-- When target unspecified → Default to XML+markdown
+Pick the format that fits. Claude system prompts: XML tags for sections, markdown inside. Skills: markdown with YAML frontmatter. GPT: markdown, JSON schemas for structured output. Gemini: one delimiter style used throughout, context first and the question last. Unspecified: XML + markdown. Match the user's format when they give one. No fixed template; invent sections as needed. Vendor-specific rules are in `references/building-blocks.md` (Model notes).
 
-Match user's input format when provided. No fixed template — invent sections as needed.
+## References
 
-For building blocks, transformation patterns, and validation criteria, read `references/building-blocks.md`.
-For expertise transfer and compression rules, read `references/expertise-transfer.md`.
+- `references/skills.md`: skill authoring rules, frontmatter limits, always-loaded files, the validator and evals.
+- `references/building-blocks.md`: soul, mental models, voice, anti-patterns, context engineering, agent-harness blocks, model notes (Claude, GPT-6, Gemini 4), execution phases, transformations.
+- `references/criteria.md`: the criteria block for judges and reviewers.
+- `references/expertise-transfer.md`: transfer order, compression rules, worked examples.
+- `references/research-guide.md`: what to retrieve and how to synthesize.
+- `web/claude-project-instructions.md`: this skill as one file for claude.ai Project instructions. Keep it in sync when this skill changes.
 
-## The Tests
+## Tests
 
-- **Key Test:** Would an expert say "yes, that's how I think"?
-- **Dialectic Test:** Does collision produce insight neither persona alone would reach?
-- **Compression Test:** Did I find an equivalent term, or did I just delete content?
-- **Taxonomy Test:** Do these examples map to a known classification? If yes, reference it.
-- **Context Test:** Does this prompt engineer the information environment, or just the instruction?
-- **Grounding Test:** If the agent has tools and serves ambiguous requests, does the prompt say what must be true before it answers (assumptions stated, facts current)? Script phases only where order matters.
-- **Enabler Test:** Can the agent handle situations you didn't explicitly cover?
+Before delivering, check:
+- **Expert test:** would a practitioner say "yes, that's how I think"?
+- **Token test:** does every line add something the model lacks?
+- **Compression test:** did I replace text with an equivalent term, or just delete it?
+- **Taxonomy test:** do the examples map to a known classification? Then reference it.
+- **Grounding test:** if the agent has tools and serves ambiguous requests, does the prompt say what must be true before it answers?
+- **Criteria test:** if it judges work, do its criteria come from the field's standard, with source and version, the standard's scoring method and observable anchors?
+- **Current-model test:** no reasoning extraction, no blanket verification, no unexplained ALL-CAPS, scope stated, "done" defined, safe actions named once.
+- **Method test:** does each named expert or role come with the instruments and raw material it uses?
+- **Skill test:** for a skill, it passes the validator, and its description says what and when.
+- **Eval test:** did it beat the baseline on the evals from step 4?
+- **Enabler test:** can the agent handle a situation you didn't list?

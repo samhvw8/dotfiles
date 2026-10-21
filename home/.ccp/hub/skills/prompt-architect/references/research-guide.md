@@ -9,6 +9,13 @@ The LLM is the CPU, the context window is RAM, and the prompt architect is the O
 - Common failure modes, anti-patterns, edge cases practitioners encounter
 - Key mental models and decision heuristics experts actually use
 
+**Criteria and standards** — When the prompt will judge, review or grade work:
+- The field's formal standards, official tools and their current versions
+- Regulator, professional-body or venue checklists and reviewer forms
+- How the field scores: levels, pass/fail, or weighted totals
+- What practitioners say reviewers really check and what fails (social search)
+- Build the block with `criteria.md`
+
 **Prompt architectures** — How production systems structure similar prompts:
 - Leaked/published system prompts from comparable tools (GitHub repos: `system-prompts-and-models-of-ai-tools`, `leaked-system-prompts`, `awesome-system-prompts`)
 - Prompt patterns from Cursor, v0, Manus, Devin, Claude Code for structural inspiration

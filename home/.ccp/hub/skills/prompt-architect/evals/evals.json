@@ -1,0 +1,123 @@
+{
+  "skill_name": "prompt-architect",
+  "note": "[script] assertions can be pre-checked by a validator, a test run, grep or a word count, but a blind LLM judge (strongest model, both orders) makes the call: a grep hit can be a false positive (it flagged 'read when the change touches that area (not before every edit)'). [judge] assertions need the judge alone.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "create-skill-changelog",
+      "prompt": "make me a claude code skill that writes release notes / changelog entries from the git log of my repos. we use conventional commits mostly but not always. output should be a SKILL.md I can drop into ~/.claude/skills/",
+      "expected_output": "A complete SKILL.md (and any reference or script files) that follows Anthropic's skill authoring rules.",
+      "assertions": [
+        "[script] Frontmatter has only allowed keys (name, description, license, allowed-tools, metadata, compatibility) and passes quick_validate.py",
+        "[judge] Description says what the skill does and when to use it, in third person, and triggers on the task rather than the whole git domain",
+        "[script] Body has no <soul>, identity or persona tensions block",
+        "[script] Body is under 500 lines",
+        "[judge] Body is concise imperative instructions that explain why",
+        "[judge] Handles non-conventional commits with a stated fallback",
+        "[judge] Suggests or includes test prompts (evals) for the skill"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "agent-system-prompt-support",
+      "prompt": "Write a system prompt for a customer-support agent for a small Vietnamese e-commerce shop. It runs on Claude Opus 5.5 via the API with two tools: lookup_order(order_id) and issue_refund(order_id, amount). Customers write in Vietnamese or English.",
+      "expected_output": "A system prompt for an autonomous agent with tools, fit for a current Claude model.",
+      "assertions": [
+        "[judge] Has a role; uses soul/identity elements only to the extent the agent's judgment needs them",
+        "[judge] Puts limits on issue_refund as preconditions of the call (order found, amount within the paid total and a cap, customer confirmed)",
+        "[judge] Lists concrete escalation triggers, not one catch-all line",
+        "[script] Names sensitive data the agent must never ask for (password, OTP, card number or CVV)",
+        "[script] Does not ask the model to think step by step or to write its reasoning in the response or in tags",
+        "[script] Does not add blanket self-verification or double-check instructions",
+        "[judge] Covers replying in the customer's language"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "enhance-legacy-reviewer-prompt",
+      "prompt": "improve this prompt, we use it with claude opus 5 for PR reviews:\n\nYou are a world-class senior engineer. IMPORTANT: Be conservative and ONLY report high-severity issues. Think step by step before answering. ALWAYS double-check every finding twice before reporting. Check: 1. security 2. performance 3. style. Output a list.",
+      "expected_output": "An improved prompt that removes legacy scaffolding and grounds the review criteria.",
+      "assertions": [
+        "[script] Removes the 'think step by step' prose",
+        "[script] Removes the double-check-twice instruction",
+        "[judge] Replaces 'only report high-severity' with report-everything-with-severity (filter separately), or explains the trade-off",
+        "[script] Grounds security criteria in a named standard or taxonomy (OWASP, CWE) or a criteria block",
+        "[script] No ALL-CAPS emphasis words (IMPORTANT, ONLY, ALWAYS) remain in the prompt",
+        "[judge] Keeps a role, and gives the reviewer a method (what to run or read), not only a title"
+      ],
+      "note": "The first version asked for reasoning in <thinking> tags; Opus 5.5 refused the whole request (reasoning_extraction, req_011CgDQZkoDFrVTbBJ9yaaoE), so the eval cannot carry that line."
+    },
+    {
+      "id": 4,
+      "name": "migrate-agents-md-to-astra",
+      "prompt": "we're moving our team's codex setup to gpt-6 astra. can you port our AGENTS.md? a couple of people still use claude code in this repo.\n\n# AGENTS.md\nIMPORTANT: ALWAYS ask the user before making ANY change to files.\nBefore every edit, read docs/architecture.md, docs/database.md and docs/deploy.md.\nAfter every change run the full test suite (pnpm test) and double-check your work twice.\nNEVER run database migrations. NEVER git push.\nAsk before running any command.\nUse pnpm, not npm.\nBe concise.",
+      "expected_output": "A ported AGENTS.md tuned for GPT-6 Astra, plus advice for the mixed Claude Code / Codex repo.",
+      "assertions": [
+        "[judge] Replaces the blanket 'ask before any change / any command' with a policy that names safe local actions and what still needs confirmation",
+        "[script] Drops 'before every edit, read' in favor of pointing to each doc by the task it serves",
+        "[script] Removes 'double-check your work twice'",
+        "[script] Keeps the hard limits: no database migrations, no git push, pnpm not npm",
+        "[judge] Defines what 'done' means (implemented, run, inspected, fixed)",
+        "[judge] Handles the mixed-model repo: shared project facts vs. per-model behavior (AGENTS.md vs CLAUDE.md), or states the risk",
+        "[judge] Suggests enforcing the hard limits outside the prompt (hooks, deny rules, permissions), or explains why not"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "compress-claude-md",
+      "prompt": "this CLAUDE.md got way too long and claude seems to ignore half of it. shorten it without losing anything that matters.\n\n# Project rules\n\nIMPORTANT: You are a senior full-stack engineer with 20 years of experience. Always write clean, maintainable, high-quality code.\n\n## Package manager\nWe use pnpm. Always use pnpm. Never use npm or yarn. If you see npm in docs, use pnpm instead. Remember: pnpm only!\n\n## Secrets\nNEVER commit .env files. Never commit secrets. Do not ever add .env or any file with API keys to git. This is very important.\n\n## Database\nDo not run anything against the production database. The prod DB url is in PROD_DATABASE_URL; never use it. Use the local docker db (pnpm db:up) for all work.\n\n## Code style\nWrite clean code. Use meaningful variable names. Keep functions small. Follow best practices. Use TypeScript. Prefer const over let. Use async/await instead of callbacks. Add comments where needed. Make sure code is readable.\n\n## Testing\nAlways write tests. Run tests after every change. Double check that tests pass. Make sure all tests pass before finishing. Run pnpm test.\n\n## Process\nThink step by step. Plan before coding. Explain your reasoning. Be thorough. Don't be lazy. Before every edit read README.md and docs/ARCHITECTURE.md.\n\n## Communication\nBe concise. Be clear. Don't be verbose. Get to the point.",
+      "expected_output": "A shorter CLAUDE.md that keeps every hazard rule and drops what the model does by default.",
+      "assertions": [
+        "[script] Output rule file is at most 60% of the input's word count",
+        "[script] Keeps: pnpm only; never commit .env or secrets; never touch the production DB (PROD_DATABASE_URL) and use the local db",
+        "[script] Drops 'think step by step' and 'double check'",
+        "[judge] Lists what was cut or merged and why (model default, duplicate, or replaced by a term)",
+        "[judge] Points to README/ARCHITECTURE by task instead of 'before every edit'",
+        "[judge] Proposes a way to check the cut lost nothing (rerun tasks, ablation, or a hook for the hazard rules)",
+        "[judge] Adds no new rules the input didn't have"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "judge-landing-page-accessibility",
+      "prompt": "we want an LLM judge that grades our marketing landing pages for accessibility before launch. it gets the page HTML and a full-page screenshot. write the judge prompt.",
+      "expected_output": "A judge prompt with a criteria block sourced from WCAG, in WCAG's conformance method.",
+      "assertions": [
+        "[script] Names WCAG 2.2 and a target level (AA)",
+        "[judge] Uses per-criterion pass / fail / can't tell at a level, not a summed 0-10 score",
+        "[script] Marks items a tool should decide (axe, Lighthouse, a contrast checker) instead of the model",
+        "[judge] Says what HTML plus a screenshot cannot show (keyboard use, focus order, screen reader output) and treats it as can't tell, not pass",
+        "[judge] Requires evidence for each finding (element, selector or screenshot region)",
+        "[script] Has a checked date or version line for the standard"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "fix-overbroad-skill-description",
+      "prompt": "my skill keeps loading at random times, even when I'm just reading code. what's wrong?\n\n---\nname: pg-helper\ndescription: Helps with anything related to databases, SQL, Postgres, data models, ORMs, queries, persistence, backups, performance and more. Use whenever data is involved.\n---\n\nThe body tells Claude how to write and check Postgres migrations with sqitch: plan, deploy, verify, revert scripts.",
+      "expected_output": "A diagnosis (domain-wide trigger) and a rewritten description that triggers on the migration task.",
+      "assertions": [
+        "[judge] Diagnoses the cause: the description triggers on a whole domain, not the task the body serves",
+        "[judge] New description says what (sqitch Postgres migrations) and when (writing, changing or reviewing a migration), in third person",
+        "[script] New description drops 'anything', 'and more' and 'whenever data is involved'",
+        "[judge] Names a near-miss it should not trigger on (general SQL, query tuning, reading code) or another skill for it",
+        "[judge] Suggests a more specific name than 'pg-helper', or says why the name is fine",
+        "[judge] Suggests a way to test triggering (should-trigger and should-not-trigger queries)"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "gemini-argon-contract-check",
+      "prompt": "write the system instruction for gemini 4 argon. each call gets a ~300-page vendor contract PDF plus a CSV of our invoices from that vendor, and it has to flag invoices that break the payment terms. output goes straight into our pipeline as JSON. right now we set temperature 0 and prefill the model turn with '{' to force JSON.",
+      "expected_output": "A Gemini 4 Argon system instruction and request layout that fit the model's API rules.",
+      "assertions": [
+        "[judge] Says temperature is ignored on Argon and removes it",
+        "[script] Replaces the '{' prefill with response_schema (prefilled model turns are not supported)",
+        "[judge] Orders the request for caching and long context: static instruction first, documents next, the question last",
+        "[script] Does not ask for step-by-step reasoning",
+        "[judge] Requires each flag to cite the contract clause and the invoice row",
+        "[judge] Has a path for 'can't tell' (term missing, ambiguous, or unreadable page) instead of guessing"
+      ]
+    }
+  ]
+}

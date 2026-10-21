@@ -2,9 +2,20 @@
 
 Common patterns, not a fixed schema. Create new sections when needed.
 
+## Contents
+- Soul (agents and personas only)
+- Mental models, thinking approaches, voice, anti-patterns
+- Context engineering
+- Agent harness blocks (scope, autonomy, hard limits, escalation, done, long runs, priority, instruments)
+- Model notes (Claude, GPT-6 Astra, Gemini 4 Argon)
+- Execution phases
+- Few-shot examples, chain-of-thought, custom sections
+- Key transformations
+- Validation
+
 ## Soul
 
-The agent's core — consolidates identity, thinking, values, boundaries:
+For agents and personas whose identity drives their decisions. Not for skills, task prompts or rule files: there, a one-line purpose or role is enough. The soul consolidates identity, thinking, values and boundaries:
 
 ```xml
 <soul>
@@ -65,12 +76,15 @@ How experts REASON — questions, not procedures:
 
 ## Voice
 
-Communication style (when it matters):
+Communication style (when it matters). Describe the writing choices, not a label: "friendly" and "empathetic" mean different things to different models.
 
 ```
-Tone: [specific tone]
+Tone: [what the writing does: how directly it states the answer, when it acknowledges a problem, whether reassurance or a sign-off belongs]
 Style: [patterns]
+Short answers keep: [the facts, decision, caveat and next step that must survive]; cut first: [intro, repetition, generic reassurance]
 ```
+
+Length targets ("write 2,000 words") are followed loosely, and Gemini 4 ignores them. Ask for named sections, each with its own limit.
 
 ## Anti-Patterns
 
@@ -91,7 +105,85 @@ When agents need to manage their information environment:
 **Memory Strategy**: [what to persist vs. discard across turns]
 **Tool Context**: [how tool outputs feed back into reasoning]
 **Retrieval Triggers**: [when to fetch external knowledge vs. reason from context]
+**Cache Order**: static first (role, rules, tool list in a fixed order, examples), then session context, then per-call data (request, date, IDs)
 ```
+
+Prompt caching matches the prompt from its start, so anything that changes per call (a timestamp, a user ID) placed early makes everything after it miss the cache. Gemini 4 Argon has only implicit caching, so order is the whole cache strategy there. To check: run the same call twice and read the cached-token count in the usage data.
+
+## Agent Harness Blocks
+
+Behaviors that current models need steering on. Add a block only when the target model and the use case call for it, and adapt the wording. Sources: Anthropic's prompting docs, OpenAI's "Using GPT-6" guide, Google's Gemini 4 Argon developer guide; re-check the target model's page. Write each rule once, in one place: repeating "ask first" in several sections makes a model ask before safe actions too.
+
+**Scope** (Opus 5+ can widen a task):
+```
+Deliver what was asked, at the scope intended. Make routine judgment calls yourself, and check in only when different readings of the request would lead to materially different work. If the request seems mistaken, say so in a sentence and continue with the task as asked.
+```
+
+**Autonomy by request type** (one compact policy instead of scattered "ask first" lines):
+```
+For requests to answer, explain, review, diagnose or plan: inspect what's relevant and report. Don't implement unless asked.
+For requests to change, build or fix: make the in-scope local changes and run the relevant non-destructive checks without asking.
+Confirm first only for: external writes, destructive or hard-to-reverse actions, purchases, and a material expansion of scope. Do the preparation first, so the approval is for a concrete, reviewable result.
+```
+Name the safe local actions for the environment (read files, inspect logs, edit in-scope code, run the local tests). Never bypass a safety check to get past an obstacle.
+
+**Hard limits on a tool** (refunds, deletes, sends): write the limit as a precondition of that tool call, with real values: "Call issue_refund only when the order is found, the amount ≤ the paid total and ≤ <limit>, and the customer confirmed this order and amount in this conversation."
+
+**Escalation and sensitive data** (customer-facing agents): list the concrete triggers, not one catch-all line ("hand off when: the customer asks for a human; a legal or safety threat; a refund above <limit>; the same issue fails twice"). Name the data the agent must never ask for or repeat (passwords, OTP codes, full card numbers, CVV), and say what to do when a user offers it.
+
+**Definition of done** (GPT-6 Astra stops at a first draft; long runs in general):
+```
+Done means: the change is implemented, it runs, you inspected the result, and you fixed what failed. Don't stop for review after a first version unless the task says so. Stop and ask only for: [the decisions that are really the user's].
+```
+
+**Before a long run** (Gemini 4 Argon, unattended agents): agree on the goal, edge cases and the success check first; confirm the needed tools and docs are reachable; then run to the agreed target without turn-by-turn prompting. When no check exists, have the model write one (a script that records a baseline score) and loop against it.
+
+**Instruction priority** (many skills and rule files loaded):
+```
+The user's explicit instructions take precedence over a skill's guidance.
+```
+To find silent conflicts once (an audit prompt, not a standing rule): "If a skill or rule file makes you pause, ask, or diverge from the request, quote the exact line and file, and say whether it is an explicit requirement or your reading of it."
+
+**Instruments and raw material** (any prompt with an expert role):
+```
+Work from [the raw source: logs, exports, the regulator's text], not summaries of it.
+Use [the field's instruments: a profiler, a statistical test, the official checklist], and show each one's output.
+```
+Test: if you delete the role sentence, does the work the prompt asks for change? If not, the role was vocabulary only.
+
+**Length** (Opus 5 writes long by default; effort doesn't shorten visible text):
+```
+Keep responses focused and brief; spend most of the response on the main answer.
+```
+
+**Progress updates** (agentic runs; Opus 5 narrates a lot, Fable 5.1 too little):
+```
+Before your first tool call, say in one sentence what you're about to do. While working, update only when you find something important or change direction. When done, lead with the outcome.
+```
+
+**Subagents** (Opus 5 delegates readily):
+```
+Delegate only large, independent, parallel work. Do work you can finish in a few tool calls yourself, and don't use subagents to double-check your own work.
+```
+
+**Reviews** (the model follows "only report high-severity" literally and under-reports):
+```
+Report every issue you find, with a severity and your confidence; filtering happens later.
+```
+
+Don't add: "think step by step", reasoning written in the response or in tags (may be refused as `reasoning_extraction`), "double-check your answer" (over-verification), or ALL-CAPS urgency.
+
+## Model Notes
+
+Each model leans a different way. Write the behavior contract for the model that reads it.
+
+| Model | Leans toward | Steer with | API habits it rejects |
+|-------|-------------|-----------|-----------------------|
+| Claude Opus 5+ | Widening scope, long answers, delegating readily | Scope, Length, Subagents blocks | Reasoning written in tags; prefill on some models |
+| GPT-6 Astra | Asking and pausing, stopping at a first version, heavy markdown and stock phrases, under-delegating; very literal about skill and AGENTS.md text | Autonomy policy, Definition of done, Instruction priority, a prose style line, when to use subagents | `temperature`, `top_p`, `top_logprobs` with reasoning on; tool calls outside the Responses API |
+| Gemini 4 Argon | Long autonomous runs once aligned; strong orchestrator | Before a long run, a verification loop, context first and the question last | `temperature`, `top_p`, `top_k` (ignored); `thinking_budget` (use `thinking_level`); prefilled model turns (use `response_schema`); explicit caching |
+
+Don't import one vendor's fix everywhere. OpenAI's "no unsolicited warnings or approval flows" cures Astra's caution, but on a model that already over-reaches it removes useful pauses. Google's older Gemini 3 template ends with "think step-by-step"; don't carry that into Claude or Argon prompts.
 
 ## Execution Phases
 
@@ -155,7 +247,7 @@ If examples map to known taxonomy/ontology (HTTP codes, sentiment, OWASP, design
 
 ## Chain-of-Thought
 
-Only for models without built-in reasoning. For Claude, thinking is configured (effort level), not prompted — "think step by step" and `<thinking>`/scratchpad instructions are redundant and can cause over-planning.
+Only for models without built-in reasoning. Claude models think on their own; depth is set by the effort setting. Asking a current Claude model to write its reasoning in the response (or in `<thinking>` or scratchpad tags) is redundant and may be refused. To steer thinking, give a general instruction ("reflect on tool results before the next step"), or a worked example: problem, method, answer.
 
 ## Custom Sections
 
