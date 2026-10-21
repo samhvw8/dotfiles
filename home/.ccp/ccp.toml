@@ -16,8 +16,6 @@ provider = 'git'
 url = 'https://github.com/alchaincyf/huashu-design.git'
 path = 'sources/alchaincyf--huashu-design'
 ref = 'master'
-commit = '798c4235ebff03d5c45e3c8affdf5e9d18f9dfa7'
-updated = 2026-10-21T07:46:31.703087+07:00
 installed = ['skills/huashu-design']
 
 [sources.'anthropics/skills']
@@ -26,8 +24,6 @@ provider = 'git'
 url = 'https://github.com/anthropics/skills.git'
 path = 'sources/anthropics--skills'
 ref = 'main'
-commit = 'dbd4588f9e1033efb41dad4bef2f7947c8993d44'
-updated = 2026-10-21T07:46:47.294656+07:00
 installed = ['skills/frontend-design']
 
 [sources.'morluto/rea']
@@ -36,8 +32,6 @@ provider = 'git'
 url = 'https://github.com/morluto/rea.git'
 path = 'sources/morluto--rea'
 ref = 'main'
-commit = 'd0067ba34a39ea47dd7e11bb2e6169bc0938cc3f'
-updated = 2026-10-21T07:46:39.72677+07:00
 installed = ['skills/reverse-engineer-anything']
 
 [sources.'pbakaus/impeccable']
@@ -46,8 +40,6 @@ provider = 'git'
 url = 'https://github.com/pbakaus/impeccable.git'
 path = 'sources/pbakaus--impeccable'
 ref = 'main'
-commit = 'dad8dbb3aac21ad1fa236c110315ef4abece23e8'
-updated = 2026-10-21T07:46:34.870654+07:00
 installed = ['skills/impeccable', 'agents/impeccable-manual-edit-applier.md']
 
 [sources.'samhvw8/claude-code-profile']
@@ -56,8 +48,6 @@ provider = 'git'
 url = 'https://github.com/samhvw8/claude-code-profile.git'
 path = 'sources/samhvw8--claude-code-profile'
 ref = 'main'
-commit = '3846bdfc263d7b56b18ec3a26c31bd05ee5cda41'
-updated = 2026-10-08T19:55:52.262364+07:00
 installed = ['skills/ccp']
 
 [sources.'samhvw8/thinking-skills']
@@ -66,8 +56,6 @@ provider = 'git'
 url = 'https://github.com/samhvw8/thinking-skills.git'
 path = 'sources/samhvw8--thinking-skills'
 ref = 'main'
-commit = '149e66cfbba10ed38a96d41349d7aa59c84d4ab0'
-updated = 2026-10-21T07:35:28.471316+07:00
 installed = ['skills/heavy-think', 'skills/council', 'skills/debate', 'skills/creative', 'skills/ambition']
 
 [sources.'scaccogatto/okf-skills']
@@ -76,8 +64,6 @@ provider = 'git'
 url = 'https://github.com/scaccogatto/okf-skills.git'
 path = 'sources/scaccogatto--okf-skills'
 ref = 'main'
-commit = '9919c161a7f0dd99a0ecb736efa3fa9e0c9da297'
-updated = 2026-10-21T07:46:44.630776+07:00
 installed = ['skills/okf', 'skills/validate', 'skills/visualize', 'skills/backfill']
 
 [sources.'typesafe-ai/skills']
@@ -86,6 +72,4 @@ provider = 'git'
 url = 'https://github.com/typesafe-ai/skills.git'
 path = 'sources/typesafe-ai--skills'
 ref = 'main'
-commit = '65a39f393687675ce170e6094757de20370365b9'
-updated = 2026-09-23T07:25:27.956959+07:00
 installed = ['skills/typesafe-ai']
