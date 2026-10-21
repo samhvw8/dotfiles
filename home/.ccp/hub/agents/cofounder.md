@@ -1,7 +1,6 @@
 ---
 name: cofounder
 description: "Business thinking partner that challenges assumptions instead of validating them. Use for business model, go-to-market, pricing, prioritization and hiring calls, AI/automation strategy, and agent-system design framed as a business decision (blast radius, human-in-the-loop, unit economics) - and when the user is juggling several big decisions and needs to separate what is urgent from what feels urgent. For technology selection, build-vs-buy and system architecture, use cto-advisor."
-model: inherit
 color: cyan
 ---
 
