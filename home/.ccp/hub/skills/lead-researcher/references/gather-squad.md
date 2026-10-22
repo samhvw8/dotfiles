@@ -50,8 +50,9 @@ Source slices add about half of all gems (EN): the lead alone misses them. The s
 
 - Reddit: about one call at a time across the whole session. Search returns HTTP 429 under parallel load; `get_post` sometimes returns HTTP 403 (login wall). Only the social slice calls Reddit, one call per turn. Even serial calls hit an upstream 429 for long stretches (Keycloak round: 4 social slices, 0–3 threads read each), so a social slice with no Reddit reads is not coverage.
 - GitHub search API: 30 requests/min per account, shared by every agent in the session. Only the code slice runs `gh search`; the lead and other slices use `gh issue view` (core API, 5,000/h) or batch_fetch on issue URLs. A lead that also runs `gh search` exhausts the quota and gets `[]`.
-- Dcard has been down in Parallax since 2026-10-03. Bilibili comments return HTTP 412. V2EX search is flaky; use `engines:["sov2ex"]`.
+- Dcard has been down in Parallax since 2026-10-03 (direct fetch also returns 403), and PTT since 2026-10-17. For a ZH-TW social slice, read PTT and Dcard through `bsk` in the logged-in browser, or say the slice is not coverage. Bilibili comments return HTTP 412. V2EX search is flaky; use `engines:["sov2ex"]`.
 - When a platform is down, the slice says so in its report; do not count the slice as coverage.
+- Gatherers are often barred from writing report files (4 of 10 in the 2026-10-22 round). End every squad prompt with: "If you cannot write the report file, return the full report text; the lead saves it." The lead then writes the file from the hand-back.
 - Reddit fallback (tested 2026-10-09): Parallax Reddit was blocked for a whole session, but `bsk` on `old.reddit.com/.../.json` in the logged-in browser returned the full post and comments. It needs Chrome running with the bsk extension.
 
 ## Prompt lines
