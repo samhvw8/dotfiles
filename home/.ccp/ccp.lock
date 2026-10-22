@@ -20,7 +20,7 @@ commit = 'dad8dbb3aac21ad1fa236c110315ef4abece23e8'
 commit = '3846bdfc263d7b56b18ec3a26c31bd05ee5cda41'
 
 [sources.'samhvw8/thinking-skills']
-commit = '9ee9440f8bd19b3e5cc7e30b80a7807199899363'
+commit = '0980b364032462b528a1e9d1614a304c60441f28'
 
 [sources.'scaccogatto/okf-skills']
 commit = '9919c161a7f0dd99a0ecb736efa3fa9e0c9da297'
