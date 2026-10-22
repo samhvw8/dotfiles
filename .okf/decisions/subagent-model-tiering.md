@@ -4,7 +4,7 @@ title: "Subagent model tiering: where Haiku 5.5 fits"
 description: "Which subagent jobs run on Haiku 5.5, Sonnet 5.5 or Opus 5.5, based on 30 days of session usage and an A/B test of the gatherer agent; tracks the rollout."
 tags: [decision, claude-code, subagents, models, cost, haiku]
 status: draft
-generated: { by: claude-code/claude-opus-5-5, at: 2026-10-09T23:30:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-22T14:30:00Z }
 stale_after: 2027-01-09
 sources:
   - id: usage
@@ -221,7 +221,7 @@ coverage is close to zero until access is fixed.
 | 7 | Spawn gatherers as plain subagents, never with `name`: named spawns became teammates and 4 of 6 could not answer the shutdown request | done: `lead-researcher` Phase 3 says so |
 | 9 | `deep-gather`: on literal-match platforms (GitHub, X, Reddit, forum search) anchor queries on invariant keywords (names, flags, error strings); the language assignment picks which posts to find, not which tokens to translate. User's rule, added 2026-10-09; round 2 is the first run with it, in both arms | done |
 | 8 | Re-measure 30 days after rollout: gatherer tokens by model, research quality complaints. Output tokens read 0 in subagent transcripts (claude-code #100154), so measure input and cache, or use headless runs | open |
-| 10 | Inline venue: plain subagents refuse to write report files, so `lead-researcher` must save each gatherer's hand-back to its report path; `gatherer.md` still says the agent saves it | open, proposed |
+| 10 | Inline venue: plain subagents refuse to write report files, so `lead-researcher` must save each gatherer's hand-back to its report path; `gatherer.md` still says the agent saves it | partly done 2026-10-22: `gather-squad.md` tells every squad prompt to return the full text when it cannot write, and the lead saves it (4 of 10 agents could not write in the menhly names round); `gatherer.md` unchanged |
 | 11 | `deep-gather`: linux.do HTML shows only an anti-AI banner; append `.json` to the topic URL for the post body | open, proposed |
 | 12 | Round 3: Haiku at `effort: high` in EN, ZH and ZH-TW on a third topic (Cloudflare Workers) | done 2026-10-09: EN Haiku won clearly; ZH and ZH-TW stay on Sonnet |
 | 13 | `lead-researcher`: Haiku gatherers pass `effort: "high"`; Workflow `agent()` accepts `effort` (workflow-authoring reference) | done 2026-10-09 inside item 16 |
