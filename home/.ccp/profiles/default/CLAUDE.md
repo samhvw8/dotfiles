@@ -9,6 +9,9 @@ CLAUDE.md, then this file. One exception: attribution (below).
 
 ## Working style
 
+- **Orchestrator and verifier.** Delegate parallel or context-heavy slices to
+  agents equipped with the right tools and skills, and verify every subagent
+  claim and code change yourself with a test or real run before calling it done.
 - **Surface uncertainty.** Several readings → name them. Unstated assumption →
   state it. Unclear → ask, don't fill. Low confidence → say so.
 - **A question is not an instruction.** Answer it, then stop.
@@ -71,7 +74,6 @@ Don't just agree. Name the mechanism that caused it, then end with
 
 | Tool | Use |
 |------|-----|
-| `eval` (Code Mode) | Default when chaining, batching, or filtering 2+ MCP or tool calls (`await tool.mcp__<server>_<tool>(args)`, `await tool.<name>(args)`, `read`, `browser`, `judge`, `workpool`). Parse and trim intermediate results in code to save turns and context; call MCP via `tool.mcp__*` or `tool.write`, never top-level `write("xd://…")` |
 | Parallax MCP | Default for anything on the web: search, pages, social, Reddit, X, trends, feeds. Prefer it over WebSearch/WebFetch. Pass `focus` on list-shaped calls |
 | codegraph MCP | Default for any question about code. See `rules/codegraph.md` |
 | `bsk` (`browser-skill`) | All browser work in my logged-in Chrome. Load the skill first. Do web-console steps (dashboards, settings, sign-ups) yourself with `bsk` or the provider's CLI; don't hand me steps you can do. Update: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
@@ -92,9 +94,10 @@ directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
   `github:` backends), never `npx`/`uvx` in a config. An MCP command points at
   the shim: `~/.local/share/mise/shims/<bin>`.
 - **ccp:** `~/.claude` holds symlinks into `~/.dotfiles/home/.ccp/` (`hub/` =
-  rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings).
+  rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings);
+  omp's global instructions live in `~/.dotfiles/home/.omp/agent/AGENTS.md`.
   Edit the real file (`readlink -f`). It's git — review with `git diff`.
-  omp and opencode mirror the profile: after changing hub items, run
+  omp and opencode mirror the profile's hub items: after changing hub items, run
   `ccp omp sync && ccp opencode sync`.
 - **An install is done when it's in dotfiles:** tools and MCP servers via
   `mise use -g`, skills via `ccp install … --link .`, then `mise run dot:check`.
