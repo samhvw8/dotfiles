@@ -42,7 +42,7 @@ sources:
 
 After `mise bootstrap` links `home/.omp/agent/` and `ccp bootstrap` runs, run `ccp omp sync` once: from then on `ccp` keeps `RULES.md`, `skills/`, and `agents/` current whenever the active profile changes.
 
-`AGENTS.md` is tracked directly in `home/.omp/agent/AGENTS.md` and linked by `mise`, so omp gets its own global instructions (`eval` Code Mode, omp `web_search` / `read`, orchestrator-and-verifier workflow) instead of sharing Claude Code's `CLAUDE.md`; `ccp` reports it as "occupied by a file ccp did not create" and leaves it. `ccp` replaces only links it made, so an agent link made another way (for example straight into this repository) goes stale on unlink: delete it and run `ccp omp sync`. omp skips an agent whose frontmatter is not valid YAML (quote a `description:` that contains `: `) or that sets `model: inherit`; Claude Code treats an omitted `model` the same as `inherit` when `CLAUDE_CODE_SUBAGENT_MODEL` is unset, so leave the line out.
+`AGENTS.md` is tracked directly in `home/.omp/agent/AGENTS.md` and linked by `mise`, so omp gets its own global instructions (`eval` Code Mode, omp `web_search` / `read`, orchestrator-and-verifier workflow) matched to `omp`'s live tools via the `ccp` skill (`Harness-Aware Sync`), while `ccp omp sync` handles mechanical syncing of `RULES.md`, `APPEND_SYSTEM.md`, `skills/`, and `agents/` and leaves `AGENTS.md` untouched. omp skips an agent whose frontmatter is not valid YAML (quote a `description:` that contains `: `) or that sets `model: inherit`; Claude Code treats an omitted `model` the same as `inherit` when `CLAUDE_CODE_SUBAGENT_MODEL` is unset, so leave the line out.
 
 [^omp-dir]: home/.omp/agent
 [^dotfiles-conf]: Shared dotfiles config

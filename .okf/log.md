@@ -1,7 +1,7 @@
 # Update Log
 
 ## 2026-10-24
-* **Update**: [omp configuration](/tools/omp.md) now tracks a dedicated `home/.omp/agent/AGENTS.md` instead of pointing `~/.omp/agent/AGENTS.md` at `home/.ccp/profiles/default/CLAUDE.md`. Both global instruction files and `hub/rules/delegation-protocol.md` define the main agent as an orchestrator and verifier; `home/.omp/agent/AGENTS.md` adds `omp`-specific guidance to batch, chain, and filter MCP and built-in tool calls inside `eval` (`await tool.mcp__*`, `await tool.*`, `workpool`, `judge`, `browser`) and treats `omp`'s built-in `web_search` and `read` (URLs) as first-class alongside Parallax MCP. Runs: nothing new.
+* **Update**: [omp configuration](/tools/omp.md) now uses a two-layer sync with `claude-code-profile` (`ccp`): `ccp omp sync` syncs the shared profile items (`RULES.md`, `APPEND_SYSTEM.md`, `skills/`, `agents/`), while the `ccp` skill (`Harness-Aware Sync`) queries the active harness's live tools/MCPs and adapts `home/.omp/agent/AGENTS.md` to match `omp`'s tools (`eval` Code Mode with `await tool.mcp__*` / `await tool.*` / `workpool` / `judge` / `browser`, `omp` `web_search` and `read` on URLs alongside Parallax MCP, and orchestrator-and-verifier delegation). Runs: nothing new.
 
 ## 2026-10-22
 * **Addition**: Hub skill `drawfacts`, linked into `default`. Its `SKILL.md` is a symlink into `~/workspace/tools/drawfacts/skills/drawfacts/SKILL.md`, the same pattern as `mediasift`; the CLI is an editable `uv tool` install in `~/.local/bin`. `mise run dot:add` stored it but its `mise dot apply` step failed once and left `~/.ccp/hub/skills/drawfacts` missing; a second `mise dot apply --yes` linked it. Runs: one more skill description in each session.
