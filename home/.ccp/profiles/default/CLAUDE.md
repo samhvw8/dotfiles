@@ -71,6 +71,7 @@ Don't just agree. Name the mechanism that caused it, then end with
 
 | Tool | Use |
 |------|-----|
+| `eval` (Code Mode) | Default when chaining, batching, or filtering 2+ MCP or tool calls (`await tool.mcp__<server>_<tool>(args)`, `await tool.<name>(args)`, `read`, `browser`, `judge`, `workpool`). Parse and trim intermediate results in code to save turns and context; call MCP via `tool.mcp__*` or `tool.write`, never top-level `write("xd://…")` |
 | Parallax MCP | Default for anything on the web: search, pages, social, Reddit, X, trends, feeds. Prefer it over WebSearch/WebFetch. Pass `focus` on list-shaped calls |
 | codegraph MCP | Default for any question about code. See `rules/codegraph.md` |
 | `bsk` (`browser-skill`) | All browser work in my logged-in Chrome. Load the skill first. Do web-console steps (dashboards, settings, sign-ups) yourself with `bsk` or the provider's CLI; don't hand me steps you can do. Update: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |

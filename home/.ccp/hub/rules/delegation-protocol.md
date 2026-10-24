@@ -1,8 +1,11 @@
 # Delegation
 
-An inline tool call beats an agent. Delegate when work is truly parallel, needs a
-fresh context, or would flood this one — never to look thorough. `Agent`
-delegates; `Skill` loads guidance for you to follow yourself.
+An inline tool call or `eval` cell beats an agent. When `eval` is available, use
+it to batch, chain, and filter MCP or tool calls (`await tool.mcp__*`,
+`await tool.*`, `workpool`) in one turn instead of multi-turn tool ping-pong.
+Delegate when work is truly parallel, needs a fresh context, or would flood this
+one — never to look thorough. `Agent` delegates; `Skill` loads guidance for you
+to follow yourself.
 
 - **At most 6 agents in flight, as a rolling pool.** When one finishes, start the
   next queued job; don't wait for a whole batch.
