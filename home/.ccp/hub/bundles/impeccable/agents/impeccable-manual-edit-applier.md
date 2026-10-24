@@ -2,7 +2,6 @@
 name: impeccable-manual-edit-applier
 description: Applies leased Impeccable live manual copy-edit batches to source and returns canonical Apply results.
 tools: Read, Write, Edit, Bash, Glob, Grep
-model: inherit
 effort: medium
 maxTurns: 12
 ---

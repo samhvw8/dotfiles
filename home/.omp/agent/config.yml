@@ -107,14 +107,10 @@ task:
   agentModelOverrides:
     scout: "@smol"
     docs-manager: "@smol"
-    journal-writer: "@smol"
     requirements-analyst: "@task"
-    deep-reviewer: "@slow"
     heavy-thinker: "@slow"
     cofounder: "@default"
-    cto: "@default"
     cto-advisor: "@default"
-    system-architect: "@default"
     impeccable-manual-edit-applier: "@default"
 compaction:
   thresholdTokens: 200000
@@ -151,32 +147,8 @@ lsp:
   diagnosticsOnEdit: true
 skills:
   ignoredSkills:
-    - ast-grep
-    - backend-development
-    - bento-slides
-    - brandkit
     - browser-history
-    - brutalist-skill
-    - canvas-design
-    - chrome-devtools
-    - databases
-    - design-principles
-    - gpt-tasteskill
-    - guizang-ppt-skill
-    - image-to-code-skill
-    - imagegen-frontend-mobile
-    - imagegen-frontend-web
-    - minimalist-skill
-    - output-skill
-    - payment-integration
     - phone-harness
-    - pug-ui
-    - react-best-practices
-    - redesign-skill
-    - soft-skill
-    - stitch-skill
-    - taste-skill
-    - taste-skill-v1
 cycleOrder:
   - smol
   - slow

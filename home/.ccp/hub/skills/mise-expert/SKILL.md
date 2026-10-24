@@ -12,7 +12,7 @@ mise ships several releases a month, and backends, settings, env vars and flags 
 Before giving syntax, a setting name, an env var, a flag, or a backend recommendation, confirm it against a live source, in this order:
 
 1. **The installed binary** — `mise --version`, `mise help <command>`, `mise settings ls`, `mise registry <tool>`, `mise doctor`. Authoritative for what this machine runs.
-2. **Current docs** — context7 (resolve the `mise` library ID, then query the topic), or https://mise.jdx.dev. Use `mcp__parallax__fetch_page` if WebFetch fails.
+2. **Current docs** — context7 (resolve the `mise` library ID, then query the topic), or https://mise.jdx.dev (via `read` in `omp`, `WebFetch` in Claude Code, or `mcp__parallax_fetch_page`).
 3. **What changed since the snapshot** — the release notes at https://github.com/jdx/mise/releases, when the installed version is newer than the one above or the user hits behavior this file doesn't match.
 
 How often each part of this file needs that check:

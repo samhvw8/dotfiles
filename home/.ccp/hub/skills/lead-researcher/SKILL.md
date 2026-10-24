@@ -1,6 +1,6 @@
 ---
 name: lead-researcher
-description: "Entry point for all multi-source research — comparing options, evaluating tools, surveying an ecosystem, deep or 'team research' (live supervised agent-team venue). Orchestrates gatherer agents; the brain sizes the plan to the decision and picks agent count, languages (default EN + ZH + ZH-TW, assigned per sub-question), iterations, and depth from the question. Never spawn gatherer agents directly — they go through this skill. Not for single-fact lookups ('what version is X', 'is Y deprecated') — those are one WebSearch."
+description: "Entry point for all multi-source research — comparing options, evaluating tools, surveying an ecosystem, deep or 'team research' (live supervised agent-team venue). Orchestrates gatherer agents; the brain sizes the plan to the decision and picks agent count, languages (default EN + ZH + ZH-TW, assigned per sub-question), iterations, and depth from the question. Never spawn gatherer agents directly — they go through this skill. Not for single-fact lookups ('what version is X', 'is Y deprecated') — those are one web search."
 ---
 
 # Lead Researcher
@@ -287,7 +287,7 @@ Before advancing to Phase 1, do 2-3 quick inline web searches to verify that nam
 
 **Open-ended / iterative-expansion queries** (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria) are handled **natively** by the loop's CONTROL brain ([forager](references/forager/overview.md)), which runs full reflect + steer + topic expansion for them.
 
-Single-fact lookups ("what's the latest stable React", "is Y deprecated") are not research — answer them with one WebSearch and leave this skill.
+Single-fact lookups ("what's the latest stable React", "is Y deprecated") are not research — answer them with one web search (`mcp__parallax_web_search` or `web_search` / `WebSearch`) and leave this skill.
 
 **Pass-through examples** (skip heavy-think, go directly to Phase 1):
 - "Compare Next.js vs Remix for SSR performance" — criteria implied (performance), scope bounded
@@ -306,7 +306,7 @@ Single-fact lookups ("what's the latest stable React", "is Y deprecated") are no
 | Researchable, and live steering would help (exploratory, multi-step) | Ask one yes/no: *"Run as **live Team Research** — you supervise while a steering-lead brain + 2–3 gatherers + a verifier work and adapt in real time? Or run it normally?"* |
 | Otherwise | Inline or Workflow venue, as the brain picks |
 
-Yes → Team venue (still do Phase 1 planning first). Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + main session (no nested teams).
+Yes → Team venue (still do Phase 1 planning first). Requires main session (no nested teams; in Claude Code `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, in `omp` named `task` items with `write agent://<id>`).
 
 ### Phase 1: Confirm Research Plan with User
 

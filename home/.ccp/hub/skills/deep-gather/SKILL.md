@@ -98,10 +98,9 @@ Each iteration is a **complete cycle** — search, fetch, and use other tools to
 ```
 ┌─→ ITERATION (each one contains ALL of these):
 │   │
-│   ├─ WebSearch (up to 3 queries — different angles/languages)
+│   ├─ Web search (up to 3 queries — Parallax `web_search` / `social_search`, `omp` `web_search`, or `WebSearch`)
 │   │       ↓
-│   ├─ WebFetch relevant results (up to 3 — only what matters to the question)
-│   │       ↓
+│   ├─ Fetch relevant results (up to 3 — Parallax `fetch_page`/`batch_fetch`, `omp` `read`, or `WebFetch`)
 │   ├─ Other tools as needed (gh search, docs lookup, etc.)
 │   │       ↓
 │   ├─ Extract: ideas, data, claims, new leads
@@ -116,14 +115,14 @@ Each iteration is a **complete cycle** — search, fetch, and use other tools to
 | Rule | Detail |
 |------|--------|
 | **Complete cycles** | Each iteration MUST include both search AND fetch — not one or the other |
-| **Max 3 per tool per iteration** | Up to 3 WebSearch + up to 3 WebFetch + other tools as needed per iteration |
+| **Max 3 per tool per iteration** | Up to 3 searches + up to 3 page fetches + other tools as needed per iteration (in `omp`, batch/chain them in one `eval` cell with `await tool.mcp__parallax_*`, `await tool.web_search`, or `read`) |
 | **Fetch selectively** | Only fetch URLs relevant to the research question — skip generic/tangential results |
 | **Snippets can suffice** | If a snippet gives you what you need (a version, a yes/no), no fetch needed |
 | **Follow leads** | Fetched pages reveal new sources — fetch those in the same or next iteration |
 | **Refine queries** | Each iteration's searches should be sharper than the last, informed by fetched content |
 | **Fetch before citing deeply** | Substantive claims require fetching the actual page — don't argue from snippets |
-| **Parallel calls** | Batch independent WebSearch and WebFetch calls in parallel within each iteration |
-| **Escalate on failure** | If WebFetch fails (JS-rendered, anti-bot), escalate per Phase 4 retrieval tools |
+| **Parallel calls** | Batch independent search and fetch calls in parallel within each iteration (or in one `omp` `eval` cell) |
+| **Escalate on failure** | If direct fetch (`read` / `WebFetch`) fails (JS-rendered, anti-bot), escalate to `mcp__parallax_fetch_page` or Phase 4 retrieval tools |
 
 ## Phase 3: GitHub Research
 
@@ -284,9 +283,9 @@ Use **all available tools and MCP servers** to gather information. Do NOT limit 
 ### Step 1: Discover Available Tools
 
 Before fetching content, scan what's available in this session:
-- Check `<system-reminder>` for listed MCP tools and deferred tools
-- Use `ToolSearch` with queries like "web", "search", "fetch", "scrape", "crawl", "browse" to find retrieval-capable tools
-- Note all built-in tools that can retrieve external content
+- Check `<system-reminder>` / `xd://` for listed MCP tools and built-in tools
+- In Claude Code, use `ToolSearch` with queries like "web", "search", "fetch", "scrape", "crawl", "browse"; in `omp`, inspect `Object.keys(tool)` in `eval` or `xd://mcp__*` devices
+- Note all built-in tools (`web_search`, `read`, `browser` in `omp`; `WebSearch`, `WebFetch` in Claude Code) that can retrieve external content
 
 ### Step 2: Classify by Capability
 
@@ -318,10 +317,10 @@ Group every discovered tool by what it can do:
 
 ### Reddit Retrieval (MANDATORY escalation)
 
-If `site:reddit.com` WebSearch returns empty (common due to API restrictions):
-1. Check if Parallax MCP is available (`ToolSearch("parallax reddit")`)
-2. If yes: use `mcp__parallax__search_reddit` or `browse_subreddit` for subreddit-specific search — with `focus` set to the research question (see [retrieval-tools.md](references/retrieval-tools.md#parallax-mcp-pass-focus))
-3. If no Parallax: try `WebFetch` on specific Reddit URLs constructed from the topic (e.g., `reddit.com/r/[subreddit]/search?q=[topic]`)
+If `site:reddit.com` search returns empty (common due to API restrictions):
+1. Check if Parallax MCP is available (`ToolSearch("parallax reddit")` in Claude Code, or `tool.mcp__parallax_search_reddit` / `xd://mcp__parallax_search_reddit` in `omp`)
+2. If yes: use `search_reddit` or `browse_subreddit` for subreddit-specific search — with `focus` set to the research question (see [retrieval-tools.md](references/retrieval-tools.md#parallax-mcp-pass-focus))
+3. If no Parallax: try fetching specific Reddit URLs (`read` in `omp` or `WebFetch` in Claude Code, e.g., `reddit.com/r/[subreddit]/search?q=[topic]`)
 4. Document "Reddit inaccessible" in findings if all methods fail — do NOT silently skip
 
 ### Free Open Platforms (always check)
@@ -340,7 +339,7 @@ If `site:reddit.com` WebSearch returns empty (common due to API restrictions):
 | **Competitive Prog** | LeetCode, HackerRank | LeetCode CN, Luogu (洛谷), AcWing | Codeforces, e-olymp |
 | **Cloud/Infra Docs** | AWS, GCP, Azure docs | Alibaba Cloud (阿里云), Tencent Cloud (腾讯云) docs | Yandex Cloud docs |
 
-These are freely accessible without any tools — just `WebFetch` the URL. Always check relevant platforms before escalating to paid/bypass tools.
+These are freely accessible without any tools — just fetch the URL (`read` in `omp` or `WebFetch` in Claude Code). Always check relevant platforms before escalating to paid/bypass tools.
 
 ## Phase 5: Synthesis & Cross-Reference
 

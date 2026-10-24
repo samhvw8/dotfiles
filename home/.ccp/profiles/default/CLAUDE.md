@@ -10,8 +10,11 @@ CLAUDE.md, then this file. One exception: attribution (below).
 ## Working style
 
 - **Orchestrator and verifier.** Delegate parallel or context-heavy slices to
-  agents equipped with the right tools and skills, and verify every subagent
-  claim and code change yourself with a test or real run before calling it done.
+  agents equipped with the right tools and skills (or batch, chain, and filter
+  multi-step tool/MCP work inside `omp`'s `eval` with `workpool` and `agent()`).
+  Subagent output and code edits are claims, not proof: verify every change and
+  result yourself with a test, a real run, an `eval` check, `browser`, or `cua`
+  before calling it done.
 - **Surface uncertainty.** Several readings → name them. Unstated assumption →
   state it. Unclear → ask, don't fill. Low confidence → say so.
 - **A question is not an instruction.** Answer it, then stop.
@@ -74,9 +77,10 @@ Don't just agree. Name the mechanism that caused it, then end with
 
 | Tool | Use |
 |------|-----|
-| Parallax MCP | Default for anything on the web: search, pages, social, Reddit, X, trends, feeds. Prefer it over WebSearch/WebFetch. Pass `focus` on list-shaped calls |
+| `eval` (`omp` Code Mode) | Default in `omp` when chaining, batching, or filtering 2+ MCP or tool calls (`await tool.mcp__<server>_<tool>(args)`, `await tool.<name>(args)`, `read`, `write`, `browser`, `judge`, `judge_batch`, `workpool`, `agent`). Parse and trim intermediate results in code to save turns and context; never call top-level `write("xd://...", ...)` for MCP |
+| Parallax MCP & Web (`web_search`, `read`) | Default for anything on the web: in `omp`, both `omp`'s built-in `web_search` / `read` (URLs) and Parallax MCP (`mcp__parallax_*` for social, Reddit, X, bot-protected `fetch_page`/`batch_fetch`, trends, feeds) are first-class; in Claude Code, prefer Parallax MCP over `WebSearch`/`WebFetch`. Pass `focus` on list-shaped Parallax calls |
 | codegraph MCP | Default for any question about code. See `rules/codegraph.md` |
-| `bsk` (`browser-skill`) | All browser work in my logged-in Chrome. Load the skill first. Do web-console steps (dashboards, settings, sign-ups) yourself with `bsk` or the provider's CLI; don't hand me steps you can do. Update: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
+| `bsk` (`browser-skill`), `browser` (`omp`), `cua` | Logged-in Chrome work via `bsk` (or `omp`'s `browser` relay in `eval`); native macOS GUI automation via `cua` (`mcp__cua_computer_use_*`). Load `browser-skill` or `cua-driver` first. Do web-console steps (dashboards, settings, sign-ups) yourself; don't hand me steps you can do. Update `bsk`: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
 
 Never put a year in a search query unless I ask for a date range. Searches cover
@@ -94,10 +98,9 @@ directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
   `github:` backends), never `npx`/`uvx` in a config. An MCP command points at
   the shim: `~/.local/share/mise/shims/<bin>`.
 - **ccp:** `~/.claude` holds symlinks into `~/.dotfiles/home/.ccp/` (`hub/` =
-  rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings);
-  omp's global instructions live in `~/.dotfiles/home/.omp/agent/AGENTS.md`.
+  rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings).
   Edit the real file (`readlink -f`). It's git — review with `git diff`.
-  omp and opencode mirror the profile's hub items: after changing hub items, run
+  omp and opencode mirror the profile: after changing hub items, run
   `ccp omp sync && ccp opencode sync`.
 - **An install is done when it's in dotfiles:** tools and MCP servers via
   `mise use -g`, skills via `ccp install … --link .`, then `mise run dot:check`.

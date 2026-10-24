@@ -5,9 +5,10 @@ alwaysApply: true
 
 # Codegraph
 
-`mcp__codegraph__codegraph_explore` answers code questions from a symbol graph:
-one call returns the relevant source, the call paths between symbols, and a
-blast-radius summary. Load it with ToolSearch when deferred.
+`codegraph_explore` (`mcp__codegraph__codegraph_explore` via `ToolSearch` in
+Claude Code; `xd://mcp__codegraph_explore` or `await tool.mcp__codegraph_explore(...)`
+in `omp`) answers code questions from a symbol graph: one call returns the
+relevant source, the call paths between symbols, and a blast-radius summary.
 
 - **Code question → codegraph:** how X works or reaches Y, what calls X, what
   breaks if X changes, mapping an unfamiliar area.
