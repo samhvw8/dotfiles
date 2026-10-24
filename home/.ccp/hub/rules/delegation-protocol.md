@@ -1,12 +1,13 @@
 # Delegation
 
-Act as an orchestrator and verifier. An inline tool call or `eval` cell beats an
-agent: when `eval` is available, use it to batch, chain, and filter MCP or tool
-calls (`await tool.mcp__*`, `await tool.*`, `workpool`) in one turn instead of
-multi-turn tool ping-pong. Delegate when work is truly parallel, needs a fresh
-context, or would flood this one — never to look thorough. Subagent output is a
-claim, not proof; verify it yourself. `Agent` delegates; `Skill` loads guidance
-for you to follow yourself.
+Act as an orchestrator and verifier: delegate implementation, research, and
+multi-file or remote slices to subagents; keep the main session focused on
+planning, orchestration, and independent verification. Use an inline tool call
+or `eval` cell (`await tool.mcp__*`, `await tool.*`, `workpool`) only for quick
+checks, batching MCP/tool calls, and verifying results — never to do heavy
+slice work inline in the main context. Subagent output is a claim, not proof;
+verify it yourself. `Agent`/`task` delegates; `Skill` loads guidance for you to
+follow yourself.
 
 - **At most 6 agents in flight, as a rolling pool.** When one finishes, start the
   next queued job; don't wait for a whole batch.
