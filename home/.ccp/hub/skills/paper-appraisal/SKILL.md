@@ -53,7 +53,7 @@ lowest-confidence rows.
 | 1. Find | `web_search tags:["science"]`; opt-in engines by name | `references/retrieval.md` |
 | 2. Pre-check | Retraction, preprint vs peer-reviewed, venue, funding and COI | `references/pre-read-checks.md` |
 | 3. Around and after | Registration vs report, released data and code, PubPeer, replications. Before the full read: its findings say where to read hardest | `references/after-publication.md` |
-| 4. Read | `fetch_page` on the DOI/arXiv/PMC URL: `outline`, then `section` or `query` | `references/retrieval.md` |
+| 4. Read | `fetch_page` on the DOI/arXiv/PMC URL (`outline`, then `section`/`query`); if abstract-only, `paperget get` (`paper-download`) | `references/retrieval.md` |
 | 5. Classify design | Pick the tool from the table below | — |
 | 6. Appraise each study | Domain by domain, each judgement with a quoted sentence | the tool's reference |
 | 7. Rate the body of evidence | GRADE per outcome (CERQual for qualitative). Not for ML benchmark papers | `references/grade.md` |
