@@ -59,7 +59,7 @@ atuin = "latest"
 "pipx:huggingface_hub" = "latest"
 gh = "latest"
 "github:sharkdp/hyperfine" = "latest"
-"pipx:cua-cli" = { version = "latest", uvx_args = "--python 3.13" }
+"pipx:cua" = { version = "latest", uvx_args = "--python 3.13" }
 mr-boxington = "latest"
 ninja = "latest"
 java = "temurin-21"
