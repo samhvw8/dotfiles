@@ -16,7 +16,7 @@ binstall = true
 credential_command = "gh auth token"
 
 [tools]
-go = "1.27"
+go = "1.27.3"
 jq = "latest"
 node = "24"
 python = "3.14"
