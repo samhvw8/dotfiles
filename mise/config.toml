@@ -18,8 +18,8 @@ credential_command = "gh auth token"
 [tools]
 go = "1.27.3"
 jq = "latest"
-node = "24"
-python = "3.14"
+node = "26"
+python = "3.15"
 rust = { version = "latest", mr_boxington = true }
 shellcheck = "latest"
 uv = "latest"
@@ -39,10 +39,10 @@ wrangler = "latest"
 "pipx:it2" = "latest"
 "npm:cf" = "latest"
 claude = { version = "latest", minimum_release_age = "0s" }
-gcloud = "584.0.0"
+gcloud = "590.0.1"
 "npm:impeccable" = "latest"
 "github:colbymchenry/codegraph" = { version = "latest", minimum_release_age = "0s" }
-"pipx:fal" = "1.78.1"
+"pipx:fal" = "1.83.0"
 antigravity-cli = "latest"
 pandoc = "latest"
 pi = { version = "latest", minimum_release_age = "0s" }
@@ -69,7 +69,7 @@ rclone = "latest"
 "aqua:rhysd/actionlint" = "latest"
 "pipx:vastai" = "latest"
 "pipx:samhvw8/mediasift" = "latest"   # agent media sensor (~/workspace/tools/mediasift); `mise install -f` moves to the newest commit
-"pipx:samhvw8/tablefix" = "latest"     # text tables -> Notes/Slack/chat (~/workspace/tools/tablefix); `mise install -f` moves to the newest commit
+"go:github.com/samhvw8/tablefix" = { version = "latest", minimum_release_age = "0s" }  # text tables -> Notes/Slack/chat (~/workspace/tools/tablefix); then `tablefix alfred install`
 "aqua:ast-grep/ast-grep" = "latest"
 lima = "latest"
 
