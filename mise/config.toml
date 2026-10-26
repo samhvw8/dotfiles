@@ -70,6 +70,7 @@ rclone = "latest"
 "pipx:vastai" = "latest"
 "pipx:samhvw8/mediasift" = "latest"   # agent media sensor (~/workspace/tools/mediasift); `mise install -f` moves to the newest commit
 "aqua:ast-grep/ast-grep" = "latest"
+lima = "latest"
 
 # Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
 [dotfiles]
