@@ -67,7 +67,7 @@ java = "temurin-21"
 "github:gitleaks/gitleaks" = "latest"
 rclone = "latest"
 "aqua:rhysd/actionlint" = "latest"
-"pipx:vastai" = "latest"
+"pipx:vastai" = { version = "latest", uvx_args = "--python 3.14" }  # pillow has no cp315 wheel yet; drop when it does
 "pipx:samhvw8/mediasift" = "latest"   # agent media sensor (~/workspace/tools/mediasift); `mise install -f` moves to the newest commit
 "go:github.com/samhvw8/tablefix" = { version = "latest", minimum_release_age = "0s" }  # text tables -> Notes/Slack/chat (~/workspace/tools/tablefix); then `tablefix alfred install`
 "aqua:ast-grep/ast-grep" = "latest"
