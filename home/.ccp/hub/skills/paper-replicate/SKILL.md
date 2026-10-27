@@ -13,15 +13,15 @@ You turn a research paper into a verified, runnable engineering workspace. You p
 
 | Step | Action | Command / Tool |
 |------|--------|----------------|
-| 1. Bundle | Pull PDF, arXiv `.tex` source, BibTeX, OpenReview `reviews.md`, PMC XML, and shallow-clone the discovered GitHub/HF repo | `paperget bundle --clone -d <workspace-dir> <id-or-url>` |
+| 1. Bundle | Pull PDF, arXiv `.tex` source, BibTeX, OpenReview `reviews.md`, PMC XML, and shallow-clone the discovered GitHub/HF repo | `paperhunt bundle --clone -d <workspace-dir> <id-or-url>` |
 | 2. Read exact math & tables | Read `.tex` files in `<slug>/tex/` first (lossless LaTeX macros, exact architecture tables, appendix hyperparameters); fall back to `<slug>/paper.pdf` | `read` on `<slug>/tex/*.tex` or `<slug>/paper.pdf` |
 | 3. Check reviewer & author notes | Read `<slug>/reviews.md` for implementation clarifications, missing hyperparameters, baseline bugs, and author rebuttal fixes | `read` on `<slug>/reviews.md` |
 | 4. Map paper ↔ code | Map every core equation, loss term, model block, and training hyperparameter from the paper to exact file:line locations in `<slug>/code/` (or plan them from scratch if no official repo exists) | `codegraph_explore` or `grep` / `read` in `<slug>/code/` |
 | 5. Smoke-verify | Run a minimal forward/backward pass, unit test, or synthetic-batch check to prove the implementation executes cleanly | `bash` / `eval` |
 
-## What `paperget bundle` creates
+## What `paperhunt bundle` creates
 
-Running `paperget bundle --clone -d . <id-or-url>` produces `<slug>/`:
+Running `paperhunt bundle --clone -d . <id-or-url>` produces `<slug>/`:
 - `paper.pdf` — verified PDF (`%PDF-`, SHA-256 recorded in `paper.json`).
 - `paper.json` & `paper.bib` — cross-resolved metadata (DOI, arXiv, PMID, PMCID, OpenReview forum, retraction flags, discovered code repositories) and BibTeX entry.
 - `tex/` — unpacked arXiv e-print source (`https://arxiv.org/e-print/<id>`): exact `.tex` equations, `.bbl`/`.bib` bibliography, and vector figures.

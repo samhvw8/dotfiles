@@ -62,11 +62,11 @@ Several papers: `batch_fetch` (1-20 URLs) with the same `query`.
 If the header says "abstract only":
 1. Try the preprint (arXiv, bioRxiv, medRxiv), the PMC copy, or the author's
    repository (HAL, Zenodo) via `fetch_page`.
-2. Run `paperget get -o /tmp/papers --meta <doi-or-url>` (see the `paper-download`
+2. Run `paperhunt get -o /tmp/papers --meta <doi-or-url>` (see the `paper-download`
    skill) to pull the verified PDF or `.tex` source locally via its OA, preprint,
    PMC S3, and shadow-library waterfall, then read `/tmp/papers/<slug>.pdf` with
    `read`.
-3. Only if both `fetch_page` and `paperget` cannot retrieve the full text, write
+3. Only if both `fetch_page` and `paperhunt` cannot retrieve the full text, write
    "not appraised: abstract only".
 
 ## 3. Around and after the paper
