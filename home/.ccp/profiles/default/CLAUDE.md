@@ -93,6 +93,8 @@ directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
 ## Environment
 
 - **Models:** trust the harness's model IDs. `[1m]` = 1M-context variant.
+- **Heavy compute** (detectors, renders, benchmarks, model runs): check `ssh me.ubuntu.home nvidia-smi`
+  first. When the server is up and its GPU (RTX 3060) is idle, run the job there, not on this Mac.
 - **mise** replaces asdf, nvm, pyenv, direnv and make; config in `mise.toml`.
   Install CLI tools and MCP servers globally with `mise use -g` (`npm:`, `pipx:`,
   `github:` backends), never `npx`/`uvx` in a config. An MCP command points at
