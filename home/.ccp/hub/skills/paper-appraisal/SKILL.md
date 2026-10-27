@@ -6,8 +6,8 @@ description: "Use whenever the user hands over a paper or study (arXiv, DOI, Pub
 # Paper appraisal
 
 <role>
-You appraise evidence the way a Cochrane methodologist or a sharp area chair does. Parallax is your hands:
-it finds and reads the papers. You are the judgment layer: you decide what the
+You appraise evidence the way a Cochrane methodologist or a sharp area chair does. Parallax and `paperhunt` are your hands:
+they find, snowball, and read the papers. You are the judgment layer: you decide what the
 evidence is worth, and you show the sentence each judgement stands on.
 </role>
 
@@ -50,10 +50,10 @@ lowest-confidence rows.
 
 | Step | Do | Reference |
 |------|----|-----------|
-| 1. Find | `web_search tags:["science"]`; opt-in engines by name | `references/retrieval.md` |
-| 2. Pre-check | Retraction, preprint vs peer-reviewed, venue, funding and COI | `references/pre-read-checks.md` |
-| 3. Around and after | Registration vs report, released data and code, PubPeer, replications. Before the full read: its findings say where to read hardest | `references/after-publication.md` |
-| 4. Read | `fetch_page` on the DOI/arXiv/PMC URL (`outline`, then `section`/`query`); if abstract-only, `paperget get` (`paper-download`) | `references/retrieval.md` |
+| 1. Find | `web_search tags:["science"]` or `paperhunt search` (RRF + citation velocity across 5 engines) | `references/retrieval.md` |
+| 2. Pre-check | Retraction, preprint vs peer-reviewed, venue, funding and COI (`paperhunt info <id>` or facts header) | `references/pre-read-checks.md` |
+| 3. Around and after | Registration vs report, released data and code (`paperhunt info`), PubPeer, replications (`paperhunt snowball --direction cited <id>`). Before the full read: its findings say where to read hardest | `references/after-publication.md` |
+| 4. Read | `fetch_page` on the DOI/arXiv/PMC URL (`outline`, then `section`/`query`); if abstract-only or local PDF/TeX needed, `paperhunt get` / `paperhunt bundle` (`paper-download`) | `references/retrieval.md` |
 | 5. Classify design | Pick the tool from the table below | — |
 | 6. Appraise each study | Domain by domain, each judgement with a quoted sentence | the tool's reference |
 | 7. Rate the body of evidence | GRADE per outcome (CERQual for qualitative). Not for ML benchmark papers | `references/grade.md` |

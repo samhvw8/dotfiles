@@ -101,7 +101,7 @@ Each iteration is a **complete cycle** — search, fetch, and use other tools to
 │   ├─ Web search (up to 3 queries — Parallax `web_search` / `social_search`, `omp` `web_search`, or `WebSearch`)
 │   │       ↓
 │   ├─ Fetch relevant results (up to 3 — Parallax `fetch_page`/`batch_fetch`, `omp` `read`, or `WebFetch`)
-│   ├─ Other tools as needed (gh search, docs lookup, etc.)
+│   ├─ Other tools as needed (gh search, paperhunt search/snowball/get, docs lookup, etc.)
 │   │       ↓
 │   ├─ Extract: ideas, data, claims, new leads
 │   │       ↓

@@ -1,25 +1,29 @@
-# Retrieval with Parallax
+# Retrieval with Parallax and paperhunt
 
-Parallax retrieves; you judge. Keep calls token-cheap: find wide, read narrow.
+Parallax and `paperhunt` retrieve; you judge. Keep calls token-cheap: find wide, read narrow.
 
 ## 1. Find papers
 
 | Need | Call |
 |------|------|
-| Literature on a question | `web_search` with `tags: ["science"]` |
-| Specific engines | `engines: ["arxiv", "openalex", ...]` (overrides `tags`) |
+| Literature on a question (Parallax) | `web_search` with `tags: ["science"]` (add `focus: "<topic in plain words>"`) |
+| Federated search with RRF + citation velocity (`paperhunt`) | `paperhunt search [flags] "<query>"` — queries OpenAlex, Europe PMC, arXiv, OpenReview, and Crossref in parallel (`--sort rrf\|cited\|velocity\|date`, `--journal "<venue>"`, `--year 2020-2026`, `--oa-only`, `--limit N`, `--json`) |
+| Citation graph snowballing (backward refs + forward citations) | `paperhunt snowball [flags] <doi-or-arxiv-or-url>` (`--direction both\|refs\|cited`, `--sort cited\|velocity\|date`, `--oa-only`) |
+| Specific Parallax engines | `engines: ["arxiv", "openalex", ...]` (overrides `tags`) |
 | Physics / HEP | `engines: ["inspirehep"]` (opt-in, not in the science tag) |
 | Datasets, software, grey literature | `engines: ["zenodo"]` (opt-in) |
-| ML conference papers with their reviews | `social_search` with `platform: "openreview"` (gives thread refs; see section 3) |
-| Only on-topic hits | add `focus: "<topic in plain words>"` |
+| ML conference papers with their reviews | `social_search` with `platform: "openreview"` or `paperhunt search --source openreview "<query>"` |
 
-The science tag covers arXiv, PubMed, Europe PMC, HAL, OpenAlex, Crossref,
+The Parallax `science` tag covers arXiv, PubMed, Europe PMC, HAL, OpenAlex, Crossref,
 OpenReview and sci-bot (answered literature reviews). Engine names live in
 `parallax://search/engines`; read it rather than guess.
 
 Search tips:
 - Search for systematic reviews first (`"systematic review" <topic>`). A good,
   recent review saves appraising twenty primary studies, but appraise the review.
+- Use `paperhunt search --sort velocity "<topic>"` to surface fast-rising recent
+  papers alongside classic highly cited works, and `paperhunt snowball <seed-id>`
+  to trace what a landmark paper cited and what cited it since.
 - Search the trial registry ID or DOI when you have it; it finds the protocol,
   corrections and retraction notices.
 - Record how many hits you found and how you chose the ones you read.
@@ -59,24 +63,22 @@ Read in this order to stay cheap:
 
 Several papers: `batch_fetch` (1-20 URLs) with the same `query`.
 
-If the header says "abstract only":
+If the header says "abstract only" (or when you need exact `.tex` equations, PMC JATS XML/supplements, or local PDFs):
 1. Try the preprint (arXiv, bioRxiv, medRxiv), the PMC copy, or the author's
    repository (HAL, Zenodo) via `fetch_page`.
-2. Run `paperhunt get -o /tmp/papers --meta <doi-or-url>` (see the `paper-download`
-   skill) to pull the verified PDF or `.tex` source locally via its OA, preprint,
-   PMC S3, and shadow-library waterfall, then read `/tmp/papers/<slug>.pdf` with
-   `read`.
+2. Run `paperhunt get -o /tmp/papers --meta --bib --reviews <doi-or-url>` (or
+   `paperhunt bundle -d /tmp/papers <doi-or-url>` for unpacked arXiv `.tex` + PMC
+   XML + OpenReview `reviews.md`; see `paper-download` and `paper-replicate`) to
+   pull the verified PDF or `.tex` source locally via its OA, preprint,
+   two-source title-to-preprint fallback, PMC S3, and shadow-library waterfall,
+   then read `/tmp/papers/<slug>.pdf` (or `tex/*.tex`) with `read`.
 3. Only if both `fetch_page` and `paperhunt` cannot retrieve the full text, write
    "not appraised: abstract only".
 
 ## 3. Around and after the paper
 
-What to check, and in what order, is in `after-publication.md`. Two retrieval
-notes:
+What to check, and in what order, is in `after-publication.md`. Retrieval notes:
 
-- OpenReview reviews: `social_search` with `platform: "openreview"`, then
-  `social_thread` with the `forum@group` ref from the hit. Parallax's own tool
-  descriptions cover the details and rate limits.
-- `social_search` with the paper URL finds Hacker News, Reddit and Lemmy threads.
-  Use it only when the paper drew public attention; for most papers it returns
-  unrelated hits.
+- Forward citations and replications: `paperhunt snowball --direction cited --sort cited <doi-or-id>` lists works that cite the paper via OpenAlex.
+- OpenReview reviews: `social_search` with `platform: "openreview"` then `social_thread` with `forum@group`, or `paperhunt get --reviews -o /tmp/papers <openreview-url-or-id>` to save the full peer-review and rebuttal thread as `.reviews.md`.
+- `social_search` with the paper URL finds Hacker News, Reddit and Lemmy threads. Use it only when the paper drew public attention; for most papers it returns unrelated hits.

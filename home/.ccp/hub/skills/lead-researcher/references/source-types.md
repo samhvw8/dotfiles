@@ -16,12 +16,12 @@ Searchable sources beyond GitHub, by domain, with how to query each. Pick the st
 
 | Source | How to query |
 |--------|--------------|
-| arXiv | arxiv.org, `site:arxiv.org`, arXiv API |
-| Semantic Scholar | semanticscholar.org + API (free) |
-| Google Scholar | scholar.google.com |
-| PubMed / PMC | pubmed.ncbi.nlm.nih.gov + E-utilities API |
-| Papers with Code | paperswithcode.com (links papers ↔ repos) |
-| OpenReview / SSRN | openreview.net, ssrn.com (preprints, reviews) |
+| `paperhunt` CLI (federated 5-engine search, snowballing & PDF/TeX download) | `paperhunt search --sort rrf\|cited\|velocity --year 2022-2026 --journal "<venue>" "<q>"`, `paperhunt snowball <id>`, `paperhunt get -j 4 -o <dir> <id...>`, `paperhunt bundle --clone -d <dir> <id>` (see `paper-download` & `paper-replicate` skills) |
+| Parallax `science` search & full-text reader | `web_search` with `tags: ["science"]` (`focus: "<question>"`), `fetch_page` on DOI/arXiv/PMC/bioRxiv URLs |
+| arXiv | `paperhunt search --source arxiv "<q>"`, arxiv.org, `site:arxiv.org` |
+| OpenAlex / Semantic Scholar | `paperhunt search --source openalex "<q>"`, `paperhunt snowball <id>`, semanticscholar.org |
+| PubMed / Europe PMC / PMC S3 | `paperhunt search --source epmc "<q>"`, `paperhunt get <PMCID>`, pubmed.ncbi.nlm.nih.gov |
+| OpenReview / SSRN | `paperhunt search --source openreview "<q>"`, `paperhunt get --reviews <forum-id>`, `social_search platform:"openreview"` |
 
 ## Business / Market / Strategy
 

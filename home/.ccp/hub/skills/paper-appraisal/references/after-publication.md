@@ -17,7 +17,7 @@ hardest.
 | Retraction, expression of concern, correction | Facts header, publisher notice, `"<title>" erratum` | See `pre-read-checks.md` |
 | PubPeer | `fetch_page` on `pubpeer.com/search?q=<DOI>` | Image duplication, data or analysis questions the authors left unanswered |
 | Letters and commentaries | `"<title>" comment`, `"<title>" response`, journal letters | A reanalysis that reverses the result |
-| Replications | Citing papers that re-test the same effect, outcome or benchmark (OpenAlex `cites:<id>` plus a full-text search for it); read only their comparison result, at most 3 papers. Psychology and social science: FORRT Replications & Reversals (forrt.org/reversals) | Preregistered, well-powered replications find no effect |
+| Replications | Citing papers that re-test the same effect, outcome or benchmark (`paperhunt snowball --direction cited --sort cited <doi-or-id>` plus a full-text search for it); read only their comparison result, at most 3 papers. Psychology and social science: FORRT Replications & Reversals (forrt.org/reversals) | Preregistered, well-powered replications find no effect |
 | Discussion threads | `social_search` with the paper URL, only when the paper drew public attention | A thread is a lead to check in the paper, never evidence alone |
 
 ## By field: the record the authors promised or released
@@ -32,7 +32,7 @@ hardest.
 
 ## Code repositories
 
-On the repo host, in at most 3 calls:
+Discover the paper's linked repository with `paperhunt info <id>` (or `paperhunt bundle --clone -d /tmp/papers <id>`), which extracts GitHub/HuggingFace/GitLab URLs from Hugging Face Papers, OpenReview, abstract, `.tex` source, and PDF text. On the repo host, in at most 3 calls:
 
 1. Read replies by the paper's authors (match logins and names to the author list)
    or the repo maintainers, across open and closed issues. Filter by who wrote
@@ -65,6 +65,6 @@ keep comments whose login matches the author list.
 
 Some venues publish their reviews (OpenReview conferences, eLife, F1000Research,
 BMJ and other open-peer-review journals); most do not. Make one search for the
-reviews. An empty result means "reviews not public": say so and move on. An error
+reviews (`social_search` with `platform: "openreview"` or `paperhunt get --reviews <id>`). An empty result means "reviews not public": say so and move on. An error
 means "not retrieved": list it under "Could not check". Reviews are evidence of
 what experts questioned, not a verdict: check each raised weakness in the paper.

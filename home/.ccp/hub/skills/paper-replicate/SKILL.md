@@ -13,6 +13,7 @@ You turn a research paper into a verified, runnable engineering workspace. You p
 
 | Step | Action | Command / Tool |
 |------|--------|----------------|
+| 0. Hunt (if starting from a topic or seed paper) | Federated search across 5 academic engines or citation-graph snowballing around a seed paper | `paperhunt search --sort velocity "<query>"` or `paperhunt snowball <seed-id>` |
 | 1. Bundle | Pull PDF, arXiv `.tex` source, BibTeX, OpenReview `reviews.md`, PMC XML, and shallow-clone the discovered GitHub/HF repo | `paperhunt bundle --clone -d <workspace-dir> <id-or-url>` |
 | 2. Read exact math & tables | Read `.tex` files in `<slug>/tex/` first (lossless LaTeX macros, exact architecture tables, appendix hyperparameters); fall back to `<slug>/paper.pdf` | `read` on `<slug>/tex/*.tex` or `<slug>/paper.pdf` |
 | 3. Check reviewer & author notes | Read `<slug>/reviews.md` for implementation clarifications, missing hyperparameters, baseline bugs, and author rebuttal fixes | `read` on `<slug>/reviews.md` |

@@ -70,15 +70,15 @@ Scrapfly MCP     — 95-98% anti-bot bypass rates
 4. Try UpRock / Bright Data with country targeting
 ```
 
-## Paywalled Content (Legal Alternatives)
+## Academic Papers & Paywalled Research (`paperhunt`)
 
-| Source | For |
-|--------|-----|
-| arXiv, bioRxiv, SSRN | Academic preprints |
-| Unpaywall, CORE, Semantic Scholar | Open access mirrors |
-| Archive.org Wayback Machine | Historical snapshots |
-| Author personal sites | Self-hosted papers |
-| Google/Bing cache | Cached versions (declining availability) |
+| Source / Tool | For |
+|---------------|-----|
+| `paperhunt search [flags] "<query>"` | Federated 5-engine search (OpenAlex, Europe PMC, arXiv, OpenReview, Crossref) with RRF + citation velocity ranking, `--journal`, `--year`, `--oa-only`, and `-d` parallel PDF download |
+| `paperhunt snowball <id>` | Bidirectional citation graph traversal (backward references + forward citations via OpenAlex) |
+| `paperhunt get -j 4 -o <dir> <id...>` | Multi-tier PDF waterfall: arXiv, bioRxiv/medRxiv (`Accept-Encoding: identity`), PMC AWS S3 (`pmc-oa-opendata`), OpenReview, OpenAlex/Unpaywall, two-source title-to-preprint fallback, and Sci-Hub Altcha PoW / Anna's Archive |
+| `paperhunt bundle --clone -d <dir> <id>` | Full replication bundle: `paper.pdf`, unpacked arXiv `tex/`, OpenReview `reviews.md`, PMC XML, and shallow-cloned GitHub/HF code repo (`code/`) |
+| Archive.org Wayback Machine | Historical web snapshots |
 
 ## Anti-Bot Bypass Rates
 
