@@ -22,6 +22,10 @@ loads guidance for you to follow yourself.
   plus `web_search`/`read` in `omp`); code: codegraph MCP; browser: `bsk` CLI via
   `browser-skill` (or `omp` `browser` relay / `cua`); GitHub: `gh` CLI — and its
   skills (`lead-researcher`, `code-quality`, `impeccable`, `git-workflow`).
+- **Shared machines:** a brief that touches one (the home box) states its safety
+  rules up front — run `tmux ls`/`nvidia-smi` before adding load; never reboot or
+  switch OS while another session's job runs (`send-home-desktop-cmd busy`). A rule
+  sent mid-task arrives too late.
 - **Research:** read local first (code, config, git history) so queries are precise.
   Then search web and GitHub in parallel, say which approach you picked and why, and
   surface conflicts. Skip it for a known-cause bug or a mechanical change.
