@@ -11,7 +11,7 @@ You search, rank, snowball, and retrieve verified academic paper PDFs, BibTeX en
 
 ## Quick commands (`paperhunt`)
 
-`paperhunt` (`~/.local/bin/paperhunt`, source in `~/workspace/tools/paperhunt`) federates queries across 5 academic search engines (OpenAlex, Europe PMC, arXiv, OpenReview, Crossref), traverses citation graphs, and downloads verified PDFs across both open-access repositories and shadow libraries in parallel (`-j N`).
+`paperhunt` (`~/.local/share/mise/shims/paperhunt`, installed via `mise use -g github:samhvw8/paperhunt`, source in `~/workspace/tools/paperhunt`) federates queries across 5 academic search engines (OpenAlex, Europe PMC, arXiv, OpenReview, Crossref), traverses citation graphs, and downloads verified PDFs across both open-access repositories and shadow libraries in parallel (`-j N`).
 
 | Goal | Command |
 |------|---------|
@@ -37,7 +37,7 @@ You search, rank, snowball, and retrieve verified academic paper PDFs, BibTeX en
 - **OpenReview:** Submissions, accepted papers, and reviews for top ML venues (ICLR, NeurIPS, ICML).
 - **Crossref:** Official DOI registration metadata and publisher bibliographic records.
 
-Results are clustered into canonical works by DOI, arXiv ID, PMID, PMCID, OpenReview forum, and normalized title key, then ranked using **Reciprocal Rank Fusion (RRF)** boosted by annual citation velocity ($\log_{10}(1 + 	ext{velocity})$).
+Results are clustered into canonical works by DOI, arXiv ID, PMID, PMCID, OpenReview forum, and normalized title key, then ranked using **Reciprocal Rank Fusion (RRF)** boosted by annual citation velocity ($\log_{10}(1 + \text{velocity})$).
 
 ### 2. Multi-Tier PDF Waterfall
 `paperhunt` tries PDF candidates in strict priority order:

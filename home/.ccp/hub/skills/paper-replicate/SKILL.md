@@ -22,7 +22,7 @@ You turn a research paper into a verified, runnable engineering workspace. You p
 
 ## What `paperhunt bundle` creates
 
-Running `paperhunt bundle --clone -d . <id-or-url>` produces `<slug>/`:
+`paperhunt` is installed globally via `mise use -g github:samhvw8/paperhunt` (`~/.local/share/mise/shims/paperhunt`). Running `paperhunt bundle --clone -d . <id-or-url>` produces `<slug>/`:
 - `paper.pdf` — verified PDF (`%PDF-`, SHA-256 recorded in `paper.json`).
 - `paper.json` & `paper.bib` — cross-resolved metadata (DOI, arXiv, PMID, PMCID, OpenReview forum, retraction flags, discovered code repositories) and BibTeX entry.
 - `tex/` — unpacked arXiv e-print source (`https://arxiv.org/e-print/<id>`): exact `.tex` equations, `.bbl`/`.bib` bibliography, and vector figures.
