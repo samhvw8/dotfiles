@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-10-29
+* **Update**: `tablefix` is renamed `pastefix` (repo [samhvw8/pastefix](https://github.com/samhvw8/pastefix), folder `~/workspace/tools/pastefix`). `mise/config.toml` installs `go:github.com/samhvw8/pastefix`; the old entry failed with "module declares its path as github.com/samhvw8/pastefix". The Alfred workflow (keyword `pf`) calls `~/.local/share/mise/installs/go-github-com-samhvw8-pastefix/latest/bin/pastefix`. Runs: nothing new (replaces tablefix).
+
 ## 2026-10-26
 * **Update**: `tablefix` is now a Go binary: `mise/config.toml` installs `go:github.com/samhvw8/tablefix` (`minimum_release_age = "0s"`, as for `claude-code-profile`, since it is the user's own repo) instead of `pipx:samhvw8/tablefix`. `tablefix alfred install` writes the Alfred workflow, which calls `~/.local/share/mise/installs/go-github-com-samhvw8-tablefix/latest/bin/tablefix`. After pushing a new commit, `GOPROXY=direct mise upgrade go:github.com/samhvw8/tablefix`; the Go proxy kept serving the previous commit for `@latest`. Runs: nothing new (replaces the pipx tool).
 * **Update**: Global Go pinned to `1.27.3` (was `1.27`, which already resolved to 1.27.3). Runs: nothing new.

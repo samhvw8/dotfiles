@@ -69,7 +69,7 @@ rclone = "latest"
 "aqua:rhysd/actionlint" = "latest"
 "pipx:vastai" = { version = "latest", uvx_args = "--python 3.14" }  # pillow has no cp315 wheel yet; drop when it does
 "pipx:samhvw8/mediasift" = "latest"   # agent media sensor (~/workspace/tools/mediasift); `mise install -f` moves to the newest commit
-"go:github.com/samhvw8/tablefix" = { version = "latest", minimum_release_age = "0s" }  # text tables -> Notes/Slack/chat (~/workspace/tools/tablefix); then `tablefix alfred install`
+"go:github.com/samhvw8/pastefix" = { version = "latest", minimum_release_age = "0s" }  # text tables -> Notes/Slack/chat (~/workspace/tools/pastefix); then `pastefix alfred install`
 "github:samhvw8/paperhunt" = { version = "latest", minimum_release_age = "0s" }  # multi-source paper search, downloader & replication bundler (~/workspace/tools/paperhunt)
 "aqua:ast-grep/ast-grep" = "latest"
 lima = "latest"
