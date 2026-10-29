@@ -32,3 +32,10 @@
 # No token here: arena and heavy-think get one on demand from `cf auth whoami` (run `cf auth login` once).
 # Never set CLOUDFLARE_API_TOKEN here: it would override wrangler/cf auth everywhere.
 # CLOUDFLARE_ACCOUNT_ID = ""
+
+# --- paperhunt: optional tokens for OpenReview and Anna's Archive fast downloads
+# OPENREVIEW_TOKEN = ""
+# OPENREVIEW_COOKIE = ""
+# ANNAS_SECRET_KEY = ""
+# ANNA_COOKIE = ""
+# UNPAYWALL_EMAIL = ""
