@@ -5,7 +5,7 @@ description: "Install mise, clone the repository and bootstrap a new macOS or De
 resource: https://github.com/samhvw8/dotfiles/blob/main/setup.sh
 tags: [setup, bootstrap]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-09-24T02:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-10-31T03:30:00Z }
 stale_after: 2027-03-24
 sources:
   - id: setup
@@ -36,5 +36,13 @@ curl -L https://raw.githubusercontent.com/samhvw8/dotfiles/main/setup.sh | bash 
 * Full install: `setup-ccp.sh` runs `ccp bootstrap` when it creates `~/.claude`, fetching the skills installed from ccp sources. On a machine where `~/.claude` already existed, run it once by hand.
 * Recreate `[env]` secrets in `config.local.toml`.
 * A machine that still has chezmoi should use the [migration](/workflows/migrate-from-chezmoi.md) instead.
+
+# Servers
+
+For a new server, use [server-init](https://github.com/samhvw8/server-init)
+(`~/workspace/tools/server-init`) instead of running `setup.sh` by hand. It hardens the box
+(admin user and keys, key-only sshd, firewall, fail2ban, unattended upgrades) and then runs
+`setup.sh --minimal` as the admin user, passing the git identity through
+`DOTFILES_GIT_NAME` and `DOTFILES_GIT_EMAIL`.
 
 [^setup]: setup.sh

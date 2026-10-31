@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-10-31
+* **Update**: [Set up a new machine](/workflows/new-machine-setup.md) points servers at the new [server-init](https://github.com/samhvw8/server-init) project (`~/workspace/tools/server-init`), which hardens a fresh Debian/Ubuntu box and then runs `setup.sh --minimal` for its admin user. Runs: nothing new in this repo.
+
 ## 2026-10-29
 * **Addition**: `github:samhvw8/paperhunt` (`minimum_release_age = "0s"`) in `mise/config.toml` (source in `~/workspace/tools/paperhunt`, repo [samhvw8/paperhunt](https://github.com/samhvw8/paperhunt)), optional `[env]` keys in `mise/config.local.example.toml`, and hub skills `paper-download` and `paper-replicate` linked into `default` (plus `paperhunt` wired into `paper-appraisal`, `lead-researcher`, and `deep-gather`). Also added `pipx:osxphotos` (`--python 3.12`) to `mise/config.toml`. Runs: one more global CLI binary (`paperhunt`, updated by `mise up`) and two more skill descriptions in each session.
 * **Update**: `tablefix` is renamed `pastefix` (repo [samhvw8/pastefix](https://github.com/samhvw8/pastefix), folder `~/workspace/tools/pastefix`). `mise/config.toml` installs `go:github.com/samhvw8/pastefix`; the old entry failed with "module declares its path as github.com/samhvw8/pastefix". The Alfred workflow (keyword `pf`) calls `~/.local/share/mise/installs/go-github-com-samhvw8-pastefix/latest/bin/pastefix`. Runs: nothing new (replaces tablefix).
