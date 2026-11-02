@@ -106,3 +106,19 @@ def test_like_other_fields(bank):
     res = idx.like("sparse-overcomplete-code", 5, other_fields=False)
     assert [r["slug"] for r in res] == ["fixed-basis-transform"]
     assert res[0]["shared_roles"] == ["sparse-represent-signal"]
+
+
+def test_apply_rerank_puts_ranked_first_and_keeps_the_rest():
+    out = S.apply_rerank('noise {"ranked": ["c", "x-not-in-list", "a", "c"]} noise', ["a", "b", "c", "d"])
+    assert out == ["c", "a", "b", "d"]
+
+
+def test_apply_rerank_fails_loudly_without_json():
+    with pytest.raises(ValueError):
+        S.apply_rerank("I cannot rank these", ["a"])
+
+
+def test_rerank_prompt_hides_fused_order(bank):
+    idx = S.Index(bank)
+    p = S.rerank_prompt(idx, "q", ["sparse-overcomplete-code", "fixed-basis-transform"])
+    assert "`sparse-overcomplete-code`" in p and "- Input: signal" in p and '{"ranked"' in p

@@ -74,7 +74,7 @@ other file's `migrations` and `cards`, and leave the removed file as
 
 ```bash
 uv run <this skill's folder>/scripts/idea_search.py <bank-root> index                    # embed changed chunks
-uv run <this skill's folder>/scripts/idea_search.py <bank-root> search "<text>" --type atom
+uv run <this skill's folder>/scripts/idea_search.py <bank-root> search "<text>" --type atom [--rerank]
 uv run <this skill's folder>/scripts/idea_search.py <bank-root> like <atom> --other-fields
 ```
 
@@ -87,8 +87,12 @@ Vectors are cached in `<bank-root>/.index/`, which is git-ignored derived data.
 
 The list is a shortlist, not an answer. Judge each candidate by structure
 before you link or merge it: on the bench the correct atom was in the top 10
-for 72% of real links and in the top 30 for 81%. `--graph` adds Personalized
-PageRank over the links; it gave no gain at this bank size.
+for 72% of real links and in the top 30 for 81%. `--rerank` reorders the atom
+shortlist by structure with one Haiku call (about $0.002): on held-out rows the
+right atom came first 53% of the time instead of 39%. Use it when a reader will
+look at only the first few rows (bulk mode); a model that reads all 30 does the
+same job itself. `--graph` adds Personalized PageRank over the links; no graph
+variant beat plain fusion on held-out rows at this bank size.
 
 ## Run the index
 

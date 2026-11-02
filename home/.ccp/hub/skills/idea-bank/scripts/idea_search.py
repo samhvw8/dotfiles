@@ -7,7 +7,7 @@ Optional: Personalized PageRank over the bank's links (--graph).
 
 Usage:
   uv run idea_search.py <bank-root> index                     # embed new or changed chunks
-  uv run idea_search.py <bank-root> search "<text>" [-k 30] [--type atom|card|lens|move] [--graph] [--json]
+  uv run idea_search.py <bank-root> search "<text>" [-k 30] [--type atom|card|lens|move] [--graph] [--rerank] [--json]
   uv run idea_search.py <bank-root> like <atom-slug> [-k 10] [--other-fields] [--json]
 
 Chunks: an atom gives a signature view, a gloss view (title, description, the prose), one
@@ -21,7 +21,7 @@ Vectors are cached in <bank-root>/.index/eg2.npz, keyed by the exact embedded te
 The ranking is a shortlist for an LLM structure check, not a verdict. Bench (2026-11-03, 175
 rows that were linked to an existing atom, query = the source quote only): hybrid recall@10
 0.72, @30 0.81; one vector per file 0.51 @10; the graph step added nothing at @10, so it is off
-by default. Read a shortlist of 30, not 10.
+by default. Read a shortlist of 30, not 10. --rerank (Haiku, held-out 72 rows): recall@1 0.39 -> 0.53.
 
 IDEA_LLAMA_SERVER  llama-server binary (default: newest llama.cpp mise has installed, then PATH)
 """
@@ -42,6 +42,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import random
 import uuid
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -473,6 +474,57 @@ class Index:
         return out[:k]
 
 
+RERANK_MODEL = "claude-haiku-5-5"
+RERANK_PROMPT = """You match a passage from a new source to an existing idea atom in a bank.
+An atom is a structure named by the job it does: input, output, objective, constraint. Fields rename the same
+structure, so ignore domain words and compare relations: does the passage's input map to the atom's input, its
+goal to the atom's objective, its limit to the atom's constraint?
+
+Passage:
+{query}
+
+Candidate atoms:
+{cands}
+
+Rank the candidates whose structure could be the same as the passage's component, best first, at most 10.
+Reply with only JSON: {{"ranked": ["slug", ...]}}
+"""
+
+
+def rerank_prompt(idx: "Index", query: str, slugs: list[str]) -> str:
+    sig = {c["slug"]: c["text"] for c in idx.chunks if c["view"] == "sig"}
+    gloss = {c["slug"]: c["text"] for c in idx.chunks if c["view"] == "gloss"}
+    cands = list(slugs)
+    random.Random(query).shuffle(cands)  # hide the fused order, as in the bench
+    lines = [f"{j + 1}. `{a}`: {gloss.get(a, '')[:300]}\n   {sig.get(a, '')[:400]}" for j, a in enumerate(cands)]
+    return RERANK_PROMPT.format(query=query, cands="\n".join(lines))
+
+
+def apply_rerank(reply: str, slugs: list[str]) -> list[str]:
+    """Ranked slugs first (only those in the shortlist), then the rest in fused order."""
+    m = re.search(r"\{.*\}", reply, re.S)
+    ranked = json.loads(m.group(0)).get("ranked", []) if m else None
+    if not isinstance(ranked, list):
+        raise ValueError("no ranked list in the rerank reply")
+    head = [a for a in dict.fromkeys(ranked) if a in slugs]
+    return head + [a for a in slugs if a not in head]
+
+
+def llm_rerank(idx: "Index", query: str, slugs: list[str], model: str = RERANK_MODEL) -> list[str]:
+    """One headless `claude -p` call, no tools. Bench (held-out 72 rows): recall@1 0.389 -> 0.528,
+    about $0.002 per search with Haiku."""
+    env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+    r = subprocess.run(["claude", "-p", rerank_prompt(idx, query, slugs), "--model", model, "--output-format", "json",
+                        "--max-budget-usd", "0.2", "--disallowedTools", "Bash", "Read", "Write", "Edit", "Grep", "Glob",
+                        "WebFetch", "WebSearch", "Skill", "Agent", "Task", "--setting-sources", "project,local",
+                        "--no-session-persistence"], capture_output=True, text=True, timeout=300, env=env,
+                       cwd=tempfile.gettempdir())
+    data = json.loads(r.stdout or "{}")
+    if isinstance(data, list):
+        data = next((e for e in reversed(data) if isinstance(e, dict) and e.get("type") == "result"), {})
+    return apply_rerank(data.get("result", ""), slugs)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("root", type=Path)
@@ -483,6 +535,8 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("-k", type=int, default=30)
     s.add_argument("--type", choices=sorted(TYPES), action="append")
     s.add_argument("--graph", action="store_true", help="add Personalized PageRank over the links (no gain measured yet)")
+    s.add_argument("--rerank", action="store_true",
+                   help=f"reorder the atom shortlist by structure with one {RERANK_MODEL} call (~$0.002)")
     s.add_argument("--json", action="store_true")
     lk = sub.add_parser("like", help="atoms whose signature is close to this atom's")
     lk.add_argument("slug")
@@ -501,12 +555,26 @@ def main(argv: list[str] | None = None) -> int:
         with Embedder() as e:
             q = e.embed([QUERY.format(a.query)])[0]
         types = {TYPES[t] for t in a.type} if a.type else None
-        res = idx.search(q, a.query, idx.mask(types=types), use_graph=a.graph)[:a.k]
+        res = idx.search(q, a.query, idx.mask(types=types), use_graph=a.graph)[:max(a.k, 30) if a.rerank else a.k]
+        if a.rerank:
+            atom_rows = [r for r in res if r["type"] == "Atom"]
+            try:
+                order = llm_rerank(idx, a.query, [r["slug"] for r in atom_rows])
+            except (OSError, ValueError, subprocess.SubprocessError) as e:
+                print(f"idea_search: RERANK FAILED ({e.__class__.__name__}: {e}); showing the fused order", file=sys.stderr)
+            else:
+                pos = {sl: i for i, sl in enumerate(order)}
+                atom_rows.sort(key=lambda r: pos[r["slug"]])
+                for i, r in enumerate(atom_rows):
+                    r["rerank_rank"] = i + 1
+                res = atom_rows + [r for r in res if r["type"] != "Atom"]
+            res = res[:a.k]
         if a.json:
             print(json.dumps(res, indent=1))
         else:
             for r in res:
-                print(f"{r['type']:9} {r['slug']}  (dense {r['dense_rank'] or '-'}, lexical {r['lexical_rank'] or '-'})\n"
+                rr = f", rerank {r['rerank_rank']}" if r.get("rerank_rank") else ""
+                print(f"{r['type']:9} {r['slug']}  (dense {r['dense_rank'] or '-'}, lexical {r['lexical_rank'] or '-'}{rr})\n"
                       f"          {r['title']}\n          via {r['via']}")
         return 0
     res = idx.like(a.slug, a.k, a.other_fields)

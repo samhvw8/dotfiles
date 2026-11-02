@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-03
+* **Update**: `idea_search.py search --rerank` reorders the atom shortlist by structure with one Haiku call (~$0.002). On a held-out half of the search bench (72 rows, split by card before tuning) recall@1 rose 0.389 -> 0.528; Sonnet reached 0.444 at 17x the cost. Five graph and fusion variants (PageRank on all links, role links only, card links only, card vote, fusion weights) did not beat plain fusion by more than 3 rows, so `--graph` stays off. Runs: one Haiku call per reranked search, opt-in (bulk mode).
 * **Addition**: `idea-bank/scripts/idea_search.py`: hybrid search of the idea bank (EmbeddingGemma 2 via a per-command `llama-server`, several chunks per file, fused with BM25; optional PageRank over the links) and `like` for atoms with the same signature in other fields. Cache in `<bank>/.index/` (git-ignored). idea-mine and idea-forge search the bank before creating or substituting an atom. Bench (`~/workspace/tools/idea-evals/search-bench`, 175 linked rows): recall@10 0.72 vs 0.51 for one vector per file. Runs: `idea_search.py <bank> index` after each bank change (about 1 s when little changed, ~65 s for a full rebuild on the Mac); no service.
 
 ## 2026-11-02
