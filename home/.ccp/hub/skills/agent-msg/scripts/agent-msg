@@ -1,0 +1,261 @@
+#!/usr/bin/env -S uv run --script --quiet
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["iterm2==2.30"]
+# ///
+"""agent-msg: find agent panes in iTerm2 and send them messages.
+
+Commands:
+  ls [--json]                 list panes: id, harness, title, folder, label, status
+  send <target> <text...>     send a tagged one-line message and press Enter
+  which <target>              resolve a target to one pane; never sends
+  read <target> [-n LINES]    print the last LINES of a pane's screen (default 40)
+  name <label>                label the current pane (iTerm2 variable user.agent)
+  whoami                      print the current pane's row
+
+A target is resolved in this order; the first rule with matches wins:
+  1. label (user.agent), exact      4. title contains the text
+  2. title (autoName), exact        5. session ID prefix (4+ chars)
+  3. folder basename, exact
+Zero or several matches -> exit 2 and list candidates. Sending to self -> exit 2.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import iterm2
+
+HARNESSES = ("claude", "omp", "opencode", "codex", "gemini", "aider", "pi")
+NATIVE_IT2 = "/Applications/iTerm.app/Contents/Resources/utilities/it2"
+INBOX = Path.home() / ".cache" / "agent-msg"
+MAX_INLINE = 800  # longer messages, or multi-line ones, go through a file
+
+
+def die(msg: str, code: int = 2) -> None:
+    print(f"agent-msg: {msg}", file=sys.stderr)
+    sys.exit(code)
+
+
+def self_id() -> str:
+    sid = os.environ.get("ITERM_SESSION_ID", "")
+    if not sid:
+        die("ITERM_SESSION_ID is not set: run this inside an iTerm2 pane (not tmux/ssh)")
+    return sid.split(":", 1)[-1]
+
+
+def clean_title(t: str) -> str:
+    """Drop spinner (braille) and icon-font glyphs that harnesses put in titles."""
+    t = re.sub(r"[\u2800-\u28ff\ue000-\uf8ff\U000f0000-\U0010ffff]", "", t)
+    t = re.sub(r"^\s*π\s*>?\s*", "", t)  # omp's prefix
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def tilde(p: str) -> str:
+    home = str(Path.home())
+    return "~" + p[len(home):] if p == home or p.startswith(home + "/") else p
+
+
+def processes_by_tty() -> dict[str, list[tuple[int, str]]]:
+    out = subprocess.run(["ps", "-axo", "pid=,tty=,comm="], capture_output=True, text=True, check=True).stdout
+    by: dict[str, list[tuple[int, str]]] = {}
+    for line in out.splitlines():
+        parts = line.split(None, 2)
+        if len(parts) == 3 and parts[1] != "??":
+            by.setdefault(parts[1], []).append((int(parts[0]), parts[2].rsplit("/", 1)[-1]))
+    return by
+
+
+def cwd_of(pids: list[int]) -> dict[int, str]:
+    if not pids:
+        return {}
+    out = subprocess.run(
+        ["lsof", "-a", "-d", "cwd", "-Fpn", "-p", ",".join(map(str, pids))],
+        capture_output=True, text=True,
+    ).stdout
+    res: dict[int, str] = {}
+    pid = None
+    for line in out.splitlines():
+        if line.startswith("p"):
+            pid = int(line[1:])
+        elif line.startswith("n") and pid is not None:
+            res[pid] = line[1:]
+    return res
+
+
+def native_status(sid: str) -> str:
+    """Busy/idle from iTerm2's own it2 (Claude Code sets it). '?' when unavailable."""
+    if not os.path.exists(NATIVE_IT2):
+        return "?"
+    try:
+        # The iterm2 library leaves its own cookie in os.environ; the native CLI
+        # must authenticate by itself, so drop it from the child's environment.
+        env = {k: v for k, v in os.environ.items() if k not in ("ITERM2_COOKIE", "ITERM2_KEY")}
+        r = subprocess.run([NATIVE_IT2, "session", "get-status", "-s", sid],
+                           capture_output=True, text=True, timeout=5, env=env)
+        d = json.loads(r.stdout)
+        st = d.get("status") or "?"
+        return f"{st}: {d['detail']}" if d.get("detail") else st
+    except Exception:
+        return "?"
+
+
+async def collect(conn) -> tuple[list[dict], dict]:
+    app = await iterm2.async_get_app(conn)
+    rows, sessions = [], {}
+    for w in app.terminal_windows:
+        for t in w.tabs:
+            for s in t.sessions:
+                sessions[s.session_id] = s
+                rows.append({
+                    "id": s.session_id,
+                    "tty": (await s.async_get_variable("tty") or "").replace("/dev/", ""),
+                    "title": clean_title(await s.async_get_variable("autoName") or ""),
+                    "label": await s.async_get_variable("user.agent") or "",
+                })
+    procs = processes_by_tty()
+    agent_pid: dict[str, int] = {}
+    for r in rows:
+        hits = [(p, c) for p, c in procs.get(r["tty"], []) if c in HARNESSES]
+        r["harness"] = hits[-1][1] if hits else (procs.get(r["tty"], [(0, "")])[-1][1] or "-")
+        pid = hits[-1][0] if hits else (procs.get(r["tty"], [(0, "")])[-1][0])
+        if pid:
+            agent_pid[r["id"]] = pid
+    cwds = cwd_of(list(agent_pid.values()))
+    me = os.environ.get("ITERM_SESSION_ID", "").split(":", 1)[-1]
+    for r in rows:
+        r["folder"] = tilde(cwds.get(agent_pid.get(r["id"], -1), ""))
+        r["self"] = r["id"] == me
+    return rows, sessions
+
+
+def add_status(rows: list[dict]) -> None:
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(8) as ex:
+        for r, st in zip(rows, ex.map(lambda r: native_status(r["id"]), rows)):
+            r["status"] = st
+
+
+def resolve(rows: list[dict], target: str) -> dict:
+    t = target.strip().lower()
+    rules = [
+        ("label", lambda r: r["label"].lower() == t),
+        ("title", lambda r: r["title"].lower() == t),
+        ("folder", lambda r: r["folder"] and Path(r["folder"]).name.lower() == t),
+        ("title contains", lambda r: t in r["title"].lower()),
+        ("id prefix", lambda r: len(t) >= 4 and r["id"].lower().startswith(t)),
+    ]
+    for rule, ok in rules:
+        hits = [r for r in rows if ok(r)]
+        if len(hits) == 1:
+            return hits[0]
+        if len(hits) > 1:
+            listing = "\n".join(f"  {r['id'][:8]}  {r['harness']:<8} {r['title'][:40]:<40} {r['folder']}" for r in hits)
+            die(f"'{target}' matches {len(hits)} panes by {rule}; use a label or an ID prefix:\n{listing}")
+    die(f"no pane matches '{target}'. Run: agent-msg ls")
+    raise AssertionError
+
+
+def print_table(rows: list[dict]) -> None:
+    print(f"{'ID':<9} {'HARNESS':<9} {'LABEL':<14} {'TITLE':<34} {'FOLDER':<36} STATUS")
+    for r in rows:
+        mark = " (you)" if r["self"] else ""
+        print(f"{r['id'][:8]:<9} {r['harness'][:9]:<9} {r['label'][:14]:<14} "
+              f"{(r['title'][:28] + mark)[:34]:<34} {r['folder'][:36]:<36} {r.get('status', '')[:60]}")
+
+
+def me_tag(rows: list[dict]) -> str:
+    me = next((r for r in rows if r["self"]), None)
+    if me is None:
+        die("current pane not found in iTerm2")
+    name = me["label"] or me["title"] or me["harness"]
+    return f"[agent-msg from {name} ({me['harness']}) id={me['id']} folder={me['folder']}]"
+
+
+def main() -> None:
+    argv = sys.argv[1:]
+    if not argv or argv[0] in ("-h", "--help", "help"):
+        print(__doc__)
+        return
+    cmd, args = argv[0], argv[1:]
+    result: dict = {}
+
+    async def run(conn):
+        rows, sessions = await collect(conn)
+        if cmd == "ls":
+            add_status(rows)
+            if "--json" in args:
+                print(json.dumps(rows, indent=1, ensure_ascii=False))
+            else:
+                print_table(rows)
+        elif cmd == "whoami":
+            self_id()
+            add_status([r for r in rows if r["self"]])
+            print_table([r for r in rows if r["self"]])
+        elif cmd == "name":
+            if len(args) != 1 or not re.fullmatch(r"[A-Za-z0-9._-]{1,40}", args[0]):
+                die("usage: agent-msg name <label>  (letters, digits, . _ -; max 40)")
+            await sessions[self_id()].async_set_variable("user.agent", args[0])
+            print(f"labelled this pane: {args[0]}")
+        elif cmd == "which":
+            if len(args) != 1:
+                die("usage: agent-msg which <target>")
+            r = resolve(rows, args[0])
+            print_table([r])
+        elif cmd == "read":
+            if not args:
+                die("usage: agent-msg read <target> [-n LINES]")
+            n = int(args[args.index("-n") + 1]) if "-n" in args else 40
+            r = resolve(rows, args[0])
+            sc = await sessions[r["id"]].async_get_screen_contents()
+            lines = [sc.line(i).string.rstrip() for i in range(sc.number_of_lines)]
+            while lines and not lines[-1]:
+                lines.pop()
+            print(f"--- {r['id'][:8]} {r['harness']} {r['title']} {r['folder']} ---")
+            print("\n".join(lines[-n:]))
+        elif cmd == "send":
+            if len(args) < 2:
+                die("usage: agent-msg send <target> <text...>")
+            sid = self_id()
+            r = resolve(rows, args[0])
+            if r["id"] == sid:
+                die("refusing to send to your own pane")
+            text = " ".join(args[1:]).strip()
+            if not text:
+                die("empty message")
+            tag = me_tag(rows)
+            if "\n" in text or len(text) > MAX_INLINE:
+                INBOX.mkdir(parents=True, exist_ok=True)
+                f = INBOX / f"{time.strftime('%Y%m%d-%H%M%S')}-{sid[:8]}-to-{r['id'][:8]}.md"
+                f.write_text(f"{tag}\n\n{text}\n")
+                line = f"{tag} Long message; read the file {f}"
+            else:
+                line = f"{tag} {text}"
+            line = line.replace("\r", " ").replace("\x1b", "")
+            s = sessions[r["id"]]
+            await s.async_send_text(line)
+            await asyncio.sleep(0.4)
+            await s.async_send_text("\r")
+            result["sent"] = r
+            print(f"sent to {r['id'][:8]} ({r['harness']}, {r['title'] or r['folder']})")
+        else:
+            die(f"unknown command '{cmd}'. Run: agent-msg --help")
+
+    try:
+        iterm2.run_until_complete(run, retry=False)
+    except SystemExit:
+        raise
+    except Exception as e:  # no silent failure: say what broke
+        die(f"iTerm2 API error: {type(e).__name__}: {e}. Is the Python API enabled "
+            "(Settings > General > Magic > Enable Python API)?", 1)
+
+
+if __name__ == "__main__":
+    main()

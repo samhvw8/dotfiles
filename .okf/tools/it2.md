@@ -60,6 +60,14 @@ it2 session send -s "${UUID:?}" $'\r'         # press Enter
 it2 session read -s "${UUID:?}" -n 80         # read the visible screen
 ```
 
+# Messages between agents
+
+The hub skill `agent-msg` builds on the same iTerm2 API. It lists the panes, picks
+exactly one target, and refuses an ambiguous target or the sender's own pane. Use it
+rather than raw `it2 session send`. Check a target with `agent-msg which <target>`:
+`send` always delivers. It pins `iterm2==2.30`, the library version the
+reviewed it2 0.2.3 uses. Bump both together.
+
 # Bumping the pin
 
 1. Clone the repo and run `git diff v0.2.3 <new-tag> -- src pyproject.toml uv.lock`.
