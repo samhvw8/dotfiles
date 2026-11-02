@@ -13,6 +13,33 @@ Links between bank files use bundle-relative paths, for example
 the list fields below, so keep those fields as plain slugs (file name without
 `.md`), not links.
 
+## Rendering for Sam
+
+Bank files use this schema's terms. Chat output to Sam does not: he reads it to
+learn, and private jargon makes it harder to learn from. Every caller skill
+follows these rules for anything shown in chat.
+
+1. **Open with a headline frame.** One plain sentence that holds the whole idea,
+   ideally as a sharp picture ("theory as compiler, advice as cache").
+2. **Plain words.** A schema term (atom, gem type, layer, zoom, move type,
+   cluster, lens) appears only when Sam already owns it (`me/known-atoms.md`), or
+   with a one-phrase gloss the first time: "part (the job it does)", "a gap where
+   a tool from one field fits another". Never print frontmatter, slugs, cluster
+   levels, read-basis tags, guesses about what Sam knows, or notes to yourself.
+   Those go in bank files.
+3. **Quotation marks mean verbatim.** Use them only for text copied exactly from
+   the source. Paraphrase without quote marks. Before output, check every quote
+   against the source; when the text is on disk, run
+   `~/.claude/skills/idea-mine/scripts/check_quotes.py <file> <source-text>`, and
+   fix or unquote each flagged quote.
+4. **Say who says it.** Keep three voices apart: the author (quoted or
+   paraphrased with the section), commenters (in a social thread, name the
+   poster), and Claude ("(my reading)"; the bank's `(inferred)` renders this way). Never state Claude's diagnosis as the
+   author's, and never state as a finding something the source does not show.
+5. **Label what is not from the source.** Anything from the bank: "(from your
+   bank: <card or atom in plain words>)". Anything from memory: "(from memory,
+   unchecked)". Never cite bank content or earlier batches as if the source said it.
+
 ## Field vocabulary
 
 - **field**: a lower-case, hyphenated discipline slug: `image-compression`,

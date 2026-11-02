@@ -9,8 +9,9 @@ only the two that carry the idea and say "needs N more atoms to read deeply", or
 leave it for a later batch. Mark atoms that are `seen` but not `owned` as review
 chances: "you met this in <card>".
 
-When `known-atoms.md` is empty (the first batches), list every atom the cards use at
-the end of the batch and ask Sam which he already knows. That calibrates the next batch.
+When `known-atoms.md` is empty (the first batches), list the ideas the cards lean
+on, in plain words, at the end of the batch and ask Sam which he already knows.
+That calibrates the next batch. Never print a guess about what Sam knows.
 
 ## Templates (bank file, English)
 
@@ -38,9 +39,14 @@ Delegated (one line):
 
 ## Chat rendering
 
-Show the cards in the language Sam writes in. Keep the same order and numbering as
-the file. After the cards, add one line on links between cards (two cards that share
-a role or a question), then the vote request:
+Show the cards in the language Sam writes in, by "Rendering for Sam" in the
+idea-bank schema. The bank template above is not the chat form: in chat, drop the
+Cluster/Level/Read line, the gem-type tag and the bracketed NEW markers. Each card
+opens with a plain headline sentence, names any part by the job it does (with a
+one-phrase gloss the first time), says in plain words why a reader would miss it,
+and why Sam might care. Quote only verbatim text. Keep the same order and
+numbering as the file. After the cards, add one line on links between cards (two
+cards that share a question), then the vote request:
 
 `Vote each card: up | down | later + one word (e.g. "1 up design, 3 later busy").`
 
@@ -64,3 +70,14 @@ a role or a question), then the vote request:
 
 Why it works: it uses one new atom, names the operator, diagnoses the unpopularity,
 ties to something Sam does, and states the read basis.
+
+The same card in chat:
+
+> **1. Testing yourself only helps when your head has room left.**
+> Recalling an answer has two steps: finding it, then engraving it again (the
+> second step is the part people forget). Both draw on working memory; when it
+> runs out, the engraving step is skipped. Picture: finding a book on the shelf,
+> then gluing its label on more firmly. Most advice sells self-testing as
+> always good; this study shows when it is not. Why you might care: our reading
+> sessions open with a recall quiz, so do it when you are fresh, and check the
+> answers after.

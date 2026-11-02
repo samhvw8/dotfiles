@@ -85,7 +85,10 @@ a gem" line until Sam has guessed the gem type, then reveal it and record the gu
 in the vote table's `Guess` column.
 
 Write the batch to `<bank>/batches/YYMMDD-batch-<n>.md` per the schema, then show the
-cards in chat. End with the vote request: `up | down | later` plus one word per card.
+cards in chat by "Rendering for Sam" in the idea-bank schema. No pipeline
+boilerplate in chat: no sweep logs, counts of sources judged, cluster levels,
+slugs or redaction notes. End with the vote request: `up | down | later` plus
+one word per card.
 
 ## Votes and levels
 

@@ -37,24 +37,32 @@ Do not invent fields here.
      Sam zooms explicitly.
    - **skim** (a light deep mode) when Sam wants it fast: steps 1, 3 and 8 only.
    Ask once when it is unclear; default to brief.
-4. Chat in the language Sam writes in. Bank files in English.
+4. Chat in the language Sam writes in, by "Rendering for Sam" in the idea-bank
+   schema (plain words, verbatim-only quotes, voices apart, bank and memory
+   labelled). Bank files in English.
 
 ## Brief mode (L3)
 
 Claude explains; Sam reads and asks. Shape and rules: `references/brief.md`.
+Chat text follows "Rendering for Sam" in the idea-bank schema.
 
-- The one idea in one sentence.
-- **View model (layer 0)**: picture, bottleneck, expected solution shape, taste,
-  surprise. Each line quotes its source and section or says `(inferred)`. Note
-  where the story told differs from the real thinking.
-- **Recipe**: atoms by role (the job, not the name) and the operator; the bet;
-  the constraints of the time and any rejected alternatives.
-- **New atoms**: one mini-lesson each (two sentences and one picture), at most
-  two new atoms per brief (i+1 against `known-atoms`). Build the rest of the
-  explanation from atoms Sam owns.
-- **Gems**, tagged with their gem type from the schema.
-- **Mutation teasers**: two or three one-line moves, typed by operator.
-- End with: "Stop here, or go deep?"
+- A one-sentence headline frame first.
+- How the authors see the problem: picture, bottleneck, surprise, where the story
+  told differs from their real thinking. Verbatim quotes only, with sections;
+  paraphrase plainly; mark Claude's reading.
+- The parts named by the job they do, the bet, what forced the choices, what they
+  dropped.
+- One worked example with numbers (the source's, or labelled illustration).
+- At most two new ideas to learn, each with one picture (i+1 against `known-atoms`).
+- What a reader would miss, each tied to its passage.
+- Where it is weak: 2–4 lines, design traps from the source's own methods first
+  (rivals that lose by construction, transfer built into the stimuli, post-hoc
+  changes, fit on aggregate means; checklist in `references/brief.md`), then its
+  stated limits.
+- Two or three variations to try. End with: "Stop here, or go deep?"
+- **Last step, mandatory:** check every quoted string against the source
+  (`check_quotes.py` or Grep) and unquote any that is not an exact match; do not
+  assign posters a gender. Procedure in `references/brief.md`.
 
 ## Deep mode (L4)
 

@@ -100,7 +100,8 @@ For many sources (a cluster, a reading list, 50 papers):
 4. Verify a sample yourself: at least one card in five, plus every card with a
    `migration-gap`, `lifted-constraint` or `unpopular` tag. Run
    `scripts/check_quotes.py` on all of them; read the flagged quotes against the source.
-5. Run the index and report to the caller: cards written, atoms created vs
+5. Run the index and report to the caller (anything shown to Sam follows
+   "Rendering for Sam" in the idea-bank schema): cards written, atoms created vs
    linked, broken links, convergence, and migration-gap candidates you judged
    real by structure (the index only lists candidates).
 

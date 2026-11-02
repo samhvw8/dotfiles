@@ -13,7 +13,11 @@ erodes (B), so the order below is not optional.
 Formats, slugs, move types and gem types come from
 `~/.claude/skills/idea-bank/references/schema.md`; bank location, index and
 commits come from the `idea-bank` skill. Load it first. Files are English; chat is
-in the language Sam writes in.
+in the language Sam writes in, by "Rendering for Sam" in the idea-bank schema.
+Label bank content "(from your bank: ...)" and outside knowledge "(from memory,
+unchecked)"; never cite a card or batch as if the source said it. For a social
+source, root each variant in the named poster whose point it builds on, and keep
+the original post apart from replies.
 
 ## Inputs
 
