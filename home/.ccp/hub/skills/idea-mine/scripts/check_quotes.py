@@ -3,11 +3,14 @@
 # ///
 """Find quotes in an idea card that do not appear in the source text.
 
-Usage: uv run check_quotes.py <card.md> <source.txt|md> [--min-ratio 0.9]
+Usage: uv run check_quotes.py <card.md> <source.txt|md> [--min-ratio 0.9] [--min-words 4]
 
-Extracts every double-quoted span of 6+ words from the card body, one line at
-a time (curly or straight quotes; a quote may contain the source's own inner
-quotes, so for each opening mark the longest span that matches wins), then looks
+Extracts every double-quoted span of --min-words or more words (default 4) from
+the card body, one line at a time (curly or straight quotes). Marks pair as
+balanced spans: from an opening mark, the candidate ends are the 1st, 3rd, 5th...
+later mark, so two quotes on one line never merge, while a quote holding the
+source's own inner quotes still pairs whole. The longest candidate that matches
+the source wins; otherwise the quote is the nearest pair. Then it looks
 for it in the source after normalizing case,
 whitespace and punctuation. A quote passes when it is found exactly, or when the
 best fuzzy window match reaches --min-ratio (default 0.9, which allows small
@@ -21,7 +24,6 @@ import sys
 from pathlib import Path
 
 QMARK = re.compile(r"[\"“”]")
-MIN_WORDS = 6
 
 
 def norm(text: str) -> str:
@@ -54,29 +56,25 @@ def best_ratio(quote: str, source: str) -> float:
     return best
 
 
-def spans(line: str):
-    """Candidate quotes on one line: from each opening mark, every later mark."""
-    marks = [m.start() for m in QMARK.finditer(line)]
-    i = 0
-    while i < len(marks) - 1:
-        cands = [(marks[j], line[marks[i] + 1:marks[j]]) for j in range(i + 1, len(marks))]
-        cands = [(end, t) for end, t in cands if len(t.split()) >= MIN_WORDS]
-        if not cands:
-            i += 1
-            continue
-        yield cands
-        last = cands[0][0]
-        i = marks.index(last) + 1
-
-
-def check(cands, source, min_ratio):
-    """Longest matching span wins; otherwise report the shortest candidate."""
+def pick(cands, source, min_ratio):
+    """Longest matching span wins; otherwise the nearest pair (the plain quote)."""
     for end, text in reversed(cands):
         r = best_ratio(norm(text), source)
         if r >= min_ratio:
             return text, r, end
-    text = cands[0][1]
-    return text, best_ratio(norm(text), source), cands[0][0]
+    end, text = cands[0]
+    return text, best_ratio(norm(text), source), end
+
+
+def quotes(line: str, source: str, min_ratio: float, min_words: int):
+    marks = [m.start() for m in QMARK.finditer(line)]
+    i = 0
+    while i < len(marks) - 1:
+        cands = [(j, line[marks[i] + 1:marks[j]]) for j in range(i + 1, len(marks), 2)]
+        text, r, end = pick(cands, source, min_ratio)
+        if len(text.split()) >= min_words:
+            yield text, r
+        i = end + 1
 
 
 def main() -> int:
@@ -85,22 +83,19 @@ def main() -> int:
         print(__doc__)
         return 2
     min_ratio = float(args[args.index("--min-ratio") + 1]) if "--min-ratio" in args else 0.9
+    min_words = int(args[args.index("--min-words") + 1]) if "--min-words" in args else 4
     card = body(Path(args[0]).read_text(errors="replace"))
     source = norm(Path(args[1]).read_text(errors="replace"))
-    results = []
-    for line in card.splitlines():
-        for cands in spans(line):
-            results.append(check(cands, source, min_ratio))
+    results = [qr for line in card.splitlines() for qr in quotes(line, source, min_ratio, min_words)]
     if not results:
-        print("no quotes of 6+ words found")
+        print(f"no quotes of {min_words}+ words found")
         return 0
-    quotes = [q for q, _, _ in results]
     failed = 0
-    for q, r, _ in results:
+    for q, r in results:
         ok = r >= min_ratio
         failed += not ok
         print(f"{'ok  ' if ok else 'MISS'} {r:.2f}  \"{q[:90]}{'...' if len(q) > 90 else ''}\"")
-    print(f"{len(quotes) - failed}/{len(quotes)} quotes found in source")
+    print(f"{len(results) - failed}/{len(results)} quotes found in source")
     return 1 if failed else 0
 
 

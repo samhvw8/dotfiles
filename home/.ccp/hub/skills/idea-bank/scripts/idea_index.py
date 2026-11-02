@@ -4,13 +4,14 @@
 # ///
 """Index an idea bank: links, convergence, migration-gap candidates, known-atoms coverage.
 
-Usage: uv run idea_index.py <bank-root> [--json out.json]
+Usage: uv run idea_index.py <bank-root> [--json out.json] [--suggest-merges]
 
 Deterministic and offline. Gap candidates are a list for judgement, not findings.
 """
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import re
 import sys
@@ -104,6 +105,46 @@ def table_rows(body: str, section: str) -> list[dict[str, str]]:
     return rows
 
 
+STOP = {"to", "the", "a", "an", "of", "by", "and", "for", "in", "on", "with", "from", "into", "as", "at"}
+
+
+def tokens(tag: str) -> set[str]:
+    return {t for t in tag.lower().split("-") if t and t not in STOP}
+
+
+def suggest_merges(concepts: list[dict], min_jaccard: float = 0.5, min_ratio: float = 0.85) -> list[dict]:
+    """Near-duplicate role tags and tensions, for an LLM to confirm. Deterministic."""
+    uses: dict[str, set[str]] = defaultdict(set)      # tag -> where it is used (kind:slug)
+    filled_by: dict[str, set[str]] = defaultdict(set)  # tag -> atoms that fill it
+    for c in concepts:
+        fm, slug, t = c["fm"], c["slug"], c["fm"]["type"]
+        if t == "Idea Card":
+            for tag in as_list(fm.get("roles")):
+                uses[tag].add(f"card-role:{slug}")
+            for tag in as_list(fm.get("tensions")):
+                uses[tag].add(f"tension:{slug}")
+        elif t == "Atom" and fm.get("status") != "deprecated":
+            for tag in atom_roles(fm):
+                uses[tag].add(f"atom:{slug}")
+                filled_by[tag].add(slug)
+        elif t == "Move" and fm.get("role"):
+            uses[fm["role"]].add(f"move:{slug}")
+    tags = sorted(uses)
+    out = []
+    for i, a in enumerate(tags):
+        ta = tokens(a)
+        for b in tags[i + 1:]:
+            tb = tokens(b)
+            jac = len(ta & tb) / len(ta | tb) if ta | tb else 0.0
+            ratio = difflib.SequenceMatcher(None, a, b).ratio()
+            shared = sorted(filled_by[a] & filled_by[b])
+            if jac >= min_jaccard or ratio >= min_ratio or (shared and jac > 0):
+                out.append({"a": a, "b": b, "jaccard": round(jac, 2), "ratio": round(ratio, 2),
+                            "shared_atoms": shared, "uses_a": len(uses[a]), "uses_b": len(uses[b])})
+    out.sort(key=lambda r: (-(len(r["shared_atoms"]) > 0), -r["jaccard"], -r["ratio"], r["a"], r["b"]))
+    return out
+
+
 def build(concepts: list[dict]) -> dict:
     by_type: dict[str, dict[str, dict]] = defaultdict(dict)
     for c in concepts:
@@ -185,9 +226,12 @@ def build(concepts: list[dict]) -> dict:
                       if isinstance(m, dict) and str(m.get("match_confidence", "")).lower() == "low"]
 
     constraints: dict[str, list[str]] = defaultdict(list)
+    evidence_limits: dict[str, list[str]] = defaultdict(list)
     for cs, fm in sorted(cards.items()):
         for c in as_list(fm.get("constraints")):
             constraints[c].append(cs)
+        for c in as_list(fm.get("evidence_limits")):
+            evidence_limits[c].append(cs)
 
     hints = []
     for rs, c in sorted(readings.items()):
@@ -219,6 +263,7 @@ def build(concepts: list[dict]) -> dict:
         "migrate_atom_moves": migrate_moves,
         "low_confidence_matches": low_confidence,
         "constraints": dict(sorted(constraints.items())),
+        "evidence_limits": dict(sorted(evidence_limits.items())),
         "reading_hints": hints,
         "known_atoms": coverage,
     }
@@ -237,6 +282,7 @@ def render(ix: dict) -> str:
     out += ["## Migrate-atom moves"] + ([f"- {m['move']}: {m['atom']} {m['from_field']} -> {m['to_field']}" for m in ix["migrate_atom_moves"]] or ["- none"]) + [""]
     out += ["## Low-confidence matches (review)"] + ([f"- {m['atom']} in {m['field']} ({m['source']})" for m in ix["low_confidence_matches"]] or ["- none"]) + [""]
     out += ["## Constraints of the time"] + ([f"- {c}: {', '.join(cs)}" for c, cs in ix["constraints"].items()] or ["- none"]) + [""]
+    out += ["## Evidence limits"] + ([f"- {c}: {', '.join(cs)}" for c, cs in ix["evidence_limits"].items()] or ["- none"]) + [""]
     out += ["## Level-3 hints per reading"] + ([f"- {h['reading']} ({h['mode']}): {h['level3_hints']} of {h['notes']} notes" for h in ix["reading_hints"]] or ["- none"]) + [""]
     k = ix["known_atoms"]
     out += ["## Known atoms", f"- owned {len(k['owned'])}, seen {len(k['seen'])}, bank atoms {k['bank_atoms']}, owned share {k['owned_share']}"]
@@ -249,14 +295,25 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("root", type=Path)
     ap.add_argument("--json", type=Path, help="also write the index as JSON to this path")
+    ap.add_argument("--suggest-merges", action="store_true",
+                    help="also list near-duplicate role tags and tensions for an LLM to confirm")
     args = ap.parse_args(argv)
     if not args.root.is_dir():
         print(f"idea_index: {args.root} is not a directory", file=sys.stderr)
         return 2
-    ix = build(load(args.root))
+    concepts = load(args.root)
+    ix = build(concepts)
+    if args.suggest_merges:
+        ix["merge_suggestions"] = suggest_merges(concepts)
     if args.json:
         args.json.write_text(json.dumps(ix, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     sys.stdout.write(render(ix))
+    if args.suggest_merges:
+        rows = ix["merge_suggestions"]
+        sys.stdout.write("\n## Merge suggestions (confirm by meaning before merging)\n")
+        sys.stdout.write("".join(f"- {r['a']} ~ {r['b']} (jaccard {r['jaccard']}, ratio {r['ratio']}"
+                                 + (f", shared atoms {', '.join(r['shared_atoms'])}" if r["shared_atoms"] else "")
+                                 + f"; uses {r['uses_a']}/{r['uses_b']})\n" for r in rows) or "- none\n")
     return 0
 
 

@@ -43,17 +43,35 @@ follows these rules for anything shown in chat.
 ## Field vocabulary
 
 - **field**: a lower-case, hyphenated discipline slug: `image-compression`,
-  `neuroscience`, `machine-learning`, `learning-science`, `exercise-physiology`.
-  Reuse an existing slug before you make a new one (`idea_index.py` lists them).
+  `neuroscience`, `machine-learning`, `learning-science`, `exercise-physiology`,
+  `epidemiology`, `medicine`, `ux-design`, `labor-economics`,
+  `software-engineering`, `product`, `marketing`. Reuse an existing slug before
+  you make a new one (`idea_index.py` lists them).
 - **role tag**: a lower-case, hyphenated verb phrase for a job an atom does:
   `sparse-represent-signal`, `filter-bad-samples`, `consolidate-after-signal`.
   Roles describe the job, never the implementation.
 - **intent marker**: a quote with its section (`"..." (Methods > 3.2)`), or the
   text `(inferred)` after a claim that is Claude's reading.
 
+### YAML pitfalls
+
+Four bank files once failed their first parse. Quote a frontmatter value when it
+contains `: ` (colon and space), starts with `%`, `@`, `*`, `&`, `!`, `|`, `>`
+or a quote mark, or is a flow-list item that contains a comma
+(`[ "a, b", c ]`). Quote dates and times you want kept as strings
+(`at: '2026-11-02T00:00:00Z'`). Run the OKF validator after writing.
+
 ## Idea Card (`cards/<slug>.md`)
 
-One card per source (paper, article, post, talk, repo).
+One card per source (paper, article, post, talk, repo, synthesis note).
+
+**Synthesis notes** (a research note that summarises many studies or views, such
+as `~/workspace/knowledge/topics/...`) are cards with `source_kind:
+synthesis-note`: `read_basis: full-text` means the note was read in full, the
+body opens with a `Basis:` line (what the note itself rests on: number and kind
+of sources, its own grade), `evidence` follows the note's own grade, and the card
+may hold several bets (`# Bets`). A move's parent may be a view reported inside
+the note rather than an earlier paper.
 
 ```yaml
 ---
@@ -72,16 +90,24 @@ moves: [<move slug>, ...]
 gem_types: [<gem type>, ...]       # from the taxonomy below
 evidence: none | anecdote | weak | moderate | strong   # a tag; never filters
 read_basis: abstract | passages | full-text | talk | post
-intent_sources: [openreview | talk | v1-diff | tweet | repo | rebuttal | interview | blog | paper, ...]
-constraints: [<constraint slug>, ...]  # limits of the time that forced an atom, e.g. llm-judge-cost
+source_kind: primary | synthesis-note | social | talk | repo
+intent_sources: [openreview | talk | v1-diff | tweet | repo | rebuttal | interview | blog | paper | note, ...]
+constraints: [<constraint slug>, ...]  # limits that forced a METHOD choice, e.g. llm-judge-cost, trial-length
+evidence_limits: [<slug>, ...]     # limits on how far the EVIDENCE reaches, e.g. no-control-group
 status: draft | stable             # stable once Sam or a review signed it off
 generated: { by: ..., at: ... }
 ---
 ```
 
-`constraints` slugs name a priced limit (`gpu-hour-cost`, `label-cost`,
-`context-length`, `llm-token-cost`, `no-vision-model`), so a later price
-tracker can find every card a price drop unlocks. Reuse slugs.
+`constraints` slugs name a limit that forced how the work was done, usually a
+priced one (`gpu-hour-cost`, `label-cost`, `context-length`, `llm-token-cost`,
+`no-vision-model`, `trial-length`, `sample-size-cost`), so a later price tracker
+can find every card a price drop unlocks. `evidence_limits` slugs name what the
+evidence cannot show (`observational-only`, `no-control-group`,
+`self-report-only`, `single-study-evidence`, `animal-model-only`,
+`narrow-sample-population`); they feed "Where it is weak", never the price
+tracker. Reuse slugs. Older cards with both kinds in `constraints` still parse;
+split them when you next touch the card.
 
 Body sections, in this order:
 
@@ -101,7 +127,12 @@ Body sections, in this order:
 <separation in time / space / scale / condition, or "trades off, not resolved">
 
 # Bet (layer 3)
-"If <X is the real bottleneck>, then <Y> should work." <intent marker>
+If <X is the real bottleneck>, then <Y> should work. (inferred)
+<Quote marks only when the bet is verbatim in the source, with its section.>
+
+# Bets (synthesis notes only, optional)
+1. <the card's main bet, same as above>
+2. <bet of another study or view the note reports> (<section>; whose bet)
 
 # Recipe (layer 4)
 | Role | Atom (slug) | Signature (input -> output, objective) | Why this atom (author's reason or (inferred)) |
@@ -113,6 +144,9 @@ Operator: <sequence | loop | gate | nesting | adversarial | distill | ensemble |
 - Move: <move type, link to moves/>
 - Constraints of the time: <compute, data, tools, cost that forced an atom choice>
 - Rejected alternatives: <"we tried X but..." quotes>
+
+# Gems
+- <gem type>: <the reason, in one line, with the passage it rests on>
 
 # Story told vs real thinking
 <where the paper's framing differs from talks, posts, rebuttals or v1 drafts>
@@ -151,7 +185,7 @@ roles: [<role tag>, ...]           # jobs it has done anywhere
 fields: [<field slug>, ...]        # fields it has reached
 cards: [<card slug>, ...]
 migrations:
-  - { field: <slug>, year: <yyyy>, source: <url or card slug>, role: <role tag>, match_confidence: high }
+  - { field: <slug>, year: <yyyy | unknown>, source: <url or card slug>, role: <role tag>, match_confidence: high }
 kill_tests:
   - { date: <yyyy-mm-dd>, hypothesis: <...>, result: survived | killed | inconclusive, note: <...> }
 cost: <optional: what using it costs: compute, data, money, latency>
@@ -183,10 +217,14 @@ people: [<person slug>, ...]
 fields: [<field slug>, ...]
 cards: [<card slug>, ...]
 migrations:
-  - { field: <slug>, year: <yyyy>, source: <url or card slug> }
+  - { field: <slug>, year: <yyyy | unknown>, source: <url or card slug> }
 generated: { by: ..., at: ... }
 ---
 ```
+
+Create a Lens file the second time a view model appears across sources. A view
+seen once goes in the `## Candidates (seen once)` section of `lenses/index.md` (one line: the
+picture in plain words, the card that holds it), so the second sighting finds it.
 
 Body: `# Picture`, `# What it predicts`, `# What it ignores`, `# Inverse lens`
 (the opposite assumption, for lens inversion).
@@ -201,7 +239,7 @@ type: Move
 title: <e.g. "Human-written steps -> self-generated steps + filter">
 description: <one sentence>
 tags: [ideas, move]
-move_type: substitute-atom | substitute-operator | remove | lift-constraint | invert | migrate-atom | transfer | cross-card | resolve-contradiction | lens-transfer | lens-inversion
+move_type: substitute-atom | substitute-operator | remove | lift-constraint | invert | migrate-atom | transfer | cross-card | resolve-contradiction | lens-transfer | lens-inversion | correct-parameter | relabel | retarget
 parent: <card slug or URL>
 child: <card slug or URL>
 card: <card slug of the child, when it exists>
@@ -308,10 +346,20 @@ Handover stages (defaults; change them in `progress.md` from real data):
 ## Bulk staging
 
 `idea-mine` in bulk writes into a staging folder outside the bank (for example
-`$TMPDIR/idea-mine-<date>/`, with the same layout), then merges in: dedupe
-atoms against the bank by structure, rewrite slugs, append migrations and
-cards to existing atoms, and copy only after `idea_index.py` on the staged
-folder reports no broken links. A half-finished bulk run never touches the bank.
+`$TMPDIR/idea-mine-<date>/`, with the same layout), then merges in:
+
+1. Dedupe atoms against the bank by structure, rewrite slugs, append migrations
+   and cards to existing atoms.
+2. **Normalize role tags and tensions.** Run
+   `idea_index.py <staging> --suggest-merges` (and on the bank plus staging
+   together). For each suggested pair, decide by meaning whether the two tags
+   name the same job; rewrite the losing tag everywhere (cards' `roles` and
+   `tensions`, atoms' `roles` and migration rows, moves' `role`). Keep the tag
+   the bank already uses. The index matches tags exactly, so an unmerged
+   synonym hides a migration gap.
+3. Copy only after `idea_index.py` on the staged folder reports no broken links.
+
+A half-finished bulk run never touches the bank.
 
 ## Gem taxonomy
 
@@ -349,6 +397,9 @@ Use these values in `gem_types` and in `[gem: ...]` margin tags.
 | `invert` | Reverse order, direction, or who does what |
 | `migrate-atom` | Keep the atom, move it to another field or role |
 | `transfer` | Keep the bet, apply it to another field's tension (the atoms may change) |
+| `correct-parameter` | Keep the recipe, fix a number the parent got wrong (a dose, a threshold, a ratio) |
+| `relabel` | Keep the structure, rename what it is for; the new name changes who uses it |
+| `retarget` | Keep the method, change the outcome it optimises or is judged by |
 | `cross-card` | Take an atom or operator from another card |
 | `resolve-contradiction` | Separate the want-X-and-not-X in time, space, scale or condition |
 | `lens-transfer` | See problem P through another person's or field's lens |

@@ -45,7 +45,10 @@ That is useless for recombination, for three reasons this skill fixes:
    related-work section names the source this one mutated. Write the diff as a
    Move file with a `move_type` from the schema. Record the constraints of the
    time: compute, data, tools, cost that forced an atom choice, in the body and
-   as slugs in `constraints` (`gpu-hour-cost`, `label-cost`; reuse slugs).
+   as slugs in `constraints` (`gpu-hour-cost`, `label-cost`; reuse slugs). Limits
+   on what the evidence can show go in `evidence_limits` instead. Set
+   `source_kind`; a synthesis note follows the schema's synthesis-note rules
+   (Basis line, the note's grade, several bets in `# Bets`).
 4. **Fill the six layers** in schema order (view model, contradiction,
    resolution principle, bet, recipe, diff and constraints), then "Story told vs
    real thinking", `Raw`, and optional `Mutations` (the schema's table, origin
@@ -89,7 +92,9 @@ For many sources (a cluster, a reading list, 50 papers):
 
 1. Build the list with `paperhunt search` or the caller's list; dedupe by DOI or
    arXiv ID; skip sources that already have a card.
-2. Run one subagent per source, at most 6 in flight as a rolling pool. Use the
+2. Run one subagent per source, never more than 6 in flight, as a rolling pool.
+   Count running agents from real completion notices only, never from your own
+   text. Use the
    brief in `references/bulk-mode.md`; it carries the schema path, the bank root,
    the slugs from the index, and the quote rule, because subagents do not load
    this skill.

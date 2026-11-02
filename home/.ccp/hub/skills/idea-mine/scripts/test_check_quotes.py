@@ -59,3 +59,37 @@ def test_quotes_do_not_pair_across_lines(tmp_path):
     r = run(tmp_path, '- A: "the learned basis functions were localized, oriented and bandpass" (Results)\n'
                       '- B: plain claim with "short" mark (inferred)\n')
     assert r.returncode == 0, r.stdout
+
+
+def test_two_quotes_on_one_line_pair_separately(tmp_path):
+    # First quote is short (below min words); the old pairing joined its closing
+    # mark to the second quote's opening mark and reported a mixed span.
+    r = run(tmp_path, '- "Methods" and then "the learned basis functions were localized" (Results)\n')
+    assert r.returncode == 0, r.stdout
+    assert "1/1" in r.stdout
+
+
+def test_two_real_quotes_on_one_line_both_checked(tmp_path):
+    r = run(tmp_path, '- "we trained the network on natural image patches" then "much like simple cells in primary visual cortex"\n')
+    assert r.returncode == 0, r.stdout
+    assert "2/2" in r.stdout
+
+
+def test_one_bad_of_two_on_a_line_is_caught(tmp_path):
+    r = run(tmp_path, '- "we trained the network on natural image patches" but "the cells were tuned to faces only"\n')
+    assert r.returncode == 1
+    assert "1/2" in r.stdout
+
+
+def test_min_words_default_four(tmp_path):
+    r = run(tmp_path, '- "localized, oriented and bandpass" (Results)\n')
+    assert "1/1" in r.stdout
+
+
+def test_min_words_option(tmp_path):
+    card = tmp_path / "card.md"
+    card.write_text('- "localized, oriented and bandpass" (Results)\n')
+    src = tmp_path / "src.md"
+    src.write_text(SOURCE)
+    r = subprocess.run([sys.executable, str(SCRIPT), str(card), str(src), "--min-words", "6"], capture_output=True, text=True)
+    assert "no quotes of 6+ words" in r.stdout

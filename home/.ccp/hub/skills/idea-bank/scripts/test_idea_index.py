@@ -18,7 +18,7 @@ def ix():
 
 
 def test_counts(ix):
-    assert ix["counts"] == {"Atom": 2, "Idea Card": 5, "Move": 3, "Reading": 1, "State": 1}
+    assert ix["counts"] == {"Atom": 2, "Idea Card": 6, "Move": 3, "Reading": 1, "State": 1}
 
 
 def test_broken_link_found(ix):
@@ -93,8 +93,29 @@ def test_low_confidence_listed(ix):
 
 
 def test_constraints_index(ix):
-    assert ix["constraints"] == {"compute-per-pixel-cost": ["jpeg"]}
+    assert ix["constraints"] == {"compute-per-pixel-cost": ["jpeg"], "trial-length": ["sleep-gate"]}
+    assert ix["evidence_limits"] == {"no-control-group": ["sleep-gate"]}
 
 
 def test_level3_hints_counted(ix):
     assert ix["reading_hints"] == [{"reading": "261102-sae", "mode": "deep", "level3_hints": 1, "notes": 3}]
+
+
+def test_suggest_merges_finds_near_duplicates():
+    rows = ix_mod.suggest_merges(ix_mod.load(BANK))
+    pairs = {(r["a"], r["b"]) for r in rows}
+    assert ("sparse-represent-signal", "sparse-represent-signals") in pairs   # tension vs role, plural
+    assert ("consolidate-after-signal", "gate-consolidation-by-sleep") not in pairs  # different words
+    for r in rows:
+        assert r["a"] < r["b"]
+
+
+def test_suggest_merges_ignores_unrelated_roles():
+    rows = ix_mod.suggest_merges(ix_mod.load(BANK))
+    # explain-receptive-fields and decompose-activations share no words: never suggested
+    assert all({r["a"], r["b"]} != {"decompose-activations", "explain-receptive-fields"} for r in rows)
+
+
+def test_cli_suggest_merges(capsys):
+    assert ix_mod.main([str(BANK), "--suggest-merges"]) == 0
+    assert "Merge suggestions" in capsys.readouterr().out
