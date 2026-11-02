@@ -119,3 +119,79 @@ def test_suggest_merges_ignores_unrelated_roles():
 def test_cli_suggest_merges(capsys):
     assert ix_mod.main([str(BANK), "--suggest-merges"]) == 0
     assert "Merge suggestions" in capsys.readouterr().out
+
+
+# --- generated views (--write / --check) ---
+
+import shutil
+
+
+@pytest.fixture
+def bank_copy(tmp_path):
+    dst = tmp_path / "bank"
+    shutil.copytree(BANK, dst, symlinks=False)
+    return dst
+
+
+def test_check_reports_stale_then_write_fixes_it(bank_copy):
+    assert ix_mod.main([str(bank_copy), "--check"]) == 1
+    assert ix_mod.main([str(bank_copy), "--write"]) == 0
+    assert ix_mod.main([str(bank_copy), "--check"]) == 0
+
+
+def test_write_is_idempotent(bank_copy):
+    ix_mod.main([str(bank_copy), "--write"])
+    before = {p: p.read_text() for p in bank_copy.rglob("*.md")}
+    assert ix_mod.sync_views(bank_copy, write=True) == []
+    assert before == {p: p.read_text() for p in bank_copy.rglob("*.md")}
+
+
+def test_signature_moves_from_frontmatter_to_body(bank_copy):
+    ix_mod.main([str(bank_copy), "--write"])
+    text = (bank_copy / "atoms" / "sparse-overcomplete-code.md").read_text()
+    fm, body = ix_mod.FM_RE.match(text).groups()
+    assert "signature" not in fm
+    assert "# Signature\n- **Input:** signal\n- **Output:** sparse coefficients" in body
+    # the rest of the frontmatter is untouched text, and still parses
+    assert "roles: [sparse-represent-signal]" in fm
+    assert ix_mod.build(ix_mod.load(bank_copy))["counts"]["Atom"] == 2
+
+
+def test_related_links_both_directions(bank_copy):
+    ix_mod.main([str(bank_copy), "--write"])
+    atom = (bank_copy / "atoms" / "sparse-overcomplete-code.md").read_text()
+    # sae-features lists the atom but the atom does not list the card: the view still shows it
+    assert "](/cards/sae-features.md) (" in atom  # bank outside a bundle: links are bank-root relative
+    assert "Shares role `sparse-represent-signal` with [" in atom and "fixed-basis-transform.md)" in atom
+    assert "explain-receptive-fields" in atom  # role taken from the migration row of that card
+    card = (bank_copy / "cards" / "sae-features.md").read_text()
+    assert "- Atom `relu-encoder` (no file yet)." in card  # broken link is shown, not hidden
+    move = (bank_copy / "moves" / "sparse-code-to-sae.md").read_text()
+    assert "- Atom moved [" in move
+
+
+def test_hand_text_outside_block_survives(bank_copy):
+    p = bank_copy / "cards" / "jpeg.md"
+    ix_mod.main([str(bank_copy), "--write"])
+    p.write_text(p.read_text() + "\nA note Sam added after the block.\n")
+    ix_mod.main([str(bank_copy), "--write"])
+    text = p.read_text()
+    assert "A note Sam added after the block." in text
+    assert text.count(ix_mod.REL_BEGIN) == 1 and text.rstrip().endswith(ix_mod.REL_END)
+
+
+def test_atoms_index_lists_shared_roles(bank_copy):
+    ix_mod.main([str(bank_copy), "--write"])
+    idx = (bank_copy / "atoms" / "index.md").read_text()
+    assert "## Shared roles" in idx
+    shared = idx.split("## All atoms")[0]
+    assert "`sparse-represent-signal` - [Fixed-basis transform" in shared
+    assert "`denoise-signal`" not in shared  # one atom only
+    assert idx.count("](sparse-overcomplete-code.md)") == 2  # once under the shared role, once in the full list
+
+
+def test_link_prefix_inside_and_outside_bundle(tmp_path):
+    (tmp_path / "index.md").write_text("---\nokf_version: '0.2'\n---\n# B\n")
+    (tmp_path / "ideas").mkdir()
+    assert ix_mod.link_prefix(tmp_path / "ideas") == "/ideas"
+    assert ix_mod.link_prefix(tmp_path) == ""

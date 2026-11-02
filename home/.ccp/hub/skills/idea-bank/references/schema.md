@@ -13,6 +13,17 @@ Links between bank files use bundle-relative paths, for example
 the list fields below, so keep those fields as plain slugs (file name without
 `.md`), not links.
 
+**Frontmatter lists are the source of truth; the link views are generated.**
+`idea_index.py --write` adds a `# Related` section at the end of every atom,
+card, lens and move (real markdown links, each with its relation in words), and
+rewrites `atoms/index.md` (shared roles first, then all atoms). The section sits
+between `<!-- related:begin ... -->` and `<!-- related:end -->` markers. Never
+edit inside them: change the frontmatter list and run `--write` again.
+`--check` exits 1 when a view is out of date. Text outside the markers is kept.
+
+Keep frontmatter short: slugs, enums and one-line values. Long prose goes in
+the body, where a stray colon or quote cannot break the parse.
+
 ## Rendering for Sam
 
 Bank files use this schema's terms. Chat output to Sam does not: he reads it to
@@ -174,12 +185,6 @@ type: Atom
 title: <neutral name, e.g. "Sparse code over an overcomplete basis">
 description: <signature in one sentence>
 tags: [ideas, atom]
-signature:
-  input: <what goes in>
-  output: <what comes out>
-  objective: <what is optimised or kept>
-  constraint: <sparsity, budget, ...>
-  math: <one-line form, optional>
 names: { <field slug>: [<names used there>] }
 roles: [<role tag>, ...]           # jobs it has done anywhere
 fields: [<field slug>, ...]        # fields it has reached
@@ -200,8 +205,23 @@ structure match is that put this row here. The index lists `low` rows for review
 `cost` and `fails_when` make the interface form used for delegated clusters
 (role, signature, cost, fails_when) without reading the body.
 
-Body: `# Signature` (the structure in words), `# Migrations` (the story of each
-move, one paragraph each), `# Where it fails`.
+Body: `# Signature`, `# Migrations` (the story of each move, one paragraph
+each), `# Where it fails`, then the generated `# Related`. The signature is a
+list in the body, not frontmatter, followed by the structure in words:
+
+```markdown
+# Signature
+- **Input:** <what goes in>
+- **Output:** <what comes out>
+- **Objective:** <what is optimised or kept>
+- **Constraint:** <sparsity, budget, ...>
+- **Math:** <one-line form, optional>
+
+<the structure in a few plain sentences>
+```
+
+An atom written with a frontmatter `signature:` still parses; `--write` moves
+it into this list.
 
 ## Lens (`lenses/<slug>.md`)
 

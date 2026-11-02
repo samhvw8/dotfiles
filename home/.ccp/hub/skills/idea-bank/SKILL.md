@@ -38,7 +38,8 @@ Bulk runs (`idea-mine`) stage outside the bank and merge in only after the
 index on the staged folder shows no broken links (`schema.md`, Bulk staging).
 
 Every directory has an `index.md` (no frontmatter). Add a line there and a dated
-line in the bundle's `log.md` when you create a concept. The bank is an area of an
+line in the bundle's `log.md` when you create a concept. `atoms/index.md` is the
+exception: `idea_index.py --write` regenerates it. The bank is an area of an
 OKF bundle: load the `okf` skill before restructuring it.
 
 ## Rules
@@ -73,6 +74,8 @@ other file's `migrations` and `cards`, and leave the removed file as
 
 ```bash
 uv run <this skill's folder>/scripts/idea_index.py <bank-root> [--json out.json]
+uv run <this skill's folder>/scripts/idea_index.py <bank-root> --write   # regenerate link views
+uv run <this skill's folder>/scripts/idea_index.py <bank-root> --check   # exit 1 if views are stale
 ```
 
 It is deterministic and offline. It reports:
@@ -105,9 +108,10 @@ list, the top gap candidates you judged real, and atoms that moved from "seen" t
 The bank sits inside a git repo (by default `~/workspace/knowledge`). After a
 session that changed bank files:
 
-1. Validate: `uv run ~/.claude/skills/validate/scripts/okf_validate.py <bundle-root> --strict`.
-2. Stage only bank paths and the bundle `log.md`: `git -C <repo> add <bank-root> <bundle>/log.md`.
-3. Commit with a conventional message, for example `feat(ideas): add card for <slug>`.
+1. Regenerate the link views: `idea_index.py <bank-root> --write`.
+2. Validate: `uv run ~/.claude/skills/validate/scripts/okf_validate.py <bundle-root> --strict`.
+3. Stage only bank paths and the bundle `log.md`: `git -C <repo> add <bank-root> <bundle>/log.md`.
+4. Commit with a conventional message, for example `feat(ideas): add card for <slug>`.
    Add no AI attribution lines.
 
 If the root is not in a git repo, say so once and suggest `git init`; do not

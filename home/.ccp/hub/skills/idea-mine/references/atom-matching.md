@@ -10,7 +10,9 @@ embedding of it.
 1. Write the candidate's signature: input, output, objective, constraint, and a
    one-line math form when there is one.
 2. Run `idea_index.py` and list atoms whose `roles` overlap the candidate's role,
-   then read their `signature` blocks. Also scan atoms in fields related to the
+   then read their `# Signature` sections. `atoms/index.md` lists the roles
+   that two or more atoms share, and each atom's `# Related` section names the
+   atoms that share its roles. Also scan atoms in fields related to the
    source's field.
 3. Compare relation by relation (structure-mapping): does the input map to the
    input, the objective to the objective, the constraint to the constraint, with
