@@ -1,6 +1,6 @@
 ---
 name: idea-bank
-description: "Shared store and formats for Sam's idea work: where the bank lives ($IDEA_HOME), the schema for idea cards, atoms, lenses, moves, readings, scout batches and Sam's state files, the index script that finds atom links, convergence and migration gaps, and how to commit the bank. Use when another idea skill (idea-scout, co-read, idea-forge, idea-mine) writes or reads the bank, when Sam asks to link or dedupe atoms, run the idea index, or see convergence and migration gaps. Not for deciding what to read or how to collaborate; the caller skills own that."
+description: "Shared store and formats for Sam's idea work: where the bank lives ($IDEA_HOME), the schema for idea cards, atoms, lenses, moves, readings, scout batches and Sam's state files, the index script that finds atom links, convergence and migration gaps, the search script (embeddings + BM25) that finds existing atoms, and how to commit the bank. Use when another idea skill (idea-scout, co-read, idea-forge, idea-mine) writes or reads the bank, when Sam asks to search the bank, find or dedupe atoms, run the idea index, or see convergence and migration gaps. Not for deciding what to read or how to collaborate; the caller skills own that."
 ---
 
 # Idea bank
@@ -70,6 +70,26 @@ To merge: keep the older file, move the other names into `names`, append the
 other file's `migrations` and `cards`, and leave the removed file as
 `status: deprecated` with a link to the kept one. Log the merge.
 
+## Search the bank
+
+```bash
+uv run <this skill's folder>/scripts/idea_search.py <bank-root> index                    # embed changed chunks
+uv run <this skill's folder>/scripts/idea_search.py <bank-root> search "<text>" --type atom
+uv run <this skill's folder>/scripts/idea_search.py <bank-root> like <atom> --other-fields
+```
+
+`search` fuses EmbeddingGemma 2 vectors (several chunks per file: signature,
+gloss, names per field, migrations; card layers and rows) with BM25 and returns
+30 candidates. `like` ranks atoms by signature and shows topic similarity and
+shared fields beside it. It starts llama.cpp's `llama-server` for one command
+and stops it after (first index of the bank: about a minute on the Mac).
+Vectors are cached in `<bank-root>/.index/`, which is git-ignored derived data.
+
+The list is a shortlist, not an answer. Judge each candidate by structure
+before you link or merge it: on the bench the correct atom was in the top 10
+for 72% of real links and in the top 30 for 81%. `--graph` adds Personalized
+PageRank over the links; it gave no gain at this bank size.
+
 ## Run the index
 
 ```bash
@@ -108,7 +128,8 @@ list, the top gap candidates you judged real, and atoms that moved from "seen" t
 The bank sits inside a git repo (by default `~/workspace/knowledge`). After a
 session that changed bank files:
 
-1. Regenerate the link views: `idea_index.py <bank-root> --write`.
+1. Regenerate the link views: `idea_index.py <bank-root> --write`, then
+   refresh the search cache: `idea_search.py <bank-root> index`.
 2. Validate: `uv run ~/.claude/skills/validate/scripts/okf_validate.py <bundle-root> --strict`.
 3. Stage only bank paths and the bundle `log.md`: `git -C <repo> add <bank-root> <bundle>/log.md`.
 4. Commit with a conventional message, for example `feat(ideas): add card for <slug>`.
@@ -121,5 +142,7 @@ create a repo yourself.
 
 - `references/schema.md`: every type's frontmatter and body template, the gem
   taxonomy, the unpopularity diagnosis and the mutation operators.
+- `scripts/idea_search.py`: hybrid search; `scripts/test_idea_search.py`
+  tests it without a model. Bench: `~/workspace/tools/idea-evals/search-bench`.
 - `scripts/idea_index.py`: the index; `scripts/test_idea_index.py` and
   `scripts/fixtures/` test it.

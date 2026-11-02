@@ -9,8 +9,12 @@ embedding of it.
 
 1. Write the candidate's signature: input, output, objective, constraint, and a
    one-line math form when there is one.
-2. Run `idea_index.py` and list atoms whose `roles` overlap the candidate's role,
-   then read their `# Signature` sections. `atoms/index.md` lists the roles
+2. Search the bank with the candidate's signature plus the source's own words
+   for it: `uv run ~/.claude/skills/idea-bank/scripts/idea_search.py <bank>
+   search "<signature>. <source quote>" --type atom` (top 30). Read the whole
+   shortlist: the right atom is often not first (bench: in the top 10 for 72% of
+   real links, the top 30 for 81%). Then also list atoms whose `roles` overlap
+   the candidate's role (`idea_index.py`), and read their `# Signature` sections. `atoms/index.md` lists the roles
    that two or more atoms share, and each atom's `# Related` section names the
    atoms that share its roles. Also scan atoms in fields related to the
    source's field.

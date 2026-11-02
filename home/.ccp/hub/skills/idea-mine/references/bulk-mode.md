@@ -59,6 +59,7 @@ signature), and what you could not get.
 
 1. Collect proposed atoms from all replies. Group by signature with the
    procedure in `atom-matching.md`; two subagents often name one structure twice.
+   Run `idea_search.py <bank> index` first, then one `search` per proposed atom.
 2. Rewrite card `atoms` lists to the merged slugs, then write or update the Atom
    files in the bank.
 3. **Normalize role tags and tensions** (schema "Bulk staging", step 2): run

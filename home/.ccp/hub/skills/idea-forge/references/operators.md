@@ -66,7 +66,9 @@ A name match is not a migration. For each candidate:
 
 ## Sources of D
 
-In order: the bank (cheapest, already structured), Sam's known atoms (he can
+In order: the bank (cheapest, already structured; `idea_search.py <bank> search
+"<what the role must do>" --type atom`, and `like <atom> --other-fields` for the
+same signature in another field), Sam's known atoms (he can
 reason about them), the delegated clusters (a one-line interface is enough to
 use an atom without learning it), then a search by signature in the target
 field. A D from a delegated cluster that becomes load-bearing for Sam's work gets
