@@ -1,0 +1,35 @@
+{
+  "skill_name": "idea-mine",
+  "evals": [
+    {
+      "id": "single-paper-card",
+      "prompt": "mine this one for the bank: https://doi.org/10.1038/s41539-023-00159-w — retrieval practice + working memory paper",
+      "expected_output": "One Idea Card in the schema shape with all six layers, the dual-process recipe named by role (retrieve, re-encode after success, both drawing on a working-memory budget), quotes with sections or (inferred) markers, parent = single-process testing-effect accounts, gem types tagged, read_basis set.",
+      "assertions": [
+        "check_quotes.py exits 0 on the card against the fetched text (script)",
+        "every intent field carries a quote+section or (inferred) (script-checkable by regex)",
+        "roles are verb phrases about the job, not technique names (judge)",
+        "the card does not judge the study's validity beyond the evidence tag (judge)"
+      ]
+    },
+    {
+      "id": "bulk-cluster",
+      "prompt": "fill the bank with the main papers on sparse coding across fields, like 8 of them, I won't read them now",
+      "expected_output": "Subagents per source, staged cards, one merged atom sparse-overcomplete-code with names per field and migration rows across image compression, neuroscience, machine learning, interpretability; index run with convergence and migration-gap candidates; sample verified; committed.",
+      "assertions": [
+        "only one atom file for the sparse-overcomplete structure (script: count files with matching signature)",
+        "idea_index.py reports no broken links (script)",
+        "report lists atoms created vs linked and the judged gap candidates (judge)"
+      ]
+    },
+    {
+      "id": "social-thread",
+      "prompt": "atomize this X thread where the author explains why they built their agent memory as raw chunks instead of summaries: <thread url>",
+      "expected_output": "A card with a strong layer 0 (picture, hunch, surprise quoted from the thread), layers that the thread does not state marked 'not stated', read_basis: post, evidence: anecdote, and no invented mechanism.",
+      "assertions": [
+        "layers missing from the thread say 'not stated' instead of being filled (judge)",
+        "read_basis is post and evidence is anecdote or none (script)"
+      ]
+    }
+  ]
+}

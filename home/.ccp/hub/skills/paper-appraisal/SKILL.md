@@ -1,6 +1,6 @@
 ---
 name: paper-appraisal
-description: "Use whenever the user hands over a paper or study (arXiv, DOI, PubMed, journal or PDF link) to review, find insight in, summarise, explain or present, in any field: medicine and health, psychology and cognitive science, mechanistic biology, ML. Use it even when the main deliverable is slides, a video or an explainer page. Also to explain a paper's idea and intuition and then review it, to review a paper like a scientist or peer reviewer (referee report), to read a paper for someone who is not a scientist, or to teach how to read one. Also for judging evidence: 'is this study good', 'what does the research say', risk of bias, GRADE, systematic and literature reviews, comparing findings. Reads the full text, checks retraction, registrations, released code and what happened after publication, then appraises with the current tool for the design (RoB 2, ROBINS, QUADAS, PROBAST+AI, AMSTAR 2, JBI, GRADE, ML checks)."
+description: "Use whenever the user hands over a paper or study (arXiv, DOI, PubMed, journal or PDF link) to review, appraise, summarise, explain or present, in any field: medicine and health, psychology and cognitive science, mechanistic biology, ML. Use it even when the main deliverable is slides, a video or an explainer page. Also to review a paper like a scientist or peer reviewer (referee report), to read a paper for someone who is not a scientist, or to teach how to read one. Also for judging evidence: 'is this study good', 'what does the research say', risk of bias, GRADE, systematic and literature reviews, comparing findings. Reads the full text, checks retraction, registrations, released code and what happened after publication, then appraises with the current tool for the design (RoB 2, ROBINS, QUADAS, PROBAST+AI, AMSTAR 2, JBI, GRADE, ML checks). Not for mining the idea to reuse, finding gems or reading a source together: that is co-read."
 ---
 
 # Paper appraisal
@@ -40,6 +40,12 @@ says "review", give Read it for me first and the Insight review after.
 | Review it and explain the idea / intuition / insight (default when a paper is handed over to review or explain) | Insight review: the one idea, why it was hard, each key idea with intuition, mechanism and the evidence for it, a worked example, then a short review and what to borrow | `references/insight-review.md` |
 | Review it like a scientist / a peer reviewer | Scientist review (a referee report): criteria ratings, major and minor concerns, verdict | `references/referee-report.md` |
 | Explain it to me, I'm not a scientist / how do I read this | Read it for me: plain story of the paper, study-type ladder, glossary, a reading path through this paper | `references/lay-reader.md` |
+
+Idea requests go elsewhere. "What's the idea", "what can I borrow", "find the gems",
+"read this with me": use `co-read` (brief or deep mode). This skill stays the trust and
+evidence tool. The idea skills call it as a verification service when a claim is about
+to become load-bearing for Sam's work, most of all in a domain Sam delegates and cannot
+judge.
 
 All four rest on the same steps and one claim ledger. Build the ledger every time;
 show it in full only in the "Is this trustworthy?" output. The referee's major concerns, the insight

@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-02
+* **Addition**: hand-made hub skills `idea-bank` (bank location `$IDEA_HOME`, schema, `idea_index.py`), `idea-scout`, `co-read`, `idea-forge` and `idea-mine`, linked into `default` and mirrored to omp and opencode; `IDEA_HOME` added commented to `mise/config.local.example.toml`. `lead-researcher` gains an ideas objective and `paper-appraisal` routes idea requests to `co-read`. Global `CLAUDE.md`: files on disk are written in English. Runs: five more skill descriptions in each session; the bank lives in `~/workspace/knowledge/ideas` (its own local git repo).
+
 ## 2026-10-31
 * **Update**: [Set up a new machine](/workflows/new-machine-setup.md) points servers at the new [server-init](https://github.com/samhvw8/server-init) project (`~/workspace/tools/server-init`), which hardens a fresh Debian/Ubuntu box and then runs `setup.sh --minimal` for its admin user. Runs: nothing new in this repo.
 

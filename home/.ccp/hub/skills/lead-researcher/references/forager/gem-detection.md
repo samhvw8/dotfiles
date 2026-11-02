@@ -40,6 +40,27 @@ NOISE: SEO patterns, no specifics, no pain → drop from synthesis
 
 Rule: **a synthesis built from NOISE is worse than saying "insufficient data."** Better to report 2 gems than 20 noise items.
 
+## Ideas Objective Rubric
+
+The table above serves the decision objective. Under the ideas objective
+([lead-researcher](../../SKILL.md#ideas-objective)), a finding is judged by the idea it
+carries, not by whether it is proven. A wrong paper with a good bet stays in.
+
+```
+GEM:   a reusable move or intent, with at least one of:
+       - against consensus, with a diagnosable reason (constraint of its time, wrong field
+         or vocabulary, unfashionable, poor execution of a good bet, language community)
+       - an atom from another field that fits a role in Sam's scopes
+       - the authors' view model or hunch, quoted ("we believe", "surprisingly", a rejected alternative)
+       - a constraint that forced a choice and has since lifted
+MEH:   an idea restated without its why, or a known move in a known place
+NOISE: no idea content (listicles, vendor praise), or against consensus because the bet is wrong
+```
+
+"Verifiable" is not required here. Mark a claim for verification only when it is about
+to become load-bearing for Sam's work. The full gem taxonomy and the "why unpopular"
+table live in `~/.claude/skills/idea-bank/references/schema.md`.
+
 ## Gatherer Instructions (inject into agent prompts)
 
 Add to every gatherer prompt:

@@ -28,6 +28,7 @@ Format: `[topic]` — everything else (agents, languages, depth) is decided by t
 | **Iterations** | Brain decides — stop when saturated | No preset count |
 | **Depth** | Brain decides — shallow for simple, deep for complex | Saturation curve, not a mode setting |
 | **Venue** | Inline (brain = main agent) or workflow (brain = opus sub-agent) | Brain picks based on expected complexity |
+| **Objective** | Decision: find the best option, confirm or refute claims | **Ideas**: when the caller is `idea-scout`, or Sam asks for ideas, gems or what can be reused rather than which option is best ([Ideas objective](#ideas-objective)) |
 
 **The brain (forager) decides everything.** No modes, no preset agent counts, no fixed iterations. The only default is the language set: EN + ZH + ZH-TW when nothing is specified. It is a set to choose from per sub-question, not a multiplier applied to every sub-question.
 
@@ -225,6 +226,19 @@ Each gatherer agent uses the `deep-gather` skill.
 ```
 
 Phases map to loop steps: Phase 0-2 = plan, Phase 3 = GATHER DATA, Phase 4 = REASONING/EXPAND/CHECK (the forager brain), Phase 5 = SYNTHESIZE. Inline venue runs these directly; workflow venue runs them as the script above.
+
+## Ideas objective
+
+Use it when the caller is `idea-scout`, or when Sam wants ideas and gems, not a verdict.
+The loop is the same; what it hunts for changes.
+
+| Part of the loop | Decision objective (default) | Ideas objective |
+|------------------|------------------------------|-----------------|
+| Hypotheses | Claims to confirm or refute | A design space: roles, atoms, migrations between fields, constraints that have lifted |
+| Gather targets | Practitioner evidence, numbers, failures | Intent and idea sources: rebuttals and reviews, talks and interviews, "we tried X but" passages, rejected alternatives, contrarian practitioner takes, non-English communities |
+| Gem rubric | GEM/MEH/NOISE in [gem-detection](references/forager/gem-detection.md) | The ideas rubric in the same file: "verifiable" is not required |
+| Streaming verify / CRITIC refute | Every load-bearing finding | Only claims that will become load-bearing for Sam's work. Never refute an idea for being unproven |
+| Output | Recommendation with evidence | Candidate ideas with their gem type, in the formats of `~/.claude/skills/idea-bank/references/schema.md` |
 
 ## Phase Skip Prevention
 
@@ -617,4 +631,5 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
 - [forager (the brain)](references/forager/overview.md) — REFLECT/STEER methodology, the loop's CONTROL step
 - [adaptive-research spec](references/adaptive-research/overview.md) — target redesign: gather/reason split, adaptive-depth loop, control rod, Phase 0 budget
+- [idea-bank schema](../idea-bank/references/schema.md) — card, atom and gem formats for the ideas objective
 - [team-research](references/team-research.md) — live supervised agent-team venue: steering-lead brain + gatherers + verifier, exchanging via SendMessage

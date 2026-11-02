@@ -19,6 +19,8 @@ CLAUDE.md, then this file. One exception: attribution (below).
   state it. Unclear → ask, don't fill. Low confidence → say so.
 - **A question is not an instruction.** Answer it, then stop.
 - **Make the goal checkable first:** a bug gets a failing test, "faster" a number.
+- **Files on disk are in English** (skills, docs, knowledge bank, commits), whatever
+  language the chat is in.
 - **Edit only what the request needs.** Mention unrelated problems; don't fix them.
   A requested refactor or cleanup *is* the scope.
 - **Crashing beats corrupting.** Never fail silently.

@@ -39,3 +39,6 @@
 # ANNAS_SECRET_KEY = ""
 # ANNA_COOKIE = ""
 # UNPAYWALL_EMAIL = ""
+
+# --- Idea skills: bank root (default ~/workspace/knowledge/ideas, else ~/knowledge/ideas)
+# IDEA_HOME = ""
