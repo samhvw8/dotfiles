@@ -148,5 +148,7 @@ create a repo yourself.
   taxonomy, the unpopularity diagnosis and the mutation operators.
 - `scripts/idea_search.py`: hybrid search; `scripts/test_idea_search.py`
   tests it without a model. Bench: `~/workspace/tools/idea-evals/search-bench`.
+- `scripts/idea_deal.py`: deals a hand (atoms, lenses, moves) for idea-forge's
+  deal mode; `scripts/test_idea_deal.py` tests it.
 - `scripts/idea_index.py`: the index; `scripts/test_idea_index.py` and
   `scripts/fixtures/` test it.

@@ -304,8 +304,9 @@ type: Reading
 title: <source title>
 description: <what the session found, one sentence>
 tags: [ideas, reading]
-card: <card slug>
-mode: brief | deep | skim
+card: <card slug>                  # omitted in a deal session
+mode: brief | deep | skim | deal
+deal: { kind: role | lens | gap | pair | move, seed: <int>, x: <int>, items: [<slug>, ...] }  # deal only
 stage: 1 | 2 | 3 | 4               # Sam's handover stage during the session
 generated: { by: ..., at: ... }
 ---
@@ -352,7 +353,7 @@ Each is one file, edited at runtime. No skill hardcodes their values.
 | `interest-state.md` | `# Clusters` table: `| Cluster | Level | Zooms | Signals | Since |`; `Level` is `core`, `adjacent`, `delegated` or empty; `Zooms` counts briefs Sam asked for in that cluster. A cluster with no level gets the short role-level card; the one-line interface card is for `delegated` only. `# Settings`: cards per batch, explore slots per batch, weekly card budget. `# Change log` table: date, cluster, from → to, why. Sam's commands win, in any language |
 | `known-atoms.md` | Table: atom slug, level (`seen`, `owned`), since, evidence (how Sam showed it: explained it, spotted it in a new source). Only core and adjacent clusters |
 | `taste.md` | Table: date, source, gem Sam saw that Claude missed, gem type. Table: date, card, vote, one-word reason |
-| `progress.md` | Table, one row per session: `| Date | Reading | Mode | Unaided gems | Roles named right | Sam-unique mutations | Level-3 hints | Gems Claude missed | Skips |`. `Mode` is `brief`, `deep` or `skim`. The three skill columns are finding gems (`Unaided gems`), naming roles (`Roles named right`, of total) and proposing mutations (`Sam-unique mutations`). `# Stage` with the criteria below |
+| `progress.md` | Table, one row per session: `| Date | Reading | Mode | Unaided gems | Roles named right | Sam-unique mutations | Level-3 hints | Gems Claude missed | Skips |`. `Mode` is `brief`, `deep`, `skim` or `deal`. The three skill columns are finding gems (`Unaided gems`), naming roles (`Roles named right`, of total) and proposing mutations (`Sam-unique mutations`). `# Stage` with the criteria below |
 
 Handover stages (defaults; change them in `progress.md` from real data):
 

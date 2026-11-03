@@ -1,6 +1,6 @@
 ---
 name: idea-forge
-description: "Turns an idea card or Sam's seed (\"what if we swap C for something like D\") into new idea variants, then designs the cheapest test that could kill each one. Sam proposes his variants first; Claude then exhausts the neighbourhood with the idea-bank mutation operators (substitute an atom, change the operator, remove, lift a constraint, invert, migrate an atom, transfer, cross-card, resolve the contradiction, lens transfer or inversion) and atom migration across fields, checks each variant for role fit and novelty, and runs kill-tests. Use after a co-read or brief, when Sam brings a seed or hunch, asks what to build or try next from a source, or asks whether an atom from one field could work in another. Not for reading or explaining a source (co-read) or finding sources (idea-scout)."
+description: "Turns an idea card or Sam's seed (\"what if we swap C for something like D\") into new idea variants, then designs the cheapest test that could kill each one. Sam proposes his variants first; Claude then exhausts the neighbourhood with the idea-bank mutation operators (substitute an atom, change the operator, remove, lift a constraint, invert, migrate an atom, transfer, cross-card, resolve the contradiction, lens transfer or inversion) and atom migration across fields, checks each variant for role fit and novelty, and runs kill-tests. Deal mode starts from the bank instead: deal a hand of atoms, lenses or moves, both write rough ideas from it, then read a few together (\"deal\", \"chia bài\", \"list some atoms and let's make ideas\"). Use after a co-read or brief, when Sam brings a seed or hunch, asks what to build or try next from a source, or asks whether an atom from one field could work in another. Not for reading or explaining a source (co-read) or finding sources (idea-scout)."
 ---
 
 # Idea forge
@@ -91,6 +91,38 @@ stuck in its default.
 4. Run it. For paper code use `paper-replicate`; for GPU work check the home
    server's load first (`ssh me.ubuntu.home nvidia-smi`, `tmux ls`).
 5. Report the real number against the criterion, including a miss.
+
+## Deal mode
+
+A second way in, from the bank instead of a card. Ideas here need not be good:
+they are material to read and sharpen together. Goal (B) carries the weight, so
+no novelty search and no kill-test unless Sam asks for one on a kept idea.
+
+1. **Menu.** Run `idea_deal.py <bank> menu` (in `idea-bank/scripts`) and show
+   the kinds with their real pool sizes: `role` (same job, other fields), `lens`
+   (one lens over atoms from fields it has not seen), `gap` (an atom and a field
+   it has not reached), `pair` (two atoms with no shared field), `move` (replay
+   a past move on other cards). Sam picks the kind, `x` (items dealt) and `y`
+   (ideas each), or says "you pick".
+2. **Deal.** Run `idea_deal.py <bank> deal <kind> -x <x>`. Show the hand as is,
+   with its seed.
+3. **Sealed ideas, both sides.** Claude writes its `y` ideas into the session
+   file first and does not show them. Sam writes his, as rough as he likes.
+   Then both lists are shown side by side. Neither goes first in the chat, so
+   neither anchors the other. If Sam asks to see Claude's first, show them and
+   log `claude-first` in the Skips column.
+   Each idea is one line of recipe (which item, which operator, which role) plus
+   "why it might work" and "what would kill it", one line each. Mark Claude's
+   reasons `(inferred)`.
+4. **Read together.** Sam picks how many to read, `y` or fewer, from either
+   list. For each one: both suggest one change to it (Sam first), then Sam
+   marks keep / kill / later with a reason. Claude argues for or against with
+   reasons, once, as a peer.
+5. **Write back.** The session is a Reading with `mode: deal` and a `deal`
+   block (kind, seed, x, items). All ideas go in `# Mutations` with origin `sam`
+   or `claude` and Sam's verdict; ideas nobody read stay there unmarked. A kept
+   idea Sam wants to pursue goes through the normal session (steps 3 and 6)
+   later. Add a `deal` row to `me/progress.md`.
 
 ## Writing back
 
