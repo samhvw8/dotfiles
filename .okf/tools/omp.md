@@ -5,7 +5,7 @@ description: "Which parts of ~/.omp/agent live in this repository, which ccp wri
 resource: https://github.com/samhvw8/dotfiles/tree/main/home/.omp/agent
 tags: [omp, ccp, agents, hooks]
 status: stable
-generated: { by: google-antigravity/gemini-4-argon, at: 2026-10-24T05:15:00Z }
+generated: { by: google-antigravity/gemini-4-argon, at: 2026-11-01T04:10:00Z }
 sources:
   - id: omp-dir
     resource: https://github.com/samhvw8/dotfiles/tree/main/home/.omp/agent
@@ -25,7 +25,7 @@ sources:
 | Path | Owner |
 |------|-------|
 | `config.yml` | This repository — model roles, presets, subagent model routing (`task.agentModelOverrides`), and `skills.ignoredSkills`[^omp-dir] |
-| `models.yml` | This repository — OpenRouter provider routing and Google Antigravity custom model definitions[^omp-dir] |
+| `models.yml` | This repository — OpenRouter provider routing and custom provider/model definitions (such as `tokenharbor`)[^omp-dir] |
 | `extensions/codegraph-remind.ts` | This repository — omp port of the Claude Code `codegraph-remind` hook[^omp-dir] |
 | `extensions/cost-remind.ts` | This repository — omp port of the Claude Code `cost-remind` hook[^omp-dir] |
 | `extensions/dge-guard.ts` | This repository — omp port of the Claude Code `session-start` `<dge_loop>` rule[^omp-dir] |

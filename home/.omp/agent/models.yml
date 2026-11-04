@@ -31,3 +31,20 @@ providers:
             order: [z-ai, gmicloud, novita, reka]
             only: [z-ai, gmicloud, novita, reka]
             allow_fallbacks: true
+
+  tokenharbor:
+    baseUrl: https://tokenharbor.ai/v1
+    api: openai-completions
+    apiKey: '!node -e "const k=process.env.TOKENHARBOR_API_KEY;if(!k)process.exit(1);process.stdout.write(k)"'
+    models:
+      - id: deepseek-v4.1-flash:free
+        name: DeepSeek V4.1 Flash
+        reasoning: true
+        input: [text]
+        contextWindow: 200000
+        maxTokens: 8192
+        cost:
+          input: 0
+          output: 0
+          cacheRead: 0
+          cacheWrite: 0
