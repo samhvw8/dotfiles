@@ -10,6 +10,9 @@ commit = '798c4235ebff03d5c45e3c8affdf5e9d18f9dfa7'
 [sources.'anthropics/skills']
 commit = 'dbd4588f9e1033efb41dad4bef2f7947c8993d44'
 
+[sources.'elayadesign/ai-design-skills']
+commit = '456d9e0d3e2d84c748bb143c6ca3d90c45e16213'
+
 [sources.'morluto/rea']
 commit = 'd0067ba34a39ea47dd7e11bb2e6169bc0938cc3f'
 

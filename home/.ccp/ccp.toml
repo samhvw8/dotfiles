@@ -26,6 +26,14 @@ path = 'sources/anthropics--skills'
 ref = 'main'
 installed = ['skills/frontend-design']
 
+[sources.'elayadesign/ai-design-skills']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/elayadesign/ai-design-skills.git'
+path = 'sources/elayadesign--ai-design-skills'
+ref = 'main'
+installed = ['skills/landing-page-design']
+
 [sources.'morluto/rea']
 registry = 'github'
 provider = 'git'
