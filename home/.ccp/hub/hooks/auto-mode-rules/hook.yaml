@@ -1,0 +1,5 @@
+name: auto-mode-rules
+type: UserPromptSubmit
+timeout: 5
+command: auto-mode-rules.sh
+interpreter: bash
