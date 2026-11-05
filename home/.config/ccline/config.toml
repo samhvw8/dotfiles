@@ -1,0 +1,27 @@
+# ccline (CCometixLine) status line, pinned in mise/config.toml.
+# Claude Code runs it with CCLINE_HOME=~/.config/ccline (see settings.json).
+# Saving from `ccline -c` replaces this symlink with a plain file: copy it back
+# to ~/.dotfiles/home/.config/ccline/config.toml, then run `mise dot apply`.
+palette = "terminal"
+skin = "plain"
+glyphs = "unicode"
+separator = " | "
+
+# Upgrades go through mise; no background curl to npm/npmmirror/GitHub.
+[update]
+check = false
+
+[[line]]
+left = [
+  "model",
+  { metric = "dir", icon_color = "bright_yellow" },
+  "git",
+  { metric = "context", widget = "text", format = "{pct}%[ · {tokens} tokens]" },
+  "cache",
+]
+right = ["cost"]
+
+# quota.5h / quota.7d: two-row pace bar. Top row = quota used,
+# bottom row = share of the window already elapsed.
+[[line]]
+left = [{ metric = "quota.5h", cells = 10 }, { metric = "quota.7d", cells = 10 }, "quota.eta"]

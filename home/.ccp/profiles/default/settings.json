@@ -173,7 +173,7 @@
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
   "statusLine": {
-    "command": "node $(ls -td $HOME/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js",
+    "command": "CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/installs/github-haleclipse-c-cometix-line/global/ccline",
     "type": "command"
   },
   "switchModelsOnFlag": true,
