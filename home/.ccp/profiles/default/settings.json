@@ -36,7 +36,6 @@
   },
   "effortLevel": "xhigh",
   "enabledPlugins": {
-    "claude-hud@claude-hud": true,
     "code-modernization@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true
@@ -48,14 +47,6 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
     "MEDIASIFT_ON": "me.ubuntu.home"
-  },
-  "extraKnownMarketplaces": {
-    "claude-hud": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/jarrodwatts/claude-hud.git"
-      }
-    }
   },
   "hooks": {
     "SessionStart": [
