@@ -4,7 +4,7 @@ title: "Keep ccp hub items"
 description: "Which parts of ~/.ccp live in the repository and how to store hub items created by hand."
 tags: [ccp, claude-code]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-10-21T10:30:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-05T04:45:00Z }
 sources:
   - id: check
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/dot-check.py
@@ -31,6 +31,18 @@ mise run dot:save
 ```
 
 `ccp bootstrap --push` wrote to chezmoi and no longer applies.
+
+# A rule for Claude Code only
+
+Every file in a profile's `rules/` also reaches omp: `ccp omp sync` copies all of them into
+`~/.omp/agent/RULES.md`, by a ccp decision. Hooks never go to omp or opencode, so a Claude-only
+rule goes in a hook that prints the text as `additionalContext`. Example:
+`hub/hooks/auto-mode-rules` (UserPromptSubmit, only while `permission_mode` is `auto`).
+
+If `mise run dot:add` stops with "Permission denied" after it moved and staged the files, make
+the links back by hand: a real folder under `~/.ccp/hub/hooks/<name>/` with one symlink per file
+into `home/.ccp/hub/hooks/<name>/`, the same layout as the other hooks. Then
+`ccp link default hooks/<name>`.
 
 # `~/.claude`
 
