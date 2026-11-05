@@ -2,6 +2,8 @@
 # Claude Code runs it with CCLINE_HOME=~/.config/ccline (see settings.json).
 # Saving from `ccline -c` replaces this symlink with a plain file: copy it back
 # to ~/.dotfiles/home/.config/ccline/config.toml, then run `mise dot apply`.
+# Metrics that need the companion mod (timing.*, activity.*, context.breakdown)
+# are left out on purpose: the mod is not installed.
 palette = "terminal"
 skin = "plain"
 glyphs = "unicode"
@@ -11,17 +13,39 @@ separator = " | "
 [update]
 check = false
 
+# 1. Who: model + effort, output style, session name; session clock on the right.
+[[line]]
+left = ["model", "output_style", { metric = "session_name", options = { max_len = 40 } }]
+right = ["duration", "cc_version"]
+
+# 2. Where: directory, repo, branch/status, worktree, PR, lines changed.
 [[line]]
 left = [
-  "model",
   { metric = "dir", icon_color = "bright_yellow" },
+  "repo",
   "git",
-  { metric = "context", widget = "text", format = "{pct}%[ · {tokens} tokens]" },
+  "worktree",
+  "pr",
+  "lines",
+]
+
+# 3. Context and money: context bar, growth per turn, room before compaction,
+#    prompt cache; spend this session, per hour and today.
+[[line]]
+left = [
+  { metric = "context", cells = 12, format = "{pct}%[ · {tokens}/{window}][ · {left} left]" },
+  "context.trend",
+  "context.to_compact",
   "cache",
 ]
-right = ["cost"]
+right = ["cost", "cost.rate", "cost.today"]
 
-# quota.5h / quota.7d: two-row pace bar. Top row = quota used,
-# bottom row = share of the window already elapsed.
+# 4. Rate limits. Each cell's top half = quota used, bottom half = time elapsed;
+#    the dark bottom cells on the right = time left until reset.
+#    The arrow after the text: ⇡ ahead of the clock (bad), ⇣ behind (good).
 [[line]]
-left = [{ metric = "quota.5h", cells = 10 }, { metric = "quota.7d", cells = 10 }, "quota.eta"]
+left = [
+  { metric = "quota.5h", cells = 12, format = "5h {pct}%[ · resets in {left}][ at {reset}]" },
+  { metric = "quota.7d", cells = 12, format = "7d {pct}%[ · resets in {left}][ at {reset}]" },
+  "quota.eta",
+]
