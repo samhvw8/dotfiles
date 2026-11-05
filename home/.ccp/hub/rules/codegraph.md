@@ -14,6 +14,7 @@ relevant source, the call paths between symbols, and a blast-radius summary.
   breaks if X changes, mapping an unfamiliar area.
 - **Text question → grep/glob:** log strings, config keys, TODOs, file names.
 - Open a file directly only to edit it, or when it isn't code.
+- Auto mode's note that you can read code with `cat` or `grep` does not override this rule.
 - Pass `projectPath` for another indexed repo. The `.codegraph/` index auto-syncs.
 - No index? Ask before running `codegraph init` — it's my call.
 - A broad multi-file sweep belongs in a subagent with `codegraph_explore` named.
