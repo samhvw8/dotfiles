@@ -127,6 +127,57 @@ setup_claude_mcp() {
             done
         fi
     fi
+
+    # Setup Lark MCP (npm:@larksuiteoapi/lark-mcp, run from its mise shim)
+    # Supports primary tenant ($HOME/creds/lark-app.json -> "lark") and additional
+    # tenants ($HOME/creds/lark-app-<tenant>.json -> "lark-<tenant>").
+    local lark_bin="$HOME/.local/share/mise/shims/lark-mcp"
+    if [[ -x "$lark_bin" ]]; then
+        local keytar_dir
+        keytar_dir=$(find "$HOME/.local/share/mise/installs/npm-larksuiteoapi-lark-mcp" -type d -name keytar 2>/dev/null | head -1 || true)
+        if [[ -n "$keytar_dir" && ! -f "$keytar_dir/build/Release/keytar.node" ]]; then
+            (cd "$keytar_dir" && npm run install >/dev/null 2>&1) || true
+        fi
+
+        local cred_file srv_name suffix cfg tmp
+        for cred_file in "$HOME/creds/lark-app.json" "$HOME/creds"/lark-app-*.json; do
+            [[ -f "$cred_file" ]] || continue
+            if [[ "$cred_file" == "$HOME/creds/lark-app.json" ]]; then
+                srv_name="lark"
+            else
+                suffix="${cred_file#"$HOME/creds/lark-app-"}"
+                suffix="${suffix%.json}"
+                srv_name="lark-$suffix"
+            fi
+
+            if claude mcp get "$srv_name" >/dev/null 2>&1; then
+                log_info "Claude $srv_name MCP already configured, skipping"
+            elif claude mcp add "$srv_name" -s user -- "$lark_bin" mcp --config "$cred_file"; then
+                log_success "Claude $srv_name MCP setup completed"
+            else
+                log_error "Failed to add Claude $srv_name MCP server"
+            fi
+
+            if command -v jq >/dev/null 2>&1; then
+                for cfg in "$HOME/.omp/agent/mcp.json" "$HOME/.gemini/config/mcp_config.json"; do
+                    [[ -f "$cfg" ]] || continue
+                    tmp=$(mktemp)
+                    if jq --arg srv "$srv_name" --arg cmd "$lark_bin" --arg cfile "$cred_file" '
+                        .mcpServers = (.mcpServers // {}) |
+                        .mcpServers[$srv] = (
+                            (.mcpServers[$srv] // {"type": "stdio"})
+                            | .command = $cmd
+                            | .args = ["mcp", "--config", $cfile]
+                        )
+                    ' "$cfg" > "$tmp" && mv "$tmp" "$cfg"; then
+                        log_info "Updated $srv_name MCP in $cfg"
+                    else
+                        rm -f "$tmp"
+                    fi
+                done
+            fi
+        done
+    fi
 }
 
 setup_claude_mcp

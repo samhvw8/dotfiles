@@ -76,6 +76,8 @@ lima = "latest"
 "pipx:osxphotos" = { version = "latest", uvx_args = "--python 3.12" }
 "pipx:edge-tts" = "7.3.1"
 "github:Haleclipse/CCometixLine" = "2.0.1"  # ccline status line; pinned on purpose (one-maintainer project). 2.0.1 binary = npm @cometix/ccline-darwin-arm64 (SLSA provenance verified 2026-11-05)
+"npm:@larksuiteoapi/lark-mcp" = "latest"
+"github:larksuite/cli" = { version = "latest", minimum_release_age = "0s" }
 
 # Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
 [dotfiles]
