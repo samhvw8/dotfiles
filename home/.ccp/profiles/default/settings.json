@@ -153,6 +153,7 @@
       "mcp__parallax",
       "mcp__codegraph",
       "mcp__lark",
+      "mcp__lark-1hub",
       "Bash(codegraph:*)",
       "Bash(lark-cli:*)",
       "Bash(art-put:*)"
