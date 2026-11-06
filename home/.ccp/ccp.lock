@@ -17,7 +17,7 @@ commit = '456d9e0d3e2d84c748bb143c6ca3d90c45e16213'
 commit = 'd0067ba34a39ea47dd7e11bb2e6169bc0938cc3f'
 
 [sources.'pbakaus/impeccable']
-commit = 'dad8dbb3aac21ad1fa236c110315ef4abece23e8'
+commit = 'c3bb418ee38ee49a6b999b7752c1368f3123a2bd'
 
 [sources.'samhvw8/claude-code-profile']
 commit = '3846bdfc263d7b56b18ec3a26c31bd05ee5cda41'
