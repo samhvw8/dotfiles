@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-07
+* **Update**: `idea-bank` schema and `idea_index.py` gain `parts` (split / bind) and `links` (connect without merging, optional `via`) on any atom, lens or card. Depth is computed from the parts graph, never stored, so a unit split further later needs no relabelling; the index reports `parts`, `part_of`, `depth`, `part_cycles` and `unit_links`, and `--write` shows them in `# Related` on both ends. 6 new tests (52 pass). Runs: nothing new.
 * **Update**: `idea-bank` rule "Best effort, then Sam corrects" (`home/.ccp/hub/skills/idea-bank/SKILL.md`): Claude splits, links, merges and names bank units without waiting for a perfect rule, marks doubtful calls `(inferred)`, and records Sam's corrections so the next pass learns from them. Runs: nothing new.
 * **Addition**: global rule `direction-work` (`home/.ccp/hub/rules/direction-work.md`), linked to the `default` profile and synced to `omp` (not `opencode`: `ccp opencode sync` mirrors no rules). Diverge and iterate to find a direction, then commit and iterate to optimise; build only after the user says go. Runs: one more rule loaded every session (~350 tokens).
 * **Addition**: local hub skill `attention-architecture` (`home/.ccp/hub/skills/attention-architecture/SKILL.md` and `references/media-playbooks.md`), linked to the `default` profile and synced to `omp` and `opencode`. See [ccp hub items](/workflows/ccp-hub-items.md).
@@ -181,3 +182,5 @@
 * **Update**: Rewrote [shell setup](/tools/shell.md) and [zsh startup choices](/decisions/zsh-startup.md) for the plugin cleanup (annexes, OMZ, forgit, zsh-completions and you-should-use removed; completions generated per tool version) and the new startup measurements (0.247s to 0.177s).
 * **Creation**: Added [Switch zsh plugins and zi to the forks, or roll back](/workflows/zsh-plugin-forks.md), covering the samhvw8 forks of fzf-tab, F-Sy-H, zsh-autosuggestions and zi.
 * **Creation**: Wrote the Dotfiles bundle: [overview](/overview.md), architecture, workflows, decisions and tools concepts, derived from the repository files and the chezmoi-to-mise migration (2026-09-17 to 2026-09-24).
+
+- Upgraded `home/.ccp/hub/skills/attention-architecture/SKILL.md` and `references/media-playbooks.md` with the 12 empirical hook archetypes (`H01..H12`), 4 refuted copywriting myths (`?`, `!`, `<8` words, `ALL-CAPS`), Aviation FMEA table, and CLI scorer integration from 45,246 randomized A/B packages.

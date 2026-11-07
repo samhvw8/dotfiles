@@ -195,3 +195,68 @@ def test_link_prefix_inside_and_outside_bundle(tmp_path):
     (tmp_path / "ideas").mkdir()
     assert ix_mod.link_prefix(tmp_path / "ideas") == "/ideas"
     assert ix_mod.link_prefix(tmp_path) == ""
+
+
+# --- parts (split / bind) and links (connect without merging) ---
+
+def _atom(root, slug, extra=""):
+    (root / "atoms" / f"{slug}.md").write_text(
+        f"---\ntype: Atom\ntitle: {slug}\ndescription: d\nroles: [r-{slug}]\nfields: []\n{extra}---\n\n# Signature\n- **Input:** x\n")
+
+
+@pytest.fixture
+def layered(bank_copy):
+    # string-c -> quark-b -> sparse-overcomplete-code; quark-a -> sparse-overcomplete-code
+    _atom(bank_copy, "string-c")
+    _atom(bank_copy, "quark-b", "parts: [string-c]\n")
+    _atom(bank_copy, "quark-a")
+    p = bank_copy / "atoms" / "sparse-overcomplete-code.md"
+    p.write_text(p.read_text().replace("type: Atom\n", "type: Atom\nparts: [quark-a, quark-b]\n"
+                                       "links:\n- {to: fixed-basis-transform, via: quark-a, note: same split}\n", 1))
+    return bank_copy
+
+
+def test_parts_depth_is_relative(layered):
+    ix = ix_mod.build(ix_mod.load(layered))
+    assert ix["parts"]["atom:sparse-overcomplete-code"] == ["atom:quark-a", "atom:quark-b"]
+    assert ix["part_of"]["atom:string-c"] == ["atom:quark-b"]
+    # a part can have parts of its own: depth is computed, never stored
+    assert ix["depth"] == {"atom:string-c": 0, "atom:quark-a": 0, "atom:quark-b": 1, "atom:sparse-overcomplete-code": 2}
+    assert ix["part_cycles"] == []
+
+
+def test_part_refs_resolve_across_types(layered):
+    _atom(layered, "pattern-x", "parts: ['card:jpeg', quark-a]\n")
+    ix = ix_mod.build(ix_mod.load(layered))
+    assert ix["parts"]["atom:pattern-x"] == ["card:jpeg", "atom:quark-a"]
+
+
+def test_broken_part_and_via_are_reported(layered):
+    _atom(layered, "pattern-y", "parts: [ghost]\nlinks: [{to: quark-a, via: nowhere}]\n")
+    ix = ix_mod.build(ix_mod.load(layered))
+    assert {"from": "atom:pattern-y", "to": "part:ghost"} in ix["broken_links"]
+    assert {"from": "atom:pattern-y", "to": "via:nowhere"} in ix["broken_links"]
+
+
+def test_part_cycle_reported_not_crashing(layered):
+    p = layered / "atoms" / "string-c.md"
+    p.write_text(p.read_text().replace("fields: []\n", "fields: []\nparts: [quark-b]\n"))
+    ix = ix_mod.build(ix_mod.load(layered))
+    assert ix["part_cycles"] and set(ix["part_cycles"][0]) == {"atom:quark-b", "atom:string-c"}
+
+
+def test_unit_links_both_directions(layered):
+    ix = ix_mod.build(ix_mod.load(layered))
+    assert ix["unit_links"] == [{"a": "atom:sparse-overcomplete-code", "b": "atom:fixed-basis-transform",
+                                 "via": "atom:quark-a", "note": "same split"}]
+
+
+def test_views_show_parts_part_of_and_links(layered):
+    ix_mod.main([str(layered), "--write"])
+    whole = (layered / "atoms" / "sparse-overcomplete-code.md").read_text()
+    assert "- Part [quark-a](/atoms/quark-a.md)." in whole
+    assert "- Linked to [Fixed-basis transform" in whole and "via [quark-a](/atoms/quark-a.md): same split." in whole
+    other = (layered / "atoms" / "fixed-basis-transform.md").read_text()
+    assert "- Linked to [Sparse" in other
+    mid = (layered / "atoms" / "quark-b.md").read_text()
+    assert "- Part of [" in mid and "- Part [string-c](/atoms/string-c.md)." in mid

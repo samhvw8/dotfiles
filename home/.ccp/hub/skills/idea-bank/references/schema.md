@@ -223,6 +223,33 @@ list in the body, not frontmatter, followed by the structure in words:
 An atom written with a frontmatter `signature:` still parses; `--write` moves
 it into this list.
 
+## Parts and links (any atom, lens or card)
+
+A unit is whatever can be split, bound or linked: an atom, a lens, a card, or an
+arrangement pattern written as an atom. There are no fixed levels. Split as far as
+you can judge today and keep that layer; a later pass may split a part again, or
+find that an atom is really a whole made of others. Nothing is relabelled or
+moved when that happens: only `parts` grows.
+
+```yaml
+parts: [<slug>, card:<slug>, ...]   # split / bind: this unit is made of these
+links:                               # connect without merging
+  - { to: <slug>, via: <slug>, note: <one line> }
+```
+
+- **Refs:** a bare slug resolves as atom, then lens, then card; write
+  `card:<slug>` or `lens:<slug>` when it must be one of those.
+- **Depth is computed, never stored.** A unit with no `parts` has depth 0; a
+  whole has 1 + its deepest part. The index reports depth, `part_of` (the
+  reverse list) and cycles (an error: a unit cannot contain itself).
+- **Arrangements are units too.** How parts combine (a gate before a loop, a
+  cheap step before a strong check) may be its own atom, listed in `parts` like
+  any other, or named as the `via` of a link.
+- **`links` are one-sided in the file, two-sided in the view.** Write a link
+  once; `--write` shows it on both ends.
+- **Best effort.** A split or link Claude is unsure of still goes in, with the
+  reason marked `(inferred)` in the body. Sam's corrections are recorded there.
+
 ## Lens (`lenses/<slug>.md`)
 
 A view model as a reusable node. It migrates like an atom.

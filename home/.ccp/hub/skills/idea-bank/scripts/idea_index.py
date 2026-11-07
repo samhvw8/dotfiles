@@ -7,7 +7,7 @@
 Usage: uv run idea_index.py <bank-root> [--json out.json] [--suggest-merges] [--write | --check]
 
 Deterministic and offline. Gap candidates are a list for judgement, not findings.
---write regenerates the views made from frontmatter: a `# Related` section in every
+--write regenerates the views made from frontmatter (including `parts` and `links`): a `# Related` section in every
 atom, card, lens and move, and `atoms/index.md`. It also moves a frontmatter
 `signature` into the body. --check exits 1 when any of these is out of date.
 """
@@ -58,6 +58,75 @@ def load(root: Path) -> list[dict]:
     if errors:
         raise SystemExit("idea_index: cannot parse bank:\n  " + "\n  ".join(errors))
     return concepts
+
+
+UNIT_TYPES = {"atom": "Atom", "lens": "Lens", "card": "Idea Card"}  # bare slugs resolve in this order
+
+
+def unit_graph(concepts: list[dict]) -> dict:
+    """`parts` (split / bind) and `links` (connect without merging) across atoms, lenses and cards.
+
+    Depth is relative and computed: a unit with no parts is 0, a whole is 1 + its deepest part.
+    Nothing stores a level name, so a unit split further later needs no relabelling.
+    """
+    live = {f"{k}:{c['slug']}": c for c in concepts for k, t in UNIT_TYPES.items()
+            if c["fm"]["type"] == t and c["fm"].get("status") != "deprecated"}
+
+    def resolve(ref) -> str | None:
+        ref = str(ref)
+        if ":" in ref:
+            return ref if ref in live else None
+        return next((f"{k}:{ref}" for k in UNIT_TYPES if f"{k}:{ref}" in live), None)
+
+    parts: dict[str, list[str]] = {}
+    part_of: dict[str, list[str]] = defaultdict(list)
+    links, broken = [], []
+    for key, c in sorted(live.items()):
+        ps = []
+        for ref in as_list(c["fm"].get("parts")):
+            r = resolve(ref)
+            if r:
+                ps.append(r)
+                part_of[r].append(key)
+            else:
+                broken.append({"from": key, "to": f"part:{ref}"})
+        if ps:
+            parts[key] = ps
+        for l in as_list(c["fm"].get("links")):
+            l = l if isinstance(l, dict) else {"to": l}
+            to = resolve(l.get("to", ""))
+            if not to:
+                broken.append({"from": key, "to": f"link:{l.get('to')}"})
+                continue
+            via = resolve(l["via"]) if l.get("via") else None
+            if l.get("via") and not via:
+                broken.append({"from": key, "to": f"via:{l['via']}"})
+            links.append({"a": key, "b": to, "via": via, "note": l.get("note", "")})
+
+    depth: dict[str, int] = {}
+    cycles: list[list[str]] = []
+    open_: set[str] = set()
+
+    def visit(k: str, stack: list[str]) -> int:
+        if k in depth:
+            return depth[k]
+        if k in open_:
+            cyc = stack[stack.index(k):]
+            if sorted(cyc) not in [sorted(c) for c in cycles]:
+                cycles.append(cyc)
+            return 0
+        open_.add(k)
+        stack.append(k)
+        d = 1 + max((visit(p, stack) for p in parts.get(k, [])), default=-1)
+        stack.pop()
+        open_.discard(k)
+        depth[k] = d
+        return d
+
+    for k in sorted(set(parts) | set(part_of)):
+        visit(k, [])
+    return {"parts": parts, "part_of": {k: sorted(v) for k, v in sorted(part_of.items())},
+            "depth": dict(sorted(depth.items())), "part_cycles": cycles, "unit_links": links, "broken": broken}
 
 
 def atom_fields(fm: dict, moved: dict[str, set[str]] | None = None, slug: str | None = None) -> set[str]:
@@ -253,8 +322,16 @@ def build(concepts: list[dict]) -> dict:
         "owned_share": round(sum(1 for k, v in known.items() if v == "owned" and k in atoms) / len(atoms), 3) if atoms else 0.0,
     }
 
+    g = unit_graph(concepts)
+    broken += g["broken"]
+
     return {
         "counts": {t: len(v) for t, v in sorted(by_type.items())},
+        "parts": g["parts"],
+        "part_of": g["part_of"],
+        "depth": g["depth"],
+        "part_cycles": g["part_cycles"],
+        "unit_links": g["unit_links"],
         "fields": sorted({f for a in atoms for f in fields_of(a)} | {fm.get("field") for fm in cards.values() if fm.get("field")}),
         "links": links,
         "broken_links": broken,
@@ -284,6 +361,12 @@ def render(ix: dict) -> str:
         [f"- {g['atom']} -> {g['field']} (card {g['card']}, roles {', '.join(g['roles'])})" for g in ix["migration_gap_candidates"]] or ["- none"]) + [""]
     out += ["## Migrate-atom moves"] + ([f"- {m['move']}: {m['atom']} {m['from_field']} -> {m['to_field']}" for m in ix["migrate_atom_moves"]] or ["- none"]) + [""]
     out += ["## Low-confidence matches (review)"] + ([f"- {m['atom']} in {m['field']} ({m['source']})" for m in ix["low_confidence_matches"]] or ["- none"]) + [""]
+    deep = sorted(ix["depth"].items(), key=lambda kv: (-kv[1], kv[0]))
+    out += ["## Parts (depth is relative: 0 = no parts yet)"] + (
+        [f"- {k}: depth {d}, {len(ix['parts'].get(k, []))} parts, part of {len(ix['part_of'].get(k, []))}" for k, d in deep[:15]]
+        + ([f"- ... {len(deep) - 15} more"] if len(deep) > 15 else []) or ["- none"]) + [""]
+    out += ["## Part cycles (fix: a unit cannot contain itself)"] + ([f"- {' -> '.join(c)}" for c in ix["part_cycles"]] or ["- none"]) + [""]
+    out += [f"## Unit links: {len(ix['unit_links'])}", ""]
     out += ["## Constraints of the time"] + ([f"- {c}: {', '.join(cs)}" for c, cs in ix["constraints"].items()] or ["- none"]) + [""]
     out += ["## Evidence limits"] + ([f"- {c}: {', '.join(cs)}" for c, cs in ix["evidence_limits"].items()] or ["- none"]) + [""]
     out += ["## Level-3 hints per reading"] + ([f"- {h['reading']} ({h['mode']}): {h['level3_hints']} of {h['notes']} notes" for h in ix["reading_hints"]] or ["- none"]) + [""]
@@ -403,6 +486,25 @@ def views(concepts: list[dict], prefix: str) -> dict[str, str]:
             row = f"- {label} {l}." if l else None
             if row and row not in lines:
                 lines.append(row)
+
+    g = unit_graph(concepts)
+    kt = {k: t for k, t in UNIT_TYPES.items()}
+
+    def at(key: str) -> str:
+        k, slug = key.split(":", 1)
+        return f"{DIRS[kt[k]]}/{slug}"
+
+    def lk(key: str) -> str:
+        k, slug = key.split(":", 1)
+        return ln(kt[k], slug) or f"`{slug}`"
+    for key, ps in g["parts"].items():
+        out[at(key)] += [f"- Part {lk(p)}." for p in ps]
+    for key, wholes in g["part_of"].items():
+        out[at(key)] += [f"- Part of {lk(w)}." for w in wholes]
+    for l in g["unit_links"]:
+        tail = (f" via {lk(l['via'])}" if l["via"] else "") + (f": {l['note']}" if l["note"] else "") + "."
+        out[at(l["a"])].append(f"- Linked to {lk(l['b'])}{tail}")
+        out[at(l["b"])].append(f"- Linked to {lk(l['a'])}{tail}")
     return {k: "\n".join(v) for k, v in out.items()}
 
 
