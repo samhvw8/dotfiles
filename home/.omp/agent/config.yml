@@ -1,6 +1,6 @@
 browser:
   relay: true
-setupVersion: 2
+setupVersion: 3
 modelRoles:
   slow: google-antigravity/claude-opus-5-5:medium
   plan: google-antigravity/claude-opus-5-5-high:high
