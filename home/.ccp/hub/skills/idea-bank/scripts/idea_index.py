@@ -79,15 +79,20 @@ def unit_graph(concepts: list[dict]) -> dict:
         return next((f"{k}:{ref}" for k in UNIT_TYPES if f"{k}:{ref}" in live), None)
 
     parts: dict[str, list[str]] = {}
+    part_how: dict[str, dict[str, str]] = {}  # whole -> part -> "how: note", for parts that say how they were found
     part_of: dict[str, list[str]] = defaultdict(list)
     links, broken = [], []
     for key, c in sorted(live.items()):
         ps = []
-        for ref in as_list(c["fm"].get("parts")):
+        for entry in as_list(c["fm"].get("parts")):
+            entry = entry if isinstance(entry, dict) else {"to": entry}
+            ref = entry.get("to", "")
             r = resolve(ref)
             if r:
                 ps.append(r)
                 part_of[r].append(key)
+                if entry.get("how"):
+                    part_how.setdefault(key, {})[r] = str(entry["how"]) + (f": {entry['note']}" if entry.get("note") else "")
             else:
                 broken.append({"from": key, "to": f"part:{ref}"})
         if ps:
@@ -125,7 +130,7 @@ def unit_graph(concepts: list[dict]) -> dict:
 
     for k in sorted(set(parts) | set(part_of)):
         visit(k, [])
-    return {"parts": parts, "part_of": {k: sorted(v) for k, v in sorted(part_of.items())},
+    return {"parts": parts, "part_how": part_how, "part_of": {k: sorted(v) for k, v in sorted(part_of.items())},
             "depth": dict(sorted(depth.items())), "part_cycles": cycles, "unit_links": links, "broken": broken}
 
 
@@ -328,6 +333,7 @@ def build(concepts: list[dict]) -> dict:
     return {
         "counts": {t: len(v) for t, v in sorted(by_type.items())},
         "parts": g["parts"],
+        "part_how": {w: {p: h.split(":", 1)[0] for p, h in d.items()} for w, d in g["part_how"].items()},
         "part_of": g["part_of"],
         "depth": g["depth"],
         "part_cycles": g["part_cycles"],
@@ -498,7 +504,8 @@ def views(concepts: list[dict], prefix: str) -> dict[str, str]:
         k, slug = key.split(":", 1)
         return ln(kt[k], slug) or f"`{slug}`"
     for key, ps in g["parts"].items():
-        out[at(key)] += [f"- Part {lk(p)}." for p in ps]
+        how = g["part_how"].get(key, {})
+        out[at(key)] += [f"- Part {lk(p)}" + (f" ({how[p]})" if p in how else "") + "." for p in ps]
     for key, wholes in g["part_of"].items():
         out[at(key)] += [f"- Part of {lk(w)}." for w in wholes]
     for l in g["unit_links"]:

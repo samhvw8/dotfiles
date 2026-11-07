@@ -260,3 +260,14 @@ def test_views_show_parts_part_of_and_links(layered):
     assert "- Linked to [Sparse" in other
     mid = (layered / "atoms" / "quark-b.md").read_text()
     assert "- Part of [" in mid and "- Part [string-c](/atoms/string-c.md)." in mid
+
+
+def test_part_entries_carry_how_in_frontmatter(layered):
+    _atom(layered, "pattern-z", "parts:\n- quark-a\n- {to: quark-b, how: judge, note: sits inside}\n")
+    ix = ix_mod.build(ix_mod.load(layered))
+    assert ix["parts"]["atom:pattern-z"] == ["atom:quark-a", "atom:quark-b"]
+    assert ix["part_how"]["atom:pattern-z"] == {"atom:quark-b": "judge"}
+    ix_mod.main([str(layered), "--write"])
+    text = (layered / "atoms" / "pattern-z.md").read_text()
+    assert "- Part [quark-a](/atoms/quark-a.md)." in text
+    assert "- Part [quark-b](/atoms/quark-b.md) (judge: sits inside)." in text

@@ -232,7 +232,9 @@ find that an atom is really a whole made of others. Nothing is relabelled or
 moved when that happens: only `parts` grows.
 
 ```yaml
-parts: [<slug>, card:<slug>, ...]   # split / bind: this unit is made of these
+parts:                               # split / bind: this unit is made of these
+  - <slug>                           # a part you are sure of
+  - { to: <slug>, how: split | judge | sam, note: <optional> }   # how it was found
 links:                               # connect without merging
   - { to: <slug>, via: <slug>, note: <one line> }
 ```
@@ -247,8 +249,12 @@ links:                               # connect without merging
   any other, or named as the `via` of a link.
 - **`links` are one-sided in the file, two-sided in the view.** Write a link
   once; `--write` shows it on both ends.
-- **Best effort.** A split or link Claude is unsure of still goes in, with the
-  reason marked `(inferred)` in the body. Sam's corrections are recorded there.
+- **Provenance lives in the file, never in a side file.** `how: split` came from
+  splitting this unit, `how: judge` from an LLM judge saying this unit contains
+  the part, `how: sam` from Sam. The view prints it next to the link.
+- **Best effort.** A split or link Claude is unsure of still goes in, with its
+  `how`. When Sam corrects one, change the entry (or delete it) and set
+  `how: sam`, so the next pass starts from his call.
 
 ## Lens (`lenses/<slug>.md`)
 

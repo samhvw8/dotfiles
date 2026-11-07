@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-07
+* **Update**: `idea-bank` `parts` entries may be `{to, how, note}` (`how: split | judge | sam`), so the provenance of each part lives in the unit's own frontmatter instead of a side JSON file; `# Related` prints it. 53 tests pass. Runs: nothing new.
 * **Update**: `idea-bank` schema and `idea_index.py` gain `parts` (split / bind) and `links` (connect without merging, optional `via`) on any atom, lens or card. Depth is computed from the parts graph, never stored, so a unit split further later needs no relabelling; the index reports `parts`, `part_of`, `depth`, `part_cycles` and `unit_links`, and `--write` shows them in `# Related` on both ends. 6 new tests (52 pass). Runs: nothing new.
 * **Update**: `idea-bank` rule "Best effort, then Sam corrects" (`home/.ccp/hub/skills/idea-bank/SKILL.md`): Claude splits, links, merges and names bank units without waiting for a perfect rule, marks doubtful calls `(inferred)`, and records Sam's corrections so the next pass learns from them. Runs: nothing new.
 * **Addition**: global rule `direction-work` (`home/.ccp/hub/rules/direction-work.md`), linked to the `default` profile and synced to `omp` (not `opencode`: `ccp opencode sync` mirrors no rules). Diverge and iterate to find a direction, then commit and iterate to optimise; build only after the user says go. Runs: one more rule loaded every session (~350 tokens).
