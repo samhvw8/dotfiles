@@ -55,6 +55,11 @@ OKF bundle: load the `okf` skill before restructuring it.
   pointer next to its atoms. Summaries drop nuance that later retrieval needs.
 - **Name atoms by role, not by identity.** "filters bad samples", not "reward
   model". Substitution and migration only work at the role level.
+- **Best effort, then Sam corrects.** Splitting, linking, merging and naming
+  units is Claude's work, done as far as Claude can judge, not held back for a
+  perfect rule. Mark a doubtful call `(inferred)` and make it anyway. Record
+  each correction Sam makes (in the unit's file, and as a row in
+  `me/progress.md`), so the next pass starts from it.
 - **State is data, not config.** Levels, budgets and ratios live in `me/`.
   No skill hardcodes a topic level or a number Sam can change at runtime.
 

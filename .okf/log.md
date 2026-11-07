@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-07
+* **Update**: `idea-bank` rule "Best effort, then Sam corrects" (`home/.ccp/hub/skills/idea-bank/SKILL.md`): Claude splits, links, merges and names bank units without waiting for a perfect rule, marks doubtful calls `(inferred)`, and records Sam's corrections so the next pass learns from them. Runs: nothing new.
 * **Addition**: global rule `direction-work` (`home/.ccp/hub/rules/direction-work.md`), linked to the `default` profile and synced to `omp` (not `opencode`: `ccp opencode sync` mirrors no rules). Diverge and iterate to find a direction, then commit and iterate to optimise; build only after the user says go. Runs: one more rule loaded every session (~350 tokens).
 * **Addition**: local hub skill `attention-architecture` (`home/.ccp/hub/skills/attention-architecture/SKILL.md` and `references/media-playbooks.md`), linked to the `default` profile and synced to `omp` and `opencode`. See [ccp hub items](/workflows/ccp-hub-items.md).
 
