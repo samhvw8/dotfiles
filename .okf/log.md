@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-07
+* **Addition**: local hub skill `attention-architecture` (`home/.ccp/hub/skills/attention-architecture/SKILL.md` and `references/media-playbooks.md`), linked to the `default` profile and synced to `omp` and `opencode`. See [ccp hub items](/workflows/ccp-hub-items.md).
+
 
 ## 2026-11-06
 * **Removal**: the hub bundle `impeccable` (`home/.ccp/hub/bundles/impeccable/`). It held v3.9.1 copies of the skill and `impeccable-manual-edit-applier` and no hooks, while the source `pbakaus/impeccable` had moved its items under `.claude/` and reached v4.8.0 (locked at c3bb418 in `ccp.lock`). The `default` profile now links `skills/impeccable` and `agents/impeccable-manual-edit-applier.md` as source shadows (`profile.toml`: bundle dropped, agent added), so `ccp source update` keeps them current. The three other v4.8.0 agents (asset-producer, finish-reviewer, documenter) are not linked yet. See [ccp hub items](/workflows/ccp-hub-items.md). Runs: nothing new (same two items, now current).
