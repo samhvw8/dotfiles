@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-07
+* **Addition**: local hub skill `motion-graphics` (`home/.ccp/hub/skills/motion-graphics/SKILL.md` and 5 reference playbooks under `references/`), linked to the `default` profile and synced to `omp` and `opencode`. See [ccp hub items](/workflows/ccp-hub-items.md). Runs: nothing new (loaded on demand when triggered).
 * **Update**: `idea-bank` `parts` entries may be `{to, how, note}` (`how: split | judge | sam`), so the provenance of each part lives in the unit's own frontmatter instead of a side JSON file; `# Related` prints it. 53 tests pass. Runs: nothing new.
 * **Update**: `idea-bank` schema and `idea_index.py` gain `parts` (split / bind) and `links` (connect without merging, optional `via`) on any atom, lens or card. Depth is computed from the parts graph, never stored, so a unit split further later needs no relabelling; the index reports `parts`, `part_of`, `depth`, `part_cycles` and `unit_links`, and `--write` shows them in `# Related` on both ends. 6 new tests (52 pass). Runs: nothing new.
 * **Update**: `idea-bank` rule "Best effort, then Sam corrects" (`home/.ccp/hub/skills/idea-bank/SKILL.md`): Claude splits, links, merges and names bank units without waiting for a perfect rule, marks doubtful calls `(inferred)`, and records Sam's corrections so the next pass learns from them. Runs: nothing new.
