@@ -177,6 +177,12 @@ $$\text{response} = \frac{2\pi}{\sqrt{k / m}}, \qquad \text{dampingFraction } \z
 6. **Solid Drawing & Origin-Aware Scaling (Never `scale(0)`):**
    - Physical objects never materialize from a singularity (`scale(0)`). Start entrances at **`scale(0.92)` to `scale(0.97)`** with `opacity: 0`, and bind `transform-origin` to the causal trigger point ([Emil Kowalski STANDARDS.md](https://raw.githubusercontent.com/emilkowalski/skills/main/skills/review-animations/STANDARDS.md)).
 
+
+7. **2-Bone Analytical IK Joint Polarity & Ground-Locked Gait (Y-Down Screen Space):**
+   - **Y-Down Joint Bend Polarity (`bendDir` Sign Inversion):** In HTML5 Canvas / SVG / screen coordinates (`+x` right, `+y` **down**), a vertical limb pointing from root `(rootX, rootY)` to extremity `(targetX, targetY)` has `baseAngle = atan2(dy, dx) ≈ +π/2`. Adding `+acos(cosAngle1)` (`bendDir = +1`) rotates clockwise toward `+π` ($\cos(\pi/2 + \theta) = -\sin\theta < 0$, placing the mid-joint **left / backward**), whereas `bendDir = -1` rotates counter-clockwise toward `0` ($\cos(\pi/2 - \theta) = +\sin\theta > 0$, placing the mid-joint **right / forward**). Therefore, for a character facing **right (`+x`)**:
+     - **Knees** MUST use **`bendDir = -1`** (anterior/forward bend toward `+x`; flipping to `+1` when facing left `-x`). Using `+1` while moving right bends knees backward like an ostrich and creates a backward-running optical illusion.
+     - **Elbows** MUST use **`bendDir = +1`** (posterior/backward bend toward `-x`; flipping to `-1` when facing left `-x`).
+   - **Ground-Locked Stance Sweep vs. Sinusoidal Moonwalk:** Never drive a walking or running foot's horizontal offset with a pure sine wave `hipX + sin(phase) * R` while `hipX` translates at constant velocity $v_{\text{hip}}$. Because $\frac{d}{dt}\sin(\phi) = 0$ at touchdown and liftoff, the planted foot slides forward along the floor at $+v_{\text{hip}}$ ("moonwalking"). Split each gait cycle $u \in [0, 1)$ into a **swing half-cycle** ($u \in [0, 0.5)$, arched lift from $-R \to +R$) and a **linear stance half-cycle** ($u \in [0.5, 1)$, $y = y_{\text{ground}}$, linear sweep from $+R \to -R$ with $4 f R = v_{\text{hip}}$) so the stance foot remains world-locked on the floor.
 ---
 
 ## 5. Smear Frames & Rotary Shutter Motion Blur

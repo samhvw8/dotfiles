@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-08
+* **Update**: `motion-graphics` (`home/.ccp/hub/skills/motion-graphics/references/physics-timing-and-springs.md`) adds Section 4.7 on 2-bone analytical IK joint polarity in Y-down screen space (`bendDir = -1` for forward-bending knees and `+1` for backward-bending elbows when facing `+x`) and ground-locked linear stance sweep vs. sinusoidal moonwalk gait. See [ccp hub items](/workflows/ccp-hub-items.md). Runs: nothing new.
+
 ## 2026-11-07
 * **Addition**: local hub skill `motion-graphics` (`home/.ccp/hub/skills/motion-graphics/SKILL.md` and 5 reference playbooks under `references/`), linked to the `default` profile and synced to `omp` and `opencode`. See [ccp hub items](/workflows/ccp-hub-items.md). Runs: nothing new (loaded on demand when triggered).
 * **Update**: `idea-bank` `parts` entries may be `{to, how, note}` (`how: split | judge | sam`), so the provenance of each part lives in the unit's own frontmatter instead of a side JSON file; `# Related` prints it. 53 tests pass. Runs: nothing new.

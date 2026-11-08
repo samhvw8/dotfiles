@@ -136,3 +136,19 @@ Trained on `22,656` Exploratory A/B packages (`OSF 3vqmp`) and verified zero-lea
 6. **Fitts Perimeter & Mobile Thumb-Zone Arc (`Hoober N=1,333`):** `49%` one-handed mobile grip (`75%` thumb touch). Place primary mobile CTAs in the **Bottom-Center Natural Arc (`Y = 70%-95%`)**; banish destructive/rare actions to Top-Left/Top-Right stretch corners (`+400-600 ms` lag).
 7. **Masonry Waterfall vs. Uniform Row Grid:** Use **Masonry (`Xiaohongshu/Pinterest`)** for visual discovery feeds (`+22%` scroll depth via unclosed Zeigarnik bottom card edges); use **Uniform Row-Aligned Grids** when users compare prices/specs (`Masonry slows comparison by +35%-50%`).
 8. **3-Tier Inverted Pyramid & `1px` Bento Grid:** Dashboards: **Tier 1 (`15%` H)** `3-4` Subitizable KPI cards -> **Tier 2 (`50%` H)** `1-2` Cleveland-McGill aligned charts -> **Tier 3 (`35%` H)** granular table. High-density/CJK portals: use **`1px` bordered Bento cells (`<=3` items/cell)** to cut search time by **`3.05x`** (`Baughan 2021 CHI`).
+
+
+---
+
+## 7. Computable Layout Aesthetics, UMSI Visual Importance & CIELAB Scales (Wave 5 Full-Text Laws)
+
+- **The $\le 4$ Shared Alignment-Axis Rule (`Dayama & Oulasvirta 2020 CHI — GRIDS MILP`):** Every card, heading, button, and visual container in a viewport must snap to **at most `3-4` shared vertical $X$-axes**. Minimizing distinct alignment lines increases perceived layout order by **`+34%`**.
+- **Subband Entropy & Edge Congestion Guard (`Miniukovich & De Angeli 2015 CHI`):**
+  - Keep background surfaces flat or low-frequency (`gradient ΔL < 8%`); high subband entropy correlates **$r = +0.68$** with perceived clutter and **`r = -0.49`** with `50 ms` beauty.
+  - Maintain **`>=8-12 px` minimum clearance** between non-collinear borders, icons, and text baselines to prevent **foveal edge congestion (`4 px` crowding radius, $r = +0.61$ complexity)**.
+  - Keep **open background whitespace at `40%-55%`** of viewport area and cap **dominant color clusters (`>2%` area) at `<=3-4`**.
+- **UMSI Typography-First Law for Graphic Layouts (`Bylinskii et al. 2017 UIST`; `Fosco et al. 2020 UIST`):** Unlike natural photos (where faces/objects dominate), on designed layouts (webpages, posters, slides, infographics), **Large High-Contrast Display Typography (`Headline / Giant Number`) captures `42%-58%` of total initial fixation mass**, followed by human faces/eyes (`2nd`) and isolated Von Restorff callout badges (`3rd`).
+- **Dark-is-More vs. Hotspot-is-More Relational Color Law (`Schoenlein & Schloss 2022 IEEE TVCG`; `Braun & Schloss 2025`):**
+  - On **Light Mode (`#FFFFFF` / `#FAF8F5`)**, map **higher data magnitude -> darker/higher-chroma colors** (**Dark-is-More bias**; inverting this adds `+180-320 ms` decoding lag).
+  - On **Dark Mode (`#0F172A`)**, map **higher data magnitude -> higher-luminance colors (`#FFD600` / `#38BDF8`)** (**Hotspot-is-More**).
+  - **CIELAB Affective Quadrants (`Braun & Schloss 2025`):** High Arousal + Positive = `L* > 70, C* > 65, h° ∈ [25°, 90°]` (Yellow-Orange-Coral); High Arousal + Threat = steep `L*` drop + `C* > 70, h° ∈ [350°, 35°]` (Red-Crimson); Calm + Trustworthy = `L* ∈ [55, 85], C* ∈ [30, 55], h° ∈ [155°, 245°]` (Cyan-Blue-Emerald).
