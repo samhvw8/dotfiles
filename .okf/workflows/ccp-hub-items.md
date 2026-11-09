@@ -4,7 +4,7 @@ title: "Keep ccp hub items"
 description: "Which parts of ~/.ccp live in the repository and how to store hub items created by hand."
 tags: [ccp, claude-code]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-05T04:45:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-09T10:40:00Z }
 sources:
   - id: check
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/dot-check.py
@@ -31,6 +31,19 @@ mise run dot:save
 ```
 
 `ccp bootstrap --push` wrote to chezmoi and no longer applies.
+
+# A source that ships a hook
+
+`ccp install` links skills and agents from a source, but not its hooks. Add the hook as a hub item
+with only a `hooks.json`, and call the source's own launcher from it. ccp copies a command as written
+when it has no `${CLAUDE_PLUGIN_ROOT}`, so no wrapper script is needed.
+Example: `hub/hooks/impeccable` runs `"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable" hook`.
+Keep `skills/impeccable/scripts/impeccable" hook` in that command: the engine matches it to report
+the hook as wired. Without the match, `impeccable context` can write a second hook entry.
+
+Do not run `npx impeccable install` or `impeccable hooks on` for this: they write hook entries outside ccp.
+After `ccp source update` changes the pinned engine, run the launcher once with `engine-probe` and with
+`npm:impeccable` off `PATH` to fill the pinned cache. Otherwise the launcher uses the older or newer engine on `PATH`.
 
 # A rule for Claude Code only
 

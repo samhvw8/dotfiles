@@ -48,7 +48,7 @@ provider = 'git'
 url = 'https://github.com/pbakaus/impeccable.git'
 path = 'sources/pbakaus--impeccable'
 ref = 'main'
-installed = ['skills/impeccable', 'agents/impeccable-manual-edit-applier.md']
+installed = ['skills/impeccable', 'agents/impeccable-manual-edit-applier.md', 'agents/impeccable-asset-producer.md', 'agents/impeccable-documenter.md', 'agents/impeccable-finish-reviewer.md']
 
 [sources.'samhvw8/claude-code-profile']
 registry = 'github'

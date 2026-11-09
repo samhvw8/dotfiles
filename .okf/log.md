@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-09
+* **Update**: Impeccable now runs through ccp. `pbakaus/impeccable` moved to 613fbf8 (skill engine 0.1.20). The `default` profile links the three other agents (asset-producer, documenter, finish-reviewer) and a new hub hook `hooks/impeccable` (SessionStart, PostToolUse on Edit and Write, Stop) that calls the source's launcher. Removed the stale `node .../hook.mjs` entry from the machine-local `settings.local.json`; upstream no longer ships that file, so every write in a `~` session printed a hook error. See [ccp hub items](/workflows/ccp-hub-items.md). Runs: the Impeccable engine binary after each Edit or Write and at session start and stop; a checksum-verified download per engine version into `~/.impeccable/bin/`; a `.impeccable/` state folder in projects it scans.
 * **Creation**: [Herdr](tools/herdr.md): `herdr` (mise) and `brew-cask:herdr-app` added to `mise/config.toml`; herdr-core comes from its own installer. Runs: `herdr-core` and the herdr TUI server only while in use; the app sends a daily telemetry report by default.
 * **Update**: termctl and harness-ops are now a Go binary; [it2](tools/it2.md) no longer lists a termctl pin on the `iterm2` Python library.
 * **Update**: hub skill `agent-msg`: the description now covers tmux, tasks, `close`, `interrupt` and `[task ...]` prompts. A task worker may read its brief under `~/.local/state/termctl/briefs/`; before, the file rule blocked it. Corrected the stale STATUS `?` and `send` notes.

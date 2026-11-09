@@ -49,11 +49,32 @@
     "MEDIASIFT_ON": "me.ubuntu.home"
   },
   "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write"
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
           {
             "command": "bash $HOME/.ccp/profiles/default/hooks/okf-docs/scripts/okf-docs.sh",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
             "timeout": 5,
             "type": "command"
           }
@@ -66,6 +87,15 @@
           {
             "command": "bash $HOME/.ccp/profiles/default/hooks/okf-stop/scripts/okf-stop.sh",
             "timeout": 10,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
+            "timeout": 30,
             "type": "command"
           }
         ]
