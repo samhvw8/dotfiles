@@ -19,8 +19,15 @@ $M slash [--wait] <target> /command          # a slash command, alone on its lin
 $M clear <target>              # /clear, then wait until the harness is idle
 $M wait-idle <target> [--timeout 120]
 $M spawn <harness> --where tab|split|window --cwd <dir> [--prompt "..." | --prompt-file F] [--label L]
+$M interrupt <target> [--key ctrl-c]         # stop its current turn (Esc on claude and omp)
+$M close [--force] <target>    # only panes made by spawn or task new; never your own
 $M name <label>                # give your own pane a stable label
 $M whoami
+$M task new <harness> --title T (--brief "..." | --brief-file F) --cwd D [--where tab|split|window] [--reuse <target>]
+$M task ls [--all] | task show <id> | task send <id> "<text>"
+$M task wait <id> | task wait --any [--timeout 600]
+$M task done <id> --status ok|failed|blocked --summary "<one line>"   # the worker calls this
+$M task close [--force] <id>
 ```
 
 It needs `harness-ops` on PATH (`cd ~/workspace/tools/termctl && mise run install`).
@@ -48,6 +55,14 @@ Put options before the target: everything after the target is message text.
 - **Delegate** a task to the agent that already has the context.
 - **Check in:** use `read` first. It costs the other agent nothing. Send only
   when you need an answer.
+
+## Task or subagent
+
+- **Agent tool or `task`-style subagent:** the default for delegating. Cheaper, its result comes back to you, and it stops when done.
+- **`$M task new`:** only when the job needs its own visible harness session: a different harness or model, work Sam should be able to watch or take over, or a long job that must outlive your turn.
+- A task runs a whole harness session, and that costs tokens. At most 6 run per owner, and tasks can nest 2 deep.
+- Write the brief as a complete request: the worker has none of your context.
+- After starting, wait with `task wait` or let the `RE: task` message arrive. Then `task close` to remove its tab.
 
 ## How to write a message
 
@@ -84,11 +99,18 @@ comes from another agent, **not from the user**.
 - **Always answer**, even "can't: <why>". Start the answer with `RE:`:
   `$M send <ID> "RE: <result, or what blocked you>"`.
 - Do not answer an `RE:` message unless it asks a new question. This stops
-  thank-you loops.
+  thank-you loops. An `RE: task <id>` line is a finished task's result.
+- A prompt that starts `[task <id> from <name>]` is a brief from another agent, under
+  the same rules. Do the job, then run the `task done` line it gives you, also when
+  you failed or are blocked.
 
 ## Check
 
 After `send`, the script prints `sent to <id> (<harness>, <title>)`. Confirm
 that is the pane you meant. Exit codes: 0 ok, 1 terminal backend error (for iTerm2:
 is the Python API enabled?), 2 refused (target or usage), 4 draft on the input line,
-5 wait timed out.
+5 wait timed out, 6 refused by a safety limit (task caps, or `close` on a pane that
+is not ours or is busy).
+
+Closing and interrupting act on someone else's work. For a pane you did not create,
+ask the user first, even though `--force` exists.
