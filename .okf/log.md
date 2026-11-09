@@ -1,6 +1,8 @@
 # Update Log
 
 ## 2026-11-09
+* **Creation**: [Herdr](tools/herdr.md): `herdr` (mise) and `brew-cask:herdr-app` added to `mise/config.toml`; herdr-core comes from its own installer. Runs: `herdr-core` and the herdr TUI server only while in use; the app sends a daily telemetry report by default.
+* **Update**: termctl and harness-ops are now a Go binary; [it2](tools/it2.md) no longer lists a termctl pin on the `iterm2` Python library.
 * **Update**: hub skill `agent-msg`: the description now covers tmux, tasks, `close`, `interrupt` and `[task ...]` prompts. A task worker may read its brief under `~/.local/state/termctl/briefs/`; before, the file rule blocked it. Corrected the stale STATUS `?` and `send` notes.
 * **Update**: hub skill `agent-msg` documents the new `task`, `close` and `interrupt` commands of `harness-ops` (`~/workspace/tools/termctl`), and when to use a task instead of a subagent.
 * **Update**: hub skill `agent-msg` (`home/.ccp/hub/skills/agent-msg/`): the script is now a thin wrapper over `harness-ops` from `~/workspace/tools/termctl`, and the skill documents `clear`, `slash`, `spawn`, `wait-idle` and the draft refusal (exit 4). [it2](tools/it2.md) now says where the `iterm2==2.30` pin lives.

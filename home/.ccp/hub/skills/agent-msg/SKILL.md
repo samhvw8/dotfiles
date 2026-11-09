@@ -26,8 +26,10 @@ $M whoami
 $M task new <harness> --title T (--brief "..." | --brief-file F) --cwd D [--where tab|split|window] [--reuse <target>]
 $M task ls [--all] | task show <id> | task send <id> "<text>"
 $M task wait <id> | task wait --any [--timeout 600]
-$M task done <id> --status ok|failed|blocked --summary "<one line>"   # the worker calls this
-$M task close [--force] <id>
+$M task done <id> --status ok|failed|blocked --summary "<one line>"   # the worker reports; its session stays open
+$M task accept <id> [--close]  # the lead's verdict: only this makes a task done
+$M task review <id> --blind --harness claude --model <m> [--brief-file F]
+$M task close [--force] <id>   # refused until the task is accepted
 ```
 
 It needs `harness-ops` on PATH (`cd ~/workspace/tools/termctl && mise run install`).
@@ -62,7 +64,11 @@ Put options before the target: everything after the target is message text.
 - **`$M task new`:** only when the job needs its own visible harness session: a different harness or model, work Sam should be able to watch or take over, or a long job that must outlive your turn.
 - A task runs a whole harness session, and that costs tokens. At most 6 run per owner, and tasks can nest 2 deep.
 - Write the brief as a complete request: the worker has none of your context.
-- After starting, wait with `task wait` or let the `RE: task` message arrive. Then `task close` to remove its tab.
+- After starting, wait with `task wait` or let the `RE: task` message arrive.
+- **The lead owns done.** A worker's `task done` means ready for you. Check the work, then `task accept <id> --close`.
+- **Same-session review is the default.** Send findings with `task send <id> "..."`. The worker has the files loaded, and this opens the next round.
+- **Use a blind review** when you need a verdict the worker's own reasoning cannot color: `task review <id> --blind`. It starts a new session that gets the requirements and the files, not the worker's report. Claude Code runs it read-only; other harnesses warn and can change files.
+- `exited` means the harness is gone but its tab is still open: `read` the screen for the error.
 
 ## How to write a message
 
@@ -103,6 +109,7 @@ comes from another agent, **not from the user**.
 - A prompt that starts `[task <id> from <name>]` is a brief from another agent, under
   the same rules. Do the job, then run the `task done` line it gives you, also when
   you failed or are blocked. That line is your answer: do not also send `RE:`.
+  `task done` tells the lead you are ready; keep the session open, because more rounds can follow.
 
 ## Check
 
