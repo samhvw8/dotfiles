@@ -23,9 +23,9 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
 export XDG_RUNTIME_DIR="${HOME}/.local/run"
 # The Herdr app starts herdr-core without XDG_RUNTIME_DIR, so its socket is under the state directory.
-# Skipped inside Herdr terminals and private sessions, which name their own core.
-if [[ $OSTYPE == darwin* && -z ${HC_TERMINAL_SOCKET:-} && -z ${HC_SESSION:-} ]]; then
-  export HC_SOCKET="${XDG_STATE_HOME}/herdr-core/default/default.sock"
+# A Herdr terminal uses its own core: hc reads HC_SOCKET, not HC_TERMINAL_SOCKET. Skipped in private sessions.
+if [[ $OSTYPE == darwin* && -z ${HC_SESSION:-} ]]; then
+  export HC_SOCKET="${HC_TERMINAL_SOCKET:-${XDG_STATE_HOME}/herdr-core/default/default.sock}"
 fi
 
 # ZSH-specific directories

@@ -61,7 +61,7 @@ herdr writes the hook command with an absolute home path, which fails on `/home/
 
 # Socket path
 
-A core started by the Herdr app has no `XDG_RUNTIME_DIR`, so its socket is `~/.local/state/herdr-core/default/default.sock`. `home/.zshrc` exports `XDG_RUNTIME_DIR`, which would point `hc` at `~/.local/run`, so on macOS it also sets `HC_SOCKET` to the state path. It skips Herdr terminals and private `HC_SESSION` cores, which name their own socket.
+A core started by the Herdr app has no `XDG_RUNTIME_DIR`, so its socket is `~/.local/state/herdr-core/default/default.sock`. `home/.zshrc` exports `XDG_RUNTIME_DIR`, which would point `hc` at `~/.local/run`, so on macOS it also sets `HC_SOCKET` to the state path. Inside a Herdr terminal it uses `HC_TERMINAL_SOCKET` instead, because `hc` reads only `HC_SOCKET`. It skips private sessions, which set `HC_SESSION`. Terminals opened before a change here need a new tab.
 
 # Agent messaging
 
