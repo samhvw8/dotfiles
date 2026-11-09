@@ -59,9 +59,13 @@ Both are installed, and these files are in this repository:
 
 herdr writes the hook command with an absolute home path, which fails on `/home/samhv`. The entry here is edited to use `$HOME`. After `herdr integration install claude` runs again, delete the extra absolute entry. `herdr integration uninstall claude` does not match the `$HOME` entry, so remove that entry by hand.
 
+# Socket path
+
+A core started by the Herdr app has no `XDG_RUNTIME_DIR`, so its socket is `~/.local/state/herdr-core/default/default.sock`. `home/.zshrc` exports `XDG_RUNTIME_DIR`, which would point `hc` at `~/.local/run`, so on macOS it also sets `HC_SOCKET` to the state path. It skips Herdr terminals and private `HC_SESSION` cores, which name their own socket.
+
 # Agent messaging
 
-`agent-msg` drives Herdr terminals through termctl's `hc` backend. `spawn` needs the Herdr app open, so a core never starts with an agent's environment. Long jobs on `homebox` stay in tmux.
+`agent-msg` drives Herdr terminals through termctl's `hc` backend. `spawn` needs a running core, so a core never starts with an agent's environment. A spawned agent opens as a tab in the caller's space, or in its folder's space when started from outside Herdr. Long jobs on `homebox` stay in tmux.
 
 # Privacy
 
