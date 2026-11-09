@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-09
+* **Update**: hub skill `agent-msg`: the description now covers tmux, tasks, `close`, `interrupt` and `[task ...]` prompts. A task worker may read its brief under `~/.local/state/termctl/briefs/`; before, the file rule blocked it. Corrected the stale STATUS `?` and `send` notes.
 * **Update**: hub skill `agent-msg` documents the new `task`, `close` and `interrupt` commands of `harness-ops` (`~/workspace/tools/termctl`), and when to use a task instead of a subagent.
 * **Update**: hub skill `agent-msg` (`home/.ccp/hub/skills/agent-msg/`): the script is now a thin wrapper over `harness-ops` from `~/workspace/tools/termctl`, and the skill documents `clear`, `slash`, `spawn`, `wait-idle` and the draft refusal (exit 4). [it2](tools/it2.md) now says where the `iterm2==2.30` pin lives.
 
