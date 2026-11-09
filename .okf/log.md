@@ -1,6 +1,11 @@
 # Update Log
 
 ## 2026-11-09
+
+- **Update**: Upgraded `home/.ccp/hub/skills/attention-architecture/SKILL.md`, `references/media-playbooks.md`, `home/.ccp/hub/agents/copywriter.md`, and `home/.ccp/hub/agents/cofounder.md` with Wave 10 Psycholinguistics, Attention-Grabbing Wording, Syntactic Engineering & Mental Biases (`P51–P74`, 10 bilingual wording formulas, 24 before/after rewrites, Tier 1/2/3 mental biases matrix, and Audit Gates 23–26).
+
+## 2026-11-09
+* **Update**: `home/.zshrc` sets `HC_SOCKET` on macOS, so `hc` in a shell finds a core started by the Herdr app. See [Herdr](tools/herdr.md). Runs: nothing new.
 * **Update**: Impeccable now runs through ccp. `pbakaus/impeccable` moved to 613fbf8 (skill engine 0.1.20). The `default` profile links the three other agents (asset-producer, documenter, finish-reviewer) and a new hub hook `hooks/impeccable` (SessionStart, PostToolUse on Edit and Write, Stop) that calls the source's launcher. Removed the stale `node .../hook.mjs` entry from the machine-local `settings.local.json`; upstream no longer ships that file, so every write in a `~` session printed a hook error. See [ccp hub items](/workflows/ccp-hub-items.md). Runs: the Impeccable engine binary after each Edit or Write and at session start and stop; a checksum-verified download per engine version into `~/.impeccable/bin/`; a `.impeccable/` state folder in projects it scans.
 * **Creation**: hub skill `lark-cli` routes Lark and Feishu work to `lark-cli`, its embedded skills and the `default` and `1hub` profiles. Runs: nothing new.
 * **Removal**: the Lark MCP servers are off for every harness: `setup-claude-mcp.sh` no longer registers `lark` or `lark-<tenant>` for Claude Code, omp or Gemini, because two servers per session held about 7.5 GB across 38 processes. `npm:@larksuiteoapi/lark-mcp`, `lark-cli` and `~/creds/lark-app*.json` stay installed. Runs: nothing new.
