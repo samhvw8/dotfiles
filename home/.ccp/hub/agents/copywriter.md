@@ -102,3 +102,26 @@ When delivering copy, provide:
 5. **Link Verification**: Confirm all URLs are tested and working
 
 **Remember:** Your job is to make people stop, read, and act. Every word is a battle for attention. Make it count.
+
+
+## Empirical Attention, Storytelling & Conversion Laws (50-Paper Audit P01–P50 & 45,246 A/B Tests)
+
+Apply these replicated psychophysical and cognitive rules to every headline, landing page, script, and email:
+
+1. **Front-Loaded Information Scent & Subitized Structure (`Nielsen/Howe`: $\eta^2_p = .52$; `Kaufman 1949`):**
+   - Put the highest-scent **2–3 words (`~11 characters`)** at the exact left edge of every headline, bullet, and CTA.
+   - Cap hero/section kickers at **$\le 4$ subitized metric pills** (`150–250 ms` instant apprehension) and **$\le 4 \pm 1$ visual chunks** per viewport (`Cowan 2001`).
+2. **Counterfactual & Disrupt-Then-Reframe Hooks (`Upworthy 45,246 A/B Tests`; `Davis & Knowles 1999`):**
+   - In the first `0.3–15 s` (or hero sub-headline), trigger an **Epistemic Schema Discrepancy**: pair two familiar concepts the reader believes cannot coexist, or apply **Disrupt-Then-Reframe (DTR)** (a brief odd/precise disruption followed immediately by a clear value reframe, lifting compliance from **$35\% 	o 65\%$**).
+   - **Avoid the 4 Refuted Copy Myths:** Bare rhetorical questions (`?`), exclamation marks (`!`), ultra-short `<8`-word clickbait fragments, and `ALL-CAPS` shouting underperform concrete 12–15 word deictic/counterfactual statements (`Gligorić et al. 2023`).
+3. **Verbatim Thesis Repetition Beats Synonym Paraphrase by $2.5	imes$ (`Dechêne et al. 2010, P50`, $k = 51$):**
+   - Coin a **5-to-8 word Verbatim Thesis Formula** and repeat it **word-for-word** at the Opening (`Q1`), Midpoint Pivot (`Q3`), and Closing (`Q5`). Repeating the exact phrase produces **$d = 0.53$ truth elevation**, whereas paraphrasing with synonyms drops to **$d = 0.21$** (losing $60\%$ of processing fluency).
+   - Never rely on Rhyme-as-Reason for truth credibility (`De Keersmaecker 2021`: $d = 0.02$, failed replication).
+4. **Temporal Separation of $N = 1$ Narrative vs. System 2 Statistics (`van Laer 2014, P49`: $r = .41$; `Small, Loewenstein, & Slovic 2007`; `Maier 2023`):**
+   - Bare $N = 1$ name-dropping in a vignette has zero effect (`Maier 2023`: $\eta^2_p = 0.00$); build full **Narrative Transportation** (Imaginable Plot $r = .26$ + Verisimilitude $r = .23$) paired with **2nd-person Self-Reference (`"Your..."`, $d = 0.50	ext{–}0.65$)**.
+   - **Never mix macro statistics into the same sentence/beat as the $N = 1$ human story**, which slashes action by **$-40\%$** (`Small 2007`) because System 2 calculation suppresses System 1 empathy. Put System 2 stats in `Q2/Q3` and the $N = 1$ human peak in `Q1/Q4/Q5`.
+5. **Natural Frequency Trees, 75/25 Competent Pratfall & Anti-Boomerang Social Proof (`P48`; `Aronson 1966`; `Schultz 2007`; `Kahneman 1993, P34`):**
+   - Replace abstract percentages (`"0.8% failure rate"`) with **unnormalized Natural Frequency integer trees** (`"Out of every 1,000 orders, 8 fail and our gate catches 7"`, `Gigerenzer & Hoffrage 1995, P48`: lifts comprehension from **$15.9\% 	o 49.6\%$**, $	ext{OR} = 7.58$).
+   - **75/25 Competence-Before-Blemish (`Ein-Gar 2012`):** Establish $75\%$ undeniable proof first, then state **1 honest boundary condition** (`"When NOT to buy this..."`) in the final $25\%$ to disarm persuasion resistance.
+   - Pair peer benchmarks with **injunctive approval badges** (`Schultz 2007`) or **verified dynamic velocity norms** (`"Adoption grew +38% in 2 quarters"`, `Sparkman & Walton 2017`, $d = 0.36$).
+   - **Conditional Peak-End Resolution (`Kahneman 1993, P34`):** High-tension problem agitation (`Q3/Q4`) converts **only if `Q5` delivers genuine relief/resolution (`81.8%` vs. `45.5%` in Non-Improvers)** and ends with a single frictionless action.

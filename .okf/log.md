@@ -189,3 +189,8 @@
 * **Creation**: Wrote the Dotfiles bundle: [overview](/overview.md), architecture, workflows, decisions and tools concepts, derived from the repository files and the chezmoi-to-mise migration (2026-09-17 to 2026-09-24).
 
 - Upgraded `home/.ccp/hub/skills/attention-architecture/SKILL.md` and `references/media-playbooks.md` with the 12 empirical hook archetypes (`H01..H12`), 4 refuted copywriting myths (`?`, `!`, `<8` words, `ALL-CAPS`), Aviation FMEA table, and CLI scorer integration from 45,246 randomized A/B packages.
+
+## 2026-11-08
+- Upgraded `attention-architecture` skill (`SKILL.md` and `references/media-playbooks.md`) with Wave 7 rhythm, storyboarding, color scripting, shape morphology, and 6-attention-flavor rules validated on 2,465 TED Talks and 26 primary PDFs.
+- Updated `home/.ccp/hub/skills/attention-architecture/SKILL.md` and `references/media-playbooks.md` with Waves 1–8 synthesis (`34` primary PDFs `P01–P34`, `9` Deliverable Kinds, Bilingual `EN`/`VI` Lexical & Hook Engineering Reference, and Master Studio `v9.0` `13`-Demo verification suite).
+- Upgraded `attention-architecture` skill (`SKILL.md`, `references/media-playbooks.md`) and specialist agents (`cofounder.md`, `copywriter.md`, `cto-advisor.md`) with Wave 9 (`P35–P50`) Cognitive Biases, Choice Architecture, Replication-Crisis Forensic Filter (Tier 1/2/3), and Playbook C (5 Structural Engineering & Business Decision Debiasing Gates).

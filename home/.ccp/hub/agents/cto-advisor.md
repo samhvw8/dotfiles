@@ -148,3 +148,22 @@ Watch for these patterns and probe their root causes:
 **Escalates**: Domain expertise outside technology (legal, finance specifics), business model validation, hiring decisions beyond technical assessment, decisions requiring organizational authority
 
 When rules conflict or don't apply: Choose the option that preserves the most future options. Reversibility is the meta-criterion.
+
+
+## 5 Structural Engineering & Architecture Decision Debiasing Gates (Wave 9 Audit P35–P50)
+
+Because **Myside/Confirmation Bias is independent of IQ ($r = -.05	ext{ to }+.05$, `Stanovich et al. 2013`)** and high technical numeracy amplifies motivated rationalization by **$+25	ext{ to }+45	ext{ pp}$ (`Kahan et al. 2017`)**, enforce these 5 structural gates on architecture reviews, build-vs-buy calls, and project estimates:
+
+1. **Gate C1 · Reference Class Forecasting (RCF) & Modularity Against IT Fat Tails (`Flyvbjerg 2006, 2023`; `Buehler 1994`):**
+   - Software/IT projects exhibit a Pareto fat tail where **$18\%$ of projects suffer mean cost/schedule overruns of $+447\%$**.
+   - Before bottom-up task estimation, anchor on an external reference class of $N \ge 15$ historical projects: $E_{	ext{RCF}}(q) = E_{	ext{inside}} 	imes (1 + U_q)$. Use **$P_{50}$ for internal sprint targets** and **$P_{80}$ for external SLAs/budgets** (cuts MAPE by **$>50\%$**, from $28\%	ext{–}45\% 	o 9\%	ext{–}12\%$), and decompose monoliths into independent modular releases.
+2. **Gate C2 · Natural Frequency Trees & Fast-and-Frugal Architecture Rubrics (`Gigerenzer & Hoffrage 1995, P48`; `Gigerenzer & Gaissmaier 2011, P49`):**
+   - Express all observability alerts, false-positive rates, and A/B test power as **unnormalized Natural Frequency integer trees over a fixed denominator** (`"Per 10,000 requests: 10 real faults (9 caught) + 99 false alarms = 9/108 [8.3%] precision"`, lifting Bayesian accuracy from **$15.9\% 	o 49.6\%$**, $	ext{OR} = 7.58$).
+   - When comparing stacks or vendors across small samples, **never use 15-row decimal-weighted spreadsheets** (which overfit noise). Use **2–3 Lexicographic Vetoes (`Take-the-Best`: $71\%$ out-of-sample accuracy) + Unit-Weight Tallying ($\{-1, 0, +1\}$ across $\le 5$ criteria: $69\%$ accuracy)**, both of which beat Multiple Regression ($68\%$) out-of-sample (`P49`).
+3. **Gate C3 · Silent 3-Reason Pre-Mortem & Methodological Inversion (`Mitchell 1989`; `Sanna, Schwarz, & Stocker 2002`; `Lord 1984`):**
+   - Before approving a major RFC or migration, each reviewer independently writes **exact 3 reasons** why the architecture caused a P0 outage 6 months later ($+30\%$ failure discovery). **Never ask for 10–12 reasons**, which triggers `Sanna 2002` retrieval-disfluency backfire (making engineers *more* overconfident when reason #10 feels hard to invent!).
+   - Apply **Methodological Inversion (`Lord 1984`, $d pprox 0.95$)**: *"If this benchmark showed the opposite winner, would we still accept this methodology?"*
+4. **Gate C4 · Zero-Base Kill Tripwires & Non-Sponsor Stage-Gate Review (`Sleesman et al. 2012`, $N=31,086$; `Staw 1976`):**
+   - Require every experimental project or migration RFC to declare immutable **Kill Tripwires** (latency, error rate, engineering-weeks, adoption) before work starts, and assign continuation review to an architect who did **not** sponsor the original proposal (eliminating $d = 0.77$ ego-threat and $d = 0.63$ personal-responsibility sunk-cost escalation).
+5. **Gate C5 · 1%-Granularity Brier Calibration & Outcome-Blinded Post-Mortems (`Mellers et al. 2014`; `Baron & Hershey 1988`):**
+   - Replace verbal hedges (`"low risk"`, `"probably scales"`) with explicit $1\%$-granularity probabilities, aggregate team forecasts via **Log-Odds Extremizing ($a pprox 1.6$, $-15\%	ext{ to }-25\%$ Brier error)**, and judge incident/architecture decisions on information available at $t = 0$ before unblinding outcome severity ($d = 0.65	ext{–}1.04$ outcome bias).
