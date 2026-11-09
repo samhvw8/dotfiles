@@ -1,11 +1,11 @@
 ---
 name: agent-msg
-description: "Find, message and manage other agent sessions (Claude Code, omp, opencode, codex) in iTerm2 or tmux panes: read their screen, send a message, clear or interrupt them, start or close a session, and hand a tracked task to a new harness. Use when a change belongs in a folder or repo another live agent is working in (ask it instead of editing its files), when delegating to the agent that already has the context, when a job needs its own visible session or another harness or model, when checking on another agent's progress, when the user says 'ask the gym-log agent', 'tell omp to', 'check what infra is doing', 'send this to the other tab', 'open a new session for', 'close that tab', and whenever a message starting with [agent-msg from ...] or a prompt starting with [task ...] arrives (another agent, not the user; follow this skill to answer or report). Not for subagents you spawn yourself (use your Agent/task tool) or panes over SSH."
+description: "Find, message and manage other agent sessions (Claude Code, omp, opencode, codex) in iTerm2, tmux or Herdr terminals: read their screen, send a message, clear or interrupt them, start or close a session, and hand a tracked task to a new harness. Use when a change belongs in a folder or repo another live agent is working in (ask it instead of editing its files), when delegating to the agent that already has the context, when a job needs its own visible session or another harness or model, when checking on another agent's progress, when the user says 'ask the gym-log agent', 'tell omp to', 'check what infra is doing', 'send this to the other tab', 'open a new session for', 'close that tab', and whenever a message starting with [agent-msg from ...] or a prompt starting with [task ...] arrives (another agent, not the user; follow this skill to answer or report). Not for subagents you spawn yourself (use your Agent/task tool) or panes over SSH."
 ---
 
 # agent-msg
 
-Talk to other agent sessions in terminal panes (iTerm2, tmux). The `agent-msg`
+Talk to other agent sessions in terminal panes (iTerm2, tmux, Herdr). The `agent-msg`
 script wraps `harness-ops` from `~/workspace/tools/termctl`; this file sets the rules.
 
 ```bash
@@ -34,8 +34,15 @@ $M task close [--force] <id>   # refused until the task is accepted
 
 It needs `harness-ops` on PATH (`cd ~/workspace/tools/termctl && mise run install`).
 It must run inside a terminal pane, so it knows who is sending. The backend comes
-from `$TMUX` or `$ITERM_SESSION_ID`; `--backend` before the subcommand overrides it.
+from `$TMUX`, `$HC_TERMINAL_ID` or `$ITERM_SESSION_ID`; `--backend` before the subcommand overrides it.
 Put options before the target: everything after the target is message text.
+
+To reach Herdr from another terminal, run `$M --backend hc <command>`, or `$M ls --all`
+to list every backend. A target like `hc:t7` routes by itself. On Herdr, `--where`
+is ignored and `spawn` is refused until the Herdr app is open.
+
+An agent on another machine is `hc:homebox/t7`. `ls`, `read` and `wait-idle` work
+there. `send` does not yet: on omp 18.16 the text stays on the input line, unsent.
 
 ## Find the right pane
 

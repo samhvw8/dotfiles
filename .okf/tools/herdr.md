@@ -49,11 +49,19 @@ An agent inside tmux inside a Herdr pane cannot report status.
 
 `herdr integration install claude` and `herdr integration install omp` are needed only for the TUI: session resume after a server restart, and omp state.[^tui-integrations] The hooks check `HERDR_ENV`, so they do nothing in the app or outside Herdr.
 
-These integrations are not installed on this machine yet. Installing them has these effects:
+Both are installed, and these files are in this repository:
 
-* `settings.json` stays a symlink, because herdr resolves the link before it writes.
-* The new hook command uses an absolute path, not `$HOME`, so it breaks on a machine with another home directory.
-* `hooks/herdr-agent-state.sh` and `extensions/herdr-omp-agent-state.ts` are plain files. Run `mise run dot:add` on each to keep them in this repository.
+| File | Note |
+|------|------|
+| `home/.ccp/profiles/default/settings.json` | One `SessionStart` entry. herdr resolves the symlink before it writes. |
+| `home/.ccp/profiles/default/hooks/herdr-agent-state.sh` | Claude Code hook |
+| `home/.omp/agent/extensions/herdr-omp-agent-state.ts` | omp extension |
+
+herdr writes the hook command with an absolute home path, which fails on `/home/samhv`. The entry here is edited to use `$HOME`. After `herdr integration install claude` runs again, delete the extra absolute entry. `herdr integration uninstall claude` does not match the `$HOME` entry, so remove that entry by hand.
+
+# Agent messaging
+
+`agent-msg` drives Herdr terminals through termctl's `hc` backend. `spawn` needs the Herdr app open, so a core never starts with an agent's environment. Long jobs on `homebox` stay in tmux.
 
 # Privacy
 
