@@ -5,7 +5,7 @@ description: "The pinned it2 CLI for sending text to and reading from iTerm2 ses
 resource: https://github.com/mkusaka/it2
 tags: [iterm2, agents, mise, cli]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-02T15:30:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-09T02:00:00Z }
 sources:
   - id: it2-repo
     resource: https://github.com/mkusaka/it2/tree/v0.2.3
@@ -62,11 +62,13 @@ it2 session read -s "${UUID:?}" -n 80         # read the visible screen
 
 # Messages between agents
 
-The hub skill `agent-msg` builds on the same iTerm2 API. It lists the panes, picks
-exactly one target, and refuses an ambiguous target or the sender's own pane. Use it
+The hub skill `agent-msg` is a thin wrapper over `harness-ops` from
+`~/workspace/tools/termctl`, whose iTerm2 backend uses the same iTerm2 API. It lists
+the panes, picks exactly one target, and refuses an ambiguous target or the sender's
+own pane. It also refuses (exit 4) when the target's input line holds a draft. Use it
 rather than raw `it2 session send`. Check a target with `agent-msg which <target>`:
-`send` always delivers. It pins `iterm2==2.30`, the library version the
-reviewed it2 0.2.3 uses. Bump both together.
+`send` delivers unless it is refused. termctl pins `iterm2==2.30` in its
+`pyproject.toml`, the library version the reviewed it2 0.2.3 uses. Bump both together.
 
 # Bumping the pin
 

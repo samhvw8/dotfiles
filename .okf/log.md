@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-09
+* **Update**: hub skill `agent-msg` (`home/.ccp/hub/skills/agent-msg/`): the script is now a thin wrapper over `harness-ops` from `~/workspace/tools/termctl`, and the skill documents `clear`, `slash`, `spawn`, `wait-idle` and the draft refusal (exit 4). [it2](tools/it2.md) now says where the `iterm2==2.30` pin lives.
+
 ## 2026-11-08
 * **Update**: `motion-graphics` (`home/.ccp/hub/skills/motion-graphics/references/physics-timing-and-springs.md`) adds Section 4.7 on 2-bone analytical IK joint polarity in Y-down screen space (`bendDir = -1` for forward-bending knees and `+1` for backward-bending elbows when facing `+x`) and ground-locked linear stance sweep vs. sinusoidal moonwalk gait. See [ccp hub items](/workflows/ccp-hub-items.md). Runs: nothing new.
 

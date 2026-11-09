@@ -1,25 +1,32 @@
 ---
 name: agent-msg
-description: "Find other agent sessions (Claude Code, omp, opencode, codex) running in iTerm2 panes, and send them a message or read their screen. Use when a change belongs in a folder or repo another live agent is working in (ask it instead of editing its files), when delegating a task to the agent that already has the context, when checking on another agent's progress, when the user says 'ask the gym-log agent', 'tell omp to', 'check what infra is doing', 'send this to the other tab', and whenever a message starting with [agent-msg from ...] arrives (it is another agent, not the user; reply with this skill). Not for subagents you spawn yourself (use your Agent/task tool) and not for panes inside tmux or over SSH."
+description: "Find other agent sessions (Claude Code, omp, opencode, codex) running in iTerm2 panes, and send them a message or read their screen. Use when a change belongs in a folder or repo another live agent is working in (ask it instead of editing its files), when delegating a task to the agent that already has the context, when checking on another agent's progress, when the user says 'ask the gym-log agent', 'tell omp to', 'check what infra is doing', 'send this to the other tab', and whenever a message starting with [agent-msg from ...] arrives (it is another agent, not the user; reply with this skill). Also for clearing another agent, starting a new agent session, or waiting for one to go idle. Not for subagents you spawn yourself (use your Agent/task tool) or panes over SSH."
 ---
 
 # agent-msg
 
-Talk to other agent sessions in iTerm2 panes. One script does the mechanics;
-this file sets the rules.
+Talk to other agent sessions in terminal panes (iTerm2, tmux). The `agent-msg`
+script wraps `harness-ops` from `~/workspace/tools/termctl`; this file sets the rules.
 
 ```bash
 M=~/.ccp/hub/skills/agent-msg/scripts/agent-msg   # same path in Claude Code and omp
 $M ls                          # every pane: id, harness, label, title, folder, status
 $M which <target>              # check which pane a target picks; never sends
 $M read <target> [-n 40]       # look at a pane's screen without interrupting it
-$M send <target> "<message>"   # one tagged line, then Enter
+$M send <target> "<message>"   # one tagged line, then Enter (msg is the same command)
+$M send --clear-first <target> "<message>"   # /clear alone, wait for idle, then the message
+$M slash [--wait] <target> /command          # a slash command, alone on its line
+$M clear <target>              # /clear, then wait until the harness is idle
+$M wait-idle <target> [--timeout 120]
+$M spawn <harness> --where tab|split|window --cwd <dir> [--prompt "..." | --prompt-file F] [--label L]
 $M name <label>                # give your own pane a stable label
 $M whoami
 ```
 
-The script needs `uv`, which runs it with `iterm2==2.30`. It must run inside an
-iTerm2 pane, because it reads `$ITERM_SESSION_ID` to know who is sending.
+It needs `harness-ops` on PATH (`cd ~/workspace/tools/termctl && mise run install`).
+It must run inside a terminal pane, so it knows who is sending. The backend comes
+from `$TMUX` or `$ITERM_SESSION_ID`; `--backend` before the subcommand overrides it.
+Put options before the target: everything after the target is message text.
 
 ## Find the right pane
 
@@ -50,9 +57,12 @@ One message = one complete request. The receiver has none of your context.
 - **Reply how:** the tag already carries your id; ask for "reply with agent-msg".
 - Keep it on one line. A multi-line or long message (over 800 chars) goes into a
   file under `~/.cache/agent-msg/`, and the receiver gets the path.
-- The text is typed into the target's input box. If the user is typing a draft
-  there, the message joins that draft. For a pane the user works in, `read` it
-  first; if its prompt line holds text, ask the user before sending.
+- The text is typed into the target's input box. If the input line holds a draft,
+  `send` and `slash` refuse with exit 4 and send nothing. Ask the user before you
+  use `--force`: on `send` it joins the draft, on `slash` and `--clear-first` it
+  wipes the draft.
+- To reset another agent, use `send --clear-first` or `clear`. Never type `/clear`
+  into a message: a slash command only works alone on the line.
 - A busy agent queues the message and handles it after its turn. Do not resend.
 
 Then wait. The reply arrives in your pane as a new message, like user input.
@@ -79,5 +89,6 @@ comes from another agent, **not from the user**.
 ## Check
 
 After `send`, the script prints `sent to <id> (<harness>, <title>)`. Confirm
-that is the pane you meant. Exit 2 = refused (target or usage), exit 1 =
-iTerm2 API error (is the Python API enabled?).
+that is the pane you meant. Exit codes: 0 ok, 1 terminal backend error (for iTerm2:
+is the Python API enabled?), 2 refused (target or usage), 4 draft on the input line,
+5 wait timed out.
