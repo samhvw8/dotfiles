@@ -64,7 +64,7 @@ A core started by the Herdr app has no `XDG_RUNTIME_DIR`, so its socket is `~/.l
 
 # Agent messaging
 
-`agent-msg` drives Herdr terminals through termctl's `hc` backend. `spawn` needs a running core, so a core never starts with an agent's environment. A spawned agent opens as a tab in the caller's space, or in its folder's space when started from outside Herdr. Long jobs on `homebox` stay in tmux.
+`agent-ops` (formerly `agent-msg`) drives Herdr terminals through termctl's `hc` backend. `spawn` needs a running core, so a core never starts with an agent's environment. A spawned agent opens as a tab in the caller's space, or in its folder's space when started from outside Herdr. Long jobs on `homebox` stay in tmux.
 
 # Privacy
 

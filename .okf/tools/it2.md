@@ -5,7 +5,7 @@ description: "The pinned it2 CLI for sending text to and reading from iTerm2 ses
 resource: https://github.com/mkusaka/it2
 tags: [iterm2, agents, mise, cli]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-10T04:10:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-10T11:00:00Z }
 sources:
   - id: it2-repo
     resource: https://github.com/mkusaka/it2/tree/v0.2.3
@@ -62,16 +62,18 @@ it2 session read -s "${UUID:?}" -n 80         # read the visible screen
 
 # Messages between agents
 
-The hub skill `agent-msg` is a thin wrapper over `harness-ops` from
+The hub skill `agent-ops` (named `agent-msg` until 2026-11-10) is a thin wrapper over `harness-ops` from
 `~/workspace/tools/termctl`, whose iTerm2 backend speaks the same iTerm2 API. It lists
 the panes, picks exactly one target, and refuses an ambiguous target or the sender's
 own pane. It also refuses (exit 4) when the target's input line holds a draft. Claude
 Code's prompt suggestions sit on the input line as grey text, and the screen read cannot
 tell them from typing, so the profile's `settings.json` sets `promptSuggestionEnabled: false`.
-Use it
-rather than raw `it2 session send`. Check a target with `agent-msg which <target>`:
+Use it rather than raw `it2 session send`. Check a target with `agent-ops which <target>`:
 `send` delivers unless it is refused. termctl is a Go binary with its own iTerm2 client,
 so it no longer depends on the `iterm2` Python library or this pin.
+
+A new agent from `spawn` or `task new` opens as a split in the caller's tab when its folder is in the
+caller's git repository (up to 3 panes), and otherwise as a new tab right after the caller's tab.
 
 # Bumping the pin
 

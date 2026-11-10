@@ -1,5 +1,5 @@
 #!/bin/sh
-# agent-msg is a thin wrapper over harness-ops (~/workspace/tools/termctl).
+# agent-ops is a thin wrapper over harness-ops (~/workspace/tools/termctl).
 # Same subcommands: ls, send, which, read, name, whoami. Plus msg, slash, clear,
 # wait-idle and spawn. See SKILL.md.
 for c in harness-ops "$HOME/.local/bin/harness-ops"; do
@@ -7,5 +7,5 @@ for c in harness-ops "$HOME/.local/bin/harness-ops"; do
     exec "$c" "$@"
   fi
 done
-echo "agent-msg: harness-ops not found. Install it: cd ~/workspace/tools/termctl && mise run install" >&2
+echo "agent-ops: harness-ops not found. Install it: cd ~/workspace/tools/termctl && mise run install" >&2
 exit 1
