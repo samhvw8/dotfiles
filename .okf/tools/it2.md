@@ -62,7 +62,7 @@ it2 session read -s "${UUID:?}" -n 80         # read the visible screen
 
 # Messages between agents
 
-The hub skill `agent-ops` (named `agent-msg` until 2026-11-10) is a thin wrapper over `harness-ops` from
+The hub skill `agent-ops` (named `agent-msg` until 2026-11-10) tells agents how to use `harness-ops` from
 `~/workspace/tools/termctl`, whose iTerm2 backend speaks the same iTerm2 API. It lists
 the panes, picks exactly one target, and refuses an ambiguous target or the sender's
 own pane. It also refuses (exit 4) when the target's input line holds a draft. Claude

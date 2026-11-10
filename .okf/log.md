@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-11
+* **Update**: `agent-ops` skill fixes from a Fable review: agents call `harness-ops` by name (the `scripts/agent-ops` wrapper is gone, because `$M` did not survive between tool calls); one table decides how to answer each kind of message, so a `task send` round or a crew roster no longer draws an extra `RE:`; a pair opens with `Your turn: accept or decline` and a `pair-brief.md` template; it covers workers or peers that stop answering, worktree failures and cleanup, `ls --mine` at close-out, model choice through `--command`, and the Claude Code folder-trust prompt. Runs: nothing new.
+
 ## 2026-11-10
 * **Update**: the `agent-ops` skill adds pair mode: two harnesses as equals (driver/navigator, solve apart then merge, split and sync, discuss, advisor), plain harness sessions, not tasks: a partner is started with `spawn` or is a session already running, with an explicit `Your turn:` hand-off, no polling between turns, `PAIR DONE` to finish, a 10-message budget each, and only a spawned partner closed afterwards. Runs: nothing new.
 * **Update**: the `agent-ops` skill gives an editing agent its own git worktree when another agent works in the same repo, has a lead send a crew roster so workers can message each other, and tells the lead to close every task and session it started. Runs: nothing new.
