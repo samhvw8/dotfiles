@@ -5,7 +5,7 @@ description: "The herdr TUI, the Herdr desktop app and herdr-core: what each one
 resource: https://herdr.dev/
 tags: [herdr, agents, terminal, mise, homebrew]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-09T07:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-10T08:40:00Z }
 stale_after: 2027-02-09
 sources:
   - id: tui-agents
@@ -57,7 +57,7 @@ Both are installed, and these files are in this repository:
 | `home/.ccp/profiles/default/hooks/herdr-agent-state.sh` | Claude Code hook |
 | `home/.omp/agent/extensions/herdr-omp-agent-state.ts` | omp extension |
 
-herdr writes the hook command with an absolute home path, which fails on `/home/samhv`. The entry here is edited to use `$HOME`. After `herdr integration install claude` runs again, delete the extra absolute entry. `herdr integration uninstall claude` does not match the `$HOME` entry, so remove that entry by hand.
+herdr writes the hook command with an absolute home path, which fails on `/home/samhv`. The entry here is edited to use `$HOME`, and it calls the hook at its path in this repository, `$HOME/.dotfiles/home/.ccp/profiles/default/hooks/herdr-agent-state.sh`: `ccp bootstrap` (run by `dot:update`) removes the `~/.claude/hooks/herdr-agent-state.sh` link, because the hook is not a ccp hub item. After `herdr integration install claude` runs again, delete the extra absolute entry. `herdr integration uninstall claude` does not match the `$HOME` entry, so remove that entry by hand.
 
 # Socket path
 

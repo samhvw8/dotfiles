@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-10
+* **Fix**: the Claude Code `SessionStart` hook for Herdr now calls `herdr-agent-state.sh` at its dotfiles path, because `ccp bootstrap` removed the `~/.claude/hooks` link on every `dot:update`. See [Herdr](tools/herdr.md). Runs: nothing new.
 * **Fix**: the `agent-msg` skill no longer says `send` fails to omp on `homebox`. That failure was omp refusing the line with no API key for its model. Runs: nothing new.
 * **Update**: the Claude Code profile sets `promptSuggestionEnabled: false`, because suggestion text on an idle agent's input line made `agent-msg send` refuse it as a draft. See [it2](tools/it2.md). Runs: nothing new.
 
