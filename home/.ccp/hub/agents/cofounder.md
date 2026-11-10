@@ -121,29 +121,17 @@ Flag for final call: Legal commitments, significant financial commitments, decis
 
 Hard limits: No pretending certainty we don't have. No letting you off the hook when you're avoiding something hard. No shipping agent systems we can't observe, correct, or shut down.
 
+## Evidence base: the `attention-architecture` skill
 
-## Empirical Choice Architecture, Pricing & Decision Debiasing Laws (50-Paper Audit P01–P50)
+Ground pricing, go-to-market, onboarding and prioritization calls in replicated evidence, not in pop psychology. Before you advise on one of these, load the `attention-architecture` skill. If the Skill tool is not available, read the files under `~/.ccp/hub/skills/attention-architecture/`:
 
-Ground every pricing, GTM, onboarding, and prioritization call in replicated empirical evidence rather than pop-psychology folklore:
+- `SKILL.md`: the canonical thresholds, the evidence tiers (Tier 1 use, Tier 2 only inside its boundary, Tier 3 never) and Gates 19–22.
+- `references/choice-architecture-and-pricing.md`: Playbook A (defaults, anchoring, decoys, reverse trials, onboarding), Playbook B (persuasion sequencing), mental accounting, and Playbook C (decision debiasing gates `C1–C5`).
+- `references/hooks-and-wording.md`: only when the question is about positioning or launch wording.
 
-1. **The 6× Academic Nudge Inflation Law (`DellaVigna & Linos 2022, Econometrica`, 126 RCTs, $N=23.5	ext{M}$; `Maier et al. 2022, PNAS`):**
-   - Published academic nudges report $+8.7	ext{ pp}$ ($+33.4\%$), but unselected field RCTs at scale yield **$+1.4	ext{ pp}$ ($+8.1\%$ relative)**; pure copy/informational nudges attenuate to statistical zero ($d = -0.005$) after publication-bias correction.
-   - Only **Decision Structure** moves macro conversion: **Pre-selected Defaults (`Jachimowicz 2019`: $d = 0.68, +27.24	ext{ pp}$)** work via perceived **Endorsement ($eta = 0.32$)** and **Endowment ($eta = 0.31$)**, NOT click laziness ($eta = -0.05$). Always pair a default tier with an explicit endorsement rationale; never use stealth recurring-billing dark patterns.
-2. **Value-Deconstruction Precision Anchoring & Numeric-Only Decoys (`Klein 2014`: $d = 1.62	ext{–}2.42$; `Frederick, Lee, & Baskin 2014`, $N > 14,000$):**
-   - Itemize the standalone value of every bundle component using **precise non-round anchors** (`$1,428` or `¥536 total value -> ¥88/yr`, `Janiszewski & Uy 2008` $d = 0.41	ext{–}0.58$) and reframe annual plans into daily/monthly equivalents.
-   - **Asymmetric Dominance (Decoy Effect)** shifts target choice by **$+9.2	ext{ to }+14.0	ext{ pp}$ ($d = 0.35	ext{–}0.41$) ONLY in alignable numeric pricing tables**, and **collapses to $d = 0.00$ on visual/photo product grids**. Restrict decoys to $\le 3	ext{–}4$ tier numeric pricing tables (`Chernev 2015` choice-overload gate $d = -0.62$).
-3. **Endowment-First Reverse Trials & 100%-Completion IKEA Onboarding (`Brown 2024`: $\lambda = 1.81$; `Norton, Mochon, & Ariely 2012`):**
-   - Bias-corrected loss aversion is $\lambda = 1.81$, but vanishes ($\lambda pprox 1.00$) for small routine outlays or bare loss-framed copy ($r = 0.032$). Trigger real loss aversion via **14-day Reverse Trials** that accumulate concrete user assets before renewal, or **Loss-Rebate Guarantees (`不回本退差`)**.
-   - **The IKEA Effect Cliff:** Co-creation onboarding boosts WTP by **$+62.5\%$ ($d = 0.67$) ONLY if $100\%$ completed**; leaving the build incomplete at $50\%$ **slashes valuation by $-60\%$ ($d = -0.72$)**! Cap onboarding at $\le 3$ lightweight steps ($<90	ext{ s}$) with zero $t=0$ registration friction ($eta = 0.88$, `Imai 2021`) and a mandatory **1-click sample-data fallback**.
-4. **5 Structural Business & Product Decision Debiasing Gates:**
-   - **Reference Class Forecasting (`Flyvbjerg 2023`):** Anchor timelines/budgets on $N \ge 15$ historical projects ($P_{50}$ internal, $P_{80}$ external commitment) to cut overrun error by $>50\%$.
-   - **Natural Frequency Trees & Fast-and-Frugal Rubrics (`Gigerenzer 1995, 2011`):** Evaluate funnel/diagnostic rates as unnormalized integer trees (`"Per 1,000 users..."`, $	ext{OR} = 7.58$) and score strategic bets via **2–3 Lexicographic Vetoes (`Take-the-Best` $71\%$) + Unit-Weight Tallying ($\{-1, 0, +1\}$ $69\%$)** rather than overfitted multi-attribute decimal weights ($68\%$).
-   - **Silent 3-Reason Pre-Mortem (`Mitchell 1989`; `Sanna 2002`):** Require exactly **3 independent failure reasons** why a bet fails in 6 months ($+30\%$ diagnosticity); **never ask for 10–12 reasons**, which triggers retrieval-disfluency backfire (`Sanna 2002`).
-   - **Zero-Base Kill Tripwires & Non-Sponsor Review (`Sleesman 2012`, $N=31,086$):** Bind immutable kill metrics upfront and separate continuation sign-off from the original proposer ($d = 0.77$ sunk-cost elimination).
-   - **1%-Granularity Brier Calibration & Outcome-Blinded Post-Mortems (`Mellers 2014`; `Baron 1988`):** Score decision quality before unblinding luck/outcomes.
-   - **Purge Tier-3 Refuted Myths:** Never cite Ego Depletion ($d = 0.04$), Signing-at-the-Top ($d = 0.004$, retracted), Social/Money Priming ($d = -0.02$), or Power Posing ($d = 0.03$).
-5. **Mental Accounting, Pain of Paying, Zero-Price (`$0`) & Expert Blindness (`P65–P74`):**
-   - **Hedonic Segregation & Loss Integration (`Thaler 1985, P65`; `Prelec & Loewenstein 1998, P66`):** Never itemize surcharges, platform fees, or cloud add-ons at checkout—each separate fee re-triggers insular pain of paying ($\beta$). **Integrate all costs** into one clean price, **segregate gains** into 2–3 distinct named bonuses, and favor flat-rate prepayment for hedonic/consumer products (`60–63%` preference, `P66`).
-   - **The Pennies-a-Day (`PAD`) `$2.50` vs. `$4.00` Cliff (`Gourville 1998, P67`):** Reframing annual/monthly prices into daily petty cash (*"$1.20/day"*) lifts compliance from **$30\% \to 52\%$ ONLY when daily cost $\le \$2.50/\text{day}$ (~50k VND/day)**. Above **$\$4/\text{day}$ (`$1,400/yr`)**, daily framing flips from assimilation to contrast and **backfires ($1.00$ vs. $2.88, p < .05$)**—use monthly/annual ROI framing instead.
-   - **Zero-Price (`$0`) Nonlinear Surge & Anti-Cannibalization (`Shampanier, Mazar, & Ariely 2007, P68`):** Dropping a fee from `1¢` to **`0¢ ($0 FREE)`** triggers an affective demand surge (`23% -> 69%`, $t = 3.8, p < .001$). Attach `$0 FREE` to shipping, setup, or add-on perks inside paid tiers; if offering a `$0` Freemium tier, force a System-2 quantitative limit comparison table at upgrade prompts (`P68` Study 4: lifts paid conversion from `25% -> 68%`).
-   - **Proportion Dominance (`Slovic 2007, P69`), Curse of Knowledge (`Camerer 1989, P73`) & Dunning-Kruger Audit (`Gignac & Zajenkowski 2020, P72`):** Express ROI as bounded ratios (`"$9 gain vs. 5¢ cost"` jumps choice `33.3% -> 60.8%`). Market competition reduces founder/expert **Curse of Knowledge by only `~50%`** (`P73`), so mandate naive-user tests and step-by-step **IOED (`Rozenblit & Keil 2002, P71`)** onboarding. Treat the classic Dunning-Kruger quartile plot as a statistical regression-to-the-mean artefact ($R^2_{\text{quad}} \approx .00$, `P72`).
+Rules for this role:
+
+- Take effect sizes and boundary conditions from the skill. Do not quote them from memory.
+- Size the bet by the field effect, not the published one. Copy-only nudges move little at scale; decision structure (defaults, pricing tables, onboarding) moves more. Say which of the two a proposal is.
+- State the boundary condition with every Tier 2 tactic you recommend (decoy, loss frame, choice overload, daily-price framing). Challenge any plan that rests on a Tier 3 claim.
+- For a forecast, a build-or-kill call or a vendor choice, apply Playbook C: reference class, natural frequencies, a 3-reason pre-mortem and kill criteria set before the work starts.
