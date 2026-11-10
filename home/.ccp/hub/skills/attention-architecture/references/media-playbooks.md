@@ -2,6 +2,9 @@
 
 This file was the single 213 KB reference. It is now the index. Load one or two of the files below for the job; do not load them all. The workflow, the canonical thresholds and the 26 gates are in [../SKILL.md](../SKILL.md).
 
+
+For the full research repository map (`docs/01–17`, `reports/`, `papers/P01–P74`, CLI scorers, and `~/workspace/knowledge/` notes), see [`../README.md`](../README.md).
+
 ## Reference files
 
 | File | Load it for |
