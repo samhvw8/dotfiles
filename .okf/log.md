@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-10
+* **Update**: the Claude Code profile sets `promptSuggestionEnabled: false`, because suggestion text on an idle agent's input line made `agent-msg send` refuse it as a draft. See [it2](tools/it2.md). Runs: nothing new.
+
 ## 2026-11-09
 
 - **Update**: Upgraded `home/.ccp/hub/skills/attention-architecture/SKILL.md`, `references/media-playbooks.md`, `home/.ccp/hub/agents/copywriter.md`, and `home/.ccp/hub/agents/cofounder.md` with Wave 10 Psycholinguistics, Attention-Grabbing Wording, Syntactic Engineering & Mental Biases (`P51–P74`, 10 bilingual wording formulas, 24 before/after rewrites, Tier 1/2/3 mental biases matrix, and Audit Gates 23–26).
