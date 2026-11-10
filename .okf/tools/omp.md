@@ -5,7 +5,7 @@ description: "Which parts of ~/.omp/agent live in this repository, which ccp wri
 resource: https://github.com/samhvw8/dotfiles/tree/main/home/.omp/agent
 tags: [omp, ccp, agents, hooks]
 status: stable
-generated: { by: google-antigravity/gemini-4-argon, at: 2026-11-06T11:00:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-10T09:00:00Z }
 sources:
   - id: omp-dir
     resource: https://github.com/samhvw8/dotfiles/tree/main/home/.omp/agent
@@ -16,6 +16,9 @@ sources:
   - id: claude-mcp
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/setup-claude-mcp.sh
     title: setup-claude-mcp.sh
+  - id: omp-models-doc
+    resource: https://github.com/can1357/oh-my-pi/blob/main/docs/models.md
+    title: omp model selection and availability
 ---
 
 # Who owns what in `~/.omp/agent`
@@ -43,6 +46,19 @@ After `mise bootstrap` links `home/.omp/agent/` and `ccp bootstrap` runs, run `c
 
 `AGENTS.md` is a symlink to the profile's `CLAUDE.md` (`home/.ccp/profiles/default/CLAUDE.md`), which serves as the single source of truth for both Claude Code and `omp` (including `omp`'s `eval` Code Mode, `web_search` / `read`, and orchestrator-and-verifier delegation), so a change to the global instructions reaches `omp` with zero LLM sync cost and zero drift. `ccp` replaces only links it made, so an agent link made another way goes stale on unlink: delete it and run `ccp omp sync`. omp skips an agent whose frontmatter is not valid YAML (quote a `description:` that contains `: `) or that sets `model: inherit` without a `task.agentModelOverrides` entry in `config.yml`; Claude Code treats an omitted `model` the same as `inherit` when `CLAUDE_CODE_SUBAGENT_MODEL` is unset, so leave the line out.
 
+# A machine without a provider's key
+
+`models.yml` defines `tokenharbor`, whose key comes from `TOKENHARBOR_API_KEY`. omp counts a provider with a configured key command as available without running the command, and when the default model cannot start it falls back to the first available model.[^omp-models-doc] On a machine without the key, omp could start on DeepSeek V4.1 Flash and then refuse every prompt with `No API key found for tokenharbor`; `me.ubuntu.home` did this on 2026-11-09.
+
+On such a machine, disable the provider with a machine-local overlay:
+
+1. Write `~/.config/omp/local.yml` with `disabledProviders: [tokenharbor]`.
+2. Set `PI_CONFIG_FILES = "{{env.HOME}}/.config/omp/local.yml"` in `[env]` of `~/.config/mise/config.local.toml`.
+3. Open a new shell and check that `omp models` no longer lists `tokenharbor`.
+
+An overlay is strict: if the file is missing, omp refuses to start. `me.ubuntu.home` uses this overlay.
+
 [^omp-dir]: home/.omp/agent
 [^dotfiles-conf]: Shared dotfiles config
 [^claude-mcp]: setup-claude-mcp.sh
+[^omp-models-doc]: omp model selection and availability

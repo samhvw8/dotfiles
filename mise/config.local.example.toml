@@ -18,6 +18,9 @@
 # oh-my-pi (omp) web_search: its SearXNG provider speaks the Parallax scraper's /search API
 # SEARXNG_ENDPOINT = "{{env.PARALLAX_SCRAPER_URL}}/omni"
 # SEARXNG_TOKEN = "{{env.PARALLAX_SCRAPER_TOKEN}}"
+# omp on a machine without TOKENHARBOR_API_KEY: the file holds `disabledProviders: [tokenharbor]`,
+# so omp never falls back to a model it has no key for. The file must exist (see .okf/tools/omp.md).
+# PI_CONFIG_FILES = "{{env.HOME}}/.config/omp/local.yml"
 
 # --- OpenRouter: the Parallax scraper's LLM provider (source of truth: ~/creds/openrouter-uben)
 # OPENROUTER_API_KEY = ""
