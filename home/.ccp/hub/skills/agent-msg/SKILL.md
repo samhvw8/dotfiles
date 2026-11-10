@@ -42,9 +42,9 @@ to list every backend. A target like `hc:t7` routes by itself. On Herdr, `--wher
 is ignored and `spawn` is refused until the Herdr app has been opened. A new agent
 opens as a tab in your own Herdr space, or from outside Herdr in its folder's space.
 
-An agent on another machine is `hc:homebox/t7`. `ls`, `read` and `wait-idle` work
-there. `send` works to Claude Code but not yet to omp on `homebox`: the text stays
-on the input line, unsent.
+An agent on another machine is `hc:homebox/t7`. `ls`, `read`, `wait-idle` and `send`
+work there. If `send` says the text stayed on the input line, `read` the pane: the
+harness itself may have refused it, for example omp with no API key for its model.
 
 ## Find the right pane
 
