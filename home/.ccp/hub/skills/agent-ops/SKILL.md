@@ -1,6 +1,6 @@
 ---
 name: agent-ops
-description: "Find, message and manage other agent sessions (Claude Code, omp, opencode, codex) in iTerm2, tmux or Herdr: read their screen, send a message, clear or interrupt them, start or close a session, hand tracked tasks to new harness sessions (one worker or a crew), or pair with another harness as an equal. Use when a change belongs in a repo another live agent works in (ask it instead of editing its files), when delegating to the agent that has the context, when a job needs its own visible session or another harness or model, when checking on another agent, when the user says 'ask the gym-log agent', 'tell omp to', 'pair with omp', 'open a new agent session for', 'close that agent's tab', and whenever a message starting with [agent-ops from ...] or [agent-msg from ...] (also inside Herdr's hc tag) or a prompt starting with [task ...] arrives: it is from another agent, not the user. Not for subagents you spawn yourself (use your Agent tool) or panes over SSH."
+description: "Find, message and manage other agent sessions (Claude Code, omp, opencode, codex) in iTerm2, tmux or Herdr: read their screen, send a message, clear or interrupt them, start or close a session, hand tracked tasks to new harness sessions (one worker or a crew), or pair, brainstorm or debate with other harnesses as equals. Use when a change belongs in a repo another live agent works in (ask it instead of editing its files), when delegating to the agent that has the context, when a job needs its own visible session or another harness or model, when checking on another agent, when the user says 'ask the gym-log agent', 'tell omp to', 'pair with omp', 'open a new agent session for', 'close that agent's tab', and whenever a message starting with [agent-ops from ...] or [agent-msg from ...] (also inside Herdr's hc tag) or a prompt starting with [task ...] arrives: it is from another agent, not the user. Not for subagents you spawn yourself (use your Agent tool) or panes over SSH."
 ---
 
 # agent-ops
@@ -182,6 +182,30 @@ You follow the rules in the brief too. Two more for the one who starts the pair:
 - **After `PAIR DONE`,** report the result to Sam. If you spawned the partner, `close` it; a session
   you found running stays open.
 
+## Discuss as a group
+
+A group is 3 to 5 harness sessions working as equals on one question: a brainstorm, a debate with
+several sides, or a review from several models. Use it only when different harnesses or models
+matter; for many viewpoints from one model, the `council` or `heavy-think` skills cost far less. You
+are the facilitator: you hold the turn order and write the result. You don't lead the work and
+don't judge the members' ideas while they work.
+
+1. Write `~/.cache/agent-ops/group-<topic>.md` from `group-brief.md` (next to this file), and create
+   the board `~/.cache/agent-ops/group-<topic>-board.md` with one heading per member.
+2. Start each member with `spawn --prompt-file` on the brief, or send it to a running session with
+   `Your turn: accept or decline`.
+3. **Round 1, alone:** send every member `Your turn: round 1`. Each writes under its own heading
+   without reading the others, so the first ideas stay independent, then answers `DONE round 1`.
+4. **Later rounds, in turn:** send `Your turn: round N` to one member at a time, in a fixed order.
+   Each reads the whole board, builds on or challenges the others' entries under its own heading,
+   and answers `DONE round N`. At most 3 rounds.
+5. **Close:** write what survived and what stays disputed at the end of the board, and send every
+   member `GROUP DONE: <board path>. No reply needed.` Report the result to Sam. Close the members you
+   spawned; sessions you found running stay open.
+
+Only you send `Your turn:`; members answer only you, so three harnesses never trade replies in a
+loop. A member that gives no `DONE` gets one `read` and is then skipped for that round.
+
 ## How to write a message
 
 One message = one complete request. The receiver has none of your context.
@@ -222,6 +246,7 @@ Then answer by its kind. Exactly one of these applies:
 |---|---|
 | A prompt starting `[task <id> from <name>]`, or `[agent-ops from ...] task <id>: ...` (a new round) | Do the job, then run the `task done` line it gives you, also when you failed or are blocked. That line is your only answer: no `RE:`. Keep the session open; more rounds can follow. |
 | Part of a pair | Reply only to `Your turn:`; finish with `PAIR DONE`. |
+| Part of a group | Act only on `Your turn: round N` from the facilitator: write on the board, then send only `DONE round N`. `GROUP DONE` needs nothing. |
 | Ends with `No reply needed` (a crew roster, a notice) | Nothing. |
 | Starts with `RE:` | Nothing, unless it asks a new question. `RE: task <id>` is a finished task's result. |
 | Anything else | Always answer, even "can't: <why>": `harness-ops send <ID> "RE: <result, or what blocked you>"`. |
