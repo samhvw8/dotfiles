@@ -1,0 +1,6 @@
+name: herdr-agent-state
+type: SessionStart
+matcher: "^(startup|resume|clear|compact|fork)$"
+timeout: 10
+command: herdr-agent-state.sh session
+interpreter: bash

@@ -5,7 +5,7 @@ description: "The herdr TUI, the Herdr desktop app and herdr-core: what each one
 resource: https://herdr.dev/
 tags: [herdr, agents, terminal, mise, homebrew]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-10T08:40:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-10T09:30:00Z }
 stale_after: 2027-02-09
 sources:
   - id: tui-agents
@@ -53,11 +53,10 @@ Both are installed, and these files are in this repository:
 
 | File | Note |
 |------|------|
-| `home/.ccp/profiles/default/settings.json` | One `SessionStart` entry. herdr resolves the symlink before it writes. |
-| `home/.ccp/profiles/default/hooks/herdr-agent-state.sh` | Claude Code hook |
+| `home/.ccp/hub/hooks/herdr-agent-state/` | Claude Code hook, a ccp hub hook linked to the `default` profile; ccp writes its `SessionStart` entry into `settings.json` |
 | `home/.omp/agent/extensions/herdr-omp-agent-state.ts` | omp extension |
 
-herdr writes the hook command with an absolute home path, which fails on `/home/samhv`. The entry here is edited to use `$HOME`, and it calls the hook at its path in this repository, `$HOME/.dotfiles/home/.ccp/profiles/default/hooks/herdr-agent-state.sh`: `ccp bootstrap` (run by `dot:update`) removes the `~/.claude/hooks/herdr-agent-state.sh` link, because the hook is not a ccp hub item. After `herdr integration install claude` runs again, delete the extra absolute entry. `herdr integration uninstall claude` does not match the `$HOME` entry, so remove that entry by hand.
+The hook is a ccp hub item, so `ccp bootstrap` keeps its link and every machine gets it from `profile.toml`. herdr's own install writes `~/.claude/hooks/herdr-agent-state.sh` and a second `SessionStart` entry with an absolute home path, which fails on `/home/samhv`. After `herdr integration install claude` runs again, copy its new script over `home/.ccp/hub/hooks/herdr-agent-state/scripts/herdr-agent-state.sh`, then delete the file it wrote and its extra entry. `herdr integration uninstall claude` does not find the hub entry: unlink it with `ccp unlink default hooks/herdr-agent-state`.
 
 # Socket path
 

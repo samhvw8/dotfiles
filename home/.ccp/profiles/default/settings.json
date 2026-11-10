@@ -83,7 +83,7 @@
       {
         "hooks": [
           {
-            "command": "bash $HOME/.dotfiles/home/.ccp/profiles/default/hooks/herdr-agent-state.sh session",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/herdr-agent-state/scripts/herdr-agent-state.sh session",
             "timeout": 10,
             "type": "command"
           }
