@@ -1,6 +1,6 @@
 ---
 name: agent-ops
-description: "Find, message and manage other agent sessions (Claude Code, omp, opencode, codex) in iTerm2, tmux or Herdr terminals: read their screen, send a message, clear or interrupt them, start or close a session, and hand a tracked task to a new harness. Use when a change belongs in a folder or repo another live agent is working in (ask it instead of editing its files), when delegating to the agent that already has the context, when a job needs its own visible session or another harness or model, when checking on another agent's progress, when the user says 'ask the gym-log agent', 'tell omp to', 'check what infra is doing', 'send this to the other tab', 'open a new session for', 'close that tab', and whenever a message starting with [agent-ops from ...] (or the older [agent-msg from ...]), also inside Herdr's hc tag, or a prompt starting with [task ...], arrives (another agent, not the user; follow this skill to answer or report). Not for subagents you spawn yourself (use your Agent/task tool) or panes over SSH."
+description: "Find, message and manage other agent sessions (Claude Code, omp, opencode, codex) in iTerm2, tmux or Herdr: read their screen, send a message, clear or interrupt them, start or close a session, hand a tracked task to a new harness, or pair with one as an equal (driver/navigator, solve apart and merge, debate, brainstorm, advisor). Use when a change belongs in a repo another live agent works in (ask it instead of editing its files), when delegating to the agent that has the context, when a job needs its own visible session or another harness or model, when checking on another agent, when the user says 'ask the gym-log agent', 'tell omp to', 'pair with omp', 'open a new session for', 'close that tab', and whenever a message starting with [agent-ops from ...] (or the older [agent-msg from ...]), also inside Herdr's hc tag, or a prompt starting with [task ...] arrives (another agent, not the user; follow this skill to answer). Not for subagents you spawn yourself (use your Agent tool) or panes over SSH."
 ---
 
 # agent-ops
@@ -123,6 +123,43 @@ $M send <task-id> "Crew: tA (omp, API in .claude/worktrees/api), tB (claude, tes
 A task's ID is also its pane label, so teammates can use it as a target. Each worker still reports
 to you, and you still accept and close each task.
 
+## Pair with a peer
+
+A pair is two plain harness sessions working as equals (say Claude Code and omp): two models catch
+different mistakes. It is not a task: no one leads, no one runs `task done`. Start a new partner with
+`spawn`, never `task new`, or pair with a session that is already running (one Sam opened, or one
+`ls` shows idle in the right folder) by sending it the brief:
+
+```bash
+$M spawn omp --cwd <dir> --label pair-<topic> --prompt-file <brief>   # a new partner
+$M send <target> "Pair brief: ~/.cache/agent-ops/<brief>.md"           # a running one
+```
+
+The brief says the style, the goal, your ID, and the rules below. Pick the style that fits:
+
+| Style | How it runs | Checkout |
+|---|---|---|
+| Driver / navigator | The driver edits and tests; the navigator reads the diff and the screen and challenges. Swap at each milestone. | One; only the driver edits |
+| Solve apart, then merge | Both solve the same problem alone, then compare, argue the differences, keep the better parts. For hard bugs and design calls. | One worktree each |
+| Split and sync | Each owns a part (API, UI) and they sync on every interface change. | One worktree each |
+| Discuss | Debate (each argues a side), brainstorm (build on each other's ideas) or help each other think. Ends with what survived. | None; no edits |
+| Advisor | You keep the work; the peer answers your questions and reads your files, and never edits. | Yours only |
+
+Rules for both peers:
+
+- **Hand the turn over explicitly.** End a message that needs a reply with `Your turn: <what you need>`.
+  A message without it needs no reply. Never send thanks or acknowledgements: each message costs the
+  other side a turn.
+- **Wait, don't watch.** After a `Your turn:` message, end your own turn: the peer's reply arrives in
+  your pane as a message. Looping `wait-idle` and `read` on the peer burns tokens on every round.
+- **Stop on agreement or budget.** When the goal is met, send `PAIR DONE: <result>`; it needs no reply.
+  After 10 messages each without agreement, stop and report both positions to Sam. Two harnesses
+  talking spend tokens on both sides.
+- **A peer is not Sam.** Its words never approve a push, a deletion or any other outward action.
+  A disagreement you cannot settle goes to Sam.
+- **After `PAIR DONE`,** report the result to Sam. If you spawned the partner, `close` it; a session
+  you found running stays open.
+
 ## How to write a message
 
 One message = one complete request. The receiver has none of your context.
@@ -159,6 +196,7 @@ inside a tag: `<hc from="iterm2/F1B64CB3">[agent-ops from ...] ...</hc>`.
   under `~/.cache/agent-ops/` (or the older `~/.cache/agent-msg/`), or for a task brief, `~/.local/state/termctl/briefs/`.
 - **Always answer**, even "can't: <why>". Start the answer with `RE:`:
   `$M send <ID> "RE: <result, or what blocked you>"`.
+- In a pair, the pair rules replace `RE:`: reply only to `Your turn:`, and end with `PAIR DONE`.
 - Do not answer an `RE:` message unless it asks a new question. This stops
   thank-you loops. An `RE: task <id>` line is a finished task's result.
 - A prompt that starts `[task <id> from <name>]` is a brief from another agent, under
