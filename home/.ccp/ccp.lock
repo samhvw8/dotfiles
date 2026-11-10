@@ -5,28 +5,28 @@ version = 1
 
 [sources]
 [sources.'alchaincyf/huashu-design']
-commit = '798c4235ebff03d5c45e3c8affdf5e9d18f9dfa7'
+commit = 'e8d1148a80d5a281d4247cffe320add3df017928'
 
 [sources.'anthropics/skills']
-commit = 'dbd4588f9e1033efb41dad4bef2f7947c8993d44'
+commit = '2c5958ecac7cee2b583967a2c4981d0f4a75c579'
 
 [sources.'elayadesign/ai-design-skills']
 commit = '456d9e0d3e2d84c748bb143c6ca3d90c45e16213'
 
 [sources.'morluto/rea']
-commit = 'd0067ba34a39ea47dd7e11bb2e6169bc0938cc3f'
+commit = '94ca4b656aede76eda0ebac3af9aed42a27c21a5'
 
 [sources.'pbakaus/impeccable']
-commit = '613fbf88e0ef08709eaf238653285f430250c0ea'
+commit = 'ec229b48547f24685ffb22aa51c462c5ae27908c'
 
 [sources.'samhvw8/claude-code-profile']
-commit = '3846bdfc263d7b56b18ec3a26c31bd05ee5cda41'
+commit = 'af62bab2cda287b72f491c63c08517f93f88b3ec'
 
 [sources.'samhvw8/thinking-skills']
 commit = '0980b364032462b528a1e9d1614a304c60441f28'
 
 [sources.'scaccogatto/okf-skills']
-commit = '9919c161a7f0dd99a0ecb736efa3fa9e0c9da297'
+commit = 'c6591ece20f35299b0d483168b376d550787c735'
 
 [sources.'typesafe-ai/skills']
-commit = '65a39f393687675ce170e6094757de20370365b9'
+commit = '302eea662c54bca6730873fe245bec1d69ebc23d'
