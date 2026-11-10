@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-10
+* **Update**: the `agent-ops` skill gives an editing agent its own git worktree when another agent works in the same repo, has a lead send a crew roster so workers can message each other, and tells the lead to close every task and session it started. Runs: nothing new.
 * **Update**: the hub skill `agent-msg` is now `agent-ops` (`hub/skills/agent-ops/`, script `scripts/agent-ops`), and it tells agents to leave `--where` out: harness-ops now splits the caller's tab for the same project and opens other projects in a tab beside the caller's. See [it2](tools/it2.md). Runs: nothing new.
 * **Update**: the Herdr Claude Code hook is now the hub hook `herdr-agent-state`, linked to the `default` profile, so ccp writes its settings entry and keeps its link. See [Herdr](tools/herdr.md). Runs: nothing new.
 * **Fix**: omp on `me.ubuntu.home` started on a `tokenharbor` model it had no key for, because omp falls back to any provider with a configured key command. A machine-local overlay now disables `tokenharbor` there; the key `PI_CONFIG_FILES` is in `config.local.example.toml`. See [omp](tools/omp.md). Runs: nothing new.

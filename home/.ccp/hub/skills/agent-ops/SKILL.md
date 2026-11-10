@@ -87,9 +87,41 @@ Leave `--where` out. Its default, `auto`, puts the agent where Sam looks for it:
 - Write the brief as a complete request: the worker has none of your context.
 - After starting, wait with `task wait` or let the `RE: task` message arrive.
 - **The lead owns done.** A worker's `task done` means ready for you. Check the work, then `task accept <id> --close`.
+- **Close what you start.** An open harness keeps its tab, memory and MCP servers running, and Sam should
+  not have to clean up after you. Close each accepted task with `task accept <id> --close`, and each
+  `spawn` session with `close <target>` once its job is done. Before you report your own work finished,
+  run `task ls` and close or hand over anything still open.
 - **Same-session review is the default.** Send findings with `task send <id> "..."`. The worker has the files loaded, and this opens the next round.
 - **Use a blind review** when you need a verdict the worker's own reasoning cannot color: `task review <id> --blind`. It starts a new session that gets the requirements and the files, not the worker's report. Claude Code runs it read-only; other harnesses warn and can change files.
 - `exited` means the harness is gone but its tab is still open: `read` the screen for the error.
+
+## Give an editing agent its own worktree
+
+Two agents editing one checkout overwrite each other's files and mix their changes in `git status`.
+When the new agent (omp or any other harness) will change files in a repo where you or another agent
+is also working, give it its own worktree and branch:
+
+```bash
+git -C <repo> worktree add <repo>/.claude/worktrees/<task> -b agent/<task>
+$M task new omp --title "<task>" --cwd <repo>/.claude/worktrees/<task> --brief "..."
+```
+
+Say in the brief that it works on branch `agent/<task>` and commits there. A worktree is still the
+same project, so it opens as a split in your tab. Skip it for read-only work (review, research) and
+for a repo nobody else is editing. After you accept the task, merge the branch, then
+`git -C <repo> worktree remove <repo>/.claude/worktrees/<task>`.
+
+## Run a crew
+
+Workers started together don't know about each other. Start them all first, then send each one the
+roster, so they settle interfaces and file ownership between themselves instead of through you:
+
+```bash
+$M send <task-id> "Crew: tA (omp, API in .claude/worktrees/api), tB (claude, tests in .claude/worktrees/tests). Message a teammate with agent-ops for anything you need from them; report to me only through task done."
+```
+
+A task's ID is also its pane label, so teammates can use it as a target. Each worker still reports
+to you, and you still accept and close each task.
 
 ## How to write a message
 
