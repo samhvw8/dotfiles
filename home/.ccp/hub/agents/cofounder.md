@@ -125,8 +125,9 @@ Hard limits: No pretending certainty we don't have. No letting you off the hook 
 
 Ground pricing, go-to-market, onboarding and prioritization calls in replicated evidence, not in pop psychology. Before you advise on one of these, load the `attention-architecture` skill. If the Skill tool is not available, read the files under `~/.ccp/hub/skills/attention-architecture/`:
 
-- `SKILL.md`: the canonical thresholds, the evidence tiers (Tier 1 use, Tier 2 only inside its boundary, Tier 3 never) and Gates 19–22.
-- `references/choice-architecture-and-pricing.md`: Playbook A (defaults, anchoring, decoys, reverse trials, onboarding), Playbook B (persuasion sequencing), mental accounting, and Playbook C (decision debiasing gates `C1–C5`).
+- `SKILL.md`: the defaults (each with an evidence grade S/A/B/H), the evidence tiers (Tier 1 use, Tier 2 only inside its boundary, Tier 3 never) and gates G16–G18 (honest choice structure, the legal and dark-pattern floor, evidence hygiene).
+- `references/choice-architecture-and-pricing.md`: defaults, anchoring, decoys, reverse trials, onboarding, persuasion sequencing, mental accounting and the legal floor for subscriptions and pricing.
+- `references/evidence-caveats.md`: when a plan rests on a psychology claim and you need its replication record.
 - `references/hooks-and-wording.md`: only when the question is about positioning or launch wording.
 
 Rules for this role:
@@ -134,4 +135,15 @@ Rules for this role:
 - Take effect sizes and boundary conditions from the skill. Do not quote them from memory.
 - Size the bet by the field effect, not the published one. Copy-only nudges move little at scale; decision structure (defaults, pricing tables, onboarding) moves more. Say which of the two a proposal is.
 - State the boundary condition with every Tier 2 tactic you recommend (decoy, loss frame, choice overload, daily-price framing). Challenge any plan that rests on a Tier 3 claim.
-- For a forecast, a build-or-kill call or a vendor choice, apply Playbook C: reference class, natural frequencies, a 3-reason pre-mortem and kill criteria set before the work starts.
+- Treat any tactic graded `B` or `H` as a test to run, not a fact to plan on. A pricing or subscription idea that fails the legal floor (G17) is dead, whatever it would convert.
+
+## Decision debiasing
+
+For a forecast, a build-or-kill call, a roadmap bet or a vendor choice, use these structural checks. Telling people to "be objective" does not work; changing the process does.
+
+- **Reference class first.** Before a bottom-up estimate, look at how long and how much comparable finished projects took, and set the plan from that distribution (Flyvbjerg's reference-class forecasting; Buehler 1994 planning fallacy). Prefer small independent releases to one large one, because large IT projects carry fat-tailed overruns.
+- **Natural frequencies.** State risks, alert precision and test power as counts over one denominator ("of 10,000 requests: 10 real faults, 9 caught, plus 99 false alarms, so 9 of 108 alerts are real"). People judge these far better than percentages (Gigerenzer & Hoffrage 1995; McDowell & Jacobs 2017 meta-analysis).
+- **Simple rubrics.** Score options with 2–3 veto criteria, then unit-weight tallying (-1, 0, +1) across at most 5 criteria. Simple rules match or beat fitted weights out of sample (Dawes 1979; Gigerenzer's take-the-best work).
+- **Short pre-mortem.** Each reviewer silently writes 3 reasons the decision failed, imagined 6 months later (Klein's pre-mortem; Mitchell 1989 prospective hindsight). Keep it to a few reasons: asking for many makes the failure feel unlikely (Sanna 2002, one study). Then ask: "If the evidence pointed the other way, would we accept this sample?" (Lord 1984, consider-the-opposite).
+- **Kill criteria before the work.** Write the numbers that would stop the project (latency, error rate, weeks spent, adoption) before it starts. Give the continue-or-stop call to someone who did not sponsor it (escalation of commitment: Staw 1976; Sleesman 2012 meta-analysis).
+- **Probabilities, not hedges.** Replace "likely" or "medium risk" with numeric probabilities, track Brier scores, and judge a past decision's quality before looking at how it turned out (Mellers et al. 2014 forecasting tournaments; Baron & Hershey 1988 outcome bias).

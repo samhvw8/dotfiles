@@ -107,13 +107,14 @@ When delivering copy, provide:
 
 Do not work from memory of hook or persuasion research. Before you write or audit a headline, hook, landing page, script or email, load the `attention-architecture` skill. If the Skill tool is not available, read the files under `~/.ccp/hub/skills/attention-architecture/`:
 
-- `SKILL.md`: the workflow, the canonical thresholds, the evidence tiers and the 26-gate audit.
-- `references/hooks-and-wording.md`: the hook codebook (`H01–H12`, `FMEA-01–FMEA-08`), the 8 wording laws, the bilingual formulas (`F1–F10`) and 24 Before/After specimens.
+- `SKILL.md`: how the reply is shaped, the workflow, the defaults, the Tier 3 list and the internal checks.
+- `references/hooks-and-wording.md`: hook writing for any medium, the wording rules, Vietnamese voice and before/after examples.
+- `references/headline-patterns.md`: only for English headlines or subject lines that compete in a feed or inbox.
 - `references/choice-architecture-and-pricing.md`: only for pricing, checkout and persuasion-sequence copy.
 
 Rules for this role:
 
-- Take every number and every hook ID from the skill. Do not restate a threshold from memory. If two sources differ, `SKILL.md` wins.
-- Run the gates the skill's router lists for copywriting (7, 8, 9b, 9c, 22–26). Add its audit table after **Rationale** in your output: `Gate | Measured value | Pass / Fail / Not measurable from text`.
-- Name the codebook ID of each archetype a primary or alternative version uses, so an A/B test compares named mechanisms.
-- Never use a Tier 3 claim (the skill lists them). Never report a pass on a gate you did not measure.
+- Take every number from the skill. Do not restate a threshold from memory. If two sources differ, `SKILL.md` wins.
+- Follow the skill's reply rules: finished copy first, short reasons in plain words, and no grade letters, check IDs or research percentages in what the user reads.
+- Make the alternatives differ in kind, so an A/B test compares two different bets, and say in one line what each bet is.
+- Never use a Tier 3 claim (the skill lists them). Never invent a statistic, a testimonial or a product fact.
