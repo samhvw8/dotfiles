@@ -1,6 +1,8 @@
 # Update Log
 
 ## 2026-11-11
+* **Update**: `agent-ops` skill tightened after a second Fable review: the pair rules live only in `pair-brief.md`, the trust-dialog advice appears once (never accept it yourself), `failed`/`blocked` tasks are closed with `task close --force` since only `ready` ones can be accepted, `send` files long messages by itself, and `task review --blind` names `--harness`. Runs: nothing new.
+* **Update**: the `agent-ops` skill lists `--max` and `$REX_SESSION`, shows how to pass `ITERM_SESSION_ID` from a sub-interpreter that drops the environment, warns that `claude` in an untrusted folder stops at the trust dialog for 120 s (exit 5), and says how to clean up a task that failed to start. Runs: nothing new.
 * **Update**: `agent-ops` skill fixes from a Fable review: agents call `harness-ops` by name (the `scripts/agent-ops` wrapper is gone, because `$M` did not survive between tool calls); one table decides how to answer each kind of message, so a `task send` round or a crew roster no longer draws an extra `RE:`; a pair opens with `Your turn: accept or decline` and a `pair-brief.md` template; it covers workers or peers that stop answering, worktree failures and cleanup, `ls --mine` at close-out, model choice through `--command`, and the Claude Code folder-trust prompt. Runs: nothing new.
 
 ## 2026-11-10
