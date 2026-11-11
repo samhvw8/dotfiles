@@ -102,9 +102,12 @@ Leave `--where` out. Its default, `auto`, puts the agent where Sam looks for it:
 - **Use a blind review** when you need a verdict the worker's own reasoning cannot color:
   `task review <id> --blind --harness claude`. It starts a new session that gets the requirements and the files, not
   the worker's report. Claude Code runs it read-only unless you pass `--command`; other harnesses can change files.
-- **A task that failed to start.** `task new` exited 4 or 5 and printed no ID: the task is `failed`
-  and its pane is still open. `read` the pane, get the ID from `task ls`, then
-  `task close --force <id>`. Exit 6 is a limit (6 running, 2 deep, a busy `--reuse` pane): nothing started.
+- **A task that failed to start.** `task new` exited 4 or 5 and printed no ID: the task is `failed`,
+  its pane is still open, and the worker never got the brief. `read` the pane, get the ID from
+  `task ls`, then run `task close --force <id>` in the same turn. Do not leave the pane open while you
+  ask Sam: nothing is lost by closing, and a restart is one command. Then tell Sam what blocked it and
+  what restarts it. Do not clear the blocker yourself (a trust dialog, a missing key, a draft on the
+  line). Exit 6 is a limit (6 running, 2 deep, a busy `--reuse` pane): nothing started.
 - **A worker that stops answering.** `task wait` exits 5 on timeout, and `exited` means the harness is
   gone but its tab is open. `read` the worker once. If it is stuck (a permission prompt, out of
   context, crashed), `task close --force <id>`, tell its crew who is gone, and report to Sam before you
@@ -118,8 +121,16 @@ Leave `--where` out. Its default, `auto`, puts the agent where Sam looks for it:
 ## Give an editing agent its own worktree
 
 Two agents editing one checkout overwrite each other's files and mix their changes in `git status`.
-When the new agent (omp or any other harness) will change files in a repo where you or another agent
-is also working, give it its own worktree and branch:
+A worktree prevents that, but it costs a branch, a merge and a cleanup. Decide by the files the new
+agent (omp or any other harness) will change:
+
+| The new agent's job | Where it works |
+|---|---|
+| Read-only (review, research), or a repo nobody else is editing | The repo itself |
+| Changes only files nobody else touches (a README, a changelog, one new doc), and runs no build or tests | The repo itself. Name its files in the brief and add: change nothing else; do not commit, stash or switch branch |
+| Changes code you or another agent is changing or may change, runs the build or tests on its own edits, or is one of two or more editing workers | Its own worktree and branch |
+
+For its own worktree and branch:
 
 ```bash
 grep -qx '.claude/worktrees/' <repo>/.git/info/exclude || echo '.claude/worktrees/' >> <repo>/.git/info/exclude
@@ -134,8 +145,7 @@ harness-ops task new omp --title "<task>" --cwd <repo>/.claude/worktrees/<task> 
 - A new worktree has no untracked files: say in the brief what to set up there (`mise trust`, the
   project's install task, a copied `.env`).
 - Say in the brief that it works on branch `agent/<task>` and commits there.
-- Skip it for read-only work (review, research) and for a repo nobody else is editing.
-- **After you accept the task,** merge the branch, then
+- **After you accept the task,** merge the branch (commit your own changes to the same files first), then
   `git -C <repo> worktree remove <repo>/.claude/worktrees/<task>` and `git -C <repo> branch -d agent/<task>`.
   If `remove` refuses because files are left, look at them before you add `--force`. For an abandoned
   task, remove the worktree and delete the branch with `-D` only after Sam agrees to drop the work.

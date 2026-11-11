@@ -7,7 +7,8 @@ Board: <path to the board file>. Write only under your own heading, "<your headi
 another member's entries, and never edit project files.
 
 Rules:
-- I alone hand out turns: act only on "Your turn: round N" from me.
+- I alone hand out turns: act only on "Your turn: round N" from me. At most 3 rounds, then I write
+  the result.
 - Round 1: write your entry without reading the others' entries.
 - Later rounds: read the whole board first, then build on or challenge other entries by name, with
   evidence (a file and line, a run, a source). Don't repeat what is already there.
