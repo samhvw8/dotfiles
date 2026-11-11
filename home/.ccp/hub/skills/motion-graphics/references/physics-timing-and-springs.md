@@ -1,23 +1,27 @@
 # Physics, Timing Psychophysics, Easing Curves, Damped Springs & Disney's 12 Principles
 
+> Labels: **[M]** math, derived and checked. **[S]** named source that was read. **[H]** practitioner heuristic: a starting value, not a finding. Change an [H] value when the frames say so. Recompute numbers with `scripts/motion_math.py`.
+
 ## Table of Contents
 1. [Timing Psychophysics & Frame-Rate Architecture](#1-timing-psychophysics--frame-rate-architecture)
 2. [Asymmetric Easing Curves & Speed/Value Graph Translation](#2-asymmetric-easing-curves--speedvalue-graph-translation)
 3. [Damped Harmonic Oscillators & Cross-Engine Spring Math](#3-damped-harmonic-oscillators--cross-engine-spring-math)
-4. [Disney's 12 Principles Adapted for 2D, Vector & UI Motion](#4-disneys-12-principles-adapted-for-2d-vector--ui-motion)
+4. [Animation Principles in Math, plus 2-Bone IK](#4-animation-principles-in-math-plus-2-bone-ik)
 5. [Smear Frames & Rotary Shutter Motion Blur](#5-smear-frames--rotary-shutter-motion-blur)
 
 ---
 
 ## 1. Timing Psychophysics & Frame-Rate Architecture
 
-### 1.1 The Frequency–Novelty Gate (When NOT to Animate)
+### 1.1 [H] The Frequency–Novelty Gate (When NOT to Animate)
 Before assigning any duration, evaluate interaction frequency ([Emil Kowalski STANDARDS.md](https://raw.githubusercontent.com/emilkowalski/skills/main/skills/review-animations/STANDARDS.md), [Rauno Freiberg](https://rauno.me/craft/interaction-design)):
 - **100+ times/day (Keyboard shortcuts, command palettes, app switchers, right-click context menu open, tab switching):** **`0 ms` (Instantaneous / Never animate)**. Even a `150 ms` transition accumulates cognitive friction when repeated hundreds of times daily.
 - **10–50 times/day (Button press, toggle, tooltip, dropdown, hover):** **`100–250 ms`**. General product UI animations must remain strictly **`< 300 ms`**.
 - **Narrative / Presentation / Launch Film Motion Graphics:** Choreographed moves run **`400–900 ms`** (`12–27 frames` at 30 fps) paired with deliberate cognitive holds (**`300–1000 ms`**).
 
-### 1.2 Master Timing Table: Milliseconds to Frames (24, 30, 60 fps)
+### 1.2 [H] Master Timing Table: Milliseconds to Frames (24, 30, 60 fps)
+
+The frame conversions are [M]. The durations are practitioner starting values; none comes from a measured study.
 
 | Motion Category | Duration (ms) | 24 fps (Cinema) | 30 fps (Broadcast / Web Video) | 60 fps (Interactive UI) | Perceptual / Biomechanical Role |
 |---|---|---|---|---|---|
@@ -26,17 +30,17 @@ Before assigning any duration, evaluate interaction frequency ([Emil Kowalski ST
 | **Whip Pan / Match-Cut Blur Peak** | `167–333 ms` | `4–8 f` | `5–10 f` | `10–20 f` | High-velocity camera/layer throw (`≥300 px/f` peak at 1080p); requires motion blur (`360°–720°` shutter) |
 | **Popover / Dropdown / Tooltip** | `150–250 ms` | `4–6 f` | `5–8 f` | `9–15 f` | Origin-aware scale (`0.95 -> 1.0`) + opacity (`0 -> 1`) from `var(--transform-origin)` |
 | **Modal / Drawer / Sheet Transition** | `220–380 ms` | `5–9 f` | `7–11 f` | `13–23 f` | Dorsal-stream spatial tracking window ("what went where") |
-| **Core Mograph A-to-B Snap Move** | `500–750 ms` | `12–18 f` | `15–22 f` | `30–45 f` | Primary hero card, shape, or kinetic headline travel with asymmetric ease (`15–25%` out / `75–85%` in) ([MotionCircles](https://motioncircles.com/knowledge/how-to-create-smooth-natural-easing-for-animation/)) |
-| **Camera Push-In / Pull-Out (Log-Scaled)** | `300–940 ms` | `7–23 f` | `9–28 f` | `18–56 f` | Governed by log-zoom ratio: $d = \text{clamp}(0.30, 0.94, 0.55 \cdot |\ln(z_2/z_1)| / \ln 2)$ |
+| **Core Mograph A-to-B Snap Move** | `500–750 ms` | `12–18 f` | `15–22 f` | `30–45 f` | Primary hero card, shape, or kinetic headline travel with asymmetric ease (`15–25%` out / `75–85%` in) (the usual source for these numbers is an AI-written answer; treat as lore) |
+| **Camera Push-In / Pull-Out (Log-Scaled)** | `300–940 ms` | `7–23 f` | `9–28 f` | `18–56 f` | House formula, no source: $d = \text{clamp}(0.30, 0.94, 0.55 \cdot |\ln(z_2/z_1)| / \ln 2)$ |
 | **Pre-Reveal Cognitive Hold** | `300–500 ms` | `7–12 f` | `9–15 f` | `18–30 f` | Dead-still pause before revealing a key metric/result so human foveal attention locks on |
 | **Brand Wordmark / Hero Stat Hold** | `800–1500 ms` | `19–36 f` | `24–45 f` | `48–90 f` | Mandatory static hold after settle; never cut or fade out while still moving |
 
-### 1.3 Frame-Rate Psychology & The `posterizeTime` Whole-Divisor Law
+### 1.3 Frame Rates [H] & the Whole-Divisor Rule [M]
 - **12 fps ("On Twos" / `posterizeTime(12)` / Remotion `posterize: 2` at 24fps or `posterize: 3` at 36fps):** Evokes hand-crafted cel animation, stop-motion texture, and *Spider-Verse* graphic stylization.
 - **24 fps (35mm Cinema Standard):** Wide inter-frame spacing (`41.67 ms`) with a `180°` shutter (`1/48 s` exposure) creates natural motion blur that fuses discrete frames without the hyper-real "soap-opera effect."
 - **30 fps (Digital Video / Remotion / Concat Default):** Clean compromise for screen captures, kinetic typography, and social feeds (`33.33 ms/f`).
 - **60 fps (Interactive UI / High-Speed Telemetry):** Required for direct finger/cursor tracking and fast horizontal tickers to prevent retinal strobing.
-- **The Whole-Divisor Rule (Anti-Judder Law):** When mixing frame rates inside one composition (e.g., a 12 fps character or turbulent line-boil inside a smooth camera move), **the composition frame rate MUST be an exact integer multiple of the posterized frame rate** (`compFps % targetFps === 0`) ([Reddit r/AfterEffects 1gtc984](https://www.reddit.com/r/AfterEffects/comments/1gtc984/how_do_you_choose_the_appropriate_frame_rate_for/)). Putting `24 fps` footage or `posterizeTime(24)` inside a `60 fps` timeline ($60 / 24 = 2.5$) forces alternating `2-3-2-3` frame holds (3:2 pulldown judder). Use **`12 fps`** ($60/12=5, 24/12=2$) or **`15 fps`** ($60/15=4, 30/15=2$) instead.
+- **The Whole-Divisor Rule (Anti-Judder Law):** When mixing frame rates inside one composition (e.g., a 12 fps character or turbulent line-boil inside a smooth camera move), **the composition frame rate MUST be an exact integer multiple of the posterized frame rate** (`compFps % targetFps === 0`) ([Reddit r/AfterEffects 1gtc984](https://www.reddit.com/r/AfterEffects/comments/1gtc984/how_do_you_choose_the_appropriate_frame_rate_for/)). Putting `24 fps` footage or `posterizeTime(24)` inside a `60 fps` timeline ($60 / 24 = 2.5$) forces alternating `2-3-2-3` frame holds (3:2 pulldown judder). Valid stepped rates: in `24 fps` use `12`, `8`, `6`; in `30 fps` use `15`, `10`, `6` (never `12`: $30/12 = 2.5$); in `60 fps` use `30`, `20`, `15`, `12`. Check with `motion_math.py posterize --fps F --target T`.
 
 ---
 
@@ -44,13 +48,15 @@ Before assigning any duration, evaluate interaction frequency ([Emil Kowalski ST
 
 ### 2.1 Why Symmetric `ease-in-out` Looks Robotic
 Default CSS `ease-in-out` (`cubic-bezier(0.42, 0, 0.58, 1)`) and After Effects `F9` Easy Ease (`33.33% / 33.33%` influence) spend 50% of their duration accelerating and 50% decelerating. Real physical objects struck by an impulse accelerate almost instantaneously and spend **70–85% of their trajectory decelerating under friction**.
-- **Peak-to-Average Velocity Ratio ($v_{\text{peak}} / v_{\text{avg}}$):**
-  - $v_{\text{peak}} / v_{\text{avg}} = 1.0$: Linear (robotic, dead).
-  - $v_{\text{peak}} / v_{\text{avg}} = 1.5$: Standard `F9` Easy Ease (`33% / 33%`).
-  - $v_{\text{peak}} / v_{\text{avg}} = 2.2\text{–}3.5$: Studio Mograph "Snap" (`15–25%` outgoing influence, `75–85%` incoming influence).
-  - $v_{\text{peak}} / v_{\text{avg}} > 4.5$ (bilateral influence `> 90–95%`): **Teleportation Glitch** — the object jumps `70%` of the screen across `1–2` middle frames, breaking visual tracking unless masked by directional motion blur ([DesignKkashi](https://designkkashi.com/en/after-effects-graph-editor-speed-value-influence-guide/)).
+- **[M] Peak-to-average speed ratio** for a flat-handle curve with equal influence $I$ on both sides is $1 / (1 - I)$ (compute any curve with `motion_math.py bezier`):
+  - `33% / 33%` (`F9` Easy Ease): **1.5×**. CSS `ease-in-out`: 1.72×. Linear: 1.0×.
+  - Out `20%` / in `85%` (asymmetric snap): **2.76×**, with the peak in the first 15–20% of the time.
+  - `75% / 75%`: **4.0×**. `80% / 80%`: **5.0×**. `90% / 90%`: **10×**.
+  - **[H]** Above about 4×, the object crosses most of its path in one or two frames. Add motion blur, or lower the influence.
 
-### 2.2 Exact Conversion: After Effects Influence % $\leftrightarrow$ CSS `cubic-bezier(x1, y1, x2, y2)`
+### 2.2 [M] After Effects Influence % $\leftrightarrow$ CSS `cubic-bezier(x1, y1, x2, y2)`
+
+The mapping is exact for 1D properties and for Position with separated dimensions. For spatial Position, After Effects eases along the path length, so one CSS curve per axis is not equivalent.
 In After Effects' Speed/Value Graph, outgoing influence $I_{\text{out}} \in (0, 100]$, incoming influence $I_{\text{in}} \in (0, 100]$, outgoing speed $S_{\text{out}}$, incoming speed $S_{\text{in}}$, and average speed $S_{\text{avg}} = \Delta x / \Delta t$ map to normalized cubic-bezier control points $P_1(x_1, y_1)$ and $P_2(x_2, y_2)$ via ([GDSE #113853](https://graphicdesign.stackexchange.com/questions/113853/use-css-cubic-bezier-for-keyframes-in-after-effects)):
 
 $$x_1 = \frac{I_{\text{out}}}{100}, \quad y_1 = x_1 \cdot \frac{S_{\text{out}}}{S_{\text{avg}}}, \qquad x_2 = 1 - \frac{I_{\text{in}}}{100}, \quad y_2 = 1 - (1 - x_2) \cdot \frac{S_{\text{in}}}{S_{\text{avg}}}$$
@@ -60,34 +66,35 @@ For standard ease-in-out keyframes where start and end velocities are zero ($S_{
 $$\text{cubic-bezier}\!\left(\frac{I_{\text{out}}}{100},\; 0,\; 1 - \frac{I_{\text{in}}}{100},\; 1\right)$$
 
 - **Example 1 (Classic `75% / 75%` Mograph Snap):** `cubic-bezier(0.75, 0, 0.25, 1)`
-- **Example 2 (Fast-Out / Heavy-Settle `16% / 84%`):** With fast initial impulse ($S_{\text{out}} > 0$) and zero landing velocity ($S_{\text{in}} = 0$): `cubic-bezier(0.16, 1, 0.3, 1)` (`expo.out`).
+- **Example 2 (`16% / 84%`, flat handles):** `cubic-bezier(0.16, 0, 0.16, 1)`.
+- `expo.out` `cubic-bezier(0.16, 1, 0.3, 1)` is **not** a flat-handle curve: $y_1 = 1$ means it starts at 6.25× the average speed, and $x_2 = 0.3$ is a `70%` incoming influence.
 
-### 2.3 Canonical Practitioner `cubic-bezier` Catalog
+### 2.3 Practitioner `cubic-bezier` Catalog (curves [S] easings.net / Emil Kowalski / Material 3; use cases [H])
 
 | Curve Name | `cubic-bezier(x1, y1, x2, y2)` | GSAP Equivalent | AE Influence | Primary Use Case |
 |---|---|---|---|---|
-| **Expo Out (Default Hero Entrance)** | `cubic-bezier(0.16, 1, 0.3, 1)` | `"expo.out"` | Out `0%@fast`, In `70–84%` | Cards rising in, baseline text reveals, focus overlays, modal entrances |
+| **Expo Out (Default Hero Entrance)** | `cubic-bezier(0.16, 1, 0.3, 1)` | `"expo.out"` | Out `0%@fast`, In `70%` | Cards rising in, baseline text reveals, focus overlays, modal entrances |
 | **Quint Out (UI Snap Entrance)** | `cubic-bezier(0.23, 1, 0.32, 1)` | `"power4.out"` | Out `0%@fast`, In `68–77%` | Emil Kowalski `--ease-out`; general UI entrances & hover response |
 | **M3 Emphasized Decelerate** | `cubic-bezier(0.05, 0.7, 0.1, 1.0)` | Custom | Out `5%`, In `90%` | Material 3 hero/screen-level entrances from off-screen |
-| **M3 Emphasized Accelerate** | `cubic-bezier(0.3, 0.0, 0.8, 0.15)` | `"power3.in"` | Out `30%`, In `20%@fast` | Permanent exits off-screen (never slow down at the exit edge) |
+| **M3 Emphasized Accelerate** | `cubic-bezier(0.3, 0.0, 0.8, 0.15)` | Custom | Out `30%`, In `20%@fast` | Permanent exits off-screen (never slow down at the exit edge) |
 | **iOS Sheet / Drawer Curve** | `cubic-bezier(0.32, 0.72, 0, 1)` | Custom | Out `32%`, In `100%` | Bottom sheets, drawers, and Apple-style spatial slides |
-| **Active Camera Push/Pull** | `cubic-bezier(0.65, 0, 0.35, 1)` | `"power3.inOut"` | Out `65%`, In `65%` | HuaRec deliberate camera dolly/zoom between two static holds |
-| **Follow-Camera Chase** | `cubic-bezier(0.33, 0, 0.15, 1)` | Custom | Out `33%`, In `85%` | Shotcraft camera tracking an already-moving cursor or subject |
-| **Overshoot (`easeOutBack`)** | `cubic-bezier(0.34, 1.56, 0.64, 1)` | `"back.out(1.7)"` | Value graph `>100%` | Tactile toggles, badge pops, logo expansion settle |
+| **Active Camera Push/Pull** | `cubic-bezier(0.65, 0, 0.35, 1)` | `"power2.inOut"` | Out `65%`, In `65%` | Deliberate camera dolly/zoom between two static holds |
+| **Follow-Camera Chase** | `cubic-bezier(0.33, 0, 0.15, 1)` | Custom | Out `33%`, In `85%` | Camera tracking an already-moving cursor or subject |
+| **Overshoot (`easeOutBack`)** | `cubic-bezier(0.34, 1.56, 0.64, 1)` | `"back.out(1.7)"` | Overshoots by about `10%` | Tactile toggles, badge pops, logo expansion settle |
 | **Anticipation (`easeInBack`)** | `cubic-bezier(0.36, 0, 0.66, -0.56)` | `"back.in(1.7)"` | Value graph `<0%` | Pre-launch wind-up (transform only; never apply to opacity/color) |
 
 ---
 
 ## 3. Damped Harmonic Oscillators & Cross-Engine Spring Math
 
-### 3.1 Second-Order Spring ODE & Damping Regimes
+### 3.1 [M] Second-Order Spring ODE & Damping Regimes
 A unit-displacement spring ($x(0) = 0 \to x(\infty) = 1$, error $d(t) = 1 - x(t)$) with mass $m$, stiffness $k$, and viscous damping $c$ obeys ([CosynPa `SpringCurve.swift`](https://raw.githubusercontent.com/CosynPa/RevealSpringAnimation/master/RevealSpringAnimation/Math/SpringCurve.swift), [WebKit `spring.js`](https://webkit.org/demos/spring/spring.js)):
 
 $$m \ddot{x}(t) + c \dot{x}(t) + k (x(t) - 1) = 0 \iff \ddot{x}(t) + 2 \zeta \omega_0 \dot{x}(t) + \omega_0^2 (x(t) - 1) = 0$$
 
 where natural frequency $\omega_0 = \sqrt{k/m}$ (in $\text{rad/s}$), critical damping $c_{\text{crit}} = 2\sqrt{km}$, and damping ratio $\zeta = \frac{c}{2\sqrt{km}} = \frac{c}{2 m \omega_0}$.
 
-### 3.2 Exact Closed-Form Evaluator (Seek-Safe Pure Function of $t$ with Initial Velocity $v_0$)
+### 3.2 [M] Exact Closed-Form Evaluator (Seek-Safe Pure Function of $t$ with Initial Velocity $v_0$)
 Never use stateful frame-by-frame Euler integrators in video engines (Remotion, HyperFrames, GSAP seek), because scrubbing backward or rendering out-of-order frames breaks state. Always evaluate the exact closed-form analytical solution at time $t$ (in seconds) with normalized initial velocity $v_0$:
 
 1. **Underdamped ($0 \le \zeta < 1$, damped frequency $\omega_d = \omega_0 \sqrt{1 - \zeta^2}$):**
@@ -121,12 +128,14 @@ export function evaluateSpring(
 }
 ```
 
-### 3.3 Cross-Engine Parameter Conversion Formulas
+### 3.3 [M] Cross-Engine Parameter Conversion Formulas
 Per Apple [WWDC23 Session 10158 (*Animate with Springs*)](https://developer.apple.com/videos/play/wwdc2023/10158/) and [GetStream/swiftui-spring-animations](https://raw.githubusercontent.com/GetStream/swiftui-spring-animations/main/README.md):
 
 $$\text{stiffness } k = m \left(\frac{2\pi}{\text{response}}\right)^2, \qquad \text{damping } c = \frac{4\pi \cdot \text{dampingFraction} \cdot m}{\text{response}}$$
 
 $$\text{response} = \frac{2\pi}{\sqrt{k / m}}, \qquad \text{dampingFraction } \zeta = \frac{c}{2\sqrt{k m}}, \qquad \text{Apple } \text{bounce} = \begin{cases} 1 - \zeta & (\zeta \le 1) \\ \frac{1}{\zeta} - 1 & (\zeta > 1) \end{cases}$$
+
+The Material 3 Expressive rows give the token's stiffness and damping ratio [S androidx `ExpressiveMotionTokens.kt`]; their `response` is rounded. The other rows are [H] presets with [M] conversions.
 
 | Preset Archetype | Apple `response` / `dampingFraction` | Physical `{ mass: 1, stiffness, damping }` | Peak Overshoot ($M_p$) | Recommended Target |
 |---|---|---|---|---|
@@ -137,11 +146,13 @@ $$\text{response} = \frac{2\pi}{\sqrt{k / m}}, \qquad \text{dampingFraction } \z
 | **M3 Expressive Default Spatial** | `response: 0.32, dampingFraction: 0.80` | `{ stiffness: 380, damping: 31.2 }` | `1.5%` | Standard M3E container expansion |
 | **M3 Expressive Effects (Opacity/Color)** | `response: 0.16, dampingFraction: 1.00` | `{ stiffness: 1600, damping: 80.0 }` | `0.0%` | **Rule:** Never use underdamped ($\zeta < 1$) springs on opacity or color (overshoot clips at `1.0` and flashes) |
 
-> **Remotion & WebKit Engine Pitfall:** Both Remotion's `spring-utils.ts` and WebKit's `spring.js` omit the $\zeta > 1$ (`cosh/sinh`) branch and fall back to `criticallyDampedPosition` whenever $\zeta \ge 1$, meaning increasing `damping` above $2\sqrt{km}$ (e.g., `damping: 200` on `stiffness: 100, mass: 1` where $c_{\text{crit}} = 20$) produces the exact same curve as `damping: 20` ([Remotion `spring-utils.ts`](https://raw.githubusercontent.com/remotion-dev/remotion/main/packages/core/src/spring/spring-utils.ts)).
+> **[S] Remotion & WebKit Engine Pitfall:** Both Remotion's `spring-utils.ts` and WebKit's `spring.js` omit the $\zeta > 1$ (`cosh/sinh`) branch and fall back to `criticallyDampedPosition` whenever $\zeta \ge 1$, meaning increasing `damping` above $2\sqrt{km}$ (e.g., `damping: 200` on `stiffness: 100, mass: 1` where $c_{\text{crit}} = 20$) produces the exact same curve as `damping: 20`. The overdamped formula in §3.2 therefore does not predict Remotion timing; measure with `measureSpring()` ([Remotion `spring-utils.ts`](https://raw.githubusercontent.com/remotion-dev/remotion/main/packages/core/src/spring/spring-utils.ts)).
 
 ---
 
-## 4. Disney's 12 Principles Adapted for 2D, Vector & UI Motion
+## 4. Animation Principles in Math, plus 2-Bone IK
+
+Six of Disney's twelve principles that reduce to a formula, then an IK and run-cycle recipe. The formulas are [M]; the amounts (percent, frames) are [H].
 
 1. **Squash & Stretch (Constant-Area & Constant-Volume Conservation):**
    - **2D Area Invariance ($s_x \cdot s_y = 1$):** When stretching an element along its motion axis by scale factor $s_x$ (or percentage $S_x \%$), its perpendicular axis MUST compress by $s_y = 1 / s_x$ ($S_y = 10000 / S_x \%$) so perceived mass stays constant ([Dan Ebberts](https://www.motionscript.com/mastering-expressions/simulation-basics-3.html)):
@@ -175,7 +186,7 @@ $$\text{response} = \frac{2\pi}{\sqrt{k / m}}, \qquad \text{dampingFraction } \z
    - Identical easing on $X$ and $Y$ produces a rigid diagonal line. Split dimensions (`translateX` + `translateY`) and pair **different easing curves on each axis** — e.g., $X$ on `easeOutQuad` and $Y$ on `easeInQuart` (or ballistic linear $X$ + parabolic $Y$) — to generate smooth, tangent-free spatial arcs automatically.
 
 6. **Solid Drawing & Origin-Aware Scaling (Never `scale(0)`):**
-   - Physical objects never materialize from a singularity (`scale(0)`). Start entrances at **`scale(0.92)` to `scale(0.97)`** with `opacity: 0`, and bind `transform-origin` to the causal trigger point ([Emil Kowalski STANDARDS.md](https://raw.githubusercontent.com/emilkowalski/skills/main/skills/review-animations/STANDARDS.md)).
+   - Physical objects never materialize from a singularity (`scale(0)`). Start entrances at **`scale(0.90)` to `scale(0.97)`** with `opacity: 0`, and bind `transform-origin` to the causal trigger point ([Emil Kowalski STANDARDS.md](https://raw.githubusercontent.com/emilkowalski/skills/main/skills/review-animations/STANDARDS.md)).
 
 
 7. **2-Bone Analytical IK Joint Polarity & 4-Pose Forward Gait (Y-Down Screen Space):**
