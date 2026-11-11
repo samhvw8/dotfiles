@@ -18,7 +18,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from tasks import TASKS  # noqa: E402
 
-ARMS = ["old", "new"]
+ARMS = ["old", "new"]  # --arms a,b replaces this
 CLAUDE = ["claude", "-p", "--setting-sources", "project,local", "--no-session-persistence", "--output-format", "text"]
 
 
@@ -108,6 +108,9 @@ def judge_one(out, t, i, order, model):
         return f"skip {f.name}"
     ans = {arm: (out / f"{t['id']}-{arm}-{i}" / "answer.md").read_text() for arm in ARMS}
     a_arm, b_arm = (ARMS if order == 0 else ARMS[::-1])
+    if any(x.startswith("API Error") for x in ans.values()):  # a run the API refused is no answer: drop the pair
+        f.write_text(json.dumps({"order": order, "A": a_arm, "B": b_arm, "raw": {"reasons": "one answer is an API error"}, "winner_arm": "dropped", "exit": 0}, indent=1))
+        return f"dropped {f.name}"
     prompt = JUDGE.format(task=t["prompt"], good=t["good"], a=ans[a_arm], b=ans[b_arm])
     text, code, err = claude(prompt, out, model, "", 3)
     v = parse(text)
@@ -119,7 +122,7 @@ def judge_one(out, t, i, order, model):
 def judge(a):
     out = outdir(a.label)
     (out / "judge").mkdir(exist_ok=True)
-    n = len({p.name.rsplit("-", 1)[1] for p in out.glob(f"{TASKS[0]['id']}-old-*")})
+    n = len({p.name.rsplit("-", 1)[1] for p in out.glob(f"{TASKS[0]['id']}-{ARMS[0]}-*")})
     jobs = [(t, i, o) for t in TASKS for i in range(n) for o in (0, 1)]
     random.Random(7).shuffle(jobs)
     with cf.ThreadPoolExecutor(a.j) as ex:
@@ -130,17 +133,17 @@ def judge(a):
 def report(a):
     out = outdir(a.label)
     grades = json.loads((out / "grades.json").read_text())
-    lines = ["# agent-ops A/B (old = before 2026-11-10 changes, new = current)", "",
-             "## Hard checks (script)", "", "| Task | old | new |", "|---|---|---|"]
+    lines = [f"# agent-ops A/B: {ARMS[0]} against {ARMS[1]}", "",
+             "## Hard checks (script)", "", f"| Task | {ARMS[0]} | {ARMS[1]} |", "|---|---|---|"]
     for t in TASKS:
         cell = {}
         for arm in ARMS:
             rs = [g for g in grades if g["task"] == t["id"] and g["arm"] == arm]
             cell[arm] = f"{sum(g['passed'] for g in rs)}/{sum(g['of'] for g in rs)}"
-        lines.append(f"| {t['id']} | {cell['old']} | {cell['new']} |")
+        lines.append(f"| {t['id']} | {cell[ARMS[0]]} | {cell[ARMS[1]]} |")
     lines += ["", "## Blind judge (counted only when both orders agree)", "",
               "| Task | sample | order 1 | order 2 | counted | reasons |", "|---|---|---|---|---|---|"]
-    tally = {"old": 0, "new": 0, "tie": 0, "split": 0}
+    tally = {ARMS[0]: 0, ARMS[1]: 0, "tie": 0, "split": 0, "dropped": 0}
     for t in TASKS:
         for f0 in sorted((out / "judge").glob(f"{t['id']}-*-0.json")):
             i = f0.name.split("-")[-2]
@@ -152,7 +155,7 @@ def report(a):
             tally[counted if counted in tally else "split"] += 1
             reason = (j0["raw"].get("reasons", "") + " / " + j1["raw"].get("reasons", "")).replace("|", "/")
             lines.append(f"| {t['id']} | {i} | {w0} | {w1} | {counted} | {reason} |")
-    lines += ["", f"Counted pairs: new {tally['new']}, old {tally['old']}, tie {tally['tie']}, split (orders disagree) {tally['split']}."]
+    lines += ["", f"Counted pairs: {ARMS[1]} {tally[ARMS[1]]}, {ARMS[0]} {tally[ARMS[0]]}, tie {tally['tie']}, split (orders disagree) {tally['split']}, dropped (API error) {tally['dropped']}."]
     (out / "REPORT.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 
@@ -164,6 +167,9 @@ if __name__ == "__main__":
     p.add_argument("-j", type=int, default=6)
     p.add_argument("-m", default=None)
     p.add_argument("--label", default="run")
+    p.add_argument("--arms", default="old,new", help="two folders under arms/, baseline first")
     a = p.parse_args()
+    ARMS[:] = a.arms.split(",")
+    assert len(ARMS) == 2 and all((HERE / "arms" / x).is_dir() for x in ARMS), ARMS
     a.m = a.m or ("claude-fable-5-1" if a.cmd == "judge" else "claude-sonnet-5-5")
     {"gen": gen, "grade": grade, "judge": judge, "report": report}[a.cmd](a)

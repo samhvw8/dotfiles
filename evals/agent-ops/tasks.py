@@ -88,7 +88,7 @@ most 5 lines on how it runs to the end.""",
         "checks": [
             ("starts all three", lambda t: all(re.search(r"spawn\s+" + h, t, re.I) for h in ("omp", "opencode", "gemini"))),
             ("independent first round", has(r"(without reading|alone|independent)")),
-            ("round limit", has(r"(at most|max(imum)?|up to)\s*\d+\s*(rounds?)|\b\d+\s*rounds?\b")),
+            ("round limit", has(r"(at most|max(imum)?|up to)\s*\d+\s*(rounds?)|\b\d+\s*rounds?\b|(after|stop at|until|ends? (at|with)) round \d")),
             ("members closed", has(r"\bclose\b")),
         ],
     },
@@ -108,7 +108,7 @@ shell command(s) you send in reply, or NONE, and one short line why. Format: "Me
                 "and answers the unrelated agent's plain question with a short RE: reply.",
         "checks": [
             ("1: task done", lambda t: _part(t, 1, r"task done tA")),
-            ("1: no extra RE", lambda t: not _part(t, 1, r"send[^\n]*RE:")),
+            ("1: no extra RE", lambda t: not _part(t, 1, r"harness-ops (send|msg)[^\n]*RE:")),
             ("2: nothing", lambda t: _part(t, 2, r"\bNONE\b")),
             ("3: nothing", lambda t: _part(t, 3, r"\bNONE\b")),
             ("4: RE reply", lambda t: _part(t, 4, r"send[^\n]*7C21AA90[^\n]*RE:")),
@@ -132,10 +132,102 @@ lines on what you tell the user.""",
             ("does not accept the dialog itself", lacks(r"send-key[^\n]*(enter|down)|send[^\n]*\b(yes|trust)\b[^\n]*(new-idea|pane)", re.I)),
         ],
     },
+    # Added 2026-11-11 for the arm "next": none of these was used while writing that change.
+    {
+        "id": "t7-isolated-helper",
+        "prompt": f"""{ME}, working in ~/workspace/apps/gym-log, a git repo. You are fixing a sync bug in
+src/sync/ and have uncommitted changes there. The user says: "Start an omp session I can watch to write
+docs/DEPLOY.md while you keep fixing."
+
+Write every shell command you would run, in order, from the start until the doc is done and everything
+is cleaned up, one per line with a short # comment, in one code block. Then at most 3 lines on how you
+end it.""",
+        "good": "Starts one visible omp session in gym-log and leaves placement to the tool. The job is one new "
+                "doc file that nobody else edits, so it does only what was asked: a brief that limits the worker to "
+                "docs/DEPLOY.md and keeps it away from src/sync/ and from git state, a check of the result, and "
+                "the session closed at the end. Extra branches, merges or other unasked git work count as waste "
+                "and as risk to the uncommitted fix.",
+        "checks": [
+            ("no forced tab", lacks(r"--where\s+tab")),
+            ("starts omp in gym-log", has(r"(spawn|task new)\s+omp[^\n]*gym-log")),
+            ("no unasked worktree", lacks(r"worktree add")),
+            ("brief limits the files", has(r"DEPLOY\.md[^\n]*(only|nothing else|no other|do not|don't)|(only|nothing else)[^\n]*DEPLOY\.md")),
+            ("closes it at the end", has(r"\b(close|task accept[^\n]*--close)\b")),
+        ],
+    },
+    {
+        "id": "t8-overlap-helper",
+        "prompt": f"""{ME}, working in ~/workspace/tools/bili-douyin, a git repo. You are editing the downloader
+in src/download/ and have uncommitted changes there. The user says: "Have a codex session rename the
+Config class to Settings across the whole codebase while you keep going."
+
+Write every shell command you would run, in order, from the start until the rename is in and everything
+is cleaned up, one per line with a short # comment, in one code block. Then at most 3 lines on how you
+end it.""",
+        "good": "The rename touches files across the repo, including ones the caller is editing, so codex gets its "
+                "own git worktree and branch and is told so. The caller waits without polling, checks the result, "
+                "accepts and closes the session, brings the branch in without losing its own uncommitted work, and "
+                "removes the worktree and branch.",
+        "checks": [
+            ("starts codex", has(r"(spawn|task new)\s+codex")),
+            ("own worktree", has(r"worktree add")),
+            ("worktree removed", has(r"worktree remove")),
+            ("closes it at the end", has(r"\b(close|task accept[^\n]*--close)\b")),
+        ],
+    },
+    {
+        "id": "t9-failed-start-omp",
+        "prompt": f"""{ME}. You ran: harness-ops task new omp --title "bench" --cwd ~/workspace/tools/anydub --brief "..."
+It exited with code 5 after 120 seconds and printed no task ID. You then ran `harness-ops read` on the
+new pane: omp is open, its input line still holds your brief, and above it is the line
+"No API key for provider tokenharbor (model th/large)".
+
+Write every shell command you run next, in order, one per line with a short # comment, in one code
+block, and at most 4 lines on what you tell the user.""",
+        "good": "Finds the failed task's ID from the task list and force-closes that task now, in this turn, so no "
+                "dead pane is left waiting. Does not try to clear the blocker itself (no key or config edits, no "
+                "forced resend into the pane). Tells the user what blocked the start and what would restart it.",
+        "checks": [
+            ("finds the ID", has(r"task ls")),
+            ("runs the force close", lambda t: any(re.search(r"task close[^\n]*--force", b) for b in _code(t))),
+            ("no forced resend", lambda t: not any(re.search(r"(send|slash)[^\n]*--force", b) for b in _code(t))),
+            ("does not edit keys or config", lambda t: not any(re.search(r"(export \w*KEY|config\.ya?ml|local\.yml|>>?\s*~/\.)", b) for b in _code(t))),
+        ],
+    },
+    {
+        "id": "t10-group-debate",
+        "prompt": f"""{ME}, working in ~/workspace/apps/menhly, a git repo. `harness-ops ls` shows an idle opencode
+session in this repo with the label oc-menhly; the user opened it this morning. The user says: "Get codex,
+omp and that opencode session to debate one SQLite file per user against one shared Postgres for menhly.
+Give each a side or the sceptic. Tell me what survived."
+
+Write (1) every shell command you run until the members have their first instruction and you stop to
+wait, in order, one per line with a short # comment, and (2) the brief the members receive. Then at
+most 5 lines on how it runs to the end.""",
+        "good": "Runs the three as equals with one facilitator. Starts codex and omp, and brings in the running "
+                "opencode session with a message instead of starting a second one. Each member has a side, first "
+                "positions are written independently in a shared place, later turns go in a fixed order, and the "
+                "members are told the round limit. Ends with what survived, closes only the sessions it started, "
+                "and leaves the user's opencode session open.",
+        "checks": [
+            ("starts codex and omp", lambda t: all(re.search(r"spawn\s+" + h, t, re.I) for h in ("codex", "omp"))),
+            ("no second opencode", lacks(r"spawn\s+opencode")),
+            ("messages the running session", has(r"harness-ops (send|msg)[^\n]*oc-menhly")),
+            ("independent first round", has(r"(without reading|alone|independent)")),
+            ("round limit", has(r"(at most|max(imum)?|up to)\s*\d+\s*(rounds?)|\b\d+\s*rounds?\b|(after|stop at|until|ends? (at|with)) round \d")),
+            ("leaves the user's session open", has(r"oc-menhly[^\n]*(stays? open|leave|left open|not close|do not close|don't close)|(stays? open|leave|left open|not close)[^\n]*(oc-menhly|opencode)")),
+        ],
+    },
 ]
+
 
 
 def _part(text, n, pattern):
     """The answer to message n (between 'Message n' and 'Message n+1')."""
     m = re.search(rf"Message {n}\b(.*?)(Message {n + 1}\b|\Z)", text, re.S | re.I)
     return bool(m and re.search(pattern, m.group(1), re.I | re.S))
+
+
+def _code(text):
+    """The fenced code blocks of an answer: the commands it would run, not the prose around them."""
+    return re.findall(r"```[^\n]*\n(.*?)```", text, re.S)
