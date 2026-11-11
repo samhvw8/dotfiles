@@ -14,12 +14,11 @@ The grades, tiers, checks and IDs below are working material. The user sees fini
 - **Ship finished work.** Write the real words: the full script as it will be read, the complete page block with every tier filled in and its own button, the hooks as they will be said and shown. Use `[brackets]` only for a fact only the user has (a real count, price, name, date), and list those once at the end as things to confirm before publishing. A skeleton of stage directions or a table of placeholders is not a deliverable.
 - **Never invent facts:** no made-up statistics, testimonials or story details. When the copy needs a product claim the user did not state, write it and flag it once as an assumption.
 - **Follow the order of the request.** Asked to write: the deliverable first, then short reasons. Asked to review or audit: the ranked findings first, then the rewrite. Say each problem once. No closing checklist and no list of what passed, unless the user asks for one.
-- **Rank findings by harm to the user's goal.** First what blocks people (a dead link, unreadable text, an unlawful term). Then what loses the most people earliest (a slow opening, a headline that does not match the ad, the best material buried). Then polish. A false or debunked claim is always reported, ranked by what it costs. Drop a finding that changes nothing they ship. A rule's grade never sets the rank.
+- **Rank findings by harm to the user's goal.** First what blocks people (a dead link, unreadable text, a charge the buyer did not choose). Then what loses the most people earliest (a slow opening, a headline that does not match the ad, the best material buried). Then polish. A false or debunked claim is always reported, ranked by what it costs. Drop a finding that changes nothing they ship. A rule's grade never sets the rank.
 - **Write each finding as:** what is wrong (a quote or a measured value), why it loses this audience, and the fix.
 - **Show no scaffolding.** No grade letters or tier names, no gate, pattern or paper IDs, no "this skill", and no sentence that reports rule compliance ("all three are declarative, with no caps").
-- **Cite a source only when it changes the decision and the user can check it:** a standard (the WCAG criterion), a law with its market, or a named study when the user's own content repeats a claim that failed replication. Do not quote research percentages to justify a creative choice, least of all across a language or medium gap. Reason from this audience and this platform.
+- **Cite a source only when it changes the decision and the user can check it:** a standard (the WCAG criterion) or a named study when the user's own content repeats a claim that failed replication. Do not quote research percentages to justify a creative choice, least of all across a language or medium gap. Reason from this audience and this platform.
 - **State uncertainty once, in plain words, where it matters.** A pick made by reasoning and not by data: say so, and give the cheapest test (what to vary, which metric, about how much traffic). A fact you recall from memory that the user would publish: tell them to verify it first. Skip caveats about evidence quality when the advice stays the same either way.
-- **Legal points go only as far as you verified.** Name the market and the law. Never stretch a sector rule to all commerce or state what an unverified law forbids; say the practice is risky there and suggest local counsel. The cost in trust is reason enough.
 - **Production specs** (hex, milliseconds, pixels, safe-zone numbers) only when the user gave code or a design, or asked for production detail. Otherwise one plain sentence ("keep captions clear of the app's buttons").
 - **Vietnamese.** Write as a native creator would, not as a translation of an English formula. Count length and time in syllables (`tiếng`); a user's "từ/phút" almost always means syllables per minute. Mixing `mình`, `các bạn` and `chúng ta` is normal in speech; do not flag it.
 
@@ -35,7 +34,7 @@ The grades, tiers, checks and IDs below are working material. The user sees fini
 
 Each rule carries a grade that says how hard to lean on it.
 
-- **S**: a written standard (WCAG 2.2, ITU, platform spec, consumer law). A floor.
+- **S**: a written standard (WCAG 2.2, ITU, platform spec). A floor.
 - **A**: a replicated or meta-analytic finding. Default.
 - **B**: one study or a narrow sample (one platform, language or era). Use inside its boundary; outside it, a hunch to test.
 - **H**: a practitioner heuristic with no controlled test. A starting value; never call it research.
@@ -101,7 +100,7 @@ Your own pass over the deliverable: first glance (G1–G4), hook (G5–G9), hold
 | G14 | **Story and numbers.** The emotional beat follows one concrete person or scene (A). Every statistic is real and has a nameable source; risks as natural frequencies over one denominator (A) |
 | G15 | **Voice and sound.** Timing computed at the speaker's rate. One deliberate pause before the key line (H). AV sync and loudness need a tool (S) |
 | G16 | **Honest choice structure.** 3–4 plans at most for one audience, on aligned rows, each with its own button (B). One plan recommended with a true reason (A). One all-in price, and the billing period matches the price shown (A) |
-| G17 | **Legal and dark-pattern floor.** No pre-ticked box for recurring billing or paid add-ons. Renewal and trial conversion disclosed before payment, with consent. Cancelling is as easy as signing up. Reference prices, discounts, urgency, scarcity and social-proof counts are true. Laws by market and their scope: choice-architecture-and-pricing.md (S where a listed law applies) |
+| G17 | **Honest-selling floor.** No pre-ticked box for recurring billing or paid add-ons. Renewal and trial conversion disclosed before payment, with consent. Cancelling is as easy as signing up. Reference prices, discounts, urgency, scarcity and social-proof counts are true. Detail: choice-architecture-and-pricing.md. A floor in every market, argued from trust |
 | G18 | **Evidence hygiene.** No Tier 3 claim as a claim or rationale, in the content or in your own reasons. Tier 2 claims stay inside their boundary. No number without a source |
 
 [audio-podcast.md]: references/audio-podcast.md

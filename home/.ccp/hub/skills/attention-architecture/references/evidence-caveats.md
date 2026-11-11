@@ -31,7 +31,7 @@ Load when a claim needs its evidence strength or before you build a rule on a fa
 | High-arousal emotion raises sharing | `P55` Berger & Milkman 2012 (NYT most-emailed, 2008) | Sharing only. Clicks behave differently (`P14`) |
 | Repetition raises belief | `P50` Dechêne 2010 | Belief, not attention. Repeating a myth strengthens it |
 | A threat message needs a doable action | Tannenbaum et al. 2015 meta-analysis of fear appeals | Fear without a way to act can backfire |
-| One all-in price | `P65` Thaler 1985 (combined losses hurt less); the trust cost of fees found late | Drip fees can raise short-term demand (Morwitz 1998), so the case is trust and, where a law applies, compliance |
+| One all-in price | `P65` Thaler 1985 (combined losses hurt less); the trust cost of fees found late | Drip fees can raise short-term demand (Morwitz 1998), so the case is trust |
 | Position beats angle in charts | Cleveland & McGill 1984; Heer & Bostock 2010 | Pies are acceptable for 2–3 part-to-whole slices |
 | Seductive details hurt learning | `P31` Harp & Mayer 1998; Sundararajan & Adesope 2020 meta (small to moderate) | Tangents after the payoff are fine |
 | Mayer's signaling, contiguity, redundancy | Mayer's multimedia principles; Schneider 2018 meta (signaling) | Learning content; captions are an accessibility need, not redundancy |

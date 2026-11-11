@@ -8,7 +8,7 @@ A Claude Code skill for writing and reviewing content that must win and hold att
 | [references/hooks-and-wording.md](references/hooks-and-wording.md) | Hook writing for any medium, wording rules, Vietnamese voice, before/after examples |
 | [references/headline-patterns.md](references/headline-patterns.md) | Upworthy A/B patterns and hazards for English feed headlines; the hook scorer |
 | [references/web-and-product-ui.md](references/web-and-product-ui.md) | Bounce diagnosis, scanning evidence, landing structure, layouts, product UI, motion, dark mode |
-| [references/choice-architecture-and-pricing.md](references/choice-architecture-and-pricing.md) | Legal floor by market, the pricing block, defaults, anchoring, tiers, trials, persuasion sequence |
+| [references/choice-architecture-and-pricing.md](references/choice-architecture-and-pricing.md) | Honest-selling floor, the pricing block, defaults, anchoring, tiers, trials, persuasion sequence |
 | [references/video-and-motion.md](references/video-and-motion.md) | Short and long video, motion graphics, pattern changes, color script |
 | [references/audio-podcast.md](references/audio-podcast.md) | Script timeline, podcast rules, the rewrite |
 | [references/posters-slides-and-color.md](references/posters-slides-and-color.md) | Thumbnails, posters, comics, slides, color, computed contrast values |

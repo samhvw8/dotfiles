@@ -5,7 +5,7 @@ as `home/.ccp/hub/rules/skill-evals.md` requires.
 
 | File | What |
 |---|---|
-| `tasks/` | Seven user requests. `t1` TikTok hooks (vi), `t2.html` landing page review (vi; the request is the HTML comment at the top), `t3` podcast script audit (vi), `t4` B2B pricing rewrite (en), `t5` YouTube titles, thumbnail and opening (vi), `t6` course checkout rewrite (vi), `t7` meetup talk slides (en) |
+| `tasks/` | Eight user requests. `t1` TikTok hooks (vi), `t2.html` landing page review (vi; the request is the HTML comment at the top), `t3` podcast script audit (vi), `t4` B2B pricing rewrite (en), `t5` YouTube titles, thumbnail and opening (vi), `t6` course checkout rewrite (vi), `t7` meetup talk slides (en), `t8` subscription checkout decision, US and Germany (en) |
 | `judge-prompt.md` | The blind judge's instructions |
 | `out/<date>/` | Answers per arm, the X/Y pairs with `key.txt`, and each `verdict.json`. Git-ignored |
 
@@ -42,9 +42,20 @@ put a statutory "7 working days" into customer-facing copy; the judge could not 
 them over-precise. The points had been checked against the law's text, but a reader cannot tell. On
 t7 the judges preferred v2's audience question and objection prep, which v3 did not change.
 
-## Open candidate
+## Results, 2026-11-11: country law removed (v5)
 
-A verified row for Vietnam's Law 19/2023/QH15 exists in
-`out/2026-11-10/candidates/v3-rejected/references/choice-architecture-and-pricing.md`. To try it
-again, add it as its own arm together with a rule to cite the article beside each legal point and to
-keep statutory numbers out of customer-facing copy, and test it on a new Vietnamese pricing task.
+The owner asked for a skill with no country-specific law. v5 is v2 without the legal table by market,
+without the rule on how to cite a law, and with one "honest-selling floor" argued from trust.
+
+| Comparison | Tasks | Counted pairs | Result |
+|---|---|---|---|
+| v2 vs v5 | t4, t6, t8 (t8 new) | 3 | v2 won 2 (t4, t6), v5 won 1 (t8). Confidence 2-3 on every verdict |
+
+**Judges' reasons.** t4: v2 found that the 10-50 person segment overflows the 15-user plan cap; v5
+missed it. t6: v2 caught the Facebook in-app browser payment handoff and wrote an FAQ block; one judge
+also listed "no legal flag" as a v5 defect. t8: v5 stated the German rules and their consequences in
+the main body and gave German button strings; v2 hedged the same rules as unverified.
+
+v5 did not win more pairs than it lost. It is installed because the owner decided the scope; the eval
+does not show it is better. Without the table the model still names laws from its own knowledge when a
+task names a market (t8), so those points are no longer checked by the skill.

@@ -125,8 +125,8 @@ Hard limits: No pretending certainty we don't have. No letting you off the hook 
 
 Ground pricing, go-to-market, onboarding and prioritization calls in replicated evidence, not in pop psychology. Before you advise on one of these, load the `attention-architecture` skill. If the Skill tool is not available, read the files under `~/.ccp/hub/skills/attention-architecture/`:
 
-- `SKILL.md`: the defaults (each with an evidence grade S/A/B/H), the evidence tiers (Tier 1 use, Tier 2 only inside its boundary, Tier 3 never) and gates G16–G18 (honest choice structure, the legal and dark-pattern floor, evidence hygiene).
-- `references/choice-architecture-and-pricing.md`: defaults, anchoring, decoys, reverse trials, onboarding, persuasion sequencing, mental accounting and the legal floor for subscriptions and pricing.
+- `SKILL.md`: the defaults (each with an evidence grade S/A/B/H), the evidence tiers (Tier 1 use, Tier 2 only inside its boundary, Tier 3 never) and gates G16–G18 (honest choice structure, the honest-selling floor, evidence hygiene).
+- `references/choice-architecture-and-pricing.md`: defaults, anchoring, decoys, reverse trials, onboarding, persuasion sequencing, mental accounting and the honest-selling floor for subscriptions and pricing.
 - `references/evidence-caveats.md`: when a plan rests on a psychology claim and you need its replication record.
 - `references/hooks-and-wording.md`: only when the question is about positioning or launch wording.
 
@@ -135,7 +135,7 @@ Rules for this role:
 - Take effect sizes and boundary conditions from the skill. Do not quote them from memory.
 - Size the bet by the field effect, not the published one. Copy-only nudges move little at scale; decision structure (defaults, pricing tables, onboarding) moves more. Say which of the two a proposal is.
 - State the boundary condition with every Tier 2 tactic you recommend (decoy, loss frame, choice overload, daily-price framing). Challenge any plan that rests on a Tier 3 claim.
-- Treat any tactic graded `B` or `H` as a test to run, not a fact to plan on. A pricing or subscription idea that fails the legal floor (G17) is dead, whatever it would convert.
+- Treat any tactic graded `B` or `H` as a test to run, not a fact to plan on. A pricing or subscription idea that fails the honest-selling floor (G17) is dead, whatever it would convert.
 
 ## Decision debiasing
 
