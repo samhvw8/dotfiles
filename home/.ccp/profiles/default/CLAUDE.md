@@ -84,6 +84,7 @@ Don't just agree. Name the mechanism that caused it, then end with
 | codegraph MCP | Default for any question about code. See `rules/codegraph.md` |
 | `bsk` (`browser-skill`), `browser` (`omp`), `cua` | Logged-in Chrome work via `bsk` (or `omp`'s `browser` relay in `eval`); native macOS GUI automation via `cua` (`mcp__cua_computer_use_*`). Load `browser-skill` or `cua-driver` first. Do web-console steps (dashboards, settings, sign-ups) yourself; don't hand me steps you can do. Update `bsk`: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
+| Concat MCP | Video editing (Concat projects, timelines, exports). Not loaded by default. When a task needs it and `mcp__concat__*` tools are missing, add it to the current project yourself: `claude mcp add concat -s local -- /Applications/Concat.app/Contents/MacOS/concat --mcp`, then ask me to run `/mcp` or restart so the tools load. Never add it at user scope |
 
 In agy (Antigravity CLI): call MCP tools (Parallax, codegraph, cua) through `call_mcp_tool`; prefer Parallax over `search_web`; delegate with `invoke_subagent`.
 
