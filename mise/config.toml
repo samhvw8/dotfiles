@@ -85,6 +85,10 @@ herdr = "latest"
 [dotfiles]
 "~/.config/mise/config.toml" = { source = "~/.dotfiles/mise/config.toml", mode = "symlink" }
 "~/.zshrc" = { source = "~/.dotfiles/home/.zshrc", mode = "symlink" }
+# agy (antigravity-cli above): only the files committed here are linked; ccp
+# writes AGENTS.md, GEMINI.md, agents/, rules/ and skills/ beside them.
+"~/.gemini/config" = { source = "~/.dotfiles/home/.gemini/config", mode = "symlink-each", manifest = "git" }
+"~/.gemini/antigravity-cli" = { source = "~/.dotfiles/home/.gemini/antigravity-cli", mode = "symlink-each", manifest = "git" }
 
 [bootstrap.packages]
 "brew-cask:herdr-app" = { os = "macos" }  # self-updates; the app offers herdr-core on first launch

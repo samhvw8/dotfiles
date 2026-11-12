@@ -1,0 +1,44 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/settings.json",
+  "agentMode": "auto",
+  "allowNonWorkspaceAccess": true,
+  "enableTerminalSandbox": true,
+  "notifications": true,
+  "permissions": {
+    "allow": [
+      "command(art-put*)",
+      "command(cat*)",
+      "command(chmod*)",
+      "command(codegraph*)",
+      "command(curl*)",
+      "command(echo*)",
+      "command(find)",
+      "command(find*)",
+      "command(git*)",
+      "command(go*)",
+      "command(grep*)",
+      "command(head*)",
+      "command(jq*)",
+      "command(ls*)",
+      "command(lsof*)",
+      "command(mkdir*)",
+      "command(mv*)",
+      "command(npm run)",
+      "command(npm run*)",
+      "command(npm*)",
+      "command(npx*)",
+      "command(python3*)",
+      "command(rg*)",
+      "command(sed*)",
+      "command(source*)",
+      "command(tail*)",
+      "command(wc*)"
+    ]
+  },
+  "showFeedbackSurvey": false,
+  "showTips": false,
+  "trustedWorkspaces": [
+    "/Users/samhv/workspace/menhly",
+    "/Users/samhv"
+  ]
+}
