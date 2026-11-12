@@ -26,6 +26,11 @@ loads guidance for you to follow yourself.
   rules up front — run `tmux ls`/`nvidia-smi` before adding load; never reboot or
   switch OS while another session's job runs (`send-home-desktop-cmd busy`). A rule
   sent mid-task arrives too late.
+- **Hard limits go in the brief.** A limit from the user (scope, data size, no
+  network, no GPU) is in the brief itself, never only in a later message: agents
+  read messages only between long tool calls.
+- **An unexplained kill means stop.** An agent whose job is killed without an
+  explanation stops and asks; it never restarts the job on its own.
 - **Research:** read local first (code, config, git history) so queries are precise.
   Then search web and GitHub in parallel, say which approach you picked and why, and
   surface conflicts. Skip it for a known-cause bug or a mechanical change.
