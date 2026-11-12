@@ -111,8 +111,16 @@ post-tools = [
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-mcp.sh",
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-trust.sh",
     "bash $HOME/.dotfiles/mise/scripts/setup-font-linux.sh",
+    # Parallax CLI for omp and agy; built only when missing (dot:up updates it).
+    "command -v parallax >/dev/null || mise run parallax:install || echo '[WARN] parallax CLI not installed; run: mise run parallax:install' >&2",
 ]
 
+
+# The Parallax CLI is not a [tools] entry; mise/scripts/parallax.sh explains why.
+[tasks."parallax:install"]
+description = "Build the Parallax CLI from ~/workspace/parallax (cloned when missing) into ~/.local/bin"
+alias = "parallax:update"
+run = "bash $HOME/.dotfiles/mise/scripts/parallax.sh"
 
 # cua-driver is not a [tools] entry; mise/scripts/cua-driver.sh explains why.
 [tasks."cua:install"]
