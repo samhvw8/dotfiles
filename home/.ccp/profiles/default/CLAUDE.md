@@ -80,13 +80,13 @@ Don't just agree. Name the mechanism that caused it, then end with
 | Tool | Use |
 |------|-----|
 | `eval` (`omp` Code Mode) | Default in `omp` when chaining, batching, or filtering 2+ MCP or tool calls (`await tool.mcp__<server>_<tool>(args)`, `await tool.<name>(args)`, `read`, `write`, `browser`, `judge`, `judge_batch`, `workpool`, `agent`). Parse and trim intermediate results in code to save turns and context; never call top-level `write("xd://...", ...)` for MCP |
-| Parallax MCP & Web (`web_search`, `read`) | Default for anything on the web: in `omp`, both `omp`'s built-in `web_search` / `read` (URLs) and Parallax MCP (`mcp__parallax_*` for social, Reddit, X, bot-protected `fetch_page`/`batch_fetch`, trends, feeds) are first-class; in Claude Code, prefer Parallax MCP (`mcp__claude_ai_Parallax__*`) over `WebSearch`/`WebFetch`. Pass `focus` on list-shaped Parallax calls |
+| Parallax & Web (`web_search`, `read`) | Default for anything on the web: in `omp`, both `omp`'s built-in `web_search` / `read` (URLs) and the Parallax CLI (`parallax call <tool>` via the `parallax-cli` skill, for social, Reddit, X, bot-protected `fetch_page`/`batch_fetch`, trends, feeds) are first-class; in Claude Code, prefer Parallax MCP (`mcp__claude_ai_Parallax__*`) over `WebSearch`/`WebFetch`. Pass `focus` on list-shaped Parallax calls |
 | codegraph MCP | Default for any question about code. See `rules/codegraph.md` |
 | `bsk` (`browser-skill`), `browser` (`omp`), `cua` | Logged-in Chrome work via `bsk` (or `omp`'s `browser` relay in `eval`); native macOS GUI automation via `cua` (`mcp__cua_computer_use_*`). Load `browser-skill` or `cua-driver` first. Do web-console steps (dashboards, settings, sign-ups) yourself; don't hand me steps you can do. Update `bsk`: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
 | Concat MCP | Video editing (Concat projects, timelines, exports). Not loaded by default. When a task needs it and `mcp__concat__*` tools are missing, add it to the current project yourself: `claude mcp add concat -s local -- /Applications/Concat.app/Contents/MacOS/concat --mcp`, then ask me to run `/mcp` or restart so the tools load. Never add it at user scope |
 
-In agy (Antigravity CLI): call MCP tools (Parallax, codegraph, cua) through `call_mcp_tool`; prefer Parallax over `search_web`; delegate with `invoke_subagent`.
+In agy (Antigravity CLI): call MCP tools (codegraph, cua) through `call_mcp_tool`; use Parallax through its CLI (`parallax-cli` skill) and prefer it over `search_web`; delegate with `invoke_subagent`.
 
 Never put a year in a search query unless I ask for a date range. Searches cover
 the web and social (Parallax `social_search`: Reddit, X, HN, forums) by default;

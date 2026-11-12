@@ -18,7 +18,7 @@ Knowledge base for web retrieval MCP servers and APIs. Use this to understand wh
 
 ## Parallax MCP: pass `focus`
 
-When Parallax tools are present (`mcp__claude_ai_Parallax__*` in Claude Code, `mcp__parallax_*` in `omp`), they reach comment-level discussion
+When Parallax tools are present (`mcp__claude_ai_Parallax__*` in Claude Code, `parallax call <tool>` in `omp` and agy), they reach comment-level discussion
 (Reddit, HN, 26 forum/social platforms incl. V2EX, Zhihu, Weibo, Dcard, PTT) that
 the search tools above cannot. Their output is your context budget, so:
 
