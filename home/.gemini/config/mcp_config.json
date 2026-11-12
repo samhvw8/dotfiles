@@ -35,13 +35,6 @@
         "JAVA_HOME": "/Users/samhv/.local/share/mise/installs/java/temurin-21",
         "GHIDRA_INSTALL_DIR": "/Users/samhv/.local/share/ghidra/ghidra_12.1.4_PUBLIC"
       }
-    },
-    "concat": {
-      "type": "stdio",
-      "command": "/Applications/Concat.app/Contents/MacOS/concat",
-      "args": [
-        "--mcp"
-      ]
     }
   }
 }

@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-12
+* **Removal**: Context7 and Concat no longer load by default, because every session started its own copy (13 `context7-mcp` and 16 `concat` processes on a Mac that was swapping 16 GB). `context7@claude-plugins-official` is `false` in the `default` profile and in `hub/settings-templates/base/settings.json`. `setup-claude-mcp.sh` no longer adds `concat` to Claude Code at user scope or to `~/.omp/agent/mcp.json` and `~/.gemini/config/mcp_config.json`, and `concat` is removed from the committed agy config. `CLAUDE.md` tells Claude to add Concat per project (`claude mcp add concat -s local`) when a video task needs it (see [bootstrap flow](/architecture/bootstrap-flow.md)). Runs: nothing new (removes background processes).
 * **Addition**: [agy configuration](/tools/agy.md). agy's `settings.json` (auto mode with the terminal sandbox) and `mcp_config.json` are stored under `home/.gemini/` and linked by the full install (`mise/config.toml`); ccp v0.51.0 `ccp agy sync` writes agy's agents, rules, skills, `AGENTS.md` and `GEMINI.md`; tokens stay in a machine-local `local-secrets` plugin. `CLAUDE.md` gained one line mapping the tool rules to agy's tool names. Runs: nothing new; ccp re-syncs agy on profile changes.
 
 ## 2026-11-11

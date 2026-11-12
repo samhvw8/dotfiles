@@ -95,38 +95,8 @@ setup_claude_mcp() {
         done
     fi
 
-    # Setup Concat MCP (/Applications/Concat.app/Contents/MacOS/concat --mcp)
-    local concat_bin="/Applications/Concat.app/Contents/MacOS/concat"
-    if [[ -x "$concat_bin" ]]; then
-        if claude mcp get concat >/dev/null 2>&1; then
-            log_info "Claude Concat MCP already configured, skipping"
-        else
-            if claude mcp add concat -s user -- "$concat_bin" --mcp; then
-                log_success "Claude Concat MCP setup completed"
-            else
-                log_error "Failed to add Claude Concat MCP server"
-            fi
-        fi
-        if command -v jq >/dev/null 2>&1; then
-            local cfg tmp
-            for cfg in "$HOME/.omp/agent/mcp.json" "$HOME/.gemini/config/mcp_config.json"; do
-                [[ -f "$cfg" ]] || continue
-                tmp=$(mktemp)
-                if jq --arg cmd "$concat_bin" '
-                    .mcpServers = (.mcpServers // {}) |
-                    .mcpServers.concat = (
-                        (.mcpServers.concat // {"type": "stdio"})
-                        | .command = $cmd
-                        | .args = ["--mcp"]
-                    )
-                ' "$cfg" > "$tmp" && mv "$tmp" "$cfg"; then
-                    log_info "Updated Concat MCP in $cfg"
-                else
-                    rm -f "$tmp"
-                fi
-            done
-        fi
-    fi
+    # Concat MCP is not registered by default: it starts one process per session.
+    # Add it per project when a task needs it (see the Tools table in CLAUDE.md).
 }
 
 setup_claude_mcp

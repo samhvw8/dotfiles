@@ -37,7 +37,7 @@ sources:
 | `extensions/okf-stop.ts` | This repository — omp port of the Claude Code `okf-stop` hook[^omp-dir] |
 | `extensions/output-style.ts` | This repository — loads the active `outputStyle` from `~/.claude/settings.json` and `~/.claude/output-styles/`[^omp-dir] |
 | `AGENTS.md`, `RULES.md`, `APPEND_SYSTEM.md`, `skills/`, `agents/` | `ccp` (`ccp omp sync`) — mirrored from the active profile (`default`) |
-| `mcp.json` | Machine-local (holds machine paths and the `artifact-server` bearer token); `setup-claude-mcp.sh` updates `rea` (`rea-agents mcp`, `JAVA_HOME`, `GHIDRA_INSTALL_DIR`) and `concat` inside it when present[^claude-mcp] |
+| `mcp.json` | Machine-local (holds machine paths and the `artifact-server` bearer token); `setup-claude-mcp.sh` updates `rea` (`rea-agents mcp`, `JAVA_HOME`, `GHIDRA_INSTALL_DIR`) inside it when present[^claude-mcp] |
 | `*.db*`, `sessions/`, `blobs/`, `cache/` | `omp` runtime state — never committed |
 
 # New machine
