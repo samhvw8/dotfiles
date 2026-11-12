@@ -1,15 +1,15 @@
 ---
 type: Reference
 title: "Parallax CLI"
-description: "How omp and agy reach Parallax through the parallax binary instead of an MCP server, how the dotfiles build and update it, and why it is not a mise tool."
+description: "How omp and agy reach Parallax through the parallax binary instead of an MCP server, how mise installs it from dl.3cxo.work, and how to share it with a px_ key."
 resource: https://github.com/samhvw8/parallax
 tags: [parallax, omp, agy, mcp, cli, research]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-12T15:45:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-12T16:20:00Z }
 sources:
-  - id: parallax-script
-    resource: /mise/scripts/parallax.sh
-    title: mise/scripts/parallax.sh
+  - id: parallax-release
+    resource: https://github.com/samhvw8/parallax/blob/main/scripts/release-cli.sh
+    title: Parallax scripts/release-cli.sh
   - id: parallax-skill
     resource: /home/.ccp/hub/skills/parallax-cli/SKILL.md
     title: parallax-cli skill
@@ -48,37 +48,38 @@ Parallax ledger (`~/.cache/parallax/ledger.jsonl`) like MCP calls.[^parallax-she
 
 # Install and update
 
-`mise run parallax:install` (alias `parallax:update`, full install only) runs
-`mise/scripts/parallax.sh`:[^parallax-script]
+mise installs the released binary from the owner's download host:[^parallax-release]
 
-1. Without `~/workspace/parallax` it clones `samhvw8/parallax` with `gh`, and
-   fails with a message when `gh` has no token.
-2. With a checkout, it fast-forwards only a clean `main`. On another branch, or
-   with uncommitted changes, it builds the checkout as it is and says so,
-   because another agent may be working there.
-3. It builds into `~/.local/bin/parallax` (`make -C cli install` on macOS, which
-   also signs the binary; `go build` on Linux), then runs `parallax tools` as a
-   check.
+```toml
+"http:parallax" = { version = "2026.11.12", url = 'https://dl.3cxo.work/parallax/{{ version }}/parallax-{{ version }}-{{ os() }}-{{ arch() }}.zip' }
+```
 
-The full install's post-tools hook runs the task only when `parallax` is
-missing, and prints a warning instead of stopping the bootstrap when it fails.
-`dot:up` rebuilds it on machines that already have it. See
-[bootstrap flow](/architecture/bootstrap-flow.md) and [dot tasks](/tools/dot-tasks.md).
+The line is in `mise/config.toml` (full install). Builds exist for macOS arm64,
+Linux x64 and Linux arm64. A new release is `make release-cli` in
+`~/workspace/parallax`, then a bump of the pinned version here: the host serves
+only `.zip` files, so mise has no `latest` to discover and no checksum file to
+read (one on the same host would add nothing over HTTPS).
+
+The mise shim comes before `~/.local/bin` in `PATH`, so a dev build from
+`make install` is shadowed; run it as `~/.local/bin/parallax` while testing.
 
 The binary reads its keys from the environment: `PARALLAX_SCRAPER_URL`,
 `PARALLAX_SCRAPER_TOKEN`, `TWITTER_API_KEY` and the others listed in
 `mise/config.local.example.toml`.
 
-# Why it is not a mise tool
+# Sharing it
 
-The repository is private and publishes no releases, so the `github:` backend
-has nothing to download. Its Go module path (`github.com/samhv/parallax`, in
-`cli/`) does not match the repository, so the `go:` backend cannot fetch it.
+Someone without the repository installs the same mise line and sets
+`PARALLAX_SCRAPER_URL=https://scraper.3cxo.work` and
+`PARALLAX_SCRAPER_TOKEN=px_…`, a key the owner makes for them in the Parallax
+console. Every scraper route the CLI calls is priced by default, so the key
+works and its calls are metered. Without their own `TWITTER_API_KEY` they get no
+X tools; Reddit runs from their own IP. The `parallax-cli` skill carries these
+steps in its Setup section.[^parallax-skill]
 
 # Known limits
 
-- A clone gets GitHub's `main`. Commands not pushed there yet (on 2026-11-12,
-  `tools`, `call` and `resources` were still uncommitted) are missing from a
-  new machine's build, and the final `parallax tools` check fails.
+- The `px_` key path was checked against the console's default prices, not with
+  a live key (2026-11-12).
 - Each `parallax call` is its own ledger session, so `parallax ledger` cannot
   link two calls as a refetch.

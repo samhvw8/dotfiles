@@ -157,8 +157,6 @@ run = [
   # Sources first, so hub items read the newest source checkouts. Both are needed:
   # sources and GitHub-installed hub items update separately.
   "if command -v ccp >/dev/null; then ccp source update && ccp hub update --all; else echo 'ccp not installed; skipped ccp updates'; fi",
-  # Parallax CLI: rebuilt only where it is installed (full installs).
-  "if command -v parallax >/dev/null; then bash $HOME/.dotfiles/mise/scripts/parallax.sh; fi",
   "python3 $HOME/.dotfiles/mise/scripts/dot-check.py",
 ]
 

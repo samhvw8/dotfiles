@@ -8,6 +8,22 @@ description: Call Parallax retrieval tools from the shell with `parallax call` â
 The `parallax` binary runs the same tools as the Parallax MCP server, in process, for one call.
 No server stays running, and no tool schemas sit in your context until you ask for them.
 
+## Setup (once per machine)
+
+If `parallax` is not on `PATH`, tell the user these steps. Don't edit their config yourself.
+
+1. Install it with mise. Add this to `~/.config/mise/config.toml` under `[tools]`, then run `mise install`:
+   ```toml
+   "http:parallax" = { version = "2026.11.12", url = 'https://dl.3cxo.work/parallax/{{ version }}/parallax-{{ version }}-{{ os() }}-{{ arch() }}.zip' }
+   ```
+   Builds exist for macOS arm64, Linux x64 and Linux arm64.
+2. Point it at the hosted scraper with a personal key from the Parallax console (ask the owner for one):
+   `PARALLAX_SCRAPER_URL=https://scraper.3cxo.work` and `PARALLAX_SCRAPER_TOKEN=px_â€¦`, in mise `[env]` or the
+   shell profile. Without them, web, social and trending tools answer with an error naming the variable.
+3. Optional: `TWITTER_API_KEY` (twitterapi.io) adds the X tools. Reddit works without a key.
+
+Check: `parallax tools` lists the tools.
+
 ## Commands
 
 ```bash

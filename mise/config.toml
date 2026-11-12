@@ -71,6 +71,8 @@ rclone = "latest"
 "pipx:samhvw8/mediasift" = "latest"   # agent media sensor (~/workspace/tools/mediasift); `mise install -f` moves to the newest commit
 "go:github.com/samhvw8/pastewise" = { version = "latest", minimum_release_age = "0s" }  # tables from any app -> Notes/Slack/chat/PNG (~/workspace/tools/pastewise); then `pastewise alfred install`
 "github:samhvw8/paperhunt" = { version = "latest", minimum_release_age = "0s" }  # multi-source paper search, downloader & replication bundler (~/workspace/tools/paperhunt)
+# Parallax CLI for omp and agy (parallax-cli skill), from dl.3cxo.work; bump the pin after `make release-cli` in ~/workspace/parallax
+"http:parallax" = { version = "2026.11.12", url = 'https://dl.3cxo.work/parallax/{{ version }}/parallax-{{ version }}-{{ os() }}-{{ arch() }}.zip' }
 "aqua:ast-grep/ast-grep" = "latest"
 lima = "latest"
 "pipx:osxphotos" = { version = "latest", uvx_args = "--python 3.12" }
@@ -111,16 +113,8 @@ post-tools = [
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-mcp.sh",
     "mise exec -- bash $HOME/.dotfiles/mise/scripts/setup-claude-trust.sh",
     "bash $HOME/.dotfiles/mise/scripts/setup-font-linux.sh",
-    # Parallax CLI for omp and agy; built only when missing (dot:up updates it).
-    "command -v parallax >/dev/null || mise run parallax:install || echo '[WARN] parallax CLI not installed; run: mise run parallax:install' >&2",
 ]
 
-
-# The Parallax CLI is not a [tools] entry; mise/scripts/parallax.sh explains why.
-[tasks."parallax:install"]
-description = "Build the Parallax CLI from ~/workspace/parallax (cloned when missing) into ~/.local/bin"
-alias = "parallax:update"
-run = "bash $HOME/.dotfiles/mise/scripts/parallax.sh"
 
 # cua-driver is not a [tools] entry; mise/scripts/cua-driver.sh explains why.
 [tasks."cua:install"]
