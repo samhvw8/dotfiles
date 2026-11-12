@@ -23,6 +23,7 @@
       "command(lsof*)",
       "command(mkdir*)",
       "command(mv*)",
+      "command(parallax*)",
       "command(npm run)",
       "command(npm run*)",
       "command(npm*)",
