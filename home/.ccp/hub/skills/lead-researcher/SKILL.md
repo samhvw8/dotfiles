@@ -301,7 +301,7 @@ Before advancing to Phase 1, do 2-3 quick inline web searches to verify that nam
 
 **Open-ended / iterative-expansion queries** (signals: "explore", "investigate", "what should we know about", "deep dive", no clear success criteria) are handled **natively** by the loop's CONTROL brain ([forager](references/forager/overview.md)), which runs full reflect + steer + topic expansion for them.
 
-Single-fact lookups ("what's the latest stable React", "is Y deprecated") are not research — answer them with one web search (`mcp__parallax_web_search` or `web_search` / `WebSearch`) and leave this skill.
+Single-fact lookups ("what's the latest stable React", "is Y deprecated") are not research — answer them with one web search (Parallax `web_search`: `mcp__claude_ai_Parallax__web_search` in Claude Code, `tool.mcp__parallax_web_search` in `omp`; or `web_search` / `WebSearch`) and leave this skill.
 
 **Pass-through examples** (skip heavy-think, go directly to Phase 1):
 - "Compare Next.js vs Remix for SSR performance" — criteria implied (performance), scope bounded

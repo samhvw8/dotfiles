@@ -90,7 +90,7 @@ on its own:
 - If there is an answer to beat: what the user disliked about it, in their words.
 
 If the task depends on facts that change or that you are not sure of (versions, current APIs, prices,
-laws, recent events, what already exists), research them yourself now, once, with Parallax MCP (`mcp__parallax_*` via `eval` or `ToolSearch`), `web_search`, or `WebSearch`.
+laws, recent events, what already exists), research them yourself now, once, with Parallax MCP (`mcp__parallax_*` via `eval` in `omp`, `mcp__claude_ai_Parallax__*` via `ToolSearch` in Claude Code), `web_search`, or `WebSearch`.
 Write what you found, with URLs, into the task file under a heading "Facts gathered for this task".
 Competitors do not search the web: one shared set of facts keeps all of them working from the same
 ground and costs one search instead of a hundred. Searching per competitor would also pull them all
@@ -275,7 +275,7 @@ Rules:
 - Do not invent requirements the task does not state. Do not attack the approach, only what it gets wrong.
 - At most 5 attacks, strongest first. If you only find 2 real ones, write 2. Filling the list with weak attacks makes your opponent's answer longer, not better, and a judge discounts them.
 - Label each FATAL (wrong or unusable for the task), MAJOR (a real gap) or MINOR.
-- If an attack rests on a factual claim the task and its files cannot settle (a version, an API, a number, a date, a rule), you may check it on the web to prove it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to prove a specific attack, not to research the task, and put the URL in that attack's Problem line.
+- If an attack rests on a factual claim the task and its files cannot settle (a version, an API, a number, a date, a rule), you may check it on the web to prove it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or `mcp__claude_ai_Parallax__web_search` and `mcp__claude_ai_Parallax__fetch_page` loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to prove a specific attack, not to research the task, and put the URL in that attack's Problem line.
 - Do not create, edit or delete any file except the one below.
 
 Write the attacks to {{out}} in this format:
@@ -360,7 +360,7 @@ How to judge:
 4. Score each criterion from 0 to 10 using the rubric's anchors. Use the whole scale: where one solution is clearly better on a criterion, the scores must show it. Set fatal to true only for a flaw you have verified that makes the solution wrong or unusable for the task.
 5. The winner is the higher weighted total (the weights are in the rubric). A fatal solution cannot beat one that is not fatal. On an exact tie, fewer standing attacks wins, then higher correctness.
 6. Judge the work, not the writing about the work. Length is not quality: length the task does not need is a cost, scored under clarity. You do not know either competitor's strategy and should not guess it.
-7. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
+7. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or `mcp__claude_ai_Parallax__web_search` and `mcp__claude_ai_Parallax__fetch_page` loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
 8. Each side may have borrowed up to two things from the other, declared in its defense. That is allowed. Judge each revised solution as it stands; a borrowed part that clashes with the rest of its solution is a flaw.
 9. Do not create, edit or delete any file except the verdict. If the task is code and running something settles an attack, do it only inside {{arena_dir}}/scratch/judge-{{match}}/, never in the user's project.
 
@@ -464,7 +464,7 @@ Rules:
 - Every attack must be specific and checkable: point at the exact part, say what is wrong and why.
 - Attack the rethought solution on its merits against the task. Do not argue for your own solution, and do not attack something only because it came from you or from someone else.
 - At most 7 attacks, strongest first. Label each FATAL, MAJOR or MINOR.
-- If an attack rests on a factual claim the task and its files cannot settle (a version, an API, a number, a date, a rule), you may check it on the web to prove it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to prove a specific attack, not to research the task, and put the URL in that attack's Problem line.
+- If an attack rests on a factual claim the task and its files cannot settle (a version, an API, a number, a date, a rule), you may check it on the web to prove it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or `mcp__claude_ai_Parallax__web_search` and `mcp__claude_ai_Parallax__fetch_page` loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to prove a specific attack, not to research the task, and put the URL in that attack's Problem line.
 - Do not create, edit or delete any file except the one below.
 
 Write the attacks to {{out}} in this format:
@@ -535,7 +535,7 @@ How to judge:
 3. Score each criterion from 0 to 10 using the rubric's anchors. Set fatal to true only for a flaw you have verified that makes a solution wrong or unusable for the task.
 4. The winner is the higher weighted total. A fatal solution cannot beat one that is not fatal.
 5. Judge the work, not the writing about the work. Longer is not better: an addition that does not make the answer better for the task is a cost, scored under clarity.
-6. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
+6. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or `mcp__claude_ai_Parallax__web_search` and `mcp__claude_ai_Parallax__fetch_page` loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
 7. Do not create, edit or delete any file except the verdict. Read only the files named in this brief and the files the task points to: nothing else in the arena folder.
 
 Write this JSON, and nothing else, to {{out}}:
@@ -574,7 +574,7 @@ How to judge:
 3. Score each criterion from 0 to 10 using the rubric's anchors. Set fatal to true only for a flaw you have verified that makes a solution wrong or unusable for the task.
 4. The winner is the higher weighted total. A fatal solution cannot beat one that is not fatal.
 5. Judge the work, not the writing about the work. Length is not quality.
-6. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
+6. If the match turns on a factual claim the task and its files cannot settle, check it on the web before you score it: a cited URL in an attack is a lead, not proof, so open it. Use Parallax (`mcp__parallax_web_search` and `mcp__parallax_fetch_page` via `eval` / `xd://` in `omp`, or `mcp__claude_ai_Parallax__web_search` and `mcp__claude_ai_Parallax__fetch_page` loaded with `ToolSearch` in Claude Code), or `web_search`/`read` (`omp`) / `WebSearch`/`WebFetch` (Claude Code). Search only to settle a claim that could change the winner or the fatal flag, never to research the task, and name the URL in your reason.
 7. Do not create, edit or delete any file except the verdict. Read only the files named in this brief and the files the task points to: nothing else in the arena folder.
 
 Write this JSON, and nothing else, to {{out}}:

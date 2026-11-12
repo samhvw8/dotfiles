@@ -122,7 +122,7 @@ Each iteration is a **complete cycle** — search, fetch, and use other tools to
 | **Refine queries** | Each iteration's searches should be sharper than the last, informed by fetched content |
 | **Fetch before citing deeply** | Substantive claims require fetching the actual page — don't argue from snippets |
 | **Parallel calls** | Batch independent search and fetch calls in parallel within each iteration (or in one `omp` `eval` cell) |
-| **Escalate on failure** | If direct fetch (`read` / `WebFetch`) fails (JS-rendered, anti-bot), escalate to `mcp__parallax_fetch_page` or Phase 4 retrieval tools |
+| **Escalate on failure** | If direct fetch (`read` / `WebFetch`) fails (JS-rendered, anti-bot), escalate to Parallax `fetch_page` (`mcp__claude_ai_Parallax__fetch_page` in Claude Code, `tool.mcp__parallax_fetch_page` in `omp`) or Phase 4 retrieval tools |
 
 ## Phase 3: GitHub Research
 
@@ -318,7 +318,7 @@ Group every discovered tool by what it can do:
 ### Reddit Retrieval (MANDATORY escalation)
 
 If `site:reddit.com` search returns empty (common due to API restrictions):
-1. Check if Parallax MCP is available (`ToolSearch("parallax reddit")` in Claude Code, or `tool.mcp__parallax_search_reddit` / `xd://mcp__parallax_search_reddit` in `omp`)
+1. Check if Parallax MCP is available (`ToolSearch("select:mcp__claude_ai_Parallax__search_reddit,mcp__claude_ai_Parallax__get_comments")` in Claude Code, or `tool.mcp__parallax_search_reddit` / `xd://mcp__parallax_search_reddit` in `omp`)
 2. If yes: use `search_reddit` or `browse_subreddit` for subreddit-specific search — with `focus` set to the research question (see [retrieval-tools.md](references/retrieval-tools.md#parallax-mcp-pass-focus))
 3. If no Parallax: try fetching specific Reddit URLs (`read` in `omp` or `WebFetch` in Claude Code, e.g., `reddit.com/r/[subreddit]/search?q=[topic]`)
 4. Document "Reddit inaccessible" in findings if all methods fail — do NOT silently skip

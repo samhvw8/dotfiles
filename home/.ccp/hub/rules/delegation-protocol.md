@@ -18,7 +18,7 @@ loads guidance for you to follow yourself.
   (`agent://all` to broadcast). Spawn them in one message, name their counterparts,
   shut them down when done.
 - **Equip the agent.** It doesn't know what's installed. Name its tools — web:
-  Parallax MCP (`ToolSearch` in Claude Code; `eval` `tool.mcp__parallax_*` or `xd://`
+  Parallax MCP (`mcp__claude_ai_Parallax__*` via `ToolSearch` in Claude Code; `eval` `tool.mcp__parallax_*` or `xd://`
   plus `web_search`/`read` in `omp`); code: codegraph MCP; browser: `bsk` CLI via
   `browser-skill` (or `omp` `browser` relay / `cua`); GitHub: `gh` CLI — and its
   skills (`lead-researcher`, `code-quality`, `impeccable`, `git-workflow`).
