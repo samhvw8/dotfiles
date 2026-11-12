@@ -85,6 +85,8 @@ Don't just agree. Name the mechanism that caused it, then end with
 | `bsk` (`browser-skill`), `browser` (`omp`), `cua` | Logged-in Chrome work via `bsk` (or `omp`'s `browser` relay in `eval`); native macOS GUI automation via `cua` (`mcp__cua_computer_use_*`). Load `browser-skill` or `cua-driver` first. Do web-console steps (dashboards, settings, sign-ups) yourself; don't hand me steps you can do. Update `bsk`: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
 
+In agy (Antigravity CLI): call MCP tools (Parallax, codegraph, cua) through `call_mcp_tool`; prefer Parallax over `search_web`; delegate with `invoke_subagent`.
+
 Never put a year in a search query unless I ask for a date range. Searches cover
 the web and social (Parallax `social_search`: Reddit, X, HN, forums) by default;
 say so when you skip social.
