@@ -2,12 +2,11 @@ browser:
   relay: true
 setupVersion: 3
 modelRoles:
-  slow: google-antigravity/claude-opus-5-5:medium
-  plan: google-antigravity/claude-opus-5-5-high:high
-  advisor: google-antigravity/claude-opus-5-5-medium:medium
-  task: google-antigravity/claude-opus-5-5-medium:medium
+  slow: anthropic/claude-fable-5-2:auto
+  plan: anthropic/claude-fable-5-2:auto
+  advisor: anthropic/claude-fable-5-2:auto
+  task: google-antigravity/gemini-3.8-flash:auto
   vision: google-antigravity/gemini-3.8-flash:medium
-  smol: google-antigravity/gemini-3.8-flash:minimal
   tiny: google-antigravity/gemini-3.8-flash:low
   commit: google-antigravity/gemini-3.8-flash:low
   web: web/searxng
@@ -16,6 +15,7 @@ modelRoles:
   speech: local/kokoro
   image: google-antigravity/gemini-3.1-flash-image
   default: google-antigravity/gemini-4-argon
+  memory: google-antigravity/gemini-3.8-flash:auto
 modelPresets:
   spread:
     modelRoles:
@@ -137,6 +137,12 @@ retry:
     default:
       - google-antigravity/gemini-3.8-flash
       - opencode-go/deepseek-v4.1-flash
+    slow:
+      - google-antigravity/gemini-4-carbon
+    plan:
+      - google-antigravity/gemini-4-carbon
+    advisor:
+      - google-antigravity/gemini-4-carbon
 bashInterceptor:
   enabled: true
 display:
@@ -152,4 +158,5 @@ skills:
 cycleOrder:
   - smol
   - slow
+  - advisor
 defaultThinkingLevel: auto
