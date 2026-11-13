@@ -57,12 +57,11 @@ folder is a permission change): ask Sam, or start the agent in a repo or worktre
 
 Leave `--where` out. Its default, `auto`, puts the agent where Sam looks for it:
 
-- **Same project** (same git repo; a worktree counts): a split in a tab already working on that
-  project, either yours or one of an agent you started, up to 3 panes per tab.
-- **Another project** (a tool you need fixed, a library you reuse), or every such tab full: a new tab
-  right after yours.
+- A split in your tab, whatever folder the agent works in, up to 8 panes. The largest pane is cut
+  along its long side, so the tab fills as a grid.
+- Your tab full: a split in a tab of an agent you started, then a new tab right after yours.
 
-`--cwd` decides the project, so set it to the folder the agent will work in. Pass
+Set `--cwd` to the folder the agent will work in; it no longer changes where the agent opens. Pass
 `--where tab|split|window` (on `spawn`, `task new` and `task review`) only when Sam asks for a layout.
 
 ## Find the right pane
