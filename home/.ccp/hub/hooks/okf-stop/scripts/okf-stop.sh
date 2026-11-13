@@ -164,6 +164,6 @@ done <<< "$roots"
 
 reason="OKF check before stopping:$report
 
-If these changes affect anything the bundle describes, load the \`okf\` skill, update the affected concepts and log.md, and run the validator. If they don't, say so in one line and stop. A repo is checked again only for changes newer than these."
+If these changes affect anything the bundle describes, load the \`okf\` skill, update the affected concepts, add a log.md entry at the top (newest first, like git log), and run the validator. If they don't, say so in one line and stop. A repo is checked again only for changes newer than these."
 
 jq -n --arg r "$reason" '{decision: "block", reason: $r}'
