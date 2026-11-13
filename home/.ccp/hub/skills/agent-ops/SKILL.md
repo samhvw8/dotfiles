@@ -57,8 +57,8 @@ folder is a permission change): ask Sam, or start the agent in a repo or worktre
 
 Leave `--where` out. Its default, `auto`, puts the agent where Sam looks for it:
 
-- A split in your tab, whatever folder the agent works in, up to 8 panes. The largest pane is cut
-  along its long side, so the tab fills as a grid.
+- A split in your tab, whatever folder the agent works in, up to 12 panes. The largest pane is cut
+  along its long side and the panes are resized evenly, so the tab fills as a grid.
 - Your tab full: a split in a tab of an agent you started, then a new tab right after yours.
 
 Set `--cwd` to the folder the agent will work in; it no longer changes where the agent opens. Pass
