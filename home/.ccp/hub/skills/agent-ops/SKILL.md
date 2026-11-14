@@ -19,7 +19,7 @@ harness-ops slash [--wait] <target> /command          # a slash command, alone o
 harness-ops clear <target>             # /clear, then wait until the harness is idle
 harness-ops wait-idle <target> [--timeout 120]
 harness-ops spawn <harness> --cwd <dir> [--prompt "..." | --prompt-file F] [--label L] [--command CMD] [--timeout S]
-harness-ops interrupt <target> [--key ctrl-c]         # stop its current turn (Esc on claude and omp)
+harness-ops interrupt <target> [--key ctrl-c]         # stop its current turn (Esc on claude, omp and agy)
 harness-ops close [--force] <target>   # panes you made with spawn or task new; never your own
 harness-ops name <label>               # give your own pane a stable label
 harness-ops whoami
@@ -228,7 +228,9 @@ One message = one complete request. The receiver has none of your context.
   draft, on `slash` and `--clear-first` it wipes the draft.
 - To reset another agent, use `send --clear-first` or `clear`. Never type `/clear` into a message: a
   slash command only works alone on the line.
-- A busy agent queues the message and handles it after its turn. Do not resend.
+- A busy agent queues the message and handles it after its turn; `send` then prints `queued for`.
+  Do not resend. Do not interrupt to make it read sooner: an interrupt puts a queued message back on
+  its input line, unsent.
 
 Then end your turn: the reply arrives in your pane as a new message, like user input. If you must
 wait inside a turn, run one `wait-idle <target> --timeout 600`, then `read` once. Never loop.
@@ -262,8 +264,11 @@ Then answer by its kind. Exactly one of these applies:
 
 ## Check
 
-After `send`, `harness-ops` prints `sent to <id> (<harness>, <title>)`. Confirm that is the pane you
-meant. Exit codes: 0 ok, 1 terminal backend error (for iTerm2: is the Python API enabled?), 2 refused
+After `send`, `harness-ops` prints `sent to <id> (<harness>, <title>)`, or `queued for ...` when the
+target is working. Confirm that is the pane you meant. Text on the target's screen is not proof that
+it was submitted; the STATUS in `ls` and the exit code are. `interrupt` exits 4 when a queued message
+came back on the input line: it was not sent. Tell the user; never press Enter for it with
+`interrupt --key`. Exit codes: 0 ok, 1 terminal backend error (for iTerm2: is the Python API enabled?), 2 refused
 (target or usage), 4 draft on the input line, 5 wait timed out, 6 refused by a safety limit (task
 caps, or `close` on a pane that is not ours or is busy).
 
