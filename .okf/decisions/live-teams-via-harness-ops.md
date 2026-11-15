@@ -4,7 +4,7 @@ title: "Live teams run on harness-ops sessions, not Claude Code agent teams"
 description: "Why live debate, council, brainstorm and swarm modes use agent-ops (harness-ops) sessions with a board, lead turns and duels; the role roster; the director-manager-worker swarm."
 tags: [decision, agent-ops, harness-ops, thinking-skills, live-team, swarm, models]
 status: draft
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-15T13:30:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-15T14:45:00Z }
 stale_after: 2027-03-01
 sources:
   - id: cc-warning
@@ -99,12 +99,14 @@ Diversity setting per live run: `same` (default), `mixed` (automatic for review,
   trusted folder (`~`) and use absolute board paths.
 - agy members need the global rule `command(harness-ops)` in agy's `settings.json` (added on this Mac 2026-11-15): its terminal sandbox cannot reach the iTerm2
   API socket under `~/Library/Application Support`, and its auto-mode reviewer asks a person before
-  each `harness-ops send` to a session it did not start. Until Sam allows it, agy roles fall back to
-  omp members (`roster.md`).
+  each `harness-ops send` to a session it did not start. Where the rule is missing, agy roles fall
+  back to omp members (`roster.md`). agy trusts exact folders only; a session-only
+  `--settings '{"trustedWorkspaces":["<cwd>"]}'` skips the trust prompt for that start and is not saved.
 - omp has no preset CLI flag (`/modelpreset switch` works only inside a session), so roster lines use
   `omp --model <provider/model>` taken from the presets in `~/.omp/agent/config.yml`.
-- A new interactive Claude Code session stops on the Code Mode opt-in screen until Sam answers it
-  once, so `claude` members stall until then.
+- A new interactive Claude Code session showed the Code Mode opt-in screen until Sam answered it
+  once. Since then a fresh session in a new `/tmp` folder reaches its input prompt with no screen
+  (checked 2026-11-15), so `claude` members no longer stall.
 - When models change: update the roster line (or the omp preset), then rerun the roster check.
 
 Runs: nothing in the background; sessions exist only during a live run.

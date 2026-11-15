@@ -36,6 +36,9 @@ Both stored files use absolute `/Users/samhv` paths, because agy's global config
 `~` or environment variables. Only the full install links them, which matches where agy is installed.
 agy may rewrite `settings.json` (for example `/model` or a newly trusted folder). If a save replaces
 the link with a plain file, `mise dot status` shows it: copy the file back into `home/` and re-link it.
+agy rewrites `settings.json` when it starts, so the link does not hold for long; expect to merge the
+live file back. `trustedWorkspaces` passed through `--settings` does work for one session (no trust
+prompt, nothing saved), unlike `permissions` (tested 2026-11-15).
 
 # Plugin MCP servers
 
