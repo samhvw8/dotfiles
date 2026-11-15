@@ -37,7 +37,6 @@
   "effortLevel": "xhigh",
   "enabledPlugins": {
     "code-modernization@claude-plugins-official": true,
-    "context7@claude-plugins-official": false,
     "gopls-lsp@claude-plugins-official": true,
     "image-view@claude-image-view": true,
     "prismantis@prismantis": true,
@@ -215,7 +214,6 @@
       "WebFetch(domain:*)",
       "WebSearch",
       "Write",
-      "mcp__context7",
       "mcp__claude_ai_Parallax",
       "mcp__codegraph",
       "mcp__lark",

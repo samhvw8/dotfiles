@@ -9,8 +9,6 @@
   "autoMemoryEnabled": false,
   "effortLevel": "xhigh",
   "enabledPlugins": {
-    "context7@claude-plugins-official": false,
-    "frontend-design@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true
   },
   "env": {
@@ -45,7 +43,6 @@
       "WebFetch(domain:*)",
       "WebSearch",
       "Write",
-      "mcp__context7",
       "mcp__codegraph",
       "Bash(codegraph:*)"
     ],
