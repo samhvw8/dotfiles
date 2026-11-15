@@ -85,7 +85,8 @@ Diversity setting per live run: `same` (default), `mixed` (automatic for review,
 | `fast` timing job, one run each, same tight brief | All passed the schema check. agy Flash medium 16 s, Hydrogen low 19 s, Hydrogen medium 27 s, omp GLM-5.3-Flash 27 s, omp DeepSeek-V4.1-Flash 55 s → `fast` = Flash medium |
 | Manager planted-drift round (one drifted draft, one schema miss, two clean) | Hydrogen medium 24 s, Hydrogen high 32 s, Carbon medium 49 s, Carbon high 152 s; all four marked both faults and passed the clean drafts → `other-family` = Hydrogen medium |
 | omp → lead `harness-ops send` | Works, no prompt |
-| agy → lead `harness-ops send` | Works only after a person approves it in agy |
+| agy → lead `harness-ops send`, no rule | The auto-mode reviewer asks a person before every `send` to a session agy did not start |
+| agy permission tests, one session each | Session-only `--settings` with `command(harness-ops*)`: still asked. `read_file`/`write_file` on the iTerm2 socket folder: still blocked in the sandbox and asked. Sandbox off + accept-edits + allow list via `--settings`: asked even for `whoami` (agy ignores `--settings` permission rules). Global rule `command(harness-ops)` (agy's "persist" option): plain auto-mode session sent with no prompt, each call run twice (sandbox fail, then allowed retry) |
 | Live team, 3 omp members (GLM-5.3, Kimi-K3, DeepSeek-V4-Pro), round 1 + duel + round 2 | Round 1: 3 parallel appends, all whole. Duel: token passed both ways, concessions with evidence, scribe outcome on the board. Found: omp's top-level `bash` refuses `>>`, so one member edited the board in place and broke block order → round 0 append check and a per-harness append method (harness map). Found: members resent `DONE` with `--force` when `send` said "queued" (the lead was busy) → send-once rule in every brief. Found (m3, round 2): long board lines hit omp's 768-character read cap → wrap board lines at about 100 characters |
 | Swarm, 1 round: director (lead) → omp GLM-5.3 manager → 3 omp GLM-5.3-Flash workers (2 cards + wildcard) | Manager started the workers at depth 2, all drafts written, report table delivered through `task done`; the director's check of all 3 drafts matched the manager's verdicts; manager closed its workers on request, lead accepted and closed it. agy manager not tested (needs the agy allow rule) |
 
@@ -96,7 +97,7 @@ Diversity setting per live run: `same` (default), `mixed` (automatic for review,
 - Cross-model debate and review become possible.
 - agy trusts exact folders only (`trustedWorkspaces` in its `settings.json`); agy members start in a
   trusted folder (`~`) and use absolute board paths.
-- agy members need `harness-ops` allowed in agy once: its terminal sandbox cannot reach the iTerm2
+- agy members need the global rule `command(harness-ops)` in agy's `settings.json` (added on this Mac 2026-11-15): its terminal sandbox cannot reach the iTerm2
   API socket under `~/Library/Application Support`, and its auto-mode reviewer asks a person before
   each `harness-ops send` to a session it did not start. Until Sam allows it, agy roles fall back to
   omp members (`roster.md`).

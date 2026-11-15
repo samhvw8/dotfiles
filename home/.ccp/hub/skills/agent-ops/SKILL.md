@@ -221,7 +221,7 @@ Pick the shape by size:
 | 4–6 | Your turns and the board only. No duels: too many messages to follow |
 
 Pick each member's role and the diversity setting (## Roles), and its launch command from `roster.md`.
-agy members need harness-ops allowed in agy once; check before using agy roles (`roster.md`).
+agy members need the `command(harness-ops)` rule in agy's settings; check it before using agy roles (`roster.md`).
 
 1. Write `~/.cache/agent-ops/group-<topic>.md` from `group-brief.md` (next to this file), and create
    the board `~/.cache/agent-ops/group-<topic>-board.md` with one heading per member. Write every path
@@ -267,8 +267,8 @@ a live team instead.
 | Workers | `fast`, up to 6, started by the manager with `task new` | One card each, kept open across rounds with `task send`, so each harness starts once |
 
 Depth: you → manager (1) → workers (2) fits `TERMCTL_MAX_DEPTH=2`, so workers cannot start tasks. The
-manager owns the workers, which keeps them inside the 6-tasks-per-owner limit. agy members need
-harness-ops allowed in agy once; check before using agy roles (`roster.md`). The manager runs
+manager owns the workers, which keeps them inside the 6-tasks-per-owner limit. agy members need the
+`command(harness-ops)` rule in agy's settings; check it before using agy roles (`roster.md`). The manager runs
 harness-ops itself, so this applies to it.
 
 1. Make a run folder `~/.cache/agent-ops/swarm-<topic>/`. Write `cards-round-1.md`: one card per

@@ -14,14 +14,16 @@ turns the role into a launch command. Pass the harness as the first argument and
 
 ## agy members
 
-- **Prerequisite: agy members need harness-ops allowed in agy once; check before using agy roles.**
-  agy's terminal sandbox blocks harness-ops (it cannot reach the iTerm2 API socket under
-  `~/Library/Application Support`), and its auto-mode reviewer then asks a human before a
-  `harness-ops send` to a session it did not start. Until Sam allows `command(harness-ops*)` in agy
-  (the prompt's "always allow commands that start with harness-ops", or the allow list in
-  `~/.gemini/antigravity-cli/settings.json`), every agy member stalls on that prompt. Never change
-  agy's settings yourself: that is a permission change. Without it, use a `claude` or `omp` member
-  for the role and tell Sam.
+- **Prerequisite: agy members need `command(harness-ops)` in the `permissions.allow` list of
+  `~/.gemini/antigravity-cli/settings.json`.** Check with
+  `grep -F 'command(harness-ops)' ~/.gemini/antigravity-cli/settings.json` before using agy roles.
+  With the rule, a member in auto mode runs each harness-ops call twice (it fails in the sandbox,
+  then the retry outside it runs without review): slower, but no prompt. Without it, the auto-mode
+  reviewer asks a person before every `harness-ops send` to a session agy did not start. Tested
+  2026-11-15: a session-only `--settings` file does not apply `permissions.allow`, and
+  `read_file`/`write_file` rules do not open the iTerm2 socket inside the sandbox; only the global
+  rule works. Sam adds it (agy's "always allow ... persist" option writes it); never add it yourself.
+  Without it, use a `claude` or `omp` member for the role and tell Sam.
 - **Trusted folders.** agy trusts exact folders only (`trustedWorkspaces` in
   `~/.gemini/antigravity-cli/settings.json`). `/Users/samhv` is trusted; its subfolders are not.
   Start agy members with `--cwd ~` and give them absolute paths (board, brief, inputs, outputs).
