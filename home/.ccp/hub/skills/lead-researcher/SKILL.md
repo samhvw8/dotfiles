@@ -1,6 +1,6 @@
 ---
 name: lead-researcher
-description: "Entry point for all multi-source research — comparing options, evaluating tools, surveying an ecosystem, deep or 'team research' (live supervised agent-team venue). Orchestrates gatherer agents; the brain sizes the plan to the decision and picks agent count, languages (default EN + ZH + ZH-TW, assigned per sub-question), iterations, and depth from the question. Never spawn gatherer agents directly — they go through this skill. Not for single-fact lookups ('what version is X', 'is Y deprecated') — those are one web search."
+description: "Entry point for all multi-source research — comparing options, evaluating tools, surveying an ecosystem, deep or 'team research' (live supervised venue on harness-ops sessions). Orchestrates gatherer agents; the brain sizes the plan to the decision and picks agent count, languages (default EN + ZH + ZH-TW, assigned per sub-question), iterations, and depth from the question. Never spawn gatherer agents directly — they go through this skill. Not for single-fact lookups ('what version is X', 'is Y deprecated') — those are one web search."
 ---
 
 # Lead Researcher
@@ -40,7 +40,7 @@ Format: `[topic]` — everything else (agents, languages, depth) is decided by t
 |-------|-------------------|---------------|
 | **Inline** | Simple/focused questions, quick lookups | Main agent itself — free, no delegation |
 | **Workflow** | Complex multi-domain, deep investigation | Opus sub-agent per iteration (background) |
-| **Team** (opt-in) | Live co-research, user wants to steer | Steering-Lead teammate (opus), live streaming. See [team-research](references/team-research.md) |
+| **Team** (opt-in) | Live co-research, user wants to steer | The lead (main session), steering gatherer sessions round by round. See [team-research](references/team-research.md) |
 
 **`forager` is the brain.** Its fused REFLECT/STEER methodology ([forager](references/forager/overview.md)) = REASONING/EXPAND/CHECK. See [gatherer-vs-forager](references/adaptive-research/gatherer-vs-forager.md).
 
@@ -317,10 +317,10 @@ Single-fact lookups ("what's the latest stable React", "is Y deprecated") are no
 | Path | Action |
 |------|--------|
 | User said "team research" / "research with me" / `team` arg | → **Team venue** ([team-research](references/team-research.md)) — skip the question |
-| Researchable, and live steering would help (exploratory, multi-step) | Ask one yes/no: *"Run as **live Team Research** — you supervise while a steering-lead brain + 2–3 gatherers + a verifier work and adapt in real time? Or run it normally?"* |
+| Researchable, and live steering would help (exploratory, multi-step) | Ask one yes/no: *"Run as **live Team Research** — 2–3 gatherers and a verifier work in visible sessions while I steer them round by round and you watch and redirect? Or run it normally?"* |
 | Otherwise | Inline or Workflow venue, as the brain picks |
 
-Yes → Team venue (still do Phase 1 planning first). Requires main session (no nested teams; in Claude Code `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, in `omp` named `task` items with `write agent://<id>`).
+Yes → Team venue (still do Phase 1 planning first). Run it from the main session, so Sam sees the sessions and the lead steers them. Transport: harness-ops sessions through the `agent-ops` skill; in `omp`, named `task` items with `write agent://<id>`.
 
 ### Phase 1: Confirm Research Plan with User
 
@@ -479,7 +479,7 @@ ZH: T00ls, 看雪, 先知社区 (xz.aliyun.com), 52pojie. RU: wasm.in, Codeby. E
 
 This is the GATHER step of the iterate loop — spawn gatherer agents for the current sub-questions. Brain decides how many agents.
 
-Spawn `gatherer` agents as plain subagents (no `name`). Spawn each assignment as a squad in one message: a `model: "sonnet"` lead with the prompt below, plus three `model: "haiku", effort: "high"` slices (code, social, docs) with the slice and budget lines from [gather-squad](references/gather-squad.md). When the three slices return, spawn one opener on their `UNOPENED LEADS`. Give each member its own report path. Spawn the squad the plan confirmed: a slice dropped or re-aimed for the source stack stays that way, and when there is no code slice (GitHub out of the stack) or no social slice, delete the lead-prompt line that hands that work to the missing helper. Each prompt:
+Spawn `gatherer` agents as plain subagents (no `name`); only the Team venue starts gatherers as harness-ops tasks ([team-research](references/team-research.md)). Spawn each assignment as a squad in one message: a `model: "sonnet"` lead with the prompt below, plus three `model: "haiku", effort: "high"` slices (code, social, docs) with the slice and budget lines from [gather-squad](references/gather-squad.md). When the three slices return, spawn one opener on their `UNOPENED LEADS`. Give each member its own report path. Spawn the squad the plan confirmed: a slice dropped or re-aimed for the source stack stays that way, and when there is no code slice (GitHub out of the stack) or no social slice, delete the lead-prompt line that hands that work to the missing helper. Each prompt:
 
 ```
 Research: [1 specific sub-question]
@@ -632,4 +632,4 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 - [forager (the brain)](references/forager/overview.md) — REFLECT/STEER methodology, the loop's CONTROL step
 - [adaptive-research spec](references/adaptive-research/overview.md) — target redesign: gather/reason split, adaptive-depth loop, control rod, Phase 0 budget
 - [idea-bank schema](../idea-bank/references/schema.md) — card, atom and gem formats for the ideas objective
-- [team-research](references/team-research.md) — live supervised agent-team venue: steering-lead brain + gatherers + verifier, exchanging via SendMessage
+- [team-research](references/team-research.md) — live supervised venue: the lead steers gatherer and verifier sessions (harness-ops) round by round; a shared sources ledger stops duplicate fetches

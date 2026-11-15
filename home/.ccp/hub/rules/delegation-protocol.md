@@ -11,12 +11,12 @@ loads guidance for you to follow yourself.
 
 - **At most 6 agents in flight, as a rolling pool.** When one finishes, start the
   next queued job; don't wait for a whole batch.
-- **Subagent by default.** Spawn a named teammate only when you can name the second
+- **Subagent by default.** Start a live member only when you can name the second
   message you'll send it (debate, council, multi-round hand-off, a reviewer you'll
-  consult again). In Claude Code, teammates need `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`;
-  in `omp`, pass `name` on `task` items and message peers via `write agent://<id>`
-  (`agent://all` to broadcast). Spawn them in one message, name their counterparts,
-  shut them down when done.
+  consult again). Live members are harness-ops sessions (`agent-ops` skill, "Live
+  team"); in `omp`, pass `name` on `task` items and message peers via
+  `write agent://<id>` (`agent://all` to broadcast). Start them together, send each
+  the roster, close them when done.
 - **Equip the agent.** It doesn't know what's installed. Name its tools — web:
   Parallax MCP (`mcp__claude_ai_Parallax__*` via `ToolSearch` in Claude Code; `parallax call` via the `parallax-cli`
   skill plus `web_search`/`read` in `omp`); code: codegraph MCP; browser: `bsk` CLI via

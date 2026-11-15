@@ -6,3 +6,4 @@
 * [zsh startup choices](zsh-startup.md) - Measured choices that bring a new zsh to about 0.18s: usage-driven plugin removal, patched forks, cached init and completions.
 * [mise replaces Homebrew](mise-replaces-homebrew.md) - Why macOS packages and apps come from mise's brew and brew-cask managers, and why zerobrew and nanobrew were rejected.
 * [Subagent model tiering](subagent-model-tiering.md) - Which subagent jobs run on Haiku 5.5, Sonnet 5.5 or Opus 5.5; draft, tracks the gatherer A/B and rollout.
+* [Live teams via harness-ops](live-teams-via-harness-ops.md) - Why live debate, council, brainstorm and swarm modes run on agent-ops (harness-ops) sessions instead of Claude Code agent teams; the role roster and the director-manager-worker swarm; draft.
