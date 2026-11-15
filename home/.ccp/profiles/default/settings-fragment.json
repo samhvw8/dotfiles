@@ -34,12 +34,18 @@
     "MEDIASIFT_ON": "me.ubuntu.home"
   },
   "inputNeededNotifEnabled": true,
-  "model": "sonnet",
+  "model": "opus[1m]",
   "modelSettings": {
     "claude-fable-5": {
       "effortLevel": "xhigh"
     },
     "claude-fable-5-1": {
+      "effortLevel": "high"
+    },
+    "claude-fable-5-2": {
+      "effortLevel": "medium"
+    },
+    "claude-opus-5-5": {
       "effortLevel": "high"
     }
   },
@@ -70,13 +76,17 @@
       "WebSearch",
       "Write",
       "mcp__context7",
-      "mcp__parallax",
+      "mcp__claude_ai_Parallax",
       "mcp__codegraph",
+      "mcp__lark",
+      "mcp__lark-1hub",
       "Bash(codegraph:*)",
+      "Bash(lark-cli:*)",
       "Bash(art-put:*)"
     ],
     "defaultMode": "auto"
   },
+  "promptSuggestionEnabled": false,
   "remoteControlAtStartup": true,
   "skipWorkflowUsageWarning": true,
   "switchModelsOnFlag": true,
