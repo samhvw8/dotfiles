@@ -8,19 +8,19 @@ version = 1
 commit = 'e8d1148a80d5a281d4247cffe320add3df017928'
 
 [sources.'anthropics/skills']
-commit = '2c5958ecac7cee2b583967a2c4981d0f4a75c579'
+commit = '1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064'
 
 [sources.'elayadesign/ai-design-skills']
 commit = '456d9e0d3e2d84c748bb143c6ca3d90c45e16213'
 
 [sources.'morluto/rea']
-commit = '94ca4b656aede76eda0ebac3af9aed42a27c21a5'
+commit = 'b655645608aeb68cf17a8632927e646b2e52a221'
 
 [sources.'pbakaus/impeccable']
-commit = 'ec229b48547f24685ffb22aa51c462c5ae27908c'
+commit = '2b86d9c07b97d4bed7de23583e1bd1e58dd2baae'
 
 [sources.'samhvw8/claude-code-profile']
-commit = 'af62bab2cda287b72f491c63c08517f93f88b3ec'
+commit = 'b3a8375976b5bcfa8f924f6e17f516f2ee4e8eaf'
 
 [sources.'samhvw8/thinking-skills']
 commit = '0980b364032462b528a1e9d1614a304c60441f28'
