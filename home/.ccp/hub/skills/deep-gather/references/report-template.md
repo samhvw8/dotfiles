@@ -14,7 +14,7 @@ Save reports to `./report/YYMMDD-<topic>.md`.
 - Sources consulted: [number] across [languages]
 - Date range: [earliest to most recent]
 - Key search terms: [EN/CN/RU terms used]
-- Retrieval tools used: [context7, gh, WebSearch, etc.]
+- Retrieval tools used: [web_search, fetch_page, gh, etc.]
 
 ## Key Findings
 

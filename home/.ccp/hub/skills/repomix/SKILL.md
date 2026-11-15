@@ -437,7 +437,7 @@ When user requests repository packaging:
 
 ## Related Tools
 
-- **Context7**: For up-to-date library documentation
+- **Web search**: For up-to-date library documentation
 - **Git**: For repository history analysis
 - **Secretlint**: For security scanning
 - **Token counters**: For LLM context management
