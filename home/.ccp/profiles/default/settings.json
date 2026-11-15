@@ -38,7 +38,10 @@
   "enabledPlugins": {
     "code-modernization@claude-plugins-official": true,
     "context7@claude-plugins-official": false,
-    "gopls-lsp@claude-plugins-official": true
+    "gopls-lsp@claude-plugins-official": true,
+    "image-view@claude-image-view": true,
+    "prismantis@prismantis": true,
+    "prompt-rail@oikon48": true
   },
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
@@ -47,6 +50,26 @@
     "CLAUDE_CODE_EXPERIMENTAL_CODE_MODE": "1",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
     "MEDIASIFT_ON": "me.ubuntu.home"
+  },
+  "extraKnownMarketplaces": {
+    "claude-image-view": {
+      "source": {
+        "repo": "jarrodwatts/claude-image-view",
+        "source": "github"
+      }
+    },
+    "oikon48": {
+      "source": {
+        "repo": "oikon48/prompt-rail",
+        "source": "github"
+      }
+    },
+    "prismantis": {
+      "source": {
+        "repo": "NahumLitvin/prismantis",
+        "source": "github"
+      }
+    }
   },
   "hooks": {
     "PostToolUse": [

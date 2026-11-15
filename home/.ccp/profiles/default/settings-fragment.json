@@ -28,7 +28,10 @@
   },
   "enabledPlugins": {
     "code-modernization@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": null
+    "frontend-design@claude-plugins-official": null,
+    "prismantis@prismantis": true,
+    "prompt-rail@oikon48": true,
+    "image-view@claude-image-view": true
   },
   "env": {
     "MEDIASIFT_ON": "me.ubuntu.home"
@@ -98,5 +101,25 @@
   "voiceEnabled": false,
   "worktree": {
     "baseRef": "head"
+  },
+  "extraKnownMarketplaces": {
+    "prismantis": {
+      "source": {
+        "source": "github",
+        "repo": "NahumLitvin/prismantis"
+      }
+    },
+    "oikon48": {
+      "source": {
+        "source": "github",
+        "repo": "oikon48/prompt-rail"
+      }
+    },
+    "claude-image-view": {
+      "source": {
+        "source": "github",
+        "repo": "jarrodwatts/claude-image-view"
+      }
+    }
   }
 }
