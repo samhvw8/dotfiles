@@ -39,7 +39,7 @@
     "code-modernization@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "image-view@claude-image-view": true,
-    "prismantis@prismantis": true,
+    "prismantis@samhvw8-prismantis": true,
     "prompt-rail@oikon48": true
   },
   "env": {
@@ -66,6 +66,12 @@
     "prismantis": {
       "source": {
         "repo": "NahumLitvin/prismantis",
+        "source": "github"
+      }
+    },
+    "samhvw8-prismantis": {
+      "source": {
+        "repo": "samhvw8/prismantis",
         "source": "github"
       }
     }
@@ -226,6 +232,18 @@
     "deny": []
   },
   "plansDirectory": ".claude/plans",
+  "pluginConfigs": {
+    "prismantis@samhvw8-prismantis": {
+      "options": {
+        "theme": "dracula"
+      }
+    },
+    "prompt-rail@oikon48": {
+      "options": {
+        "mode": "vertical"
+      }
+    }
+  },
   "promptSuggestionEnabled": false,
   "remoteControlAtStartup": true,
   "showThinkingSummaries": true,

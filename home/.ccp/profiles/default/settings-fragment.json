@@ -28,12 +28,38 @@
   },
   "enabledPlugins": {
     "code-modernization@claude-plugins-official": true,
-    "prismantis@prismantis": true,
-    "prompt-rail@oikon48": true,
-    "image-view@claude-image-view": true
+    "image-view@claude-image-view": true,
+    "prismantis@samhvw8-prismantis": true,
+    "prompt-rail@oikon48": true
   },
   "env": {
     "MEDIASIFT_ON": "me.ubuntu.home"
+  },
+  "extraKnownMarketplaces": {
+    "claude-image-view": {
+      "source": {
+        "repo": "jarrodwatts/claude-image-view",
+        "source": "github"
+      }
+    },
+    "oikon48": {
+      "source": {
+        "repo": "oikon48/prompt-rail",
+        "source": "github"
+      }
+    },
+    "prismantis": {
+      "source": {
+        "repo": "NahumLitvin/prismantis",
+        "source": "github"
+      }
+    },
+    "samhvw8-prismantis": {
+      "source": {
+        "repo": "samhvw8/prismantis",
+        "source": "github"
+      }
+    }
   },
   "inputNeededNotifEnabled": true,
   "model": "opus[1m]",
@@ -87,6 +113,18 @@
     ],
     "defaultMode": "auto"
   },
+  "pluginConfigs": {
+    "prismantis@samhvw8-prismantis": {
+      "options": {
+        "theme": "dracula"
+      }
+    },
+    "prompt-rail@oikon48": {
+      "options": {
+        "mode": "vertical"
+      }
+    }
+  },
   "promptSuggestionEnabled": false,
   "remoteControlAtStartup": true,
   "skipWorkflowUsageWarning": true,
@@ -99,25 +137,5 @@
   "voiceEnabled": false,
   "worktree": {
     "baseRef": "head"
-  },
-  "extraKnownMarketplaces": {
-    "prismantis": {
-      "source": {
-        "source": "github",
-        "repo": "NahumLitvin/prismantis"
-      }
-    },
-    "oikon48": {
-      "source": {
-        "source": "github",
-        "repo": "oikon48/prompt-rail"
-      }
-    },
-    "claude-image-view": {
-      "source": {
-        "source": "github",
-        "repo": "jarrodwatts/claude-image-view"
-      }
-    }
   }
 }
