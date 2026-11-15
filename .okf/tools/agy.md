@@ -5,7 +5,7 @@ description: "Which parts of ~/.gemini live in this repository, which ccp writes
 resource: https://github.com/samhvw8/dotfiles/tree/main/home/.gemini
 tags: [agy, antigravity, ccp, agents, mcp]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-12T12:45:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-15T17:40:00Z }
 sources:
   - id: ccp-agy
     resource: https://github.com/samhvw8/claude-code-profile/blob/main/.okf/features/agy.md
@@ -49,7 +49,15 @@ global `mcp_config.json`. `agy plugin list` shows the plugin.
 In `auto` mode, agy's tool-safety check flags `call_mcp_tool` and `invoke_subagent` and waits for
 approval. A headless run (`agy -p`) cannot approve, so the turn hangs until `--print-timeout`.
 Interactive sessions show the prompt. For a headless job that needs MCP or subagents, pass
-`--settings='{"agentMode":""}'` together with explicit allow rules, or run it interactively.
+`--settings='{"agentMode":""}'` and put the allow rules in the global `settings.json`, or run it
+interactively. agy ignores `permissions` passed through `--settings` (tested 2026-11-15: a
+session-only allow rule still prompted, even with the sandbox off).
+
+`command(harness-ops)` in the global allow list lets agy members of an agent-ops live team or swarm
+message other sessions without a prompt. Without it, the auto-mode reviewer asks a person before
+every `harness-ops send` to a session agy did not start. In the sandbox each call still fails once
+(the sandbox blocks the iTerm2 API socket) and the allowed retry runs outside it. See
+[live teams via harness-ops](/decisions/live-teams-via-harness-ops.md).
 
 `agy agents` lists only agents that can be picked as the main agent. The agents ccp writes are
 subagents only (`mainAgent: false`), so that list is empty by design.

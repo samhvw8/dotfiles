@@ -17,6 +17,7 @@
       "command(git*)",
       "command(go*)",
       "command(grep*)",
+      "command(harness-ops)",
       "command(head*)",
       "command(jq*)",
       "command(ls*)",
@@ -40,6 +41,8 @@
   "showTips": false,
   "trustedWorkspaces": [
     "/Users/samhv/workspace/menhly",
-    "/Users/samhv"
+    "/Users/samhv",
+    "/Users/samhv/workspace/apps/voxtract/.claude/worktrees/i18n-vi-wording",
+    "/Users/samhv/workspace/apps/voxtract"
   ]
 }
