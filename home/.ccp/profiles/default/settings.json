@@ -44,7 +44,6 @@
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_EXPERIMENTAL_CODE_MODE": "1",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
     "MEDIASIFT_ON": "me.ubuntu.home"
@@ -216,7 +215,6 @@
     "type": "command"
   },
   "switchModelsOnFlag": true,
-  "teammateMode": "auto",
   "theme": "dark",
   "tui": "fullscreen",
   "verbose": true,

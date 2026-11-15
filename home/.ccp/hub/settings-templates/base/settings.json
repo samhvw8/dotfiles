@@ -16,7 +16,6 @@
   "env": {
     "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
     "CLAUDE_CODE_EXPERIMENTAL_CODE_MODE": "1"
@@ -61,7 +60,6 @@
     "command": "CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/installs/github-haleclipse-c-cometix-line/global/ccline",
     "type": "command"
   },
-  "teammateMode": "auto",
   "tui": "fullscreen",
   "verbose": true
 }
