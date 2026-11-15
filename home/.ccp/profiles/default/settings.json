@@ -6,7 +6,8 @@
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
-    "MEDIASIFT_ON": "me.ubuntu.home"
+    "MEDIASIFT_ON": "me.ubuntu.home",
+    "CLAUDE_CODE_EXPERIMENTAL_CODE_MODE": "1"
   },
   "attribution": {
     "commit": "",
