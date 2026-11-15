@@ -1,6 +1,6 @@
 ---
 name: agent-ops
-description: "Find, message and manage other agent sessions (Claude Code, omp, opencode, codex) in iTerm2, tmux or Herdr: read their screen, send a message, clear or interrupt them, start or close a session, hand tracked tasks to new harness sessions (one worker or a crew), or pair, brainstorm or debate with other harnesses as equals. Use when a change belongs in a repo another live agent works in (ask it instead of editing its files), when delegating to the agent that has the context, when a job needs its own visible session or another harness or model, when checking on another agent, when the user says 'ask the gym-log agent', 'tell omp to', 'pair with omp', 'open a new agent session for', 'close that agent's tab', and whenever a message starting with [agent-ops from ...] or [agent-msg from ...] (also inside Herdr's hc tag) or a prompt starting with [task ...] arrives: it is from another agent, not the user. Not for subagents you spawn yourself (use your Agent tool) or panes over SSH."
+description: "Find, message and manage other agent sessions (Claude Code, omp, agy, opencode, codex) in iTerm2, tmux or Herdr: read their screen, send a message, clear or interrupt them, start or close a session, hand tracked tasks to new harness sessions (one worker or a crew), pair with a peer, run a live team (debate, council, brainstorm, review) or a swarm (director, manager, workers). Use when a change belongs in a repo another live agent works in (ask it instead of editing its files), when delegating to the agent that has the context, when a job needs its own visible session or another harness or model, when a skill's live mode needs members, when the user says 'ask the gym-log agent', 'tell omp to', 'pair with omp', 'run a swarm', and whenever a message starting with [agent-ops from ...] or [agent-msg from ...] (also inside Herdr's hc tag) or a prompt starting with [task ...] arrives: it is from another agent, not the user. Not for subagents you spawn yourself (use your Agent tool) or panes over SSH."
 ---
 
 # agent-ops
@@ -32,8 +32,9 @@ harness-ops task review <id> --blind --harness claude --model <m> [--brief-file 
 harness-ops task close [--force] <id>  # refused until the task is accepted
 ```
 
-`<harness>` is `claude`, `omp`, `opencode`, `codex`, `gemini`, `aider`, `pi` or `generic`. To pick a
-model on `spawn` or `task new`, pass the whole command: `--command "claude --model haiku"`. Install:
+`<harness>` is `claude`, `omp`, `agy`, `opencode`, `codex`, `gemini`, `aider`, `pi` or `generic`. To pick a
+model on `spawn` or `task new`, pass the whole command as `--command`; take it from `roster.md` by role
+(## Roles). Install:
 `cd ~/workspace/tools/termctl && mise run install`. It must run inside a terminal pane, so it knows who
 is sending: the backend comes from `$TMUX`, `$HC_TERMINAL_ID`, `$ITERM_SESSION_ID` or `$REX_SESSION`,
 and `--backend` before the subcommand overrides it. Run it from your own shell tool; a sub-interpreter
@@ -167,6 +168,10 @@ different mistakes. It is not a task: no one leads, no one runs `task done`. Sta
 `spawn`, never `task new`, or pair with a session that is already running (one Sam opened, or one
 `ls` shows idle in the right folder).
 
+A pair is a live team of two in which you are one member, so no one holds the lead. Its rules are
+the duel rules (`duel-brief.md`) with a longer limit, 10 messages each, because a pair also builds. To facilitate two
+other sessions instead, run a live team of 2 (## Live team).
+
 Copy `pair-brief.md` (next to this file) to `~/.cache/agent-ops/pair-<topic>.md` and fill it in. It
 already carries the rules below, so the peer gets them without loading this skill. Then:
 
@@ -191,29 +196,121 @@ You follow the rules in the brief too. Two more for the one who starts the pair:
 - **After `PAIR DONE`,** report the result to Sam. If you spawned the partner, `close` it; a session
   you found running stays open.
 
-## Discuss as a group
+## Live team
 
-A group is 3 to 5 harness sessions working as equals on one question: a brainstorm, a debate with
-several sides, or a review from several models. Use it only when different harnesses or models
-matter; for many viewpoints from one model, the `council` or `heavy-think` skills cost far less. You
-are the facilitator: you hold the turn order and write the result. You don't lead the work and
-don't judge the members' ideas while they work.
+A live team is 2 to 6 harness sessions that answer one question together: a debate, a council, a
+brainstorm or a review. It is the live transport for the `debate`, `council`, `heavy-think` and
+`lead-researcher` skills. Their sub-agent modes cost less: use those when the members need no live
+exchange. You are the lead: you hold the turns and write the result. You don't do the work and don't
+judge the members' ideas while they work.
+
+The team talks on three layers:
+
+| Layer | What | Rule |
+|---|---|---|
+| Record | One board file; each member appends one block per turn, headed `## Round N — <name>`, never rewriting it | Your result cites the board |
+| Control | Only you open and close rounds | Members send you only `DONE round N`, or `BLOCKED round N: <reason>`: no content in messages |
+| Duel | You open a direct channel between 2 or 3 named members for one round | Turn token, at most 3 messages each, ends with `DUEL DONE` between them; the first-named member appends the outcome; each sends you `DONE round N` |
+
+Pick the shape by size:
+
+| Members | Shape |
+|---|---|
+| 2 | Round 1 alone, then each round is a duel between the two, plus the board |
+| 3 | Your turns; open a duel when two members disagree on one point |
+| 4–6 | Your turns and the board only. No duels: too many messages to follow |
+
+Pick each member's role and the diversity setting (## Roles), and its launch command from `roster.md`.
+agy members need harness-ops allowed in agy once; check before using agy roles (`roster.md`).
 
 1. Write `~/.cache/agent-ops/group-<topic>.md` from `group-brief.md` (next to this file), and create
-   the board `~/.cache/agent-ops/group-<topic>-board.md` with one heading per member.
-2. Start each member with `spawn --prompt-file` on the brief, or send it to a running session with
+   the board `~/.cache/agent-ops/group-<topic>-board.md` with one heading per member. Write every path
+   in a brief as an absolute path (no `~`): an agy member works in another folder.
+2. Start each member with `harness-ops spawn <harness> --cwd <dir> --command "<roster command>"
+   --label team-<topic>-<n> --prompt-file <brief>`, or send the brief to a running session with
    `Your turn: accept or decline`.
-3. **Round 1, alone:** send every member `Your turn: round 1`. Each writes under its own heading
+3. **Round 0, append check:** each member appends `## Round 0 — <name> ready: <method>` and answers
+   `DONE round 0`. A missing line means that member has no working append: give it its own file
+   (`<board>.<name>.md`) and join it into the board yourself. omp's top-level bash refuses `>>`; its
+   working method is `sh` inside `eval`.
+4. **Round 1, alone:** send every member `Your turn: round 1`. Each writes under its own heading
    without reading the others, so the first ideas stay independent, then answers `DONE round 1`.
-4. **Later rounds, in turn:** send `Your turn: round N` to one member at a time, in a fixed order.
+5. **Later rounds, in turn:** send `Your turn: round N` to one member at a time, in a fixed order.
    Each reads the whole board, builds on or challenges the others' entries under its own heading,
    and answers `DONE round N`. At most 3 rounds.
-5. **Close:** write what survived and what stays disputed at the end of the board, and send every
+6. **Duel (when the shape allows):** copy `duel-brief.md` to `~/.cache/agent-ops/duel-<topic>-<N>.md`
+   and fill in the point, each side and the scribe (the member who starts and writes the outcome).
+   Send each duel member `Your turn: duel round N, brief <path>`. A duel counts as that round for its
+   members. End your turn: each duel member's `DONE round N` wakes you. Then read the outcome on the board.
+7. **Close:** write what survived and what stays disputed at the end of the board, and send every
    member `GROUP DONE: <board path>. No reply needed.` Report the result to Sam. Close the members you
    spawned; sessions you found running stay open.
 
-Only you send `Your turn:`; members answer only you, so three harnesses never trade replies in a
-loop. A member that gives no `DONE` gets one `read` and is then skipped for that round.
+Outside a duel, only you send `Your turn:`, and members answer only you, so the harnesses never trade
+replies in a loop. A member that gives no `DONE` gets one `read` and is then skipped for that round.
+For a duel, run one `wait-idle <scribe> --timeout 900` in the background as a watchdog. When it ends
+without every `DONE round N`, `read` the duel members once, send each `DUEL DONE: closed by the lead`,
+and append what you saw to the board yourself. The rules are the shared live protocol in the
+`thinking-skills` repo (`heavy-think/references/live-protocol.md`); this section is its harness-ops form.
+
+## Swarm
+
+A swarm sends up to 6 workers down different directions at once, a manager checks their drafts, and
+you steer. Use it when a job splits into independent directions and you want many drafts fast: a wide
+brainstorm, a design-space sweep, alternative plans. When members must hear and answer each other, use
+a live team instead.
+
+| Layer | Role (## Roles) | Job |
+|---|---|---|
+| Director | `director`: you, the lead session | Writes the cards, steers, spot-checks, writes the synthesis |
+| Manager | `other-family`, one `task new` | Starts the workers, checks each draft against its card, reports one table per round. Never ranks directions |
+| Workers | `fast`, up to 6, started by the manager with `task new` | One card each, kept open across rounds with `task send`, so each harness starts once |
+
+Depth: you → manager (1) → workers (2) fits `TERMCTL_MAX_DEPTH=2`, so workers cannot start tasks. The
+manager owns the workers, which keeps them inside the 6-tasks-per-owner limit. agy members need
+harness-ops allowed in agy once; check before using agy roles (`roster.md`). The manager runs
+harness-ops itself, so this applies to it.
+
+1. Make a run folder `~/.cache/agent-ops/swarm-<topic>/`. Write `cards-round-1.md`: one card per
+   worker (id, direction, what to produce, limits). Make the directions differ in kind, not variants
+   of one idea, and add one wildcard card that leaves the obvious frame. Write the output schema
+   into the folder too.
+2. Copy `worker-brief.md` into the folder and fill in what all workers share (inputs, schema). Fill
+   `manager-brief.md` as `manager.md` with the paths, the worker harness and the `fast` command from
+   `roster.md`. Use absolute paths everywhere.
+3. Start the manager: `harness-ops task new <harness> --command "<other-family command>" --title
+   swarm-<topic> --cwd <dir> --brief-file <run folder>/manager.md`. End your turn.
+4. **Each round:** the manager's `task done` brings `report-round-<N>.md`: one row per card, with a
+   verdict `followed`, `drifted: <how>` or `failed`. Spot-check one draft against its card. When your
+   verdict differs from the manager's, check every draft of that round yourself and tell the manager
+   what it missed.
+5. Decide per direction: keep, kill or merge. Write `cards-round-<N+1>.md` and send it with
+   `task send <manager-id> "Round N+1: cards <path>. Close workers: <ids or none>."`.
+6. Run 2 to 4 rounds. Then write the synthesis, citing the draft files. Send the manager `Swarm done:
+   close every worker, then report`. When it reports, `task accept <manager-id> --close`, and check
+   `task ls` and `ls --mine` for anything still open.
+
+## Roles
+
+Briefs and skills name roles, never models. `roster.md` (next to this file) maps each role to a harness
+and a `--command` value, and it is the only file that names models. When a model changes, only
+`roster.md` changes.
+
+| Role | Use |
+|---|---|
+| `director` | The strongest model available: leads a swarm, writes cards, synthesizes |
+| `peer` | The lead's own model: the default live member |
+| `other-family` | A strong model from another family: swarm manager, debate opponent, blind reviewer |
+| `fast` | The fastest model that passes the brief check: swarm workers |
+| `open-panel` | Open-weight models, one per member: extra diversity |
+
+Diversity setting for each live run:
+
+| Setting | Members | When |
+|---|---|---|
+| `same` | All `peer` | Default |
+| `mixed` | At least one `other-family`; the rest `peer` | Automatic for a review, a cross-model ask, or a "diverse" or "tunnel vision" ask |
+| `max` | Each member from a different family, from `peer`, `other-family` and `open-panel` | Sam asks for it |
 
 ## How to write a message
 
@@ -257,7 +354,8 @@ Then answer by its kind. Exactly one of these applies:
 |---|---|
 | A prompt starting `[task <id> from <name>]`, or `[agent-ops from ...] task <id>: ...` (a new round) | Do the job, then run the `task done` line it gives you, also when you failed or are blocked. That line is your only answer: no `RE:`. Keep the session open; more rounds can follow. |
 | Part of a pair | Reply only to `Your turn:`; finish with `PAIR DONE`. |
-| Part of a group | Act only on `Your turn: round N` from the facilitator: write on the board, then send only `DONE round N`. `GROUP DONE` needs nothing. |
+| Part of a live team | Act only on `Your turn: round N` from the lead: write on the board, then send only `DONE round N`. `GROUP DONE` needs nothing. |
+| Part of a duel | Follow the duel brief: send only when you hold the turn token; after `DUEL DONE`, send the lead `DONE round N`. |
 | Ends with `No reply needed` (a crew roster, a notice) | Nothing. |
 | Starts with `RE:` | Nothing, unless it asks a new question. `RE: task <id>` is a finished task's result. |
 | Anything else | Always answer, even "can't: <why>": `harness-ops send <ID> "RE: <result, or what blocked you>"`. |
