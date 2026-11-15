@@ -22,6 +22,10 @@ harness-ops spawn <harness> --cwd <dir> [--prompt "..." | --prompt-file F] [--la
 harness-ops interrupt <target> [--key ctrl-c]         # stop its current turn (Esc on claude, omp and agy)
 harness-ops close [--force] <target>   # panes you made with spawn or task new; never your own
 harness-ops name <label>               # give your own pane a stable label
+harness-ops move <target> --to new|self|tab-of:<pane>|<tab id>   # regroup a running pane; same PID, label and task
+harness-ops pull <target>              # into your tab (move --to self)
+harness-ops swap <a> <b>               # trade the places of two panes
+harness-ops arrange [<tab>] --layout even|rows|columns|tiled|main-left|main-top [--main <pane>]
 harness-ops whoami
 harness-ops task new <harness> --title T (--brief "..." | --brief-file F) --cwd D [--reuse <target>] [--command CMD] [--max N] [--timeout S]
 harness-ops task ls [--all] | task show <id> | task send <id> "<text>"
@@ -64,6 +68,12 @@ Leave `--where` out. Its default, `auto`, puts the agent where Sam looks for it:
 
 Set `--cwd` to the folder the agent will work in; it no longer changes where the agent opens. Pass
 `--where tab|split|window` (on `spawn`, `task new` and `task review`) only when Sam asks for a layout.
+
+To regroup agents that are already open, use `move`, `pull`, `swap` or `arrange`. Never close and
+respawn them for this: a move keeps the program, its PID, label and task. Regroup only when Sam asks.
+A busy agent may be moved; your own pane may not. A tab is `self`, `tab-of:<pane>`, or the TAB ID from
+`ls` (not a position). tmux, iTerm2 (3.7+) and Rex do all four; Rex moves only inside one Rex
+session. Herdr refuses with exit 1 and changes nothing.
 
 ## Find the right pane
 
