@@ -23,6 +23,16 @@ command -v jq >/dev/null 2>&1 || exit 0
 [ "$active" = "true" ] && exit 0
 [ -z "$session" ] && exit 0
 
+# Run once per session: a project that ships its own copy of this hook in
+# .claude/hooks/ runs that copy, and the user-level copy steps aside. Both copies
+# carry this guard; in the project copy the two folders match, so it is a no-op.
+proj="${CLAUDE_PROJECT_DIR:-$(git -C "${cwd:-.}" rev-parse --show-toplevel 2>/dev/null)}"
+own="$proj/.claude/hooks/$(basename "$0")"
+if [ -n "$proj" ] && [ -f "$own" ] &&
+  [ "$(cd "$(dirname "$own")" && pwd -P)" != "$(cd "$(dirname "$0")" && pwd -P)" ]; then
+  exit 0
+fi
+
 state="${TMPDIR:-/tmp}/okf-stop/$session"
 mkdir -p "$state" 2>/dev/null || exit 0
 

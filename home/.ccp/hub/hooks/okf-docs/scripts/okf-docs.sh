@@ -21,6 +21,16 @@ fi
 # Resolve symlinks (macOS /tmp -> /private/tmp) so the walk can meet git's resolved root.
 cwd=$(cd "$cwd" 2>/dev/null && pwd -P || printf '%s' "$cwd")
 
+# Run once per session: a project that ships its own copy of this hook in
+# .claude/hooks/ runs that copy, and the user-level copy steps aside. Both copies
+# carry this guard; in the project copy the two folders match, so it is a no-op.
+proj="${CLAUDE_PROJECT_DIR:-$(git -C "${cwd:-.}" rev-parse --show-toplevel 2>/dev/null)}"
+own="$proj/.claude/hooks/$(basename "$0")"
+if [ -n "$proj" ] && [ -f "$own" ] &&
+  [ "$(cd "$(dirname "$own")" && pwd -P)" != "$(cd "$(dirname "$0")" && pwd -P)" ]; then
+  exit 0
+fi
+
 MAX_INDEX_LINES=60
 
 root=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null)
