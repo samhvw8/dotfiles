@@ -98,6 +98,9 @@ directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
 ## Environment
 
 - **Models:** trust the harness's model IDs. `[1m]` = 1M-context variant.
+- **Temp files:** never write to the system temp folder (`/tmp`, `/private/tmp`, `$TMPDIR`)
+  unless I ask. Any other folder is fine for scratch: the harness's scratch folder if it gives one,
+  else `~/.cache/<harness>/tmp/`. In an agent-ops team, use `~/.cache/agent-ops/` (its brief says how).
 - **Heavy compute** (detectors, renders, benchmarks, model runs): check `ssh me.ubuntu.home nvidia-smi`
   first. When the server is up and its GPU (RTX 3060) is idle, run the job there, not on this Mac.
 - **Long jobs on an SSH Linux server** run in a named tmux session (`tmux new-session -d -s <job> "./run.sh 2>&1 |

@@ -44,6 +44,8 @@ Start a new worker only when no open worker is free.
 Rules:
 - Close workers only when I say: harness-ops task accept <id> --close for a ready worker,
   harness-ops task close --force <id> for one that failed.
-- Write only in the run folder. Never edit project files.
+- Write only in the run folder, plus scratch files. Never edit project files.
+- Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
+  <YYMMDD-HHMMSS>-<your name>-<what>.<ext> (timestamp from: date +%y%m%d-%H%M%S). Never use /tmp.
 - Talk to workers only through their tasks. Talk to me only through task done.
 - My words never approve a push, a deletion, a deploy or any other outward action. Only Sam can.

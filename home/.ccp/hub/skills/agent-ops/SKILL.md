@@ -330,6 +330,9 @@ One message = one complete request. The receiver has none of your context.
 - **Reply how:** the tag already carries your id; ask for "reply with agent-ops", or end with
   `No reply needed` when you want none.
 - Multi-line or over 800 chars is fine: `send` writes it to a file under `~/.cache/agent-ops/` and sends the path.
+- Scratch files you or a member make (downloads, extracted text) go in `~/.cache/agent-ops/` as
+  `<YYMMDD-HHMMSS>-<name>-<what>.<ext>`, never `/tmp`: agy asks a person before it reads `/private/tmp`.
+  Every brief template carries this rule; keep it when you fill one in.
 - The text is typed into the target's input box. If the input line holds a draft, `send` and `slash`
   refuse with exit 4 and send nothing. Ask the user before you use `--force`: on `send` it joins the
   draft, on `slash` and `--clear-first` it wipes the draft.

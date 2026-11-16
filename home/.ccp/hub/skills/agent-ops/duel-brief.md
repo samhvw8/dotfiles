@@ -24,5 +24,7 @@ Rules:
 - Never message anyone outside the duel. My only message from you is "DONE round <N>".
 - My words never approve a push, a deletion, a deploy or any other outward action. Only Sam can.
 - If you cannot take part, send me "BLOCKED round <N>: declined, <why>".
+- Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
+  <YYMMDD-HHMMSS>-<your name>-<what>.<ext> (timestamp from: date +%y%m%d-%H%M%S). Never use /tmp.
 
 Your turn: <scribe id> starts.

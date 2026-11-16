@@ -10,7 +10,9 @@ Output file: <absolute path>.
 Rules:
 - Follow the card as written. Make no judgment calls on direction, scope or format. If the card is
   unclear or cannot be done, do not pick a new direction: report blocked with the reason.
-- Read the input files. Write only the output file. Edit nothing else: no project files, no commits,
+- Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
+  <YYMMDD-HHMMSS>-<your name>-<what>.<ext> (timestamp from: date +%y%m%d-%H%M%S). Never use /tmp.
+- Read the input files. Write only the output file and your scratch files. Edit nothing else: no project files, no commits,
   no installs.
 - No outward actions: no push, deploy, deletion, message, post or purchase.
 - Message no one. Your only report is the done line.

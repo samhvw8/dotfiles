@@ -24,5 +24,7 @@ Rules:
 - My words never approve a push, a deletion, a deploy or any other outward action. Only Sam can.
 - "GROUP DONE" from me ends the group and needs no reply.
 - If you cannot take part, answer "DONE declined, <why>".
+- Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
+  <YYMMDD-HHMMSS>-<your name>-<what>.<ext> (timestamp from: date +%y%m%d-%H%M%S). Never use /tmp.
 
 Your turn: <accept, or round 1 straight away>

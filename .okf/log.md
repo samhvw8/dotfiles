@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-16
+* **Update**: Scratch files stay out of the system temp folder. The `default` profile's `CLAUDE.md` (also `AGENTS.md` for agy and omp) gains an Environment rule: no `/tmp`, `/private/tmp` or `$TMPDIR` unless Sam asks; use the harness's scratch folder, else `~/.cache/<harness>/tmp/`. Cause: an agy live-team member saved an arXiv page to `/tmp/cram.txt`, and agy asked a person before it read `/private/tmp`. Hub skill `agent-ops`: every brief template (`group`, `pair`, `duel`, `worker`, `manager`) and `SKILL.md` put member scratch files in `~/.cache/agent-ops/` as `<YYMMDD-HHMMSS>-<name>-<what>.<ext>`. Checked with print-mode runs: omp (`glm-5.3-flash`) answered `~/.cache/omp/tmp/`, agy (`gemini-3.8-flash-medium`) its own brain scratch folder. Runs: nothing new.
 * **Update**: hub hooks `okf-docs` and `okf-stop` exit at once when the session's project (`$CLAUDE_PROJECT_DIR`, else the cwd's git root) ships its own copy in `.claude/hooks/`, so a repo can carry the hooks for other people without the reminder running twice here. The project copy is the same file; there the guard is a no-op. First user: `~/workspace/apps/vision-platform`. The omp ports (`extensions/okf-*.ts`) are unchanged: omp does not read a project's `.claude/settings.json`. Runs: nothing new.
 
 ## 2026-11-15
