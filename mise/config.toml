@@ -70,7 +70,8 @@ rclone = "latest"
 "pipx:vastai" = { version = "latest", uvx_args = "--python 3.14" }  # pillow has no cp315 wheel yet; drop when it does
 "pipx:samhvw8/mediasift" = "latest"   # agent media sensor (~/workspace/tools/mediasift); `mise install -f` moves to the newest commit
 "go:github.com/samhvw8/pastewise" = { version = "latest", minimum_release_age = "0s" }  # tables from any app -> Notes/Slack/chat/PNG (~/workspace/tools/pastewise); then `pastewise alfred install`
-"github:samhvw8/paperhunt" = { version = "latest", minimum_release_age = "0s" }  # multi-source paper search, downloader & replication bundler (~/workspace/tools/paperhunt)
+"github:samhvw8/paperhunt" = { version = "latest", minimum_release_age = "0s" }
+"github:samhvw8/termctl" = { version = "latest", minimum_release_age = "0s" }  # termctl + harness-ops, used by the agent-ops skill (~/workspace/tools/termctl)  # multi-source paper search, downloader & replication bundler (~/workspace/tools/paperhunt)
 # Parallax CLI for omp and agy (parallax-cli skill), from dl.3cxo.work; bump the pin after `make release-cli` in ~/workspace/parallax
 "http:parallax" = { version = "2026.11.12", url = 'https://dl.3cxo.work/parallax/{{ version }}/parallax-{{ version }}-{{ os() }}-{{ arch() }}.zip' }
 "aqua:ast-grep/ast-grep" = "latest"

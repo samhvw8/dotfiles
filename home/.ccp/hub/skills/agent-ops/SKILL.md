@@ -38,8 +38,8 @@ harness-ops task close [--force] <id>  # refused until the task is accepted
 
 `<harness>` is `claude`, `omp`, `agy`, `opencode`, `codex`, `gemini`, `aider`, `pi` or `generic`. To pick a
 model on `spawn` or `task new`, pass the whole command as `--command`; take it from `roster.md` by role
-(## Roles). Install:
-`cd ~/workspace/tools/termctl && mise run install`. It must run inside a terminal pane, so it knows who
+(## Roles). Install: `mise use -g github:samhvw8/termctl` (already in the dotfiles mise config; `mise up
+github:samhvw8/termctl` after a release). It must run inside a terminal pane, so it knows who
 is sending: the backend comes from `$TMUX`, `$HC_TERMINAL_ID`, `$ITERM_SESSION_ID` or `$REX_SESSION`,
 and `--backend` before the subcommand overrides it. Run it from your own shell tool; a sub-interpreter
 that drops the environment (an omp `eval` kernel) makes `whoami` fail with `cannot tell which pane this
