@@ -2,20 +2,15 @@ browser:
   relay: true
 setupVersion: 3
 modelRoles:
-  slow: anthropic/claude-fable-5-2:auto
-  plan: anthropic/claude-fable-5-2:auto
-  advisor: anthropic/claude-fable-5-2:auto
-  task: google-antigravity/gemini-3.8-flash:auto
-  vision: google-antigravity/gemini-3.8-flash:medium
-  tiny: google-antigravity/gemini-3.8-flash:low
-  commit: google-antigravity/gemini-3.8-flash:low
+  plan: opencode-go/qwen4-max:auto
   web: web/searxng
   judge: typesafe/jev-latest
   dictation: local/parakeet-tdt-0.6b-v3
   speech: local/kokoro
-  image: google-antigravity/gemini-3.1-flash-image
-  default: google-antigravity/gemini-4-argon
-  memory: google-antigravity/gemini-3.8-flash:auto
+  default: opencode-go/deepseek-v4.1-flash
+  smol: opencode-go/deepseek-v4.1-flash:auto
+  slow: opencode-go/qwen4-max:auto
+  vision: opencode-go/deepseek-v4.1-flash:auto
 modelPresets:
   spread:
     modelRoles:
@@ -134,15 +129,11 @@ retry:
       - web/google
       - web/mojeek
       - web/public
-    default:
-      - google-antigravity/gemini-3.8-flash
+    image:
       - opencode-go/deepseek-v4.1-flash
-    slow:
-      - google-antigravity/gemini-4-carbon
-    plan:
-      - google-antigravity/gemini-4-carbon
-    advisor:
-      - google-antigravity/gemini-4-carbon
+    default:
+      - opencode-go/qwen3.8-flash
+      - opencode-go/qwen4-max
 bashInterceptor:
   enabled: true
 display:
