@@ -404,40 +404,13 @@ else
   alias claude="claude --thinking-display summarized"
 fi
 
-# cca <account> [claude args]: Claude Code on one shared profile, logged in as <account>.
-# ~/.claude-accounts/<account> owns only the login (Keychain entry keyed by the folder
-# path) and .claude.json; every other entry is a symlink into the profile, re-linked
-# on each run. Log in once per account with /login. CCA_PROFILE picks another profile.
+# cca <account> [claude args]: Claude Code on one profile (default, or CCA_PROFILE)
+# logged in as <account>. ccp owns the account folders (~/.ccp/accounts/<account>);
+# see `ccp env --help`. Log in once per account with /login.
 cca() {
-  emulate -L zsh
-  setopt null_glob
-  local root=$HOME/.claude-accounts
-  if [[ -z $1 || $1 == -* ]]; then
-    print -u2 "usage: cca <account> [claude args]"
-    print -u2 "accounts:" $root/*(/:t)
-    return 2
-  fi
-  local prof=${CCA_PROFILE:-$HOME/.ccp/profiles/default} acct=$root/$1
+  [[ -n $1 && $1 != -* ]] || { print -u2 "usage: cca <account> [claude args]"; return 2 }
+  local env
+  env=$(ccp env "${CCA_PROFILE:-default}" --account "$1") || return
   shift
-  [[ -d $prof ]] || { print -u2 "cca: no profile at $prof"; return 1 }
-  mkdir -p $acct || return
-  if [[ ! -e $acct/.claude.json ]]; then
-    # Seed with the profile's state (MCP servers, trusted projects), minus its login.
-    local seed=$prof/.claude.json
-    [[ $prof -ef $HOME/.claude ]] && seed=$HOME/.claude.json
-    jq 'del(.oauthAccount)' $seed > $acct/.claude.json.tmp || return
-    chmod 600 $acct/.claude.json.tmp && mv $acct/.claude.json.tmp $acct/.claude.json || return
-  fi
-  rm -f $acct/*(D-@)   # links to items the profile no longer has
-  local f n
-  for f in $prof/*(D); do
-    n=${f:t}
-    [[ $n == .claude.json || $n == daemon* ]] && continue
-    if [[ -e $acct/$n && ! -L $acct/$n ]]; then
-      print -u2 "cca: $acct/$n is a real file; not replacing it with a link"
-      continue
-    fi
-    ln -sfn $f $acct/$n
-  done
-  CLAUDE_CONFIG_DIR=$acct claude "$@"
+  ( eval "$env" && claude "$@" )
 }
