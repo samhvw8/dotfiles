@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-17
+* **Addition**: ccp profile `alt` for a second Claude account, made with `ccp profile create alt --from=default`. `home/.ccp/profiles/alt/` holds its `profile.toml` (same hub items as `default`) and relative symlinks to `default`'s `CLAUDE.md` and `settings-fragment.json`; `ccp profile sync alt` gives a `settings.json` that matches `default` except for hook paths. User-scope MCP servers and the 5 plugins were copied into the profile by hand; `claude mcp list` and `claude plugin list` with `CLAUDE_CONFIG_DIR` confirm them. See [Keep ccp hub items](/workflows/ccp-hub-items.md). Runs: one more profile; MCP servers and plugins must be added to both profiles.
+
 ## 2026-11-16
 * **Update**: termctl and harness-ops now install through mise: `"github:samhvw8/termctl"` (latest, `minimum_release_age = "0s"`) in `mise/config.toml`, at v0.3.1 (panes behind a maximized iTerm2 pane stay listed and reachable). The hand-built copies in `~/.local/bin` are gone; they shadowed mise on `PATH`. Hub skill `agent-ops` gives the mise install instead of `mise run install`. Runs: one more mise-managed tool.
 * **Update**: hub skill `agent-ops` ("Where a new agent opens"): an agent whose job is unrelated to the lead's current project opens in its own tab (`--where tab`); Sam keeps one tab per project. Cause: a termctl bug-fix session spawned as a split inside the speech-experiment tab. Runs: nothing new.

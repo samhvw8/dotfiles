@@ -4,7 +4,7 @@ title: "Keep ccp hub items"
 description: "Which parts of ~/.ccp live in the repository and how to store hub items created by hand."
 tags: [ccp, claude-code]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-11-09T10:40:00Z }
+generated: { by: claude-code/claude-opus-5-5, at: 2026-11-17T03:30:00Z }
 sources:
   - id: check
     resource: https://github.com/samhvw8/dotfiles/blob/main/mise/scripts/dot-check.py
@@ -61,6 +61,30 @@ into `home/.ccp/hub/hooks/<name>/`, the same layout as the other hooks. Then
 
 ccp owns the `~/.claude` link (`ccp use -g <profile>`); bootstrap only creates
 it when missing. See [the decision](/decisions/ccp-owns-claude-link.md).
+
+# A second Claude account (`alt` profile)
+
+The `alt` profile runs a second Claude account beside `default`. Its
+`profile.toml` lists the same hub items. `CLAUDE.md` and
+`settings-fragment.json` in `home/.ccp/profiles/alt/` are relative symlinks to
+`../default/`, so both profiles take one set of instructions and settings.
+After a settings change, run `ccp profile sync alt` too.
+
+Start it with its own config directory, not with `ccp use alt -g`:
+
+```bash
+CLAUDE_CONFIG_DIR=$HOME/.ccp/profiles/alt claude
+```
+
+`ccp use -g` repoints `~/.claude`, so both profiles would share one login.
+
+These are not in the repository and need a manual copy for each profile:
+
+| Item | Where | How it was filled |
+|---|---|---|
+| User-scope MCP servers | `~/.ccp/profiles/alt/.claude.json` (`mcpServers`) | Copied from `~/.claude.json` with `jq`, no account keys |
+| Plugins | `~/.ccp/profiles/alt/plugins/` | `claude plugin marketplace add` and `claude plugin install` with `CLAUDE_CONFIG_DIR` set |
+| Login | macOS keychain, one entry per config directory | `/login` in the `alt` session |
 
 # Output styles
 
