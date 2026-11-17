@@ -56,7 +56,7 @@ mise installs the released binary from the owner's download host:[^parallax-rele
 
 The line is in `mise/config.toml` (full install). Builds exist for macOS arm64,
 Linux x64 and Linux arm64. A new release is `make release-cli` in
-`~/workspace/parallax`, then a bump of the pinned version here: the host serves
+`~/workspace/tools/parallax`, then a bump of the pinned version here: the host serves
 only `.zip` files, so mise has no `latest` to discover and no checksum file to
 read (one on the same host would add nothing over HTTPS).
 
