@@ -1,6 +1,6 @@
 ---
 name: idea-scout
-description: "Finds, filters and pre-digests ideas for Sam: sweeps his scopes across papers, journals, articles and social posts, keeps only sources that carry an idea gem (migration gap, lifted constraint, diagnosed-unpopular, author hunch, convergence, rejected alternative), and writes a short batch of triage cards pitched one step above what Sam already knows. Also records Sam's votes and runs the monthly retro. Use when Sam asks for a scout batch, 'what should I read', 'find ideas on X', 'new cards', gives votes on cards, changes a topic's depth ('go deep on X', 'skip X', 'đào sâu X'), or asks for the retro. Not for reading one source with Sam (co-read), generating mutations (idea-forge) or checking whether a claim is true (paper-appraisal)."
+description: "Finds, filters and pre-digests ideas for Sam: sweeps his scopes across papers, journals, articles and social posts, keeps only sources that carry an idea gem (migration gap, lifted constraint, diagnosed-unpopular, author hunch, convergence, rejected alternative), and writes a short batch of triage cards pitched one step above what Sam already knows. Also records Sam's votes and runs the monthly retro. Use when Sam asks for a scout batch, 'what should I read', 'find something new worth reading on X', 'find ideas on X', 'new cards', gives votes on cards, changes a topic's depth ('go deep on X', 'skip X'), or asks for the retro. Not for reading one source with Sam (co-read), making new ideas (idea-forge) or checking whether a claim is true (paper-appraisal)."
 ---
 
 # Idea scout
@@ -80,7 +80,7 @@ Every card carries: gem type, one-line idea, recipe in roles, new atoms (if any)
 zoom offer. A zoom opens that one source in `co-read` brief mode without changing the
 cluster's level.
 
-Handover stage (from `progress.md`): at stage 2 or higher, hide each card's "why it is
+Handover stage (from `progress.md`), present mode only: at stage 2 or higher, hide each card's "why it is
 a gem" line until Sam has guessed the gem type, then reveal it and record the guess
 in the vote table's `Guess` column.
 
@@ -100,7 +100,7 @@ Details: `references/votes-and-retro.md`.
 - Add the signal to the cluster's row in `me/interest-state.md`.
 - **Propose** level changes from signals (repeated `up`, zooms, questions; long silence
   for a demotion). Sam decides. Never change a level on your own.
-- Sam's commands win at once, in any language: "go deep on X" / "đào sâu X" sets
+- Sam's commands win at once, in any language: "go deep on X" sets
   `core`, "X: role only" sets `adjacent`, "skip X" sets `delegated`. Log every change.
 
 ## Delegated domains

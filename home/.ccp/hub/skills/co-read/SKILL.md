@@ -1,6 +1,6 @@
 ---
 name: co-read
-description: "Read and evaluate a paper, journal article, article or social post together with Sam, idea-first instead of verification-first: the authors' view model and intent, the recipe of atoms by role, the constraints of the time, gems, and what to reuse or mutate. Two modes: brief (Claude explains, Sam asks) and deep (Sam does the generative steps, Claude guides, reviews and runs experiments). Use when Sam picks a source to read, says 'brief this', 'đọc cùng', 'co-read', 'go deep on this paper', zooms a scout card, or asks what the idea behind a source is and what we can build from it. Not for judging whether a study is trustworthy (paper-appraisal) or for sweeping many sources (idea-scout)."
+description: "Read one paper, journal article, article or social post together with Sam, idea-first instead of verification-first: what the authors believed and intended, the bricks of their recipe by the job each does, the limits of their time, the gems, and what to reuse or change. Two modes: brief (the default: Claude explains, Sam asks) and deep (only after Sam turns on present mode with /idea-present: Sam does the generative steps, Claude guides, reviews and runs experiments). Use when Sam picks a source to read with him, says 'read this together', 'brief this', 'co-read', 'go deep on this paper', opens a scout card, or asks what the idea behind a source is and what we can build from it. Not for judging whether a study is trustworthy (paper-appraisal), breaking sources into bricks without Sam (idea-mine) or sweeping many sources (idea-scout)."
 ---
 
 # Co-read
@@ -33,7 +33,8 @@ Do not invent fields here.
 3. Pick the mode:
    - **brief** when Sam asks to "brief", zooms a scout card, or the source's
      cluster is `delegated` or unknown.
-   - **deep** when Sam asks for it. A `delegated` cluster gets deep mode only when
+   - **deep** when Sam asks for it and present mode is on (idea-bank, "Presence
+     mode"); without it, run brief and offer deep in one line. A `delegated` cluster gets deep mode only when
      Sam zooms explicitly.
    - **skim** (a light deep mode) when Sam wants it fast: steps 1, 3 and 8 only.
    Ask once when it is unclear; default to brief.
@@ -87,7 +88,7 @@ the reading's `# Recall` section, or `skipped: overloaded`.
 
 ## Hard rules
 
-- **Sam writes first.** At every generative step, Sam commits his version (one
+- **Sam writes first (present mode).** At every generative step, Sam commits his version (one
   line is fine, wrong is fine) before Claude shows its own. Seeing Claude's answer
   first anchors him and removes the learning.
 - **In deep mode, Claude never writes the card or the core code for Sam.** Claude
@@ -95,7 +96,7 @@ the reading's `# Recall` section, or `skipped: overloaded`.
 - **Hints cost.** To open a hint, Sam says what he tried. Hints go from level 1
   ("something in Methods §3 is worth a look") to 2 ("it is about why they chose X
   over Y") to 3 (the full note with quote, atom link and gem type).
-- **Skip is allowed and logged.** "skip" gets the answer at once. Count skips in
+- **Skip is allowed and logged (present mode).** "skip" gets the answer at once. Count skips in
   `progress.md`; when the share rises across sessions, say so plainly.
 - **Argue the other side.** When Sam reaches a conclusion, argue the strongest
   opposite case. Disagreements go to the ledger with how to settle them,

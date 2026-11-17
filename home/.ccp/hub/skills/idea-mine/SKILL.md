@@ -1,6 +1,6 @@
 ---
 name: idea-mine
-description: "Atomize a source (paper, article, journal piece, talk, repo, social thread) into a six-layer idea card for Sam's idea bank without Sam present: the author's view model and bet, the atoms named by the job they do, the operator, the diff from the parent source, and the gems. Use to fill the bank in bulk (\"mine these 50 papers on X\", \"atomize this cluster\"), to prepare a source before a co-read session, or when another idea skill needs a card. Not a substitute for Sam's own reading: to read or review a source with Sam, use co-read; to judge whether a claim is true, use paper-appraisal."
+description: "Break a source (paper, article, talk, repo, social thread) into its idea bricks and file them in Sam's idea bank, best effort and without asking Sam: what the author believed and bet on, the bricks named by the job each one does, how the bricks are put together, what changed from the source it built on, and the gems. Reads the full text, not the abstract. Use when someone asks how a source's idea is composed or built (\"how does their idea compose, like lego 1 + lego 2\"), to break a paper, post or method into parts or building blocks, to atomize or mine sources into the bank (one or in bulk), or to prepare a source before reading it with Sam. Not for reading a source together with Sam (co-read), combining bricks into new ideas (idea-forge), or judging whether a claim is true (paper-appraisal)."
 ---
 
 # Idea mine

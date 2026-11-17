@@ -1,6 +1,6 @@
 ---
 name: idea-bank
-description: "Shared store and formats for Sam's idea work: where the bank lives ($IDEA_HOME), the schema for idea cards, atoms, lenses, moves, readings, scout batches and Sam's state files, the index script that finds atom links, convergence and migration gaps, the search script (embeddings + BM25) that finds existing atoms, and how to commit the bank. Use when another idea skill (idea-scout, co-read, idea-forge, idea-mine) writes or reads the bank, when Sam asks to search the bank, find or dedupe atoms, run the idea index, or see convergence and migration gaps. Not for deciding what to read or how to collaborate; the caller skills own that."
+description: "Shared store and formats for Sam's idea work: where the bank lives ($IDEA_HOME), the schema for idea cards, atoms (the bricks), lenses, moves, readings, scout batches and Sam's state files, how bricks are split, bound and linked (`parts`, `links`), the index script that finds links, convergence and migration gaps, the search script (embeddings + BM25) that finds existing bricks, and how to commit the bank. Use when another idea skill (idea-scout, co-read, idea-forge, idea-mine) writes or reads the bank, when Sam asks to search the bank or his ideas for something, find or dedupe atoms, see what a brick is part of or linked to, run the idea index, or see convergence and migration gaps. Not for deciding what to read or how to collaborate; the caller skills own that."
 ---
 
 # Idea bank
@@ -60,6 +60,22 @@ OKF bundle: load the `okf` skill before restructuring it.
   perfect rule. Mark a doubtful call `(inferred)` and make it anyway. Record
   each correction Sam makes (in the unit's file, and as a row in
   `me/progress.md`), so the next pass starts from it.
+- **Presence mode: Sam is absent unless he turns it on.** This is the only
+  definition; the other idea skills point here.
+  - **Absent (default).** Claude does every step itself, best effort: splits,
+    recombines, writes variants, cards and kill-test predictions, files drafts.
+    It never stops to ask Sam to write first, and logs no skip: absence is not a
+    skip.
+  - **Present.** On after Sam types `/idea-present` (or `/idea-present on`) in
+    this conversation, until `/idea-present off`. The "Sam writes first" steps of
+    co-read, idea-forge and idea-scout then run as written, and skips are counted.
+  - Steps that only make sense with Sam (co-read deep mode, idea-forge deal mode,
+    Sam's own kill-test prediction, scout's gem-type guess) run only in present
+    mode. In absent mode, offer them in one line: "Type /idea-present to do this
+    together." and stop there. Asking for one of these steps ("deal me some
+    atoms", "go deep") does not turn present mode on; only the switch does.
+  - The switch lives in the conversation. A new session, or a compaction summary
+    that does not show it, is absent.
 - **State is data, not config.** Levels, budgets and ratios live in `me/`.
   No skill hardcodes a topic level or a number Sam can change at runtime.
 

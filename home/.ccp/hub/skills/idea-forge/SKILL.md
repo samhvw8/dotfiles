@@ -1,14 +1,16 @@
 ---
 name: idea-forge
-description: "Turns an idea card or Sam's seed (\"what if we swap C for something like D\") into new idea variants, then designs the cheapest test that could kill each one. Sam proposes his variants first; Claude then exhausts the neighbourhood with the idea-bank mutation operators (substitute an atom, change the operator, remove, lift a constraint, invert, migrate an atom, transfer, cross-card, resolve the contradiction, lens transfer or inversion) and atom migration across fields, checks each variant for role fit and novelty, and runs kill-tests. Deal mode starts from the bank instead: deal a hand of atoms, lenses or moves, both write rough ideas from it, then read a few together (\"deal\", \"chia bài\", \"list some atoms and let's make ideas\"). Use after a co-read or brief, when Sam brings a seed or hunch, asks what to build or try next from a source, or asks whether an atom from one field could work in another. Not for reading or explaining a source (co-read) or finding sources (idea-scout)."
+description: "Makes new ideas by recombining bricks, then designs the cheapest test that could kill each one: combine bricks from several sources, swap one piece of a method for a piece from another field, change how the pieces fit together (sequence, loop, gate), remove, invert or move a piece. Starts from an idea card, Sam's seed (\"what if we swap C for D\"), bricks a session just found, or a hand dealt from the bank (deal mode, present mode only: both write rough ideas from dealt atoms, lenses or moves, then read a few together). By default Claude does all of it; after Sam types /idea-present, Sam writes first. Use when Sam asks what new ideas come from mixing sources or parts, how to combine, swap or rearrange pieces, what to build or try next from a source, whether a piece from one field works in another, or asks to deal some atoms. Not for breaking a source into bricks (idea-mine), reading a source with Sam (co-read) or finding sources (idea-scout)."
 ---
 
 # Idea forge
 
-Make new ideas from old recipes, with Sam doing the generative part first.
+Make new ideas from old recipes. By default Sam is absent and Claude does every
+step, best effort; in present mode (idea-bank, "Presence mode") Sam does the
+generative part first.
 Two goals hold at once: (A) Sam ends with ideas he can act on, and (B) Sam's own
 idea-making gets stronger. A list of variants Sam only nods at serves (A) and
-erodes (B), so the order below is not optional.
+erodes (B), so in present mode the order below is not optional.
 
 Formats, slugs, move types and gem types come from
 `~/.claude/skills/idea-bank/references/schema.md`; bank location, index and
@@ -32,7 +34,8 @@ recipe named by atom identity gives only shallow swaps.
 
 ## The session
 
-**1. Sam's variants first.** Ask Sam for his variants before showing any of
+**1. Sam's variants first (present mode only).** In absent mode, go to step 2;
+that is not a skip. Ask Sam for his variants before showing any of
 Claude's: "Your variants first, even one line, even wrong." Keep Claude's list
 hidden until he commits. If Sam says skip, give Claude's list and log a skip in
 `me/progress.md`. Why: the generation effect; an answer read first anchors Sam
@@ -82,7 +85,8 @@ it goes in `me/progress.md` (Sam-unique mutations) and tells Claude where it was
 stuck in its default.
 
 **6. Kill-test.** For the variant Sam picks:
-1. Sam writes his prediction first.
+1. Sam writes his prediction first (present mode); in absent mode Claude writes
+   it, still before the run.
 2. Fix the kill criterion and the metric before the run. Never change them after
    seeing results.
 3. Claude builds the harness (data loading, plots, boilerplate). In a deep
@@ -93,6 +97,11 @@ stuck in its default.
 5. Report the real number against the criterion, including a miss.
 
 ## Deal mode
+
+**Gate, before anything else:** has Sam typed `/idea-present` in this conversation
+(and not `/idea-present off` since)? If not, deal nothing. Reply with one line,
+"Deal mode needs you: type /idea-present and we start.", and stop. A request to
+deal is not the switch.
 
 A second way in, from the bank instead of a card. Ideas here need not be good:
 they are material to read and sharpen together. Goal (B) carries the weight, so
@@ -141,7 +150,7 @@ no novelty search and no kill-test unless Sam asks for one on a kept idea.
 
 ## Rules
 
-- **Sam generates first, every round.** Claude's list never appears before Sam's
+- **In present mode, Sam generates first, every round.** Claude's list never appears before Sam's
   attempt unless Sam skips, and skips are logged.
 - **No invented mechanism.** When a variant's reason is Claude's reading, mark it
   `(inferred)`. When nobody knows why it would work, say so; the kill-test
