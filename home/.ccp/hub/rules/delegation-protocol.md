@@ -11,6 +11,10 @@ loads guidance for you to follow yourself.
 
 - **At most 6 agents in flight, as a rolling pool.** When one finishes, start the
   next queued job; don't wait for a whole batch.
+- **A named harness teammate means agent-ops.** When Sam says "agy teammate", "omp
+  teammate" or names a team, start it as a visible harness session with `agent-ops`
+  (`harness-ops task new`), not as a headless print job (`agy -p`). Headless agy also
+  denies every MCP tool.
 - **Subagent by default.** Start a live member only when you can name the second
   message you'll send it (debate, council, multi-round hand-off, a reviewer you'll
   consult again). Live members are harness-ops sessions (`agent-ops` skill, "Live
