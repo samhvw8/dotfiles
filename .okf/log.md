@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-17
+* **Update**: ccp profile `alt` is renamed `growtrics` (`ccp profile rename`, then `home/.ccp/profiles/alt/` moved to `growtrics/`). The plugin paths in its `installed_plugins.json` and `known_marketplaces.json` were rewritten by hand; `claude plugin list` and `claude mcp list` confirm them. Runs: nothing new.
 * **Addition**: ccp profile `alt` for a second Claude account, made with `ccp profile create alt --from=default`. `home/.ccp/profiles/alt/` holds its `profile.toml` (same hub items as `default`) and relative symlinks to `default`'s `CLAUDE.md` and `settings-fragment.json`; `ccp profile sync alt` gives a `settings.json` that matches `default` except for hook paths. User-scope MCP servers and the 5 plugins were copied into the profile by hand; `claude mcp list` and `claude plugin list` with `CLAUDE_CONFIG_DIR` confirm them. See [Keep ccp hub items](/workflows/ccp-hub-items.md). Runs: one more profile; MCP servers and plugins must be added to both profiles.
 
 ## 2026-11-16

@@ -62,18 +62,18 @@ into `home/.ccp/hub/hooks/<name>/`, the same layout as the other hooks. Then
 ccp owns the `~/.claude` link (`ccp use -g <profile>`); bootstrap only creates
 it when missing. See [the decision](/decisions/ccp-owns-claude-link.md).
 
-# A second Claude account (`alt` profile)
+# A second Claude account (`growtrics` profile)
 
-The `alt` profile runs a second Claude account beside `default`. Its
+The `growtrics` profile runs a second Claude account beside `default`. Its
 `profile.toml` lists the same hub items. `CLAUDE.md` and
-`settings-fragment.json` in `home/.ccp/profiles/alt/` are relative symlinks to
+`settings-fragment.json` in `home/.ccp/profiles/growtrics/` are relative symlinks to
 `../default/`, so both profiles take one set of instructions and settings.
-After a settings change, run `ccp profile sync alt` too.
+After a settings change, run `ccp profile sync growtrics` too.
 
-Start it with its own config directory, not with `ccp use alt -g`:
+Start it with its own config directory, not with `ccp use growtrics -g`:
 
 ```bash
-CLAUDE_CONFIG_DIR=$HOME/.ccp/profiles/alt claude
+CLAUDE_CONFIG_DIR=$HOME/.ccp/profiles/growtrics claude
 ```
 
 `ccp use -g` repoints `~/.claude`, so both profiles would share one login.
@@ -82,9 +82,9 @@ These are not in the repository and need a manual copy for each profile:
 
 | Item | Where | How it was filled |
 |---|---|---|
-| User-scope MCP servers | `~/.ccp/profiles/alt/.claude.json` (`mcpServers`) | Copied from `~/.claude.json` with `jq`, no account keys |
-| Plugins | `~/.ccp/profiles/alt/plugins/` | `claude plugin marketplace add` and `claude plugin install` with `CLAUDE_CONFIG_DIR` set |
-| Login | macOS keychain, one entry per config directory | `/login` in the `alt` session |
+| User-scope MCP servers | `~/.ccp/profiles/growtrics/.claude.json` (`mcpServers`) | Copied from `~/.claude.json` with `jq`, no account keys |
+| Plugins | `~/.ccp/profiles/growtrics/plugins/` | `claude plugin marketplace add` and `claude plugin install` with `CLAUDE_CONFIG_DIR` set |
+| Login | macOS keychain, one entry per config directory | `/login` in the `growtrics` session |
 
 # Output styles
 

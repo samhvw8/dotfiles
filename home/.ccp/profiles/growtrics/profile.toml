@@ -1,5 +1,5 @@
 version = 3
-name = 'alt'
+name = 'growtrics'
 description = 'Second Claude account, cloned from default'
 settings-template = 'base'
 created = 2026-11-17T10:23:34.264627+07:00
