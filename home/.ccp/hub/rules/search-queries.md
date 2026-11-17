@@ -1,15 +1,12 @@
 # Search queries
 
-Applies to every web, GitHub and social search, with or without a research skill.
+For any search (web, code, GitHub, social), with or without a research skill.
 
-- **Start broad.** The first query states the user's question in plain words
-  ("firebase local auth testing options"), not your guess at the answer.
-- **Keep your hypothesis out of early queries.** Flags, env vars, error strings and
-  one product name narrow the results to the case you already expect. Add them only
-  after a broad search shows that case is the right path.
-- **Use the user's words and their synonyms** (simulator / emulator / mock).
-- **Ask for the whole space:** "options", "alternatives", "ways to", "X vs Y".
-- **"Does X exist?" or "how do I do X?" is not a single fact.** Cover at least the
-  official docs, GitHub (issues or code) and social before you conclude, and read
-  the top source page, not only the snippet.
-- **In the reply, list every case you found** and name the angles you did not search.
+- **Broad first, narrow later.** Begin with the question in plain words. Add specific
+  terms only after the broad results show which direction is right.
+- **Don't search for your own guess.** A query that already contains the answer you
+  expect only finds that answer.
+- **Vary the words.** Use the user's terms, common synonyms, and phrasing that asks
+  for the whole space of answers, not one.
+- **Check more than one kind of source** and read the best page, not only snippets.
+- **Report the space, not one hit:** the options you found and what you did not cover.
