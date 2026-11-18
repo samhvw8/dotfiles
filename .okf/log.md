@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-18
+* **Update**: hub rule `codegraph.md` gains four lines from codegraph v1.6.3's own prompt and CLI: the shell fallback `codegraph explore "<query>"` when no MCP tool is loaded, trust results without re-checking by grep, run `codegraph cycles` (CLI only, no MCP tool) after moving, splitting or merging modules, and report an index built by an older version (`codegraph index` stays Sam's call). The profile `CLAUDE.md` sync line now also runs `ccp agy sync`. Mirrored to omp, opencode and agy. Runs: nothing new; the rule is 8 lines longer.
 * **Update**: the idea skills (`idea-bank`, `idea-mine`, `idea-forge`, `idea-scout`, `co-read`) and `lead-researcher` call the unit of an idea a **brick**, not an atom. `idea-bank` gains a "What a brick is" section that every caller points to: a brick is any piece that does one nameable job, has no fixed size, can be cut again later, and every cut is kept with the lens it was made through. Renames: `type: Brick`, `bricks/`, card field `bricks:`, move fields `brick`, `from_brick`, `to_brick`, move types `substitute-brick` and `migrate-brick`, `me/known-bricks.md`, and `idea_search.py --type brick`. There is no alias for the old names. `idea-mine/references/atom-matching.md` is renamed `brick-matching.md`. `idea_index.py` reads `cut` (the lens a split was made through; `default` when missing) on `parts` entries. It shows one `# Related` line per cut, and depth takes the deepest part over all cuts. Fixture: `idea-bank/scripts/fixtures/cuts-bank/`. Runs: nothing new.
 
 ## 2026-11-17

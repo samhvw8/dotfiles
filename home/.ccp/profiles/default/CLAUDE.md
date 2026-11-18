@@ -113,8 +113,8 @@ directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
 - **ccp:** `~/.claude` holds symlinks into `~/.dotfiles/home/.ccp/` (`hub/` =
   rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings).
   Edit the real file (`readlink -f`). It's git — review with `git diff`.
-  omp and opencode mirror the profile: after changing hub items, run
-  `ccp omp sync && ccp opencode sync`.
+  omp, opencode and agy mirror the profile: after changing hub items, run
+  `ccp omp sync && ccp opencode sync && ccp agy sync`.
 - **An install is done when it's in dotfiles:** tools and MCP servers via
   `mise use -g`, skills via `ccp install … --link .`, then `mise run dot:check`.
   Commit and push dotfiles (`mise run dot:push`) without asking; this standing
