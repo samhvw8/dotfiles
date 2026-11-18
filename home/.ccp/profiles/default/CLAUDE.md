@@ -93,7 +93,9 @@ the web and social (Parallax `social_search`: Reddit, X, HN, forums) by default;
 say so when you skip social.
 
 **Research:** real research goes through `lead-researcher` (never spawn `gatherer`
-directly; languages EN + ZH + ZH-TW by default). A single fact is one search.
+directly; languages EN + ZH + ZH-TW by default). A single fact is one search. A light
+survey ("does X exist", "how do I do X", "options for X") uses `quick-search`, which hands
+over to `lead-researcher` when the decision is big.
 
 ## Environment
 
