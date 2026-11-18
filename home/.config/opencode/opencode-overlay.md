@@ -55,7 +55,7 @@ opencode model IDs carry a provider prefix. Aliases used in `CLAUDE.md` map to:
 - Opus → `proxypal/claude-opus-4-5-20251101`
 - Sonnet → `proxypal/claude-sonnet-4-5-20250929`
 - Haiku → `proxypal/claude-haiku-4-5-20251001`
-- session default → `opencode-go/deepseek-v4.1-flash` (small model `opencode-go/glm-5.3-flash`, `plan` uses `opencode-go/glm-5.3`)
+- session default → `opencode-go/glm-5.3` (`opencode.json`); DeepSeek models are not used
 
 ## Skills
 Auto-loaded from `~/.claude/skills/` and `~/.agents/skills/` (plus

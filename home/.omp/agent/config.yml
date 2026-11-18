@@ -7,32 +7,32 @@ modelRoles:
   judge: typesafe/jev-latest
   dictation: local/parakeet-tdt-0.6b-v3
   speech: local/kokoro
-  default: opencode-go/deepseek-v4.1-flash
-  smol: opencode-go/deepseek-v4.1-flash:auto
+  default: opencode-go/glm-5.3-flash
+  smol: opencode-go/glm-5.3-flash:auto
   slow: opencode-go/qwen4-max:auto
-  vision: opencode-go/deepseek-v4.1-flash:auto
+  vision: opencode-go/glm-5.3-flash:auto
 modelPresets:
   spread:
     modelRoles:
       default: opencode-go/glm-5.3:high
-      slow: opencode-go/deepseek-v4-pro:max
-      plan: opencode-go/deepseek-v4-pro:high
+      slow: opencode-go/qwen4-max:high
+      plan: opencode-go/qwen4-max:high
       advisor: opencode-go/minimax-m3:high
       task: opencode-go/glm-5.3-flash:high
-      vision: opencode-go/deepseek-v4.1-flash:high
-      smol: opencode-go/deepseek-v4.1-flash:low
+      vision: opencode-go/glm-5.3-flash:high
+      smol: opencode-go/glm-5.3-flash:low
       tiny: opencode-go/mimo-v2.6-flash:low
       commit: opencode-go/mimo-v2.6-flash:low
       web: web/searxng
     defaultThinkingLevel: high
   cheap:
     modelRoles:
-      default: opencode-go/deepseek-v4.1-flash:high
-      slow: opencode-go/deepseek-v4-pro:high
-      plan: opencode-go/deepseek-v4-pro:high
+      default: opencode-go/glm-5.3-flash:high
+      slow: opencode-go/qwen4-max:high
+      plan: opencode-go/qwen4-max:high
       advisor: opencode-go/minimax-m3:low
-      task: opencode-go/deepseek-v4.1-flash:high
-      vision: opencode-go/deepseek-v4.1-flash:high
+      task: opencode-go/glm-5.3-flash:high
+      vision: opencode-go/glm-5.3-flash:high
       smol: opencode-go/mimo-v2.6-flash:low
       tiny: opencode-go/mimo-v2.6-flash:low
       commit: opencode-go/mimo-v2.6-flash:low
@@ -43,9 +43,9 @@ modelPresets:
       default: opencode-go/glm-5.3:max
       slow: opencode-go/kimi-k3:max
       plan: opencode-go/kimi-k3:high
-      advisor: opencode-go/deepseek-v4-pro:max
-      task: opencode-go/deepseek-v4-pro:high
-      vision: opencode-go/deepseek-v4.1-flash:high
+      advisor: opencode-go/qwen4-max:high
+      task: opencode-go/qwen4-max:high
+      vision: opencode-go/glm-5.3-flash:high
       smol: opencode-go/glm-5.3-flash:low
       tiny: opencode-go/mimo-v2.6-flash:low
       commit: opencode-go/mimo-v2.6-flash:low
@@ -130,7 +130,7 @@ retry:
       - web/mojeek
       - web/public
     image:
-      - opencode-go/deepseek-v4.1-flash
+      - opencode-go/glm-5.3-flash
     default:
       - opencode-go/qwen3.8-flash
       - opencode-go/qwen4-max
