@@ -383,7 +383,8 @@ One message = one complete request. The receiver has none of your context.
   `~/.local/state/termctl/projects/<project>/`, and sends the path.
 - Write a brief (pair, group, duel, a plan you hand over) with `harness-ops note`, never as a file you
   name by hand: it gets a header with the project, Unix time and local time, and a journal entry, so
-  `resume` finds it later. `task new --brief` files its brief there by itself.
+  `resume` finds it later. `task new --brief` or `--brief-file` files its brief there by itself, so a
+  draft you fill in for it (a swarm's `manager.md`, a card brief in the run folder) is scratch, not the record.
 - Scratch files you or a member make (downloads, extracted text) go in `~/.cache/agent-ops/` as
   `<YYMMDD-HHMMSS>-<name>-<what>.<ext>`, never `/tmp`: agy asks a person before it reads `/private/tmp`.
   Every brief template carries this rule; keep it when you fill one in.
