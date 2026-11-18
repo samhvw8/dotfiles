@@ -15,7 +15,20 @@ and a `--command` value, and it is the only file that names models. When a model
 | `peer` | The lead's own model: the default live member |
 | `other-family` | A strong model from another family: swarm manager, debate opponent, blind reviewer |
 | `fast` | The fastest model that passes the brief check: swarm workers |
+| `builder` | Cheap and fast: build and iterate on a task whose result a test or build can check |
+| `brain` | The strongest model at high effort: review, managing workers, hard tasks |
 | `open-panel` | Open-weight models, one per member: extra diversity |
+
+Pick a task worker's role by the task:
+
+| Task | Role |
+|---|---|
+| The spec is clear and a test, build or schema can check the result (scaffold, mechanical edit, make tests pass, a fix with a known cause) | `builder` |
+| Open design, a bug with an unknown cause, review, managing other workers, anything costly to get wrong | `brain` |
+| A second opinion from another model family, a blind review | `other-family` |
+| A short swarm card | `fast` |
+
+A `builder` task whose check fails twice goes to a `brain` worker, with the failed attempts in its brief.
 
 Diversity setting for each live run:
 

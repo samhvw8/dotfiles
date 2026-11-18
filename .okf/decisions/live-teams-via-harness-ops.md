@@ -62,6 +62,8 @@ Skills, briefs and protocols name roles. Only the agent-ops roster maps a role t
 | `peer` | The lead's own model; the default live member |
 | `other-family` | A strong model from another family; manager, opponent, blind reviewer |
 | `fast` | The fastest model that passes the brief check; swarm workers |
+| `builder` | Cheap and fast; a task worker whose result a test or build checks (added 2026-11-18) |
+| `brain` | The strongest model at high effort; review, managing workers, hard tasks (added 2026-11-18) |
 | `open-panel` | A mix of open-weight models; extra diversity |
 
 Diversity setting per live run: `same` (default), `mixed` (automatic for review, cross-model or a
@@ -82,6 +84,8 @@ Diversity setting per live run: `same` (default), `mixed` (automatic for review,
 
 | Check (2026-11-15) | Result |
 |---|---|
+| 2026-11-18: `builder` coding job, two runs each (implement `parse_duration`; pass = hidden tests pass, only `duration.py` changed) | All passed. Claude Sonnet 36/38 s, Haiku 46/49 s, agy Flash medium 61/70 s, omp GLM-5.3-Flash 73/78 s, omp DeepSeek-V4.1-Flash 337/275 s → `builder` = Haiku (a twentieth of Sonnet's price, within 10 s) |
+| 2026-11-18: `brain` review job, two runs each, two diffs with planted bugs and drift | Opus high, Fable, Sonnet, Haiku, agy Hydrogen high and omp GLM-5.3 found every planted defect: the check does not separate them. Opus high also found the deeper eviction flaw both runs and ran the code to confirm; Fable matched it, slower → `brain` = Opus high |
 | `fast` timing job, one run each, same tight brief | All passed the schema check. agy Flash medium 16 s, Hydrogen low 19 s, Hydrogen medium 27 s, omp GLM-5.3-Flash 27 s, omp DeepSeek-V4.1-Flash 55 s → `fast` = Flash medium |
 | Manager planted-drift round (one drifted draft, one schema miss, two clean) | Hydrogen medium 24 s, Hydrogen high 32 s, Carbon medium 49 s, Carbon high 152 s; all four marked both faults and passed the clean drafts → `other-family` = Hydrogen medium |
 | omp → lead `harness-ops send` | Works, no prompt |

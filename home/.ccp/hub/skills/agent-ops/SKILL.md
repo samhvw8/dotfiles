@@ -44,7 +44,9 @@ harness-ops resume <id> | resume .   # after a restart or compaction: a task's b
 
 `<harness>` is `claude`, `omp`, `agy`, `opencode`, `codex`, `gemini`, `aider`, `pi` or `generic`. To pick a
 model on `spawn` or `task new`, pass the whole command as `--command`; take it from `roster.md` by role
-(## Roles, `roles.md`). **Never start agy without a `--model` from the roster:** its default, Gemini 4 Carbon, thinks for
+(## Roles, `roles.md`). A task worker is `builder` when a test or build can check its result, and
+`brain` for review, design, an unknown cause or managing workers.
+**Never start agy without a `--model` from the roster:** its default, Gemini 4 Carbon, thinks for
 minutes on a one-command task (2026-11-17: 3 of 6 finished within 240 s, one stuck at "Generating"),
 where Hydrogen medium finished 3 of 3 in 4-27 s. Install: `mise use -g github:samhvw8/termctl` (already in the dotfiles mise config; `mise up
 github:samhvw8/termctl` after a release). It must run inside a terminal pane, so it knows who
