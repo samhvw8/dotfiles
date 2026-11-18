@@ -34,10 +34,10 @@ harness-ops task done <id> --status ok|failed|blocked --summary "<one line>"   #
 harness-ops task accept <id> [--close] # the lead's verdict: only this makes a task done
 harness-ops answer <id|pane> <n> --expect <fp> [--persist]   # answer a permission dialog on a task's worker or a pane you spawned
 harness-ops deny <id|pane> --expect <fp>   # cancel the dialog (Esc), never approves
-# task answer / task deny still work in v0.5.0 (deprecated aliases, one warning line); use the names above
+# task answer / task deny are deprecated aliases (one warning line) that a coming release removes; use the names above
 harness-ops task review <id> --blind --harness claude --model <m> [--brief-file F]
 harness-ops task close [--force] <id>  # refused until the task is accepted
-harness-ops note [--file F] <what> ["<text>"]   # text, --file (before <what>) or stdin: file a brief or plan in your project's journal folder; prints its path
+harness-ops note <what> ["<text>" | --file F]   # text, --file F (before or after <what>; v0.6.0 takes it only before) or stdin: file a brief or plan in your project's journal folder; prints its path
 harness-ops log [--project .] [--task <id>] [--pane <target>] [--since 2h] [-n 50]   # the journal: every message, spawn, answer and task event
 harness-ops resume <id> | resume .   # after a restart or compaction: a task's brief, reports and messages in full, or your project's open tasks, notes and last entries
 ```
