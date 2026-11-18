@@ -389,6 +389,13 @@ if command -v ccp &> /dev/null; then
         return
       fi
     fi
+    # A profile run through CLAUDE_CONFIG_DIR keeps its own .claude.json; give a
+    # new one home-folder trust now instead of at the next full bootstrap.
+    local _cc_state="${CLAUDE_CONFIG_DIR:-}/.claude.json"
+    if [[ -n "${CLAUDE_CONFIG_DIR:-}" && -f "$_cc_state" ]] &&
+       ! jq -e --arg h "$HOME" '.projects[$h].hasTrustDialogAccepted == true' "$_cc_state" &>/dev/null; then
+      bash "$HOME/.dotfiles/mise/scripts/setup-claude-trust.sh" >/dev/null
+    fi
     command claude --thinking-display summarized "$@"
   }
 
