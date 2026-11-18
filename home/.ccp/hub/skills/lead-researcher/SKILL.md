@@ -17,7 +17,7 @@ This file is the map: read a reference only when its row in [Load when](#load-wh
 | Quick, one-agent survey: does X exist, options for X, pick a tool | [quick-search](../quick-search/SKILL.md) |
 | Costly or hard-to-reverse decision, conflicting sources, non-English sources, gaps after ~15 queries, a survey or evidence review, "deep" or "team research" | This skill |
 
-**Light path:** For a quick, one-agent survey, follow quick-search; lead-researcher adds gatherers only when sizing says so, and starts from quick-search's option table when one exists. Seed Phase 0 and the STATE hypotheses from that table instead of searching from zero.
+**Light path:** only for a quick survey with nothing costly behind it. Take the full path (Phase 0, then [sizing](references/sizing.md), then gatherers) when the question names a choice that is costly or hard to undo (a platform, vendor, database or architecture pick, a migration, scale or cost numbers), needs non-English sources, or the first sources conflict. Being asked for this skill does not make a question light. On the light path, follow quick-search, and seed Phase 0 and the STATE hypotheses from its option table instead of searching from zero.
 
 ## Arguments
 
