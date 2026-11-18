@@ -35,6 +35,6 @@ loads guidance for you to follow yourself.
   read messages only between long tool calls.
 - **An unexplained kill means stop.** An agent whose job is killed without an
   explanation stops and asks; it never restarts the job on its own.
-- **Research:** read local first (code, config, git history) so queries are precise.
+- **Research:** read local first (code, config, git history) so you know the terms. Still start broad.
   Then search web and GitHub in parallel, say which approach you picked and why, and
   surface conflicts. Skip it for a known-cause bug or a mechanical change.
