@@ -14,8 +14,8 @@ sources:
     resource: ~/workspace/tools/termctl/README.md
     title: termctl and harness-ops (tasks, spawn, review, limits)
   - id: agent-ops
-    resource: home/.ccp/hub/skills/agent-ops/SKILL.md
-    title: agent-ops skill (pair, group, crew)
+    resource: home/.ccp/hub/skills/agent-ops/
+    title: "agent-ops skill: SKILL.md core (crew); pair.md, live-team.md, swarm.md, roles.md since the 2026-11-18 split"
   - id: harness-map
     resource: ~/workspace/tools/thinking-skills/skills/heavy-think/references/harness.md
     title: thinking-skills harness map (capabilities, model tiers)
