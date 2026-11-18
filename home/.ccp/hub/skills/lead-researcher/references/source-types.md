@@ -73,4 +73,4 @@ Searchable sources beyond GitHub, by domain, with how to query each. Pick the st
 
 - [elite-forums overview](elite-forums/overview.md) — per-language practitioner communities
 - [language-matrix](language-matrix.md) — field → language mapping
-- [lead-researcher SKILL](../SKILL.md) — Source Priority section that loads this catalog
+- [lead-researcher planning](planning.md#source-priority--decided-at-runtime) — Source Priority section that loads this catalog

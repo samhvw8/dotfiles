@@ -43,7 +43,7 @@ Rule: **a synthesis built from NOISE is worse than saying "insufficient data."**
 ## Ideas Objective Rubric
 
 The table above serves the decision objective. Under the ideas objective
-([lead-researcher](../../SKILL.md#ideas-objective)), a finding is judged by the idea it
+([lead-researcher](../ideas-objective.md)), a finding is judged by the idea it
 carries, not by whether it is proven. A wrong paper with a good bet stays in.
 
 ```

@@ -125,7 +125,7 @@ start harness sessions.
 
 ## Related
 
-- `../SKILL.md` — Execution Engine venues; Phase 0 triage; planning phases
+- `../SKILL.md` — venues and phase flow; `iterate-loop.md` — Execution Engine venues; `planning.md` — Phase 0 triage, planning phases
 - `forager/overview.md` — the brain (REFLECT/STEER = REASON/EXPAND/CHECK)
 - `adaptive-research/overview.md` — the batched (workflow) adaptive loop this complements
 - `../../deep-gather/SKILL.md` — gatherer search-fetch methodology

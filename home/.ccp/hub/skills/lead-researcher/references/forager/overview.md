@@ -61,4 +61,4 @@ The brain scales reflect depth to the question — no preset modes. Simple quest
 - [gem-detection](gem-detection.md) — gem vs SEO noise scoring heuristics
 - [control-panel](../adaptive-research/control-panel.md) — the gauges REFLECT reads
 - [control-rod](../adaptive-research/control-rod.md) — expansion limits STEER respects
-- [lead-researcher SKILL](../../SKILL.md) — Phase 4 CONTROL loads this brain
+- [lead-researcher Phase 4](../phase4-control.md) — Phase 4 CONTROL loads this brain
