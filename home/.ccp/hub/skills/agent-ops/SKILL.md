@@ -34,7 +34,7 @@ harness-ops task done <id> --status ok|failed|blocked --summary "<one line>"   #
 harness-ops task accept <id> [--close] # the lead's verdict: only this makes a task done
 harness-ops answer <id|pane> <n> --expect <fp> [--persist]   # answer a permission dialog on a task's worker or a pane you spawned
 harness-ops deny <id|pane> --expect <fp>   # cancel the dialog (Esc), never approves
-# task answer / task deny are deprecated aliases (one warning line) that a coming release removes; use the names above
+# task answer / task deny were removed in termctl v0.7.0 (exit 2); use the names above
 harness-ops task review <id> --blind --harness claude --model <m> [--brief-file F]
 harness-ops task close [--force] <id>  # refused until the task is accepted
 harness-ops note <what> ["<text>" | --file F]   # text, --file F (before or after <what>; v0.6.0 takes it only before) or stdin: file a brief or plan in your project's journal folder; prints its path
