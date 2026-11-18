@@ -84,4 +84,9 @@ Phases map to the loop: 0-2 plan, 3 = GATHER DATA, 4 = REASONING / EXPAND / CHEC
 
 ## Related
 
-[deep-gather](../deep-gather/SKILL.md) (methodology each agent loads) · [language-matrix](../deep-gather/references/language-matrix.md) (field-to-language mapping) · [content-farms](references/elite-forums/content-farms.md) · [landscape-notes](references/elite-forums/landscape-notes.md) (per-language ecosystem insights) · [adaptive-research spec](references/adaptive-research/overview.md) (gather/reason split, adaptive-depth loop, control rod, Phase 0 budget) · [idea-bank schema](../idea-bank/references/schema.md) (formats for the ideas objective)
+- [deep-gather](../deep-gather/SKILL.md) — the methodology each gatherer loads
+- [language-matrix](../deep-gather/references/language-matrix.md) — field-to-language mapping
+- [content-farms](references/elite-forums/content-farms.md) — sites to rank down, per language
+- [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
+- [adaptive-research spec](references/adaptive-research/overview.md) — gather/reason split, adaptive-depth loop, control rod, Phase 0 budget
+- [idea-bank schema](../idea-bank/references/schema.md) — card, brick and gem formats for the ideas objective

@@ -160,6 +160,9 @@ session. Herdr refuses with exit 1 and changes nothing.
 
 ## Give an editing agent its own worktree
 
+Before you start teammates on files, stop any older headless job on the same files, and check with
+`pgrep` that it is gone. agy print jobs ignore SIGTERM, so use `kill -9`.
+
 Two agents editing one checkout overwrite each other's files and mix their changes in `git status`.
 A worktree prevents that, but it costs a branch, a merge and a cleanup. Decide by the files the new
 agent (omp or any other harness) will change:

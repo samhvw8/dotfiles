@@ -13,4 +13,5 @@ When you test a skill, or whether a change to one is better, an LLM judges the o
   marks masked; report feature rows apart. Add a same-arm pair as the noise floor.
 - **Report the judges' verdicts and reasons**, not your summary of the outputs.
 
-Tooling: `~/workspace/tools/thinking-skills/evals/ambition/` (`run-all.sh`, `judge/`).
+Tooling: `~/workspace/tools/thinking-skills/evals/ambition/` (skills that write); `~/workspace/tools/search-evals/`
+(search skills). Both have `run-all.sh` and `judge/`.

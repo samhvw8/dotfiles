@@ -1,6 +1,9 @@
 # Update Log
 
 ## 2026-11-18
+* **Update**: hub skill `agent-ops`: before you start teammates on files, stop any older headless job on the same files and check with `pgrep` that it is gone; agy print jobs ignore SIGTERM, so use `kill -9`. Runs: nothing new.
+* **Update**: hub skill `lead-researcher`: the Related list is a list again, with one-line notes (the slim in b8850bc had joined it into one line). Runs: nothing new.
+* **Update**: rule `skill-evals`: the Tooling line also names `~/workspace/tools/search-evals/` for search skills. Runs: nothing new.
 * **Result**: blind eval of the search skills in the new project `~/workspace/tools/search-evals` (8 new questions x 3 arms on claude-sonnet-5-5, $3 cap, Opus judges, each pair in both orders). `quick-search` beat rules-only 5-1 in counted pairs (2 splits). `lead-researcher` at the depth it chose beat rules-only 6-2 and was level with `quick-search` (4-3), at the same cost ($0.46 against $0.45 a run): it took its light path 8 of 8 times, with no gatherers and no references. A forced full run worked: 4 gatherers, `deep-gather` loaded, a report, references `phase3-gather` and `sizing` read in part; $2.15, 4.0M tokens, 755 s; it won its one pair against `quick-search`. Same-arm noise floor: 1-1. Verdict: keep `quick-search` and the slimmed `lead-researcher`. Runs: nothing new in the dotfiles.
 * **Update**: hub skill `lead-researcher`: `references/team-research.md` now points to the gatherer tiers in `workflow-venue.md` (Model Tiering); they left `SKILL.md` in b8850bc. Runs: nothing new.
 * **Update**: rule `skill-evals`: do not score the new feature itself (a rubric row or prompt that asks for it measures presence, not quality); judge the shared output with the feature masked, report feature rows apart, and add a same-arm pair as a noise floor. Came from a brick-vs-atom eval that won 6-0 on feature rows only. Runs: nothing new.
