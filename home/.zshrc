@@ -404,13 +404,3 @@ else
   alias claude="claude --thinking-display summarized"
 fi
 
-# cca <account> [claude args]: Claude Code on one profile (default, or CCA_PROFILE)
-# logged in as <account>. ccp owns the account folders (~/.ccp/accounts/<account>);
-# see `ccp env --help`. Log in once per account with /login.
-cca() {
-  [[ -n $1 && $1 != -* ]] || { print -u2 "usage: cca <account> [claude args]"; return 2 }
-  local env
-  env=$(ccp env "${CCA_PROFILE:-default}" --account "$1") || return
-  shift
-  ( eval "$env" && claude "$@" )
-}
