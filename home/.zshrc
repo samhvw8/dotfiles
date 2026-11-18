@@ -389,7 +389,7 @@ if command -v ccp &> /dev/null; then
         return
       fi
     fi
-    CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 command claude --thinking-display summarized --add-dir "${CLAUDE_CONFIG_DIR:-$(ccp which --path 2>/dev/null)}" "$@"
+    command claude --thinking-display summarized "$@"
   }
 
   alias claude-reset='unset _CLAUDE_SUBCMDS _CLAUDE_BIN_MT'
