@@ -1,6 +1,6 @@
 # Roster
 
-The only file that names models. Briefs and skills name a role (SKILL.md, ## Roles); this table
+The only file that names models. Briefs and skills name a role (`roles.md`, ## Roles); this table
 turns the role into a launch command. Pass the harness as the first argument and the command as
 `--command "<value>"` on `harness-ops spawn` or `harness-ops task new`.
 
