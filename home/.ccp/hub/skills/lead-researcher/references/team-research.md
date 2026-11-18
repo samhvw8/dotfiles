@@ -19,7 +19,7 @@ There is no separate steering-lead session. A task worker reports only to the se
 | Role | Count | Job | Live role |
 |------|-------|-----|-----------|
 | **Lead** | main session | Plan, start the tasks, run the forager brain each round, route load-bearing claims to the verifier, decide exit, GOAL-CHECK, synthesize, accept and close every task | the session's own model |
-| **Gatherer** | 2–3 | deep-gather search-fetch on its topic×language, in rounds; claim each page in the ledger before fetching; obey steering | `peer` (Claude Code): a gatherer needs the Agent tool, the Parallax MCP and the deep-gather and gather-squad skills, which the `fast` roster harnesses lack; it spawns its own source slices as plain subagents per [gather-squad](gather-squad.md), on the gatherer tiers in SKILL.md |
+| **Gatherer** | 2–3 | deep-gather search-fetch on its topic×language, in rounds; claim each page in the ledger before fetching; obey steering | `peer` (Claude Code): a gatherer needs the Agent tool, the Parallax MCP and the deep-gather and gather-squad skills, which the `fast` roster harnesses lack; it spawns its own source slices as plain subagents per [gather-squad](gather-squad.md), on the gatherer tiers in [workflow-venue](workflow-venue.md#model-tiering-workflows) |
 | **Verifier** | 1 | Started on the first load-bearing claim; cross-checks each claim it gets and returns a verdict | `other-family`, so the check does not share the gatherers' blind spots |
 
 Roles map to launch commands only in the agent-ops roster ([roster](../../agent-ops/roster.md)).
