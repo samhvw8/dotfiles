@@ -10,11 +10,11 @@ properties by learning a sparse code for natural images".
 
 - Bet: if V1 cells are an efficient code for natural images, then learning a
   basis under a sparsity constraint should produce receptive fields like V1's.
-- Recipe: role `sparse-represent-signal` ← atom `sparse-overcomplete-code`
+- Recipe: role `sparse-represent-signal` ← brick `sparse-overcomplete-code`
   (learned basis, L1 penalty); operator: alternate between inferring codes and
   updating the basis (loop).
 - Parent: fixed-basis transforms (DCT, wavelets) used for image compression.
-- Move from parent: `substitute-atom` on `sparse-represent-signal`: fixed basis →
+- Move from parent: `substitute-brick` on `sparse-represent-signal`: fixed basis →
   learned basis.
 - Constraints of the time: compute limited patches to small sizes; no large
   image corpora.
@@ -30,7 +30,7 @@ Sam writes: "Use the same learned sparse basis for audio instead of images."
 | `transfer` | Same bet (efficient code explains a sensory area) applied to auditory nerve responses. Sam reached this one too |
 | `substitute-operator` | Replace the infer/update loop with a feed-forward encoder trained end to end (amortised inference) |
 | `lift-constraint` | Patch size was set by compute; learn the basis on large patches or whole images |
-| `migrate-atom` | Keep `sparse-overcomplete-code`, move it to a model's internal activations: role `separate-mixed-features` in interpretability |
+| `migrate-brick` | Keep `sparse-overcomplete-code`, move it to a model's internal activations: role `separate-mixed-features` in interpretability |
 | `invert` | Instead of learning a basis to explain the data, fix the basis and learn which data it explains well |
 | `remove` | Drop the sparsity term: does a V1-like basis still appear? (It does not: the term is load-bearing) |
 

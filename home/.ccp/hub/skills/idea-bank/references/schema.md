@@ -9,14 +9,14 @@ Common frontmatter on every type: `type`, `title`, `description`, `tags`,
 Add `verified: { by: "human:sam", at }` when Sam signed the content off.
 
 Links between bank files use bundle-relative paths, for example
-`/ideas/atoms/sparse-overcomplete-code.md`. The index script reads the slugs in
+`/ideas/bricks/sparse-overcomplete-code.md`. The index script reads the slugs in
 the list fields below, so keep those fields as plain slugs (file name without
 `.md`), not links.
 
 **Frontmatter lists are the source of truth; the link views are generated.**
-`idea_index.py --write` adds a `# Related` section at the end of every atom,
+`idea_index.py --write` adds a `# Related` section at the end of every brick,
 card, lens and move (real markdown links, each with its relation in words), and
-rewrites `atoms/index.md` (shared roles first, then all atoms). The section sits
+rewrites `bricks/index.md` (shared roles first, then all bricks). The section sits
 between `<!-- related:begin ... -->` and `<!-- related:end -->` markers. Never
 edit inside them: change the frontmatter list and run `--write` again.
 `--check` exits 1 when a view is out of date. Text outside the markers is kept.
@@ -32,8 +32,8 @@ follows these rules for anything shown in chat.
 
 1. **Open with a headline frame.** One plain sentence that holds the whole idea,
    ideally as a sharp picture ("theory as compiler, advice as cache").
-2. **Plain words.** A schema term (atom, gem type, layer, zoom, move type,
-   cluster, lens) appears only when Sam already owns it (`me/known-atoms.md`), or
+2. **Plain words.** A schema term (brick, gem type, layer, zoom, move type,
+   cluster, lens) appears only when Sam already owns it (`me/known-bricks.md`), or
    with a one-phrase gloss the first time: "part (the job it does)", "a gap where
    a tool from one field fits another". Never print frontmatter, slugs, cluster
    levels, read-basis tags, guesses about what Sam knows, or notes to yourself.
@@ -48,7 +48,7 @@ follows these rules for anything shown in chat.
    poster), and Claude ("(my reading)"; the bank's `(inferred)` renders this way). Never state Claude's diagnosis as the
    author's, and never state as a finding something the source does not show.
 5. **Label what is not from the source.** Anything from the bank: "(from your
-   bank: <card or atom in plain words>)". Anything from memory: "(from memory,
+   bank: <card or brick in plain words>)". Anything from memory: "(from memory,
    unchecked)". Never cite bank content or earlier batches as if the source said it.
 
 ## Field vocabulary
@@ -58,7 +58,7 @@ follows these rules for anything shown in chat.
   `epidemiology`, `medicine`, `ux-design`, `labor-economics`,
   `software-engineering`, `product`, `marketing`. Reuse an existing slug before
   you make a new one (`idea_index.py` lists them).
-- **role tag**: a lower-case, hyphenated verb phrase for a job an atom does:
+- **role tag**: a lower-case, hyphenated verb phrase for a job a brick does:
   `sparse-represent-signal`, `filter-bad-samples`, `consolidate-after-signal`.
   Roles describe the job, never the implementation.
 - **intent marker**: a quote with its section (`"..." (Methods > 3.2)`), or the
@@ -92,10 +92,10 @@ description: <the one idea, one sentence>
 tags: [ideas, card, <cluster>]
 resource: <canonical URL or DOI>
 field: <field slug of the source>
-atoms: [<atom slug>, ...]          # atoms used in the recipe
+bricks: [<brick slug>, ...]        # bricks used in the recipe
 lenses: [<lens slug>, ...]         # view models the author uses
 roles: [<role tag>, ...]           # roles the recipe needs filled
-tensions: [<role tag>, ...]        # roles the field still lacks a good atom for
+tensions: [<role tag>, ...]        # roles the field still lacks a good brick for
 parent: <card slug or URL>         # the source this one mutated, if known
 moves: [<move slug>, ...]
 gem_types: [<gem type>, ...]       # from the taxonomy below
@@ -146,14 +146,14 @@ If <X is the real bottleneck>, then <Y> should work. (inferred)
 2. <bet of another study or view the note reports> (<section>; whose bet)
 
 # Recipe (layer 4)
-| Role | Atom (slug) | Signature (input -> output, objective) | Why this atom (author's reason or (inferred)) |
+| Role | Brick (slug) | Signature (input -> output, objective) | Why this brick (author's reason or (inferred)) |
 |------|-------------|----------------------------------------|-----------------------------------------------|
 Operator: <sequence | loop | gate | nesting | adversarial | distill | ensemble | tree | other: ...>
 
 # Diff and constraints (layer 5)
 - Parent: <what the source mutated>
 - Move: <move type, link to moves/>
-- Constraints of the time: <compute, data, tools, cost that forced an atom choice>
+- Constraints of the time: <compute, data, tools, cost that forced a brick choice>
 - Rejected alternatives: <"we tried X but..." quotes>
 
 # Gems
@@ -171,20 +171,20 @@ Operator: <sequence | loop | gate | nesting | adversarial | distill | ensemble |
 ```
 
 Mutations columns: `Operator` is a `move_type`; `Role fit` says whether the new
-atom does the role and what breaks; `Novelty link` is the closest prior work
+brick does the role and what breaks; `Novelty link` is the closest prior work
 found, or `none found (<query>)`; `Kill test` is the cheapest test or its result;
 `Sam verdict` is `keep`, `kill (<reason>)` or empty; `Origin` is `sam` or `claude`.
 
-## Atom (`atoms/<role-slug>.md`)
+## Brick (`bricks/<role-slug>.md`)
 
 Name the file by the structure's role, not one field's name for it.
 
 ```yaml
 ---
-type: Atom
+type: Brick
 title: <neutral name, e.g. "Sparse code over an overcomplete basis">
 description: <signature in one sentence>
-tags: [ideas, atom]
+tags: [ideas, brick]
 names: { <field slug>: [<names used there>] }
 roles: [<role tag>, ...]           # jobs it has done anywhere
 fields: [<field slug>, ...]        # fields it has reached
@@ -220,32 +220,42 @@ list in the body, not frontmatter, followed by the structure in words:
 <the structure in a few plain sentences>
 ```
 
-An atom written with a frontmatter `signature:` still parses; `--write` moves
+A brick written with a frontmatter `signature:` still parses; `--write` moves
 it into this list.
 
-## Parts and links (any atom, lens or card)
+## Parts and links (any brick, lens or card)
 
-A unit is whatever can be split, bound or linked: an atom, a lens, a card, or an
-arrangement pattern written as an atom. There are no fixed levels. Split as far as
+A unit is whatever can be split, bound or linked: a brick, a lens, a card, or an
+arrangement pattern written as a brick. There are no fixed levels. Split as far as
 you can judge today and keep that layer; a later pass may split a part again, or
-find that an atom is really a whole made of others. Nothing is relabelled or
+find that a brick is really a whole made of others. Nothing is relabelled or
 moved when that happens: only `parts` grows.
 
 ```yaml
 parts:                               # split / bind: this unit is made of these
   - <slug>                           # a part you are sure of
-  - { to: <slug>, how: split | judge | sam, note: <optional> }   # how it was found
+  - { to: <slug>, how: split | judge | sam, cut: <lens>, note: <optional> }   # how it was found, through which lens
 links:                               # connect without merging
   - { to: <slug>, via: <slug>, note: <one line> }
 ```
 
-- **Refs:** a bare slug resolves as atom, then lens, then card; write
+- **Cuts.** `cut` names the lens a split was made through: a slug from
+  `lenses/` when one fits, else a short hyphenated phrase (`cost-flow`,
+  `data-path`, `energy-terms`). Entries with the same `cut` form one way of
+  splitting the unit. A unit may hold several cuts at once, and they may overlap
+  or disagree; that is the point. An entry with no `cut` belongs to the
+  `default` cut. When you split a unit that already has parts, ask first whether
+  your lens differs from the cuts it has: if it does, add a new cut beside them;
+  if it is the same lens, extend that cut.
+
+- **Refs:** a bare slug resolves as brick, then lens, then card; write
   `card:<slug>` or `lens:<slug>` when it must be one of those.
 - **Depth is computed, never stored.** A unit with no `parts` has depth 0; a
-  whole has 1 + its deepest part. The index reports depth, `part_of` (the
-  reverse list) and cycles (an error: a unit cannot contain itself).
+  whole has 1 + its deepest part over all its cuts. The index reports depth,
+  `part_of` (the reverse list) and cycles (an error: a unit cannot contain
+  itself). The `# Related` view shows one line per cut, with the lens named.
 - **Arrangements are units too.** How parts combine (a gate before a loop, a
-  cheap step before a strong check) may be its own atom, listed in `parts` like
+  cheap step before a strong check) may be its own brick, listed in `parts` like
   any other, or named as the `via` of a link.
 - **`links` are one-sided in the file, two-sided in the view.** Write a link
   once; `--write` shows it on both ends.
@@ -258,7 +268,7 @@ links:                               # connect without merging
 
 ## Lens (`lenses/<slug>.md`)
 
-A view model as a reusable node. It migrates like an atom.
+A view model as a reusable node. It migrates like a brick.
 
 ```yaml
 ---
@@ -292,24 +302,24 @@ type: Move
 title: <e.g. "Human-written steps -> self-generated steps + filter">
 description: <one sentence>
 tags: [ideas, move]
-move_type: substitute-atom | substitute-operator | remove | lift-constraint | invert | migrate-atom | transfer | cross-card | resolve-contradiction | lens-transfer | lens-inversion | correct-parameter | relabel | retarget
+move_type: substitute-brick | substitute-operator | remove | lift-constraint | invert | migrate-brick | transfer | cross-card | resolve-contradiction | lens-transfer | lens-inversion | correct-parameter | relabel | retarget
 parent: <card slug or URL>
 child: <card slug or URL>
 card: <card slug of the child, when it exists>
 role: <role tag the move acted on>
-from_atom: <atom slug>             # for substitute-atom
-to_atom: <atom slug>
-atom: <atom slug>                  # for migrate-atom: the atom that moved
-from_field: <field slug>           # for migrate-atom and transfer
+from_brick: <brick slug>           # for substitute-brick
+to_brick: <brick slug>
+brick: <brick slug>                # for migrate-brick: the brick that moved
+from_field: <field slug>           # for migrate-brick and transfer
 to_field: <field slug>
 generated: { by: ..., at: ... }
 ---
 ```
 
 Examples: few-shot CoT → zero-shot CoT (`remove`: exemplars), CoT → Tree of
-Thoughts (`substitute-operator`: sequence → tree), CoT → STaR (`substitute-atom`:
+Thoughts (`substitute-operator`: sequence → tree), CoT → STaR (`substitute-brick`:
 human-written steps → self-generated + filter), sparse coding → sparse
-autoencoder features (`migrate-atom`: same atom, field neuroscience →
+autoencoder features (`migrate-brick`: same brick, field neuroscience →
 interpretability, role explain-receptive-fields → decompose-activations).
 
 ## Person (`people/<slug>.md`, optional)
@@ -353,7 +363,7 @@ notes; the index counts `hint` = 3), `# Disagreements` (table: point, Sam's view
 settle, status), `# Mutations` (Sam's first, then Claude's, each with Sam's
 keep/kill and reason), `# Kill test` (prediction written before the run, result),
 `# Teach-back` (Sam's five sentences and the gaps probed), `# What we learned`
-(new atoms, lenses, moves, open questions).
+(new bricks, lenses, moves, open questions).
 
 ## Scout Batch (`batches/YYMMDD-batch-<n>.md`)
 
@@ -384,7 +394,7 @@ Each is one file, edited at runtime. No skill hardcodes their values.
 |------|------|
 | `scopes.md` | Table: scope, since, note |
 | `interest-state.md` | `# Clusters` table: `| Cluster | Level | Zooms | Signals | Since |`; `Level` is `core`, `adjacent`, `delegated` or empty; `Zooms` counts briefs Sam asked for in that cluster. A cluster with no level gets the short role-level card; the one-line interface card is for `delegated` only. `# Settings`: cards per batch, explore slots per batch, weekly card budget. `# Change log` table: date, cluster, from → to, why. Sam's commands win, in any language |
-| `known-atoms.md` | Table: atom slug, level (`seen`, `owned`), since, evidence (how Sam showed it: explained it, spotted it in a new source). Only core and adjacent clusters |
+| `known-bricks.md` | Table: brick slug, level (`seen`, `owned`), since, evidence (how Sam showed it: explained it, spotted it in a new source). Only core and adjacent clusters |
 | `taste.md` | Table: date, source, gem Sam saw that Claude missed, gem type. Table: date, card, vote, one-word reason |
 | `progress.md` | Table, one row per session: `| Date | Reading | Mode | Unaided gems | Roles named right | Sam-unique mutations | Level-3 hints | Gems Claude missed | Skips |`. `Mode` is `brief`, `deep`, `skim` or `deal`. The three skill columns are finding gems (`Unaided gems`), naming roles (`Roles named right`, of total) and proposing mutations (`Sam-unique mutations`). `# Stage` with the criteria below |
 
@@ -392,7 +402,7 @@ Handover stages (defaults; change them in `progress.md` from real data):
 
 | Stage | Sam does | Move up when |
 |-------|----------|--------------|
-| 1 | Votes with one-word reasons; asks in briefs | About 30 atoms `owned` |
+| 1 | Votes with one-word reasons; asks in briefs | About 30 bricks `owned` |
 | 2 | Guesses the gem type before reading the card's reason | Over 60 % of guesses right |
 | 3 | Writes the recipe for chosen sources; Claude reviews | Sam's cards need few corrections |
 | 4 | Full co-reads on hard sources; brings new scopes and seeds | — |
@@ -402,13 +412,13 @@ Handover stages (defaults; change them in `progress.md` from real data):
 `idea-mine` in bulk writes into a staging folder outside the bank (for example
 `$TMPDIR/idea-mine-<date>/`, with the same layout), then merges in:
 
-1. Dedupe atoms against the bank by structure, rewrite slugs, append migrations
-   and cards to existing atoms.
+1. Dedupe bricks against the bank by structure, rewrite slugs, append migrations
+   and cards to existing bricks.
 2. **Normalize role tags and tensions.** Run
    `idea_index.py <staging> --suggest-merges` (and on the bank plus staging
    together). For each suggested pair, decide by meaning whether the two tags
    name the same job; rewrite the losing tag everywhere (cards' `roles` and
-   `tensions`, atoms' `roles` and migration rows, moves' `role`). Keep the tag
+   `tensions`, bricks' `roles` and migration rows, moves' `role`). Keep the tag
    the bank already uses. The index matches tags exactly, so an unmerged
    synonym hides a migration gap.
 3. Copy only after `idea_index.py` on the staged folder reports no broken links.
@@ -421,11 +431,11 @@ Use these values in `gem_types` and in `[gem: ...]` margin tags.
 
 | Gem type | What it is |
 |----------|-----------|
-| `migration-gap` | An atom mature in field X fits an open tension in field Y, and Y has not used it |
-| `lifted-constraint` | An atom was forced by a limit of its time; the limit has gone |
+| `migration-gap` | A brick mature in field X fits an open tension in field Y, and Y has not used it |
+| `lifted-constraint` | A brick was forced by a limit of its time; the limit has gone |
 | `unpopular` | Few agree, and the reason is diagnosed as one of the gem reasons below |
 | `view-model` | The author's picture, hunch or surprise is reusable beyond the source |
-| `convergence` | Unrelated groups reached the same role with different atoms: the role is real |
+| `convergence` | Unrelated groups reached the same role with different bricks: the role is real |
 | `rejected-alternative` | A "we tried X but" passage; X may win once its constraint is gone |
 | `contradiction-resolved` | The source resolves a want-X-and-not-X instead of trading off |
 
@@ -444,17 +454,17 @@ Use these values in `gem_types` and in `[gem: ...]` margin tags.
 
 | Operator (`move_type`) | Move |
 |------------------------|------|
-| `substitute-atom` | Keep the role, change the atom (C → D) |
-| `substitute-operator` | Change how atoms combine: sequence → loop, tree, gate, adversarial |
-| `remove` | Drop an atom; does the bet still hold? |
-| `lift-constraint` | Rebuild an atom as if its limit were gone |
+| `substitute-brick` | Keep the role, change the brick (C → D) |
+| `substitute-operator` | Change how bricks combine: sequence → loop, tree, gate, adversarial |
+| `remove` | Drop a brick; does the bet still hold? |
+| `lift-constraint` | Rebuild a brick as if its limit were gone |
 | `invert` | Reverse order, direction, or who does what |
-| `migrate-atom` | Keep the atom, move it to another field or role |
-| `transfer` | Keep the bet, apply it to another field's tension (the atoms may change) |
+| `migrate-brick` | Keep the brick, move it to another field or role |
+| `transfer` | Keep the bet, apply it to another field's tension (the bricks may change) |
 | `correct-parameter` | Keep the recipe, fix a number the parent got wrong (a dose, a threshold, a ratio) |
 | `relabel` | Keep the structure, rename what it is for; the new name changes who uses it |
 | `retarget` | Keep the method, change the outcome it optimises or is judged by |
-| `cross-card` | Take an atom or operator from another card |
+| `cross-card` | Take a brick or operator from another card |
 | `resolve-contradiction` | Separate the want-X-and-not-X in time, space, scale or condition |
 | `lens-transfer` | See problem P through another person's or field's lens |
 | `lens-inversion` | Assume the opposite of the dominant lens and see which solution appears |

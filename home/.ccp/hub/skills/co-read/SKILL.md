@@ -18,14 +18,14 @@ generative acts (guessing, naming roles, writing the card, proposing mutations)
 are Sam's. Claude's acts are coverage, recall, challenge and running things.
 
 The bank, its formats and its commit rules belong to `idea-bank`. Read
-`~/.claude/skills/idea-bank/SKILL.md` for the bank root, and
-`~/.claude/skills/idea-bank/references/schema.md` before writing any bank file.
+`~/.claude/skills/idea-bank/SKILL.md` for the bank root and its "What a brick is",
+and `~/.claude/skills/idea-bank/references/schema.md` before writing any bank file.
 Do not invent fields here.
 
 ## Start
 
 1. Resolve the bank root (idea-bank). Read `me/interest-state.md`,
-   `me/known-atoms.md`, `me/taste.md` and `me/progress.md` if they exist.
+   `me/known-bricks.md`, `me/taste.md` and `me/progress.md` if they exist.
 2. Get the full text when you can (`paper-download` or Parallax `fetch_page`).
    For the view model, also look outside the paper: talks, podcasts, the authors'
    posts, OpenReview rebuttals, the arXiv v1 → v2 diff, related-work framing.
@@ -54,7 +54,7 @@ Chat text follows "Rendering for Sam" in the idea-bank schema.
 - The parts named by the job they do, the bet, what forced the choices, what they
   dropped.
 - One worked example with numbers (the source's, or labelled illustration).
-- At most two new ideas to learn, each with one picture (i+1 against `known-atoms`).
+- At most two new ideas to learn, each with one picture (i+1 against `known-bricks`).
 - What a reader would miss, each tied to its passage.
 - Where it is weak: 2–4 lines, design traps from the source's own methods first
   (rivals that lose by construction, transfer built into the stimuli, post-hoc
@@ -72,12 +72,12 @@ Claude must not do at each step, and the hint ladder: `references/deep.md`.
 
 | Step | Sam does | Claude does |
 |------|----------|-------------|
-| 0 Recall | Answers 2–3 questions on atoms from past cards, without looking | Picks the questions; gives feedback after each answer |
+| 0 Recall | Answers 2–3 questions on bricks from past cards, without looking | Picks the questions; gives feedback after each answer |
 | 1 Guess | Writes 3 lines: the problem and the bet | Then gives a spoiler-free reading map |
 | 2 Read | Marks what is interesting or odd; writes hunches | Prepares hidden margin notes tagged `[gem: <type>]` |
 | 3 Compare | Reads Claude's notes; marks agree / disagree / couldn't see | Reveals by the hint ladder; logs gems Sam saw that Claude missed |
-| 4 Card | Writes the card in his words | Reviews it; links atoms through the bank |
-| 5 Hands-on | Re-derives one equation or types the ~20 core lines of the main atom on toy data | Writes the scaffolding only |
+| 4 Card | Writes the card in his words | Reviews it; links bricks through the bank |
+| 5 Hands-on | Re-derives one equation or types the ~20 core lines of the main brick on toy data | Writes the scaffolding only |
 | 6 Mutation duel | Proposes mutations first | Proposes after; Sam scores and kills them with reasons; hands off to `idea-forge` |
 | 7 Kill test | Picks one; writes a prediction | Builds and runs it; reports the real numbers |
 | 8 Teach-back | Explains the idea in 5 sentences | Probes the gaps |
@@ -95,7 +95,7 @@ the reading's `# Recall` section, or `skipped: overloaded`.
   reviews, asks, and points to the bank. That is where (B) happens.
 - **Hints cost.** To open a hint, Sam says what he tried. Hints go from level 1
   ("something in Methods §3 is worth a look") to 2 ("it is about why they chose X
-  over Y") to 3 (the full note with quote, atom link and gem type).
+  over Y") to 3 (the full note with quote, brick link and gem type).
 - **Skip is allowed and logged (present mode).** "skip" gets the answer at once. Count skips in
   `progress.md`; when the share rises across sessions, say so plainly.
 - **Argue the other side.** When Sam reaches a conclusion, argue the strongest
@@ -124,7 +124,7 @@ Details in `references/session-close.md`.
 1. Write `readings/YYMMDD-<slug>.md` (type `Reading`) and the card in `cards/`.
    In deep mode the card body is Sam's text; Claude only adds links and the Raw
    section.
-2. Update `me/known-atoms.md`: `seen` for every new atom met; `owned` only on
+2. Update `me/known-bricks.md`: `seen` for every new brick met; `owned` only on
    evidence (Sam explained it, or spotted it in another source).
 3. Update `me/taste.md` with gems Sam saw that Claude missed, and
    `me/progress.md` with the session row: mode (`brief`, `deep`, `skim`) and the
@@ -134,12 +134,12 @@ Details in `references/session-close.md`.
 ## Anti-patterns
 
 - Summarising the source before Sam has guessed. It anchors him.
-- A brief that introduces five new atoms at once. Sam cannot absorb it; two at most.
+- A brief that introduces five new bricks at once. Sam cannot absorb it; two at most.
 - Margin notes that only praise or only restate. Each note names a gem type or
   is cut.
 - Treating weak evidence as a reason to drop an idea. Evidence is a tag; a wrong
   paper can carry a good bet.
-- Atoms named by identity ("reward model") instead of role ("filter bad samples").
+- Bricks named by identity ("reward model") instead of role ("filter bad samples").
 
 ## References
 

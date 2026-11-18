@@ -20,8 +20,8 @@ def bank():
 
 def test_menu_counts(bank):
     m = bank.menu()
-    assert m["bank"]["atoms"] == 2 and m["move"]["pool"] == 3
-    assert m["role"]["pool"] == 1  # sparse-represent-signal is shared by both atoms
+    assert m["bank"]["bricks"] == 2 and m["move"]["pool"] == 3
+    assert m["role"]["pool"] == 1  # sparse-represent-signal is shared by both bricks
     assert m["gap"]["pool"] == 2
 
 
@@ -39,11 +39,11 @@ def test_role_deal_shares_the_role(bank):
 
 
 def test_signature_is_only_the_list(bank):
-    it = bank.item("atom", "sparse-overcomplete-code")
+    it = bank.item("brick", "sparse-overcomplete-code")
     assert it["signature"] == "" or "**Input:**" in it["signature"]
 
 
-def test_gap_hand_has_distinct_atoms(bank):
+def test_gap_hand_has_distinct_bricks(bank):
     h = bank.deal("gap", 5, random.Random(3))
     slugs = [i["slug"] for i in h["items"]]
     assert len(slugs) == len(set(slugs))
@@ -64,7 +64,7 @@ def test_empty_pool_crashes_with_a_message(bank):
 
 
 def test_unknown_role_crashes(bank):
-    with pytest.raises(SystemExit, match="no atom has role"):
+    with pytest.raises(SystemExit, match="no brick has role"):
         bank.deal("role", 3, random.Random(0), role="nope")
 
 

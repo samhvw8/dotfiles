@@ -1,5 +1,5 @@
 ---
-type: Atom
+type: Brick
 title: Sparse code over an overcomplete basis
 description: Learn a basis so each signal is a sparse mix of its elements.
 signature: { input: signal, output: sparse coefficients, objective: reconstruction + L1, constraint: sparsity }

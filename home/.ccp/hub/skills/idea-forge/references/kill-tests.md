@@ -28,11 +28,11 @@ this variant? Design it before you design anything else.
 |-----|-------------|
 | What result kills it? | A number and a direction: "if the learned basis does not beat DCT on reconstruction at equal sparsity, kill" |
 | What is the cheapest data that can show it? | Toy or synthetic data first; a public dataset second; real data last |
-| What is the baseline? | The atom it replaces, run under the same budget and tuning |
+| What is the baseline? | The brick it replaces, run under the same budget and tuning |
 | How long does it take? | Minutes to hours. A kill-test that takes weeks is a project, not a test |
 | Where does it run? | Laptop notebook; home GPU (check `nvidia-smi` and `tmux ls` first); paper code via `paper-replicate` |
 
-Watch for the usual ways a test lies: the new atom gets more tuning than the
+Watch for the usual ways a test lies: the new brick gets more tuning than the
 baseline, the metric is tuned on the test data, survivors-only averages, and a
 criterion moved after the result.
 
@@ -45,7 +45,7 @@ criterion moved after the result.
    harness.
 4. Report the real number against the criterion. A miss with the real output is
    a full result.
-5. Write back: atom `kill_tests` row; a `Move` file when the variant survives;
+5. Write back: brick `kill_tests` row; a `Move` file when the variant survives;
    `me/progress.md` updated.
 
 ## Result values

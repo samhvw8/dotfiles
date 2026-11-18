@@ -32,7 +32,7 @@ in the change log: date, cluster, from → to, why ("Sam: go deep on X").
    - (A) ideas: cards voted `up`, zooms, readings, mutations that reached a kill test,
      kill tests that survived.
    - (B) Sam's growth: unaided gems per session (trend), level-3 hints (trend),
-     atoms moved from `seen` to `owned`, current handover stage and its criterion.
+     bricks moved from `seen` to `owned`, current handover stage and its criterion.
    Say plainly when one side is moving and the other is flat.
 3. Up-vote rate per cluster and for explore cards. Propose level changes and an
    explore-ratio change with the numbers behind them.

@@ -62,29 +62,29 @@ def test_index_is_incremental(bank):
     assert FakeEmbedder.calls == 1 and (bank / S.CACHE).is_file()
     S.Index(bank)
     assert FakeEmbedder.calls == 1  # nothing changed, nothing embedded
-    p = bank / "atoms" / "fixed-basis-transform.md"
+    p = bank / "bricks" / "fixed-basis-transform.md"
     p.write_text(p.read_text().replace("fixed basis", "fixed cosine basis"))
     assert S.Index(bank).embedded >= 1
 
 
-def test_search_finds_atom_by_words(bank):
+def test_search_finds_brick_by_words(bank):
     idx = S.Index(bank)
     q = "learn a basis so each signal is a sparse mix"
-    res = idx.search(S.Embedder().embed([S.QUERY.format(q)])[0], q, idx.mask(types={"Atom"}))
+    res = idx.search(S.Embedder().embed([S.QUERY.format(q)])[0], q, idx.mask(types={"Brick"}))
     assert res[0]["slug"] == "sparse-overcomplete-code"
-    assert all(r["type"] == "Atom" for r in res)
+    assert all(r["type"] == "Brick" for r in res)
 
 
 def test_mask_removes_chunks(bank):
     idx = S.Index(bank)
-    m = idx.mask(types={"Atom"}, keep=lambda c: c["slug"] != "sparse-overcomplete-code")
+    m = idx.mask(types={"Brick"}, keep=lambda c: c["slug"] != "sparse-overcomplete-code")
     q = "sparse coefficients"
     res = idx.search(S.Embedder().embed([q])[0], q, m)
     assert "sparse-overcomplete-code" not in {r["slug"] for r in res}
 
 
 def test_bm25_prefers_rare_shared_word():
-    b = S.BM25(["the cat sat", "the dog sat", "a dictionary of atoms"])
+    b = S.BM25(["the cat sat", "the dog sat", "a dictionary of bricks"])
     s = b.scores("dictionary sat")
     assert s.argmax() == 2
 

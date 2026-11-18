@@ -12,7 +12,7 @@ description: A learned, overcomplete basis with a sparsity cost on its coefficie
 tags: [ideas, card, vision]
 resource: https://doi.org/10.1038/381607a0
 field: neuroscience
-atoms: [sparse-overcomplete-code]
+bricks: [sparse-overcomplete-code]
 lenses: [efficient-coding]
 roles: [sparse-represent-signal, learn-basis-from-data]
 tensions: []
@@ -45,7 +45,7 @@ Separation by scale: an overcomplete basis (more basis functions than pixels) le
 "If V1 is optimized for sparse codes of natural images, then learning such a code should reproduce its receptive fields." (paraphrase of the paper's framing)
 
 # Recipe (layer 4)
-| Role | Atom (slug) | Signature (input -> output, objective) | Why this atom |
+| Role | Brick (slug) | Signature (input -> output, objective) | Why this brick |
 |------|-------------|----------------------------------------|---------------|
 | sparse-represent-signal | sparse-overcomplete-code | image patch -> sparse coefficients; reconstruction error + sparsity penalty; basis larger than input | The sparsity term encodes the efficient-coding bet (inferred) |
 | learn-basis-from-data | (new) gradient-learned basis | image patches -> basis functions; minimise the same cost | Fixed bases (Fourier, wavelets) assume the answer; learning tests the bet (inferred) |
@@ -53,7 +53,7 @@ Operator: loop (alternate inferring coefficients and updating the basis)
 
 # Diff and constraints (layer 5)
 - Parent: fixed-basis image coding (DCT, wavelets) and PCA models of receptive fields
-- Move: substitute-atom (fixed basis → learned overcomplete basis + sparsity), see /ideas/moves/fixed-to-learned-basis.md
+- Move: substitute-brick (fixed basis → learned overcomplete basis + sparsity), see /ideas/moves/fixed-to-learned-basis.md
 - Constraints of the time: small image patches (about 12x12) and slow optimization, set by 1990s compute (inferred)
 - Rejected alternatives: PCA gives global, non-localized filters, unlike cells (paraphrase)
 
@@ -67,13 +67,13 @@ Not checked: no talks or drafts read for this illustration.
 | Operator | Variant | Role fit | Novelty link | Kill test | Sam verdict | Origin |
 |----------|---------|----------|--------------|-----------|-------------|--------|
 | lift-constraint | Learn on whole images or video; patch size and compute limits are gone | Same role, larger input | not searched | Train on full frames; does the basis stay localised? | | claude |
-| transfer | The same bet on sound | Same bet, new atoms per modality | later work did this (cochlear-like filters) | — | | claude |
-| migrate-atom | The same atom on a network's activations | Role becomes decompose-activations | later: sparse autoencoders for interpretability | — | | claude |
+| transfer | The same bet on sound | Same bet, new bricks per modality | later work did this (cochlear-like filters) | — | | claude |
+| migrate-brick | The same brick on a network's activations | Role becomes decompose-activations | later: sparse autoencoders for interpretability | — | | claude |
 ```
 
 What makes this card useful later:
 
-- The atom is named by structure (`sparse-overcomplete-code`), so the
+- The brick is named by structure (`sparse-overcomplete-code`), so the
   interpretability card that calls it "SAE features" links to the same file.
 - The move file (`fixed-to-learned-basis`) is reusable: "replace a designed basis
   with a learned one plus a constraint" applies far beyond vision.

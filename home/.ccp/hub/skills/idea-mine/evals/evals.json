@@ -15,16 +15,16 @@
     {
       "id": "bulk-cluster",
       "prompt": "fill the bank with the main papers on sparse coding across fields, like 8 of them, I won't read them now",
-      "expected_output": "Subagents per source, staged cards, one merged atom sparse-overcomplete-code with names per field and migration rows across image compression, neuroscience, machine learning, interpretability; index run with convergence and migration-gap candidates; sample verified; committed.",
+      "expected_output": "Subagents per source, staged cards, one merged brick sparse-overcomplete-code with names per field and migration rows across image compression, neuroscience, machine learning, interpretability; index run with convergence and migration-gap candidates; sample verified; committed.",
       "assertions": [
-        "only one atom file for the sparse-overcomplete structure (script: count files with matching signature)",
+        "only one brick file for the sparse-overcomplete structure (script: count files with matching signature)",
         "idea_index.py reports no broken links (script)",
-        "report lists atoms created vs linked and the judged gap candidates (judge)"
+        "report lists bricks created vs linked and the judged gap candidates (judge)"
       ]
     },
     {
       "id": "social-thread",
-      "prompt": "atomize this X thread where the author explains why they built their agent memory as raw chunks instead of summaries: <thread url>",
+      "prompt": "split into bricks this X thread where the author explains why they built their agent memory as raw chunks instead of summaries: <thread url>",
       "expected_output": "A card with a strong layer 0 (picture, hunch, surprise quoted from the thread), layers that the thread does not state marked 'not stated', read_basis: post, evidence: anecdote, and no invented mechanism.",
       "assertions": [
         "layers missing from the thread say 'not stated' instead of being filled (judge)",

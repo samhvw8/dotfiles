@@ -9,7 +9,7 @@ Try the ones that exist for this source; two empty places in a row means stop.
 | arXiv v1 → latest diff | How the framing changed after review; what they dropped | `paperhunt bundle` gets the TeX; compare abstract, intro and contributions across versions (`fetch_page` on `arxiv.org/abs/<id>v1`) |
 | Author talks, podcasts, interviews | The picture in their head, said informally | Parallax `web_search` tags `videos`; `social_search` for the title; `mediasift` for a talk video or audio |
 | Threads or posts before the paper | The hunch before the evidence | Parallax `twitter_user` / `twitter_search` with the author; date-filter to before submission |
-| Code repo history | Which atoms changed while they iterated; what they tried before settling | `paperhunt info <id>` lists repos; `gh api repos/<o>/<r>/commits`, `gh search issues "why" --repo <o>/<r>` |
+| Code repo history | Which bricks changed while they iterated; what they tried before settling | `paperhunt info <id>` lists repos; `gh api repos/<o>/<r>/commits`, `gh search issues "why" --repo <o>/<r>` |
 | "Why did you..." issues | The author's own reasons, asked by users | `gh search issues --repo <o>/<r> "why"` |
 | Related work section | How they position themselves: the bet shows in who they say is wrong | The full text |
 | "We tried X but..." passages | Rejected alternatives, often killed by a constraint that has since gone | Search the full text for "we tried", "initially", "did not work", "we also experimented" |

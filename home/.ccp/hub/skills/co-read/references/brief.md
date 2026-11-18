@@ -93,10 +93,10 @@ passages you hold, and check against them.
 
 ## Rules
 
-- **i+1.** Explain with atoms Sam owns (`me/known-atoms.md`). Introduce at most two
-  new atoms. When the source needs more, say "this source needs N new atoms; I
+- **i+1.** Explain with bricks Sam owns (`me/known-bricks.md`). Introduce at most two
+  new bricks. When the source needs more, say "this source needs N new bricks; I
   taught the two that carry the idea" and list the rest by name.
-- **Delegated clusters** get the interface form for their atoms: input, output,
+- **Delegated clusters** get the interface form for their bricks: input, output,
   role, cost, when it fails. No internals.
 - **Quote or mark.** Every line about the authors' view and the bet carries a
   verbatim quote with its section, a plain paraphrase with its section, or "(my

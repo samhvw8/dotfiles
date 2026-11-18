@@ -234,7 +234,7 @@ The loop is the same; what it hunts for changes.
 
 | Part of the loop | Decision objective (default) | Ideas objective |
 |------------------|------------------------------|-----------------|
-| Hypotheses | Claims to confirm or refute | A design space: roles, atoms, migrations between fields, constraints that have lifted |
+| Hypotheses | Claims to confirm or refute | A design space: roles, bricks, migrations between fields, constraints that have lifted |
 | Gather targets | Practitioner evidence, numbers, failures | Intent and idea sources: rebuttals and reviews, talks and interviews, "we tried X but" passages, rejected alternatives, contrarian practitioner takes, non-English communities |
 | Gem rubric | GEM/MEH/NOISE in [gem-detection](references/forager/gem-detection.md) | The ideas rubric in the same file: "verifiable" is not required |
 | Streaming verify / CRITIC refute | Every load-bearing finding | Only claims that will become load-bearing for Sam's work. Never refute an idea for being unproven |
@@ -631,5 +631,5 @@ Reports without inline citations are INCOMPLETE — do not finalize. If agents r
 - [landscape-notes](references/elite-forums/landscape-notes.md) — per-language ecosystem insights
 - [forager (the brain)](references/forager/overview.md) — REFLECT/STEER methodology, the loop's CONTROL step
 - [adaptive-research spec](references/adaptive-research/overview.md) — target redesign: gather/reason split, adaptive-depth loop, control rod, Phase 0 budget
-- [idea-bank schema](../idea-bank/references/schema.md) — card, atom and gem formats for the ideas objective
+- [idea-bank schema](../idea-bank/references/schema.md) — card, brick and gem formats for the ideas objective
 - [team-research](references/team-research.md) — live supervised venue: the lead steers gatherer and verifier sessions (harness-ops) round by round; a shared sources ledger stops duplicate fetches

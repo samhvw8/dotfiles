@@ -1,6 +1,6 @@
 ---
 name: idea-forge
-description: "Makes new ideas by recombining bricks, then designs the cheapest test that could kill each one: combine bricks from several sources, swap one piece of a method for a piece from another field, change how the pieces fit together (sequence, loop, gate), remove, invert or move a piece. Starts from an idea card, Sam's seed (\"what if we swap C for D\"), bricks a session just found, or a hand dealt from the bank (deal mode, present mode only: both write rough ideas from dealt atoms, lenses or moves, then read a few together). By default Claude does all of it; after Sam types /idea-present, Sam writes first. Use when Sam asks what new ideas come from mixing sources or parts, how to combine, swap or rearrange pieces, what to build or try next from a source, whether a piece from one field works in another, or asks to deal some atoms. Not for breaking a source into bricks (idea-mine), reading a source with Sam (co-read) or finding sources (idea-scout)."
+description: "Makes new ideas by recombining bricks, then designs the cheapest test that could kill each one: combine bricks from several sources, swap one piece of a method for a piece from another field, change how the pieces fit together (sequence, loop, gate), remove, invert or move a piece. Starts from an idea card, Sam's seed (\"what if we swap C for D\"), bricks a session just found, or a hand dealt from the bank (deal mode, present mode only: both write rough ideas from dealt bricks, lenses or moves, then read a few together). By default Claude does all of it; after Sam types /idea-present, Sam writes first. Use when Sam asks what new ideas come from mixing sources or parts, how to combine, swap or rearrange pieces, what to build or try next from a source, whether a piece from one field works in another, or asks to deal some bricks. Not for breaking a source into bricks (idea-mine), reading a source with Sam (co-read) or finding sources (idea-scout)."
 ---
 
 # Idea forge
@@ -14,7 +14,8 @@ erodes (B), so in present mode the order below is not optional.
 
 Formats, slugs, move types and gem types come from
 `~/.claude/skills/idea-bank/references/schema.md`; bank location, index and
-commits come from the `idea-bank` skill. Load it first. Files are English; chat is
+commits come from the `idea-bank` skill. Load it first, and read its "What a brick
+is" before you recombine bricks. Files are English; chat is
 in the language Sam writes in, by "Rendering for Sam" in the idea-bank schema.
 Label bank content "(from your bank: ...)" and outside knowledge "(from memory,
 unchecked)"; never cite a card or batch as if the source said it. For a social
@@ -24,13 +25,13 @@ the original post apart from replies.
 ## Inputs
 
 - A card (`cards/<slug>.md`), a reading in progress, or a seed line from Sam.
-- The bank: atoms, lenses, moves, and `me/known-atoms.md`, `me/interest-state.md`.
-- `idea_index.py` output for the atoms involved (convergence, hot slots,
+- The bank: bricks, lenses, moves, and `me/known-bricks.md`, `me/interest-state.md`.
+- `idea_index.py` output for the bricks involved (convergence, hot slots,
   migration-gap candidates).
 
-If there is no card yet, draft the recipe (roles, atoms by role, operator, bet,
+If there is no card yet, draft the recipe (roles, bricks by role, operator, bet,
 constraints of the time) with Sam before forging: operators act on roles, and a
-recipe named by atom identity gives only shallow swaps.
+recipe named by brick identity gives only shallow swaps.
 
 ## The session
 
@@ -46,12 +47,12 @@ Claude's distribution is stuck.
 the recipe, not the three that come first. `references/operators.md` holds the
 procedure per operator and the questions that make each one productive. Two
 sources of candidates beat free association:
-- **The bank.** For substitute-atom and cross-card, take D from any card or
-  field whose atom fills the same role tag. Match by structural signature
+- **The bank.** For substitute-brick and cross-card, take D from any card or
+  field whose brick fills the same role tag. Match by structural signature
   (input, output, objective, constraint), never by name or embedding similarity:
   the same structure hides under different words in each field.
 - **The index.** Migration-gap candidates and convergence lists from
-  `idea_index.py` are atom migrations waiting to be judged: keep the atom, move
+  `idea_index.py` are brick migrations waiting to be judged: keep the brick, move
   it to a new field or role. Judge each by structure before it becomes a
   variant.
 
@@ -90,7 +91,7 @@ stuck in its default.
 2. Fix the kill criterion and the metric before the run. Never change them after
    seeing results.
 3. Claude builds the harness (data loading, plots, boilerplate). In a deep
-   session Sam writes the 20-ish core lines that implement the atom; that
+   session Sam writes the 20-ish core lines that implement the brick; that
    hands-on step is where the next idea comes from.
 4. Run it. For paper code use `paper-replicate`; for GPU work check the home
    server's load first (`ssh me.ubuntu.home nvidia-smi`, `tmux ls`).
@@ -109,8 +110,8 @@ no novelty search and no kill-test unless Sam asks for one on a kept idea.
 
 1. **Menu.** Run `idea_deal.py <bank> menu` (in `idea-bank/scripts`) and show
    the kinds with their real pool sizes: `role` (same job, other fields), `lens`
-   (one lens over atoms from fields it has not seen), `gap` (an atom and a field
-   it has not reached), `pair` (two atoms with no shared field), `move` (replay
+   (one lens over bricks from fields it has not seen), `gap` (a brick and a field
+   it has not reached), `pair` (two bricks with no shared field), `move` (replay
    a past move on other cards). Sam picks the kind, `x` (items dealt) and `y`
    (ideas each), or says "you pick".
 2. **Deal.** Run `idea_deal.py <bank> deal <kind> -x <x>`. Show the hand as is,
@@ -139,12 +140,12 @@ no novelty search and no kill-test unless Sam asks for one on a kept idea.
   variant, role fit, novelty link, kill test, Sam verdict, origin (`sam` or
   `claude`). In a reading session the table goes in the reading's `# Mutations`
   and the run in `# Kill test`; outside a session, in the card's `# Mutations`.
-- Every kill-test result goes in the atom's `kill_tests` (survived, killed,
+- Every kill-test result goes in the brick's `kill_tests` (survived, killed,
   inconclusive, with a note), so the bank remembers what was tried.
 - A variant that survives its kill-test becomes a `Move` file (`move_type`,
-  `parent`, `child`, `role`, `from_atom`, `to_atom`; for an atom migration
-  `move_type: migrate-atom` with `atom`, `from_field`, `to_field`), and any new
-  atom gets its own file with its signature and a migration row.
+  `parent`, `child`, `role`, `from_brick`, `to_brick`; for a brick migration
+  `move_type: migrate-brick` with `brick`, `from_field`, `to_field`), and any new
+  brick gets its own file with its signature and a migration row.
 - Update `me/progress.md`: Sam-unique mutations, skips.
 - Commit through `idea-bank`.
 
@@ -166,16 +167,16 @@ no novelty search and no kill-test unless Sam asks for one on a kept idea.
 
 - **Constraint-price tracker:** a table of constraints (cost per 1M tokens, GPU
   hour, labeling cost, context length) with current prices. When one drops about
-  10x, scan atoms whose `Constraints of the time` cite it and propose
+  10x, scan bricks whose `Constraints of the time` cite it and propose
   lift-constraint variants. Needs a scheduled job; it goes in a Runs line with an
   owner and a kill condition when built.
-- **Prediction registry:** dated predictions ("this atom will reach field Y
+- **Prediction registry:** dated predictions ("this brick will reach field Y
   within 6 months"), scored at 3 and 6 months. It is the outside judge for
   migration predictions.
 
 ## References
 
-- `references/operators.md`: each operator and atom migration, how to apply it,
+- `references/operators.md`: each operator and brick migration, how to apply it,
   questions that make it productive, structure-mapping steps.
 - `references/kill-tests.md`: cheap kill-test design, novelty search by
   structure, writing results back.

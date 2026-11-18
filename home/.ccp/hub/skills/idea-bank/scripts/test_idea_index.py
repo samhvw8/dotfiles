@@ -18,17 +18,17 @@ def ix():
 
 
 def test_counts(ix):
-    assert ix["counts"] == {"Atom": 2, "Idea Card": 6, "Move": 3, "Reading": 1, "State": 1}
+    assert ix["counts"] == {"Brick": 2, "Idea Card": 6, "Move": 3, "Reading": 1, "State": 1}
 
 
 def test_broken_link_found(ix):
-    assert {"from": "card:sae-features", "to": "atom:relu-encoder"} in ix["broken_links"]
+    assert {"from": "card:sae-features", "to": "brick:relu-encoder"} in ix["broken_links"]
     assert len(ix["broken_links"]) == 1
 
 
 def test_one_way_link(ix):
-    # sae-features lists the atom, the atom does not list the card
-    assert {"from": "card:sae-features", "to": "atom:sparse-overcomplete-code"} in ix["one_way_links"]
+    # sae-features lists the brick, the brick does not list the card
+    assert {"from": "card:sae-features", "to": "brick:sparse-overcomplete-code"} in ix["one_way_links"]
 
 
 def test_links_are_bidirectional_union(ix):
@@ -36,8 +36,8 @@ def test_links_are_bidirectional_union(ix):
 
 
 def test_migrations_widen_fields(ix):
-    top = ix["atoms_by_field_count"][0]
-    assert top["atom"] == "sparse-overcomplete-code"
+    top = ix["bricks_by_field_count"][0]
+    assert top["brick"] == "sparse-overcomplete-code"
     assert top["fields"] == ["interpretability", "machine-learning", "mechanistic-interpretability", "neuroscience"]
 
 
@@ -52,18 +52,18 @@ def test_hot_slot(ix):
 
 
 def test_migration_gap_candidates(ix):
-    gaps = {(g["atom"], g["field"]) for g in ix["migration_gap_candidates"]}
+    gaps = {(g["brick"], g["field"]) for g in ix["migration_gap_candidates"]}
     assert gaps == {("fixed-basis-transform", "genomics"), ("sparse-overcomplete-code", "genomics")}
 
 
 def test_no_gap_inside_reached_field(ix):
-    assert all(g["field"] not in g["atom_fields"] for g in ix["migration_gap_candidates"])
+    assert all(g["field"] not in g["brick_fields"] for g in ix["migration_gap_candidates"])
 
 
-def test_known_atoms(ix):
-    k = ix["known_atoms"]
+def test_known_bricks(ix):
+    k = ix["known_bricks"]
     assert k["owned"] == ["fixed-basis-transform"]
-    assert k["unknown_slugs"] == ["ghost-atom"]
+    assert k["unknown_slugs"] == ["ghost-brick"]
     assert k["owned_share"] == 0.5
 
 
@@ -80,15 +80,15 @@ def test_cli_json(tmp_path, capsys):
     assert "Migration-gap candidates" in capsys.readouterr().out
 
 
-def test_migrate_atom_moves_widen_fields_but_not_hot_slots(ix):
-    assert ix["migrate_atom_moves"] == [{"move": "sparse-code-to-sae", "atom": "sparse-overcomplete-code",
+def test_migrate_brick_moves_widen_fields_but_not_hot_slots(ix):
+    assert ix["migrate_brick_moves"] == [{"move": "sparse-code-to-sae", "brick": "sparse-overcomplete-code",
                                          "from_field": "neuroscience", "to_field": "mechanistic-interpretability"}]
     assert [h["role"] for h in ix["hot_slots"]] == ["sparse-represent-signal"]
     assert len(ix["hot_slots"][0]["moves"]) == 2
 
 
 def test_low_confidence_listed(ix):
-    assert ix["low_confidence_matches"] == [{"atom": "sparse-overcomplete-code", "field": "machine-learning",
+    assert ix["low_confidence_matches"] == [{"brick": "sparse-overcomplete-code", "field": "machine-learning",
                                              "source": "ksvd-2006", "role": "denoise-signal"}]
 
 
@@ -148,26 +148,26 @@ def test_write_is_idempotent(bank_copy):
 
 def test_signature_moves_from_frontmatter_to_body(bank_copy):
     ix_mod.main([str(bank_copy), "--write"])
-    text = (bank_copy / "atoms" / "sparse-overcomplete-code.md").read_text()
+    text = (bank_copy / "bricks" / "sparse-overcomplete-code.md").read_text()
     fm, body = ix_mod.FM_RE.match(text).groups()
     assert "signature" not in fm
     assert "# Signature\n- **Input:** signal\n- **Output:** sparse coefficients" in body
     # the rest of the frontmatter is untouched text, and still parses
     assert "roles: [sparse-represent-signal]" in fm
-    assert ix_mod.build(ix_mod.load(bank_copy))["counts"]["Atom"] == 2
+    assert ix_mod.build(ix_mod.load(bank_copy))["counts"]["Brick"] == 2
 
 
 def test_related_links_both_directions(bank_copy):
     ix_mod.main([str(bank_copy), "--write"])
-    atom = (bank_copy / "atoms" / "sparse-overcomplete-code.md").read_text()
-    # sae-features lists the atom but the atom does not list the card: the view still shows it
-    assert "](/cards/sae-features.md) (" in atom  # bank outside a bundle: links are bank-root relative
-    assert "Shares role `sparse-represent-signal` with [" in atom and "fixed-basis-transform.md)" in atom
-    assert "explain-receptive-fields" in atom  # role taken from the migration row of that card
+    brick = (bank_copy / "bricks" / "sparse-overcomplete-code.md").read_text()
+    # sae-features lists the brick but the brick does not list the card: the view still shows it
+    assert "](/cards/sae-features.md) (" in brick  # bank outside a bundle: links are bank-root relative
+    assert "Shares role `sparse-represent-signal` with [" in brick and "fixed-basis-transform.md)" in brick
+    assert "explain-receptive-fields" in brick  # role taken from the migration row of that card
     card = (bank_copy / "cards" / "sae-features.md").read_text()
-    assert "- Atom `relu-encoder` (no file yet)." in card  # broken link is shown, not hidden
+    assert "- Brick `relu-encoder` (no file yet)." in card  # broken link is shown, not hidden
     move = (bank_copy / "moves" / "sparse-code-to-sae.md").read_text()
-    assert "- Atom moved [" in move
+    assert "- Brick moved [" in move
 
 
 def test_hand_text_outside_block_survives(bank_copy):
@@ -180,13 +180,13 @@ def test_hand_text_outside_block_survives(bank_copy):
     assert text.count(ix_mod.REL_BEGIN) == 1 and text.rstrip().endswith(ix_mod.REL_END)
 
 
-def test_atoms_index_lists_shared_roles(bank_copy):
+def test_bricks_index_lists_shared_roles(bank_copy):
     ix_mod.main([str(bank_copy), "--write"])
-    idx = (bank_copy / "atoms" / "index.md").read_text()
+    idx = (bank_copy / "bricks" / "index.md").read_text()
     assert "## Shared roles" in idx
-    shared = idx.split("## All atoms")[0]
+    shared = idx.split("## All bricks")[0]
     assert "`sparse-represent-signal` - [Fixed-basis transform" in shared
-    assert "`denoise-signal`" not in shared  # one atom only
+    assert "`denoise-signal`" not in shared  # one brick only
     assert idx.count("](sparse-overcomplete-code.md)") == 2  # once under the shared role, once in the full list
 
 
@@ -199,75 +199,124 @@ def test_link_prefix_inside_and_outside_bundle(tmp_path):
 
 # --- parts (split / bind) and links (connect without merging) ---
 
-def _atom(root, slug, extra=""):
-    (root / "atoms" / f"{slug}.md").write_text(
-        f"---\ntype: Atom\ntitle: {slug}\ndescription: d\nroles: [r-{slug}]\nfields: []\n{extra}---\n\n# Signature\n- **Input:** x\n")
+def _brick(root, slug, extra=""):
+    (root / "bricks" / f"{slug}.md").write_text(
+        f"---\ntype: Brick\ntitle: {slug}\ndescription: d\nroles: [r-{slug}]\nfields: []\n{extra}---\n\n# Signature\n- **Input:** x\n")
 
 
 @pytest.fixture
 def layered(bank_copy):
     # string-c -> quark-b -> sparse-overcomplete-code; quark-a -> sparse-overcomplete-code
-    _atom(bank_copy, "string-c")
-    _atom(bank_copy, "quark-b", "parts: [string-c]\n")
-    _atom(bank_copy, "quark-a")
-    p = bank_copy / "atoms" / "sparse-overcomplete-code.md"
-    p.write_text(p.read_text().replace("type: Atom\n", "type: Atom\nparts: [quark-a, quark-b]\n"
+    _brick(bank_copy, "string-c")
+    _brick(bank_copy, "quark-b", "parts: [string-c]\n")
+    _brick(bank_copy, "quark-a")
+    p = bank_copy / "bricks" / "sparse-overcomplete-code.md"
+    p.write_text(p.read_text().replace("type: Brick\n", "type: Brick\nparts: [quark-a, quark-b]\n"
                                        "links:\n- {to: fixed-basis-transform, via: quark-a, note: same split}\n", 1))
     return bank_copy
 
 
 def test_parts_depth_is_relative(layered):
     ix = ix_mod.build(ix_mod.load(layered))
-    assert ix["parts"]["atom:sparse-overcomplete-code"] == ["atom:quark-a", "atom:quark-b"]
-    assert ix["part_of"]["atom:string-c"] == ["atom:quark-b"]
+    assert ix["parts"]["brick:sparse-overcomplete-code"] == ["brick:quark-a", "brick:quark-b"]
+    assert ix["part_of"]["brick:string-c"] == ["brick:quark-b"]
     # a part can have parts of its own: depth is computed, never stored
-    assert ix["depth"] == {"atom:string-c": 0, "atom:quark-a": 0, "atom:quark-b": 1, "atom:sparse-overcomplete-code": 2}
+    assert ix["depth"] == {"brick:string-c": 0, "brick:quark-a": 0, "brick:quark-b": 1, "brick:sparse-overcomplete-code": 2}
     assert ix["part_cycles"] == []
 
 
 def test_part_refs_resolve_across_types(layered):
-    _atom(layered, "pattern-x", "parts: ['card:jpeg', quark-a]\n")
+    _brick(layered, "pattern-x", "parts: ['card:jpeg', quark-a]\n")
     ix = ix_mod.build(ix_mod.load(layered))
-    assert ix["parts"]["atom:pattern-x"] == ["card:jpeg", "atom:quark-a"]
+    assert ix["parts"]["brick:pattern-x"] == ["card:jpeg", "brick:quark-a"]
 
 
 def test_broken_part_and_via_are_reported(layered):
-    _atom(layered, "pattern-y", "parts: [ghost]\nlinks: [{to: quark-a, via: nowhere}]\n")
+    _brick(layered, "pattern-y", "parts: [ghost]\nlinks: [{to: quark-a, via: nowhere}]\n")
     ix = ix_mod.build(ix_mod.load(layered))
-    assert {"from": "atom:pattern-y", "to": "part:ghost"} in ix["broken_links"]
-    assert {"from": "atom:pattern-y", "to": "via:nowhere"} in ix["broken_links"]
+    assert {"from": "brick:pattern-y", "to": "part:ghost"} in ix["broken_links"]
+    assert {"from": "brick:pattern-y", "to": "via:nowhere"} in ix["broken_links"]
 
 
 def test_part_cycle_reported_not_crashing(layered):
-    p = layered / "atoms" / "string-c.md"
+    p = layered / "bricks" / "string-c.md"
     p.write_text(p.read_text().replace("fields: []\n", "fields: []\nparts: [quark-b]\n"))
     ix = ix_mod.build(ix_mod.load(layered))
-    assert ix["part_cycles"] and set(ix["part_cycles"][0]) == {"atom:quark-b", "atom:string-c"}
+    assert ix["part_cycles"] and set(ix["part_cycles"][0]) == {"brick:quark-b", "brick:string-c"}
 
 
 def test_unit_links_both_directions(layered):
     ix = ix_mod.build(ix_mod.load(layered))
-    assert ix["unit_links"] == [{"a": "atom:sparse-overcomplete-code", "b": "atom:fixed-basis-transform",
-                                 "via": "atom:quark-a", "note": "same split"}]
+    assert ix["unit_links"] == [{"a": "brick:sparse-overcomplete-code", "b": "brick:fixed-basis-transform",
+                                 "via": "brick:quark-a", "note": "same split"}]
 
 
 def test_views_show_parts_part_of_and_links(layered):
     ix_mod.main([str(layered), "--write"])
-    whole = (layered / "atoms" / "sparse-overcomplete-code.md").read_text()
-    assert "- Part [quark-a](/atoms/quark-a.md)." in whole
-    assert "- Linked to [Fixed-basis transform" in whole and "via [quark-a](/atoms/quark-a.md): same split." in whole
-    other = (layered / "atoms" / "fixed-basis-transform.md").read_text()
+    whole = (layered / "bricks" / "sparse-overcomplete-code.md").read_text()
+    assert "- Parts by cut `default`: [quark-a](/bricks/quark-a.md), [quark-b](/bricks/quark-b.md)." in whole
+    assert "- Linked to [Fixed-basis transform" in whole and "via [quark-a](/bricks/quark-a.md): same split." in whole
+    other = (layered / "bricks" / "fixed-basis-transform.md").read_text()
     assert "- Linked to [Sparse" in other
-    mid = (layered / "atoms" / "quark-b.md").read_text()
-    assert "- Part of [" in mid and "- Part [string-c](/atoms/string-c.md)." in mid
+    mid = (layered / "bricks" / "quark-b.md").read_text()
+    assert "- Part of [" in mid and "- Parts by cut `default`: [string-c](/bricks/string-c.md)." in mid
 
 
 def test_part_entries_carry_how_in_frontmatter(layered):
-    _atom(layered, "pattern-z", "parts:\n- quark-a\n- {to: quark-b, how: judge, note: sits inside}\n")
+    _brick(layered, "pattern-z", "parts:\n- quark-a\n- {to: quark-b, how: judge, note: sits inside}\n")
     ix = ix_mod.build(ix_mod.load(layered))
-    assert ix["parts"]["atom:pattern-z"] == ["atom:quark-a", "atom:quark-b"]
-    assert ix["part_how"]["atom:pattern-z"] == {"atom:quark-b": "judge"}
+    assert ix["parts"]["brick:pattern-z"] == ["brick:quark-a", "brick:quark-b"]
+    assert ix["part_how"]["brick:pattern-z"] == {"brick:quark-b": "judge"}
     ix_mod.main([str(layered), "--write"])
-    text = (layered / "atoms" / "pattern-z.md").read_text()
-    assert "- Part [quark-a](/atoms/quark-a.md)." in text
-    assert "- Part [quark-b](/atoms/quark-b.md) (judge: sits inside)." in text
+    text = (layered / "bricks" / "pattern-z.md").read_text()
+    assert "- Parts by cut `default`: [quark-a](/bricks/quark-a.md), [quark-b](/bricks/quark-b.md) (judge: sits inside)." in text
+
+
+# --- cuts: one unit split through several lenses ---
+
+CUTS = HERE / "fixtures" / "cuts-bank"
+WHOLE = "brick:self-improve-from-own-samples"
+
+
+def test_parts_grouped_by_cut():
+    ix = ix_mod.build(ix_mod.load(CUTS))
+    assert ix["part_cuts"][WHOLE] == {
+        "cost-flow": ["brick:generate-candidates", "brick:filter-bad-samples"],
+        "data-path": ["brick:generate-candidates", "brick:score-samples", "brick:filter-bad-samples"],
+    }
+    # the distinct parts over all cuts, each once
+    assert ix["parts"][WHOLE] == ["brick:generate-candidates", "brick:filter-bad-samples", "brick:score-samples"]
+    # a part in two cuts of one whole is part of it once
+    assert ix["part_of"]["brick:generate-candidates"] == [WHOLE]
+
+
+def test_missing_cut_is_default(layered):
+    ix = ix_mod.build(ix_mod.load(layered))
+    assert ix["part_cuts"]["brick:sparse-overcomplete-code"] == {"default": ["brick:quark-a", "brick:quark-b"]}
+
+
+def test_depth_takes_deepest_part_over_all_cuts():
+    ix = ix_mod.build(ix_mod.load(CUTS))
+    # score-samples (depth 1) is only in the data-path cut; the cost-flow cut alone would give depth 1
+    assert ix["depth"]["brick:score-samples"] == 1
+    assert ix["depth"][WHOLE] == 2
+
+
+def test_view_has_one_line_per_cut_with_lens_named(tmp_path):
+    bank = tmp_path / "cuts"
+    shutil.copytree(CUTS, bank)
+    assert ix_mod.main([str(bank), "--write"]) == 0
+    assert ix_mod.main([str(bank), "--check"]) == 0
+    text = (bank / "bricks" / "self-improve-from-own-samples.md").read_text()
+    lines = [l for l in text.splitlines() if l.startswith("- Parts by cut ")]
+    assert lines == [
+        # a cut that is a lens file links the lens
+        "- Parts by cut [Where does the cost go](/lenses/cost-flow.md): "
+        "[generate-candidates](/bricks/generate-candidates.md) (split: most of the compute), "
+        "[filter-bad-samples](/bricks/filter-bad-samples.md) (split).",
+        # a cut with no lens file is named as written
+        "- Parts by cut `data-path`: [generate-candidates](/bricks/generate-candidates.md) (judge), "
+        "[score-samples](/bricks/score-samples.md) (split), [filter-bad-samples](/bricks/filter-bad-samples.md).",
+    ]
+    part = (bank / "bricks" / "generate-candidates.md").read_text()
+    assert part.count("- Part of [Self-improve from own samples]") == 1

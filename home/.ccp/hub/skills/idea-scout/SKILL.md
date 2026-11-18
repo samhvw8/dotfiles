@@ -10,8 +10,11 @@ sweep and the filtering alone; he spends about 30 seconds per card and decides w
 deserves more. The funnel exists for two outcomes, kept in balance:
 
 - **(A) Actionable ideas** reach Sam without costing him reading time.
-- **(B) Sam's own idea ability grows.** Cards teach at most one or two new atoms each,
+- **(B) Sam's own idea ability grows.** Cards teach at most one or two new bricks each,
   and Sam's votes, guesses and reasons are his hands-on work at this level.
+
+A brick is one piece of an idea that does a job you can name; read "What a brick is"
+in the idea-bank skill before you name or count one on a card.
 
 You are a peer, not a servant or a master. Your filter proposes; Sam's taste decides,
 and his taste is data you learn from.
@@ -22,7 +25,7 @@ and his taste is data you learn from.
    `~/.claude/skills/idea-bank/references/schema.md`. Use its types, fields, gem types
    and slugs exactly; never invent a field here.
 2. Read Sam's state in `<bank>/me/`: `scopes.md`, `interest-state.md` (cluster levels,
-   batch size, explore slots, budget), `known-atoms.md`, `taste.md`, `progress.md`.
+   batch size, explore slots, budget), `known-bricks.md`, `taste.md`, `progress.md`.
    These are runtime state. If a file is missing, create it from the schema and say so.
 3. Write bank files in English; talk to Sam in the language he writes in.
 
@@ -59,8 +62,8 @@ them `(explore)`. Without them the filter locks Sam inside what he already likes
 
 ### L2: triage cards
 
-Write each card one step above what Sam knows (i+1): use atoms he `owns` in
-`known-atoms.md`, and add at most two new atoms per card. Explain each new atom in two
+Write each card one step above what Sam knows (i+1): use bricks he `owns` in
+`known-bricks.md`, and add at most two new bricks per card. Explain each new brick in two
 sentences plus one concrete picture. Input far above his level passes through without
 sticking; that is why the limit is there.
 
@@ -69,13 +72,13 @@ Card depth follows the cluster's level in `interest-state.md`:
 | Level | Card |
 |-------|------|
 | `core` | Full triage card |
-| `adjacent` | Role-level card: what the atom does, when to use it, a picture; no internals |
+| `adjacent` | Role-level card: what the brick does, when to use it, a picture; no internals |
 | `delegated` | One-line interface card: input, output, role, cost, when it fails |
 | no level yet | Short role-level card (as `adjacent`) with a zoom offer. Never the one-line interface card: that form is for `delegated` only |
 
 Templates, the chat rendering and a worked example: `references/cards.md`.
 
-Every card carries: gem type, one-line idea, recipe in roles, new atoms (if any),
+Every card carries: gem type, one-line idea, recipe in roles, new bricks (if any),
 "why you might care" tied to a scope or a project of Sam's, the deep-read cost, and a
 zoom offer. A zoom opens that one source in `co-read` brief mode without changing the
 cluster's level.
@@ -105,8 +108,8 @@ Details: `references/votes-and-retro.md`.
 
 ## Delegated domains
 
-Sam does not judge delegated clusters himself, so he must trust you there. When an
-atom from a delegated cluster is about to carry weight in his work (he will build on
+Sam does not judge delegated clusters himself, so he must trust you there. When a
+brick from a delegated cluster is about to carry weight in his work (he will build on
 it, spend GPU time on it, or put it in a product), verify it for him with
 `paper-appraisal` and state the confidence on the card. An idea he only looks at needs
 no verification.
@@ -127,6 +130,6 @@ bank paths and the bundle `log.md`, conventional message, no AI attribution.
 
 - A batch file exists in `batches/`, the OKF validator passes, and the bank commit is made.
 - Sam has the cards in chat, in his language, with the vote request.
-- Every new atom on a card is explained; no card adds more than two.
+- Every new brick on a card is explained; no card adds more than two.
 - Every `unpopular` card names its diagnosed reason; every intent claim is quoted or
   marked `(inferred)`; the `Basis` section says how each source was read.

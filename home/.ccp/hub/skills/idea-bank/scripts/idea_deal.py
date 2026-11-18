@@ -2,17 +2,17 @@
 # requires-python = ">=3.10"
 # dependencies = ["pyyaml>=6"]
 # ///
-"""Deal a hand of atoms, lenses and moves from the idea bank, for a deal session in idea-forge.
+"""Deal a hand of bricks, lenses and moves from the idea bank, for a deal session in idea-forge.
 
 Usage:
   idea_deal.py <bank> menu                       # what each kind of deal can draw from right now
   idea_deal.py <bank> deal <kind> [-x 5] [--seed N] [--role TAG] [--json]
 
 Kinds:
-  role  atoms that share one role tag, across fields (same job, other field)
-  lens  one lens + x atoms from fields the lens has not been seen in
-  gap   x migration-gap rows: an atom and a field it has not reached
-  pair  x//2 pairs of atoms whose fields do not overlap
+  role  bricks that share one role tag, across fields (same job, other field)
+  lens  one lens + x bricks from fields the lens has not been seen in
+  gap   x migration-gap rows: a brick and a field it has not reached
+  pair  x//2 pairs of bricks whose fields do not overlap
   move  one past move + x cards it was not made on (replay the move there)
 
 The seed is printed, so the same hand can be dealt again.
@@ -39,41 +39,41 @@ class Bank:
         self.index = ix.build(self.concepts)
         live = [c for c in self.concepts if c["fm"].get("status") != "deprecated"]
         by = lambda t: {c["slug"]: c for c in live if c["fm"]["type"] == t}
-        self.atoms, self.lenses, self.moves, self.cards = by("Atom"), by("Lens"), by("Move"), by("Idea Card")
+        self.bricks, self.lenses, self.moves, self.cards = by("Brick"), by("Lens"), by("Move"), by("Idea Card")
         moved: dict[str, set[str]] = {}
         for m in self.moves.values():
             fm = m["fm"]
-            if fm.get("move_type") == "migrate-atom" and fm.get("atom") and fm.get("to_field"):
-                moved.setdefault(fm["atom"], set()).add(fm["to_field"])
-        self.fields = {s: ix.atom_fields(c["fm"], moved, s) for s, c in self.atoms.items()}
+            if fm.get("move_type") == "migrate-brick" and fm.get("brick") and fm.get("to_field"):
+                moved.setdefault(fm["brick"], set()).add(fm["to_field"])
+        self.fields = {s: ix.brick_fields(c["fm"], moved, s) for s, c in self.bricks.items()}
         self.roles: dict[str, list[str]] = {}
-        for s, c in self.atoms.items():
-            for r in ix.atom_roles(c["fm"]):
+        for s, c in self.bricks.items():
+            for r in ix.brick_roles(c["fm"]):
                 self.roles.setdefault(r, []).append(s)
         self.shared_roles = {r: sorted(a) for r, a in self.roles.items() if len(a) >= 2}
 
     def menu(self) -> dict:
-        far_pairs = sum(1 for i, a in enumerate(self.atoms) for b in list(self.atoms)[i + 1:]
+        far_pairs = sum(1 for i, a in enumerate(self.bricks) for b in list(self.bricks)[i + 1:]
                         if self.fields[a] and self.fields[b] and not self.fields[a] & self.fields[b])
         return {
-            "role": {"pool": len(self.shared_roles), "unit": "roles with 2+ atoms",
+            "role": {"pool": len(self.shared_roles), "unit": "roles with 2+ bricks",
                      "largest": sorted(((r, len(a)) for r, a in self.shared_roles.items()), key=lambda x: -x[1])[:5]},
             "lens": {"pool": len(self.lenses), "unit": "lenses"},
-            "gap": {"pool": len(self.index["migration_gap_candidates"]), "unit": "atom-field gaps"},
-            "pair": {"pool": far_pairs, "unit": "atom pairs with no shared field"},
+            "gap": {"pool": len(self.index["migration_gap_candidates"]), "unit": "brick-field gaps"},
+            "pair": {"pool": far_pairs, "unit": "brick pairs with no shared field"},
             "move": {"pool": len(self.moves), "unit": "moves"},
-            "bank": {k: len(v) for k, v in (("atoms", self.atoms), ("lenses", self.lenses),
+            "bank": {k: len(v) for k, v in (("bricks", self.bricks), ("lenses", self.lenses),
                                             ("moves", self.moves), ("cards", self.cards))},
         }
 
     def item(self, kind: str, slug: str) -> dict:
-        c = {"atom": self.atoms, "lens": self.lenses, "move": self.moves, "card": self.cards}[kind][slug]
+        c = {"brick": self.bricks, "lens": self.lenses, "move": self.moves, "card": self.cards}[kind][slug]
         fm = c["fm"]
         out = {"kind": kind, "slug": slug, "title": fm.get("title", slug), "gloss": fm.get("description", ""),
                "path": c["path"]}
-        if kind == "atom":
+        if kind == "brick":
             out["fields"] = sorted(self.fields[slug])
-            out["roles"] = sorted(ix.atom_roles(fm))
+            out["roles"] = sorted(ix.brick_roles(fm))
             m = SIG_RE.search(c["body"])
             out["signature"] = " ".join(l[2:].strip() for l in m.group(1).splitlines() if l.startswith("- ")) if m else ""
         elif kind == "lens":
@@ -91,45 +91,45 @@ class Bank:
         if kind == "role":
             if role is None:
                 if not self.shared_roles:
-                    raise SystemExit("idea_deal: no role has 2+ atoms yet; try another kind")
+                    raise SystemExit("idea_deal: no role has 2+ bricks yet; try another kind")
                 role = rng.choice(sorted(self.shared_roles))
             elif role not in self.roles:
-                raise SystemExit(f"idea_deal: no atom has role {role!r}")
+                raise SystemExit(f"idea_deal: no brick has role {role!r}")
             members = sorted(self.roles[role])
             hand["role"] = role
-            hand["items"] = [self.item("atom", a) for a in rng.sample(members, min(x, len(members)))]
+            hand["items"] = [self.item("brick", a) for a in rng.sample(members, min(x, len(members)))]
         elif kind == "lens":
             if not self.lenses:
                 raise SystemExit("idea_deal: the bank has no lens yet; try another kind")
             lens = rng.choice(sorted(self.lenses))
             seen = set(ix.as_list(self.lenses[lens]["fm"].get("fields")))
-            pool = sorted(a for a in self.atoms if self.fields[a] and not self.fields[a] & seen)
-            hand["items"] = [self.item("lens", lens)] + [self.item("atom", a) for a in self._spread(pool, x, rng)]
+            pool = sorted(a for a in self.bricks if self.fields[a] and not self.fields[a] & seen)
+            hand["items"] = [self.item("lens", lens)] + [self.item("brick", a) for a in self._spread(pool, x, rng)]
         elif kind == "gap":
             gaps = self.index["migration_gap_candidates"][:]
             if not gaps:
                 raise SystemExit("idea_deal: no migration gap yet; try another kind")
             rng.shuffle(gaps)
-            seen_atoms = set()
-            for g in gaps:  # one row per atom, so the hand is x different atoms
+            seen_bricks = set()
+            for g in gaps:  # one row per brick, so the hand is x different bricks
                 if len(hand["items"]) == x:
                     break
-                if g["atom"] in seen_atoms:
+                if g["brick"] in seen_bricks:
                     continue
-                seen_atoms.add(g["atom"])
-                it = self.item("atom", g["atom"]) if g["atom"] in self.atoms else {"kind": "atom", "slug": g["atom"]}
+                seen_bricks.add(g["brick"])
+                it = self.item("brick", g["brick"]) if g["brick"] in self.bricks else {"kind": "brick", "slug": g["brick"]}
                 it["target_field"] = g["field"]
                 it["via_card"] = g["card"]
                 hand["items"].append(it)
         elif kind == "pair":
-            atoms = sorted(a for a in self.atoms if self.fields[a])
+            bricks = sorted(a for a in self.bricks if self.fields[a])
             pairs, tries = [], 0
             while len(pairs) < max(1, x // 2) and tries < 5000:
                 tries += 1
-                a, b = rng.sample(atoms, 2)
+                a, b = rng.sample(bricks, 2)
                 if not self.fields[a] & self.fields[b] and {a, b} not in pairs:
                     pairs.append({a, b})
-            hand["pairs"] = [[self.item("atom", a) for a in sorted(p)] for p in pairs]
+            hand["pairs"] = [[self.item("brick", a) for a in sorted(p)] for p in pairs]
             hand["items"] = [i for p in hand["pairs"] for i in p]
         elif kind == "move":
             if not self.moves:
@@ -142,7 +142,7 @@ class Bank:
         return hand
 
     def _spread(self, pool: list[str], x: int, rng: random.Random) -> list[str]:
-        """Pick x atoms, preferring ones whose fields differ from those already picked."""
+        """Pick x bricks, preferring ones whose fields differ from those already picked."""
         pool = pool[:]
         rng.shuffle(pool)
         picked, used = [], set()
@@ -168,7 +168,7 @@ def render(hand: dict, seed: int) -> str:
 
     def line(it):
         if "title" not in it:
-            return f"- atom `{it['slug']}` (no file)" + (f" -> **{it['target_field']}**" if it.get("target_field") else "")
+            return f"- brick `{it['slug']}` (no file)" + (f" -> **{it['target_field']}**" if it.get("target_field") else "")
         s = f"- {it['kind']} **{it['title']}** (`{it['path']}`)"
         if it.get("fields"):
             s += f" [{', '.join(it['fields'])}]"
@@ -193,7 +193,7 @@ def render(hand: dict, seed: int) -> str:
 
 def render_menu(m: dict) -> str:
     b = m.pop("bank")
-    out = [f"# Deal menu (bank: {b['atoms']} atoms, {b['lenses']} lenses, {b['moves']} moves, {b['cards']} cards)", ""]
+    out = [f"# Deal menu (bank: {b['bricks']} bricks, {b['lenses']} lenses, {b['moves']} moves, {b['cards']} cards)", ""]
     for k in KINDS:
         row = m[k]
         s = f"- {k}: {row['pool']} {row['unit']}"

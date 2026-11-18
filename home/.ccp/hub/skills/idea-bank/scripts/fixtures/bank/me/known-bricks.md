@@ -1,10 +1,10 @@
 ---
 type: State
-title: Known atoms
+title: Known bricks
 ---
 
-| Atom | Level | Since | Evidence |
+| Brick | Level | Since | Evidence |
 |------|-------|-------|----------|
 | fixed-basis-transform | owned | 2026-11-02 | explained it |
 | sparse-overcomplete-code | seen | 2026-11-02 | card |
-| ghost-atom | seen | 2026-11-02 | typo |
+| ghost-brick | seen | 2026-11-02 | typo |

@@ -1,18 +1,19 @@
 ---
 name: idea-mine
-description: "Break a source (paper, article, talk, repo, social thread) into its idea bricks and file them in Sam's idea bank, best effort and without asking Sam: what the author believed and bet on, the bricks named by the job each one does, how the bricks are put together, what changed from the source it built on, and the gems. Reads the full text, not the abstract. Use when someone asks how a source's idea is composed or built (\"how does their idea compose, like lego 1 + lego 2\"), to break a paper, post or method into parts or building blocks, to atomize or mine sources into the bank (one or in bulk), or to prepare a source before reading it with Sam. Not for reading a source together with Sam (co-read), combining bricks into new ideas (idea-forge), or judging whether a claim is true (paper-appraisal)."
+description: "Break a source (paper, article, talk, repo, social thread) into its idea bricks and file them in Sam's idea bank, best effort and without asking Sam: what the author believed and bet on, the bricks named by the job each one does, how the bricks are put together, what changed from the source it built on, and the gems. Reads the full text, not the abstract. Use when someone asks how a source's idea is composed or built (\"how does their idea compose, like lego 1 + lego 2\"), to break a paper, post or method into parts or building blocks, to split or mine sources into the bank (one or in bulk), or to prepare a source before reading it with Sam. Not for reading a source together with Sam (co-read), combining bricks into new ideas (idea-forge), or judging whether a claim is true (paper-appraisal)."
 ---
 
 # Idea mine
 
-You turn a source into an Idea Card that someone can recombine later: swap an
-atom, move it to another field, lift a constraint, invert a lens. You read for the
+You turn a source into an Idea Card that someone can recombine later: swap a
+brick, move it to another field, lift a constraint, invert a lens. You read for the
 move the authors made and why, not for whether their claims hold. A wrong paper
 with a good bet still gets a full card.
 
 The bank formats belong to `idea-bank`. Read its schema before you write a file,
 and write only those shapes: `~/.claude/skills/idea-bank/references/schema.md`.
 Resolve the bank root the way `idea-bank` says (`$IDEA_HOME` first).
+Before you split, name or match a brick, read "What a brick is" in the idea-bank skill.
 
 ## Why this skill exists
 
@@ -20,7 +21,7 @@ A plain read produces a summary: what the paper says, in its own vocabulary.
 That is useless for recombination, for three reasons this skill fixes:
 
 - **Vocabulary hides structure.** "Sparse coding", "dictionary learning" and "SAE
-  features" are one atom. Name atoms by the job they do and write their
+  features" are one brick. Name bricks by the job they do and write their
   structural signature, so the bank can see the match across fields.
 - **The paper hides the thinking.** A paper is written after the result, so its
   story is reconstructed. Intent, hunches and dead ends live in rebuttals, talks,
@@ -44,7 +45,7 @@ That is useless for recombination, for three reasons this skill fixes:
 3. **Find the parent.** `paperhunt snowball <id>` (backward references) or the
    related-work section names the source this one mutated. Write the diff as a
    Move file with a `move_type` from the schema. Record the constraints of the
-   time: compute, data, tools, cost that forced an atom choice, in the body and
+   time: compute, data, tools, cost that forced a brick choice, in the body and
    as slugs in `constraints` (`gpu-hour-cost`, `label-cost`; reuse slugs). Limits
    on what the evidence can show go in `evidence_limits` instead. Set
    `source_kind`; a synthesis note follows the schema's synthesis-note rules
@@ -52,14 +53,18 @@ That is useless for recombination, for three reasons this skill fixes:
 4. **Fill the six layers** in schema order (view model, contradiction,
    resolution principle, bet, recipe, diff and constraints), then "Story told vs
    real thinking", `Raw`, and optional `Mutations` (the schema's table, origin
-   `claude`). The recipe table keeps the atom slug, its signature and the
+   `claude`). The recipe table keeps the brick slug, its signature and the
    author's reason in separate columns. New cards get `status: draft`.
-5. **Match atoms before you create them.** For each recipe role, search the bank
-   for an atom with the same structural signature under another field's name, as
-   `references/atom-matching.md` describes. Link the existing atom, add the new
+5. **Match bricks before you create them.** For each recipe role, search the bank
+   for a brick with the same structural signature under another field's name, as
+   `references/brick-matching.md` describes. Link the existing brick, add the new
    field's name and a migration row when the field or role is new, with
-   `match_confidence` (`high`, `medium`, `low`). Create a new atom only when no
+   `match_confidence` (`high`, `medium`, `low`). Create a new brick only when no
    signature matches.
+   When you split a brick into smaller bricks, list them in its `parts` with
+   `cut: <lens>` on each entry: the lens you split through (schema, "Parts and
+   links"). A second split through another lens adds a cut beside the first;
+   never replace or relabel the first cut.
 6. **Lenses and people.** When the view model already exists as a Lens, link it
    and add this card; when you see it a second time across sources, create the
    Lens. A Person file is optional, for authors whose bets recur.
@@ -73,7 +78,7 @@ That is useless for recombination, for three reasons this skill fixes:
 
 - **Every intent claim carries a marker:** a quote with its section, or
   `(inferred)`. This covers the picture, bottleneck, taste, surprise, bet, and the
-  "why this atom" column. Models invent tidy intentions; the marker is how a
+  "why this brick" column. Models invent tidy intentions; the marker is how a
   reader tells the author's mind from yours.
 - **Never invent mechanism.** If the source does not say why something works,
   write "the source does not explain why".
@@ -100,13 +105,13 @@ For many sources (a cluster, a reading list, 50 papers):
    this skill.
 3. Have each subagent write its card to a staging folder outside the bank (for
    example `$TMPDIR/idea-mine-<date>/`, schema "Bulk staging"). You merge:
-   match atoms across the batch (two subagents may create the same atom under
+   match bricks across the batch (two subagents may create the same brick under
    two names), then move cards into the bank.
 4. Verify a sample yourself: at least one card in five, plus every card with a
    `migration-gap`, `lifted-constraint` or `unpopular` tag. Run
    `scripts/check_quotes.py` on all of them; read the flagged quotes against the source.
 5. Run the index and report to the caller (anything shown to Sam follows
-   "Rendering for Sam" in the idea-bank schema): cards written, atoms created vs
+   "Rendering for Sam" in the idea-bank schema): cards written, bricks created vs
    linked, broken links, convergence, and migration-gap candidates you judged
    real by structure (the index only lists candidates).
 
@@ -118,7 +123,7 @@ card `status: draft` and tell the caller its path.
 
 ## Output to the caller
 
-One short block per source: card path, the one idea, gem types, atoms created or
+One short block per source: card path, the one idea, gem types, bricks created or
 linked, the parent and move, `read_basis`, and anything you could not get
 (paywall, no rebuttal found). In bulk mode, the table from step 5.
 
@@ -126,7 +131,7 @@ linked, the parent and move, `read_basis`, and anything you could not get
 
 - `~/.claude/skills/idea-bank/references/schema.md`: every format (owned by `idea-bank`).
 - `references/intent-sources.md`: where intent leaks and how to query each place.
-- `references/atom-matching.md`: matching atoms by structure across fields; migration rows.
+- `references/brick-matching.md`: matching bricks by structure across fields; migration rows.
 - `references/bulk-mode.md`: the subagent brief and the merge procedure.
 - `references/worked-example.md`: one full card (illustration).
 - `scripts/check_quotes.py`: run it; finds card quotes missing from the source text.

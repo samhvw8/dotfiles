@@ -7,10 +7,10 @@ Optional: Personalized PageRank over the bank's links (--graph).
 
 Usage:
   uv run idea_search.py <bank-root> index                     # embed new or changed chunks
-  uv run idea_search.py <bank-root> search "<text>" [-k 30] [--type atom|card|lens|move] [--graph] [--rerank] [--json]
-  uv run idea_search.py <bank-root> like <atom-slug> [-k 10] [--other-fields] [--json]
+  uv run idea_search.py <bank-root> search "<text>" [-k 30] [--type brick|card|lens|move] [--graph] [--rerank] [--json]
+  uv run idea_search.py <bank-root> like <brick-slug> [-k 10] [--other-fields] [--json]
 
-Chunks: an atom gives a signature view, a gloss view (title, description, the prose), one
+Chunks: a brick gives a signature view, a gloss view (title, description, the prose), one
 view per field in `names`, one per migration paragraph and one for `# Where it fails`. A
 card gives its head, one chunk per layer section, one per Recipe, Raw and Mutations row.
 Lenses and moves are one chunk each. Generated `# Related` sections are never embedded: the
@@ -19,7 +19,7 @@ graph step uses the links themselves.
 Vectors are cached in <bank-root>/.index/eg2.npz, keyed by the exact embedded text, so
 `index` embeds only what changed. The cache is derived data: keep it out of git.
 The ranking is a shortlist for an LLM structure check, not a verdict. Bench (2026-11-03, 175
-rows that were linked to an existing atom, query = the source quote only): hybrid recall@10
+rows that were linked to an existing brick, query = the source quote only): hybrid recall@10
 0.72, @30 0.81; one vector per file 0.51 @10; the graph step added nothing at @10, so it is off
 by default. Read a shortlist of 30, not 10. --rerank (Haiku, held-out 72 rows): recall@1 0.39 -> 0.53.
 
@@ -60,7 +60,7 @@ QUERY = "task: search result | query: {}"
 DOC = "title: {} | text: {}"
 SYM = "task: sentence similarity | query: {}"
 CACHE = Path(".index") / "eg2.npz"
-TYPES = {"atom": "Atom", "card": "Idea Card", "lens": "Lens", "move": "Move"}
+TYPES = {"brick": "Brick", "card": "Idea Card", "lens": "Lens", "move": "Move"}
 REL_RE = ix.REL_RE
 
 
@@ -123,7 +123,7 @@ def chunks(concepts: list[dict]) -> list[dict]:
         fm, t = c["fm"], c["fm"]["type"]
         secs = sections(c["body"])
         head = f"{fm.get('title', '')}. {fm.get('description', '')}"
-        if t == "Atom":
+        if t == "Brick":
             sig = dict(secs).get("Signature", "")
             sig_list = "\n".join(l for l in sig.splitlines() if l.strip().startswith("- **"))
             prose = "\n".join(l for l in sig.splitlines() if not l.strip().startswith("- **"))
@@ -334,13 +334,13 @@ def graph(concepts: list[dict]) -> dict[str, set[str]]:
     for c in concepts:
         fm, me = c["fm"], node[c["slug"]]
         t = fm["type"]
-        if t == "Atom":
+        if t == "Brick":
             for k in ix.as_list(fm.get("cards")):
                 link(me, node.get(k))
-            for r in ix.atom_roles(fm):
+            for r in ix.brick_roles(fm):
                 link(me, f"role:{r}")
         elif t == "Idea Card":
-            for key_ in ("atoms", "lenses", "moves"):
+            for key_ in ("bricks", "lenses", "moves"):
                 for k in ix.as_list(fm.get(key_)):
                     link(me, node.get(k))
             if fm.get("parent"):
@@ -349,7 +349,7 @@ def graph(concepts: list[dict]) -> dict[str, set[str]]:
             for k in ix.as_list(fm.get("cards")):
                 link(me, node.get(k))
         elif t == "Move":
-            for key_ in ("parent", "child", "card", "from_atom", "to_atom", "atom"):
+            for key_ in ("parent", "child", "card", "from_brick", "to_brick", "brick"):
                 link(me, node.get(fm.get(key_) or ""))
     return g
 
@@ -448,42 +448,42 @@ class Index:
         return out
 
     def like(self, slug: str, k: int, other_fields: bool) -> list[dict]:
-        """Atoms with a similar signature (symmetric prompt), with topic overlap shown beside it."""
+        """Bricks with a similar signature (symmetric prompt), with topic overlap shown beside it."""
         rows = {self.chunks[i]["slug"]: j for j, i in enumerate(self.sig_rows)}
         if slug not in rows:
-            raise SystemExit(f"idea_search: no atom named {slug}")
-        fm = self.by_node[f"Atom:{slug}"]["fm"]
-        my_fields = ix.atom_fields(fm)
+            raise SystemExit(f"idea_search: no brick named {slug}")
+        fm = self.by_node[f"Brick:{slug}"]["fm"]
+        my_fields = ix.brick_fields(fm)
         sims = self.sym @ self.sym[rows[slug]]
         gloss = {c["slug"]: i for i, c in enumerate(self.chunks) if c["view"] == "gloss"}
         out = []
         for s2, j in rows.items():
             if s2 == slug:
                 continue
-            fm2 = self.by_node[f"Atom:{s2}"]["fm"]
+            fm2 = self.by_node[f"Brick:{s2}"]["fm"]
             if fm2.get("status") == "deprecated":
                 continue
-            shared = sorted(my_fields & ix.atom_fields(fm2))
+            shared = sorted(my_fields & ix.brick_fields(fm2))
             if other_fields and shared:
                 continue
             topic = float(self.doc[gloss[s2]] @ self.doc[gloss[slug]]) if s2 in gloss and slug in gloss else 0.0
             out.append({"slug": s2, "title": fm2.get("title"), "signature_sim": round(float(sims[j]), 4),
                         "topic_sim": round(topic, 4), "shared_fields": shared,
-                        "shared_roles": sorted(ix.atom_roles(fm) & ix.atom_roles(fm2))})
+                        "shared_roles": sorted(ix.brick_roles(fm) & ix.brick_roles(fm2))})
         out.sort(key=lambda r: -r["signature_sim"])
         return out[:k]
 
 
 RERANK_MODEL = "claude-haiku-5-5"
-RERANK_PROMPT = """You match a passage from a new source to an existing idea atom in a bank.
-An atom is a structure named by the job it does: input, output, objective, constraint. Fields rename the same
-structure, so ignore domain words and compare relations: does the passage's input map to the atom's input, its
-goal to the atom's objective, its limit to the atom's constraint?
+RERANK_PROMPT = """You match a passage from a new source to an existing idea brick in a bank.
+A brick is a structure named by the job it does: input, output, objective, constraint. Fields rename the same
+structure, so ignore domain words and compare relations: does the passage's input map to the brick's input, its
+goal to the brick's objective, its limit to the brick's constraint?
 
 Passage:
 {query}
 
-Candidate atoms:
+Candidate bricks:
 {cands}
 
 Rank the candidates whose structure could be the same as the passage's component, best first, at most 10.
@@ -536,12 +536,12 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--type", choices=sorted(TYPES), action="append")
     s.add_argument("--graph", action="store_true", help="add Personalized PageRank over the links (no gain measured yet)")
     s.add_argument("--rerank", action="store_true",
-                   help=f"reorder the atom shortlist by structure with one {RERANK_MODEL} call (~$0.002)")
+                   help=f"reorder the brick shortlist by structure with one {RERANK_MODEL} call (~$0.002)")
     s.add_argument("--json", action="store_true")
-    lk = sub.add_parser("like", help="atoms whose signature is close to this atom's")
+    lk = sub.add_parser("like", help="bricks whose signature is close to this brick's")
     lk.add_argument("slug")
     lk.add_argument("-k", type=int, default=10)
-    lk.add_argument("--other-fields", action="store_true", help="only atoms that share no field with it")
+    lk.add_argument("--other-fields", action="store_true", help="only bricks that share no field with it")
     lk.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
     if not a.root.is_dir():
@@ -557,17 +557,17 @@ def main(argv: list[str] | None = None) -> int:
         types = {TYPES[t] for t in a.type} if a.type else None
         res = idx.search(q, a.query, idx.mask(types=types), use_graph=a.graph)[:max(a.k, 30) if a.rerank else a.k]
         if a.rerank:
-            atom_rows = [r for r in res if r["type"] == "Atom"]
+            brick_rows = [r for r in res if r["type"] == "Brick"]
             try:
-                order = llm_rerank(idx, a.query, [r["slug"] for r in atom_rows])
+                order = llm_rerank(idx, a.query, [r["slug"] for r in brick_rows])
             except (OSError, ValueError, subprocess.SubprocessError) as e:
                 print(f"idea_search: RERANK FAILED ({e.__class__.__name__}: {e}); showing the fused order", file=sys.stderr)
             else:
                 pos = {sl: i for i, sl in enumerate(order)}
-                atom_rows.sort(key=lambda r: pos[r["slug"]])
-                for i, r in enumerate(atom_rows):
+                brick_rows.sort(key=lambda r: pos[r["slug"]])
+                for i, r in enumerate(brick_rows):
                     r["rerank_rank"] = i + 1
-                res = atom_rows + [r for r in res if r["type"] != "Atom"]
+                res = brick_rows + [r for r in res if r["type"] != "Brick"]
             res = res[:a.k]
         if a.json:
             print(json.dumps(res, indent=1))
