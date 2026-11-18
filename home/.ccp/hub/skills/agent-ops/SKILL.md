@@ -65,6 +65,9 @@ If `send` says the text stayed on the input line, or `spawn` or `task new` times
 harness may have refused the line (omp with no API key for its model), or Claude Code may be at its
 folder-trust dialog in a folder it has never opened. Never answer that dialog yourself (trusting a
 folder is a permission change): ask Sam, or start the agent in a repo or worktree Claude Code trusts.
+Since termctl v0.7.1 a startup prompt ends the wait after about 2 s (exit 5, "waits on a prompt at
+startup (trust this folder)"). Ask Sam to answer it in that pane, then hand the task over with
+`task new ... --reuse <pane>`.
 
 ## Reference files
 
