@@ -7,12 +7,10 @@
   },
   "autoDreamEnabled": false,
   "autoMemoryEnabled": false,
-  "effortLevel": "xhigh",
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true
   },
   "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
@@ -31,7 +29,6 @@
       "Bash(lsof:*)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(npm run:*)",
       "Bash(npm:*)",
       "Bash(npx:*)",
       "Bash(python3:*)",
@@ -46,8 +43,7 @@
       "mcp__codegraph",
       "Bash(codegraph:*)"
     ],
-    "defaultMode": "plan",
-    "deny": []
+    "defaultMode": "plan"
   },
   "plansDirectory": ".claude/plans",
   "remoteControlAtStartup": false,

@@ -69,6 +69,10 @@ The `growtrics` profile runs a second Claude account beside `default`. Its
 `settings-fragment.json` in `home/.ccp/profiles/growtrics/` are relative symlinks to
 `../default/`, so both profiles take one set of instructions and settings.
 After a settings change, run `ccp profile sync growtrics` too.
+Its `settings.json` is a real file in `~/.ccp/profiles/growtrics/`, not in the repository. When
+the sync lists edits it kept, discard them with `ccp profile sync growtrics --force`. Never run
+`ccp profile capture growtrics`: its fragment is the default profile's, so a capture writes
+growtrics' local edits into the shared fragment.
 
 Start it with its own config directory, not with `ccp use growtrics -g`:
 
