@@ -20,6 +20,7 @@ harness-ops clear <target>             # /clear, then wait until the harness is 
 harness-ops wait-idle <target> [--timeout 120]
 harness-ops spawn <harness> --cwd <dir> [--prompt "..." | --prompt-file F] [--label L] [--command CMD] [--timeout S]
 harness-ops interrupt <target> [--key ctrl-c]         # stop its current turn (Esc on claude, omp and agy)
+harness-ops key [--force] <target> <key>...           # press keys on a pane you started: shift-tab, alt-m, f5, pageup, ctrl-o, ...
 harness-ops close [--force] <target>   # panes you made with spawn or task new; never your own
 harness-ops name <label>               # give your own pane a stable label
 harness-ops move <target> --to new|self|tab-of:<pane>|<tab id>   # regroup a running pane; same PID, label and task
@@ -199,6 +200,9 @@ One message = one complete request. The receiver has none of your context.
 - To reset another agent, use `send --clear-first` or `clear`. Never type `/clear` into a message: a
   slash command only works alone on the line.
 - A busy agent queues the message and handles it after its turn; `send` then prints `queued for`.
+- Task results and DIALOG notices from the watcher reach you only while you are idle (since termctl
+  v0.7.3), each once; one held for more than 10 minutes is typed anyway. So a long turn delays them:
+  use `task wait` when you need a worker's result or dialog inside a turn.
   Do not resend. Do not interrupt to make it read sooner: an interrupt puts a queued message back on
   its input line, unsent.
 
@@ -244,7 +248,7 @@ came back on the input line: it was not sent. Tell the user; never press Enter f
 `interrupt --key`. That rule is about someone's queued message. One exception: a pane you started
 yourself (`spawn` or `task new`, shown by `ls --mine`) whose input line, as `read` shows it, holds
 exactly your own first prompt (`[task <id> from ...] Read the file ...` or your spawn prompt) and
-nothing else. Submit it with `termctl send-key <pane> enter`, then `read` again to check it left the
+nothing else. Submit it with `harness-ops key <pane> enter`, then `read` again to check it left the
 line. Never do this on a pane you did not start, or when anything else is on the line.
 Exit codes: 0 ok, 1 terminal backend error (for iTerm2: is the Python API enabled?), 2 refused
 (target or usage), 4 refused before anything was typed (a draft on the input line), 5 wait timed out,
@@ -252,6 +256,12 @@ or typed text that stayed on the input line (since v0.7.2; it may still arrive: 
 6 refused by a safety limit (task
 caps, or `close` on a pane that is not ours or is busy, or a `--persist` choice without `--persist`),
 7 no dialog on screen, or not the one `--expect` names.
+
+`harness-ops key` (termctl v0.8.0) presses keys on a pane you started, for a mode switch (shift-tab), a
+menu, or a picker: it refuses your own pane (2), any pane you did not start (6), an open permission
+dialog (7: use `answer` or `deny`) and text on the input line (4, unless `--force`). Plain digits are
+not keys. hc cannot send shift-tab, space, delete, home, end, pageup or pagedown (exit 2). `read` the
+pane after, to check the keys did what you meant.
 
 Closing and interrupting act on someone else's work. For a pane you did not create, ask the user
 first, even though `--force` exists.
