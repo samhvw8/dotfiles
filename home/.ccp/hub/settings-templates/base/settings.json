@@ -50,7 +50,7 @@
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
   "statusLine": {
-    "command": "CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/installs/github-haleclipse-c-cometix-line/global/ccline",
+    "command": "CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/installs/github-haleclipse-c-cometix-line/latest/ccline",
     "type": "command"
   },
   "tui": "fullscreen",

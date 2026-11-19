@@ -33,12 +33,17 @@ and no npm `postinstall`.
 `statusLine` in `home/.ccp/profiles/default/settings.json` runs:
 
 ```
-CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/installs/github-haleclipse-c-cometix-line/global/ccline
+CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/installs/github-haleclipse-c-cometix-line/latest/ccline
 ```
 
-- It calls mise's `global` link, not the shim. The shim adds about 47 ms to
-  every refresh. `global` follows the pinned version, so a bump needs no
-  settings change.
+- It calls mise's `latest` link, not the shim. The shim adds about 47 ms to
+  every refresh. `latest` follows the newest installed version, so a bump
+  needs no settings change.
+- Not the `global` link: mise writes `global` only for tools the global config
+  selects, and a symlink rebuild that sees that config as a project config (a
+  run inside `~/.dotfiles`, likely) removes it from every tool. On 2026-11-19
+  that broke the status line in every profile. To restore the links, run
+  `cd ~ && mise install -f "github:Haleclipse/CCometixLine@2.0.1"`.
 - `CCLINE_HOME` moves ccline off its default `~/.claude/ccline`, because
   [ccp owns `~/.claude`](/decisions/ccp-owns-claude-link.md).
 
