@@ -1,2 +1,5 @@
+# Machine-local mise overrides (see ~/.config/mise/config.local.toml)
+mise.local.toml
+
 # omp writes a lock file next to the resolved config target
 home/.omp/agent/*.lock

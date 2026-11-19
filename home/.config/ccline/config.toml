@@ -42,10 +42,11 @@ right = ["cost", "cost.rate", "cost.today"]
 
 # 4. Rate limits. Each cell's top half = quota used, bottom half = time elapsed;
 #    the dark bottom cells on the right = time left until reset.
+#    {left_bar:6} (local fork build): a 6-cell bar of the window time already passed.
 #    The arrow after the text: ⇡ ahead of the clock (bad), ⇣ behind (good).
 [[line]]
 left = [
-  { metric = "quota.5h", cells = 12, format = "5h {pct}%[ · resets in {left}][ at {reset}]" },
-  { metric = "quota.7d", cells = 12, format = "7d {pct}%[ · resets in {left}][ at {reset}]" },
+  { metric = "quota.5h", cells = 12, format = "5h {pct}%[ · {left_bar:6} resets in {left}][ at {reset}]" },
+  { metric = "quota.7d", cells = 12, format = "7d {pct}%[ · {left_bar:6} resets in {left}][ at {reset}]" },
   "quota.eta",
 ]

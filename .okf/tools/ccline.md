@@ -30,6 +30,17 @@ about 89 ms.
 `github:` backend downloads the release binary, so there is no Node launcher
 and no npm `postinstall`.
 
+**Local fork build (this Mac).** The `{left_bar}` / `{left_bar:N}` placeholder
+(a bar of the window time already passed) is not in 2.0.1. It lives on branch
+`samhv/reset-bar` of the fork at `~/workspace/oss/CCometixLine`. Its
+`mise run install` builds `dist/ccline`. Two git-ignored files point mise at
+that folder with a `path:` version: `~/.config/mise/config.local.toml`, and
+`~/.dotfiles/mise.local.toml` (inside `~/.dotfiles`, mise reads
+`mise/config.toml` as a project config, which outranks the global local file).
+Other machines keep 2.0.1; 2.0.1 drops an optional `[...]` group that holds
+`{left_bar}`, so the shared config still renders there, without the bar and
+the "resets in" text. Remove both `path:` lines to return to the release.
+
 `statusLine` in `home/.ccp/profiles/default/settings.json` runs:
 
 ```
