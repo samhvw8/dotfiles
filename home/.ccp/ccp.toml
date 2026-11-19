@@ -64,7 +64,7 @@ provider = 'git'
 url = 'https://github.com/samhvw8/thinking-skills.git'
 path = 'sources/samhvw8--thinking-skills'
 ref = 'main'
-installed = ['skills/heavy-think', 'skills/council', 'skills/debate', 'skills/creative', 'skills/ambition']
+installed = ['skills/heavy-think', 'skills/council', 'skills/debate', 'skills/creative', 'skills/ambition', 'skills/idea-bank', 'skills/idea-mine', 'skills/idea-forge', 'skills/idea-scout', 'skills/co-read', 'skills/idea-present']
 
 [sources.'scaccogatto/okf-skills']
 registry = 'github'
