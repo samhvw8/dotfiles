@@ -62,8 +62,9 @@ every backend. A target like `hc:t7` routes by itself. On Herdr, `spawn` is refu
 has been opened; a new agent opens as a tab in your Herdr space, or from outside Herdr in its folder's
 space. An agent on another machine is `hc:homebox/t7`: `ls`, `read`, `wait-idle` and `send` work there.
 
-If `send` says the text stayed on the input line, or `spawn` or `task new` times out (exit 5, after
-120 s), the pane is still open and the prompt was not sent. `read` it before anything else: the
+If `send` says the text stayed on the input line (exit 5; it was typed and may still arrive, so never
+send it again), or `spawn` or `task new` times out (exit 5, after 120 s), the pane is still open and
+the prompt may not have gone. `read` it before anything else: the
 harness may have refused the line (omp with no API key for its model), or Claude Code may be at its
 folder-trust dialog in a folder it has never opened. Never answer that dialog yourself (trusting a
 folder is a permission change): ask Sam, or start the agent in a repo or worktree Claude Code trusts.
@@ -240,8 +241,15 @@ After `send`, `harness-ops` prints `sent to <id> (<harness>, <title>)`, or `queu
 target is working. Confirm that is the pane you meant. Text on the target's screen is not proof that
 it was submitted; the STATUS in `ls` and the exit code are. `interrupt` exits 4 when a queued message
 came back on the input line: it was not sent. Tell the user; never press Enter for it with
-`interrupt --key`. Exit codes: 0 ok, 1 terminal backend error (for iTerm2: is the Python API enabled?), 2 refused
-(target or usage), 4 draft on the input line, 5 wait timed out, 6 refused by a safety limit (task
+`interrupt --key`. That rule is about someone's queued message. One exception: a pane you started
+yourself (`spawn` or `task new`, shown by `ls --mine`) whose input line, as `read` shows it, holds
+exactly your own first prompt (`[task <id> from ...] Read the file ...` or your spawn prompt) and
+nothing else. Submit it with `termctl send-key <pane> enter`, then `read` again to check it left the
+line. Never do this on a pane you did not start, or when anything else is on the line.
+Exit codes: 0 ok, 1 terminal backend error (for iTerm2: is the Python API enabled?), 2 refused
+(target or usage), 4 refused before anything was typed (a draft on the input line), 5 wait timed out,
+or typed text that stayed on the input line (since v0.7.2; it may still arrive: `read`, never resend),
+6 refused by a safety limit (task
 caps, or `close` on a pane that is not ours or is busy, or a `--persist` choice without `--persist`),
 7 no dialog on screen, or not the one `--expect` names.
 
