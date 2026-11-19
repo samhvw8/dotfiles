@@ -31,8 +31,12 @@ about 89 ms.
 and no npm `postinstall`.
 
 **Local fork build (this Mac).** The `{left_bar}` / `{left_bar:N}` placeholder
-(a bar of the window time already passed) is not in 2.0.1. It lives on branch
-`samhv/reset-bar` of the fork at `~/workspace/oss/CCometixLine`. Its
+(a bar of the window time already passed) is not in 2.0.1. It is upstream PR
+[#146](https://github.com/Haleclipse/CCometixLine/pull/146) (branch
+`feat/quota-left-bar` on `samhvw8/CCometixLine`). Until it merges, this Mac runs
+branch `samhv/reset-bar` of the clone at `~/workspace/oss/CCometixLine`: the PR
+commit plus a `mise.toml`. After the merge and a release, bump the pin and
+remove the `path:` lines. Its
 `mise run install` builds `dist/ccline`. Two git-ignored files point mise at
 that folder with a `path:` version: `~/.config/mise/config.local.toml`, and
 `~/.dotfiles/mise.local.toml` (inside `~/.dotfiles`, mise reads
