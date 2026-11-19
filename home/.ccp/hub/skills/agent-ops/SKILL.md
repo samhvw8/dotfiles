@@ -205,9 +205,10 @@ One message = one complete request. The receiver has none of your context.
 - To reset another agent, use `send --clear-first` or `clear`. Never type `/clear` into a message: a
   slash command only works alone on the line.
 - A busy agent queues the message and handles it after its turn; `send` then prints `queued for`.
-- Task results and DIALOG notices from the watcher reach you only while you are idle (since termctl
-  v0.7.3), each once; one held for more than 10 minutes is typed anyway. So a long turn delays them:
-  use `task wait` when you need a worker's result or dialog inside a turn.
+- DIALOG notices from the watcher reach you at once, busy or not, each once (termctl v0.9.1). Task
+  results, progress and stall notices wait until you are idle, at most 10 minutes. Never poll `read` or
+  `ls --mine` in a loop to find dialogs or results: the notices come to you. Inside a turn, block on
+  `task wait --any` instead (it returns results and dialogs).
   Do not resend. Do not interrupt to make it read sooner: an interrupt puts a queued message back on
   its input line, unsent.
 
