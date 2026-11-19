@@ -16,7 +16,8 @@ a live team instead.
 | Manager | `other-family`, one `task new` | Starts the workers, checks each draft against its card, reports one table per round. Never ranks directions |
 | Workers | `fast`, up to 6, started by the manager with `task new` | One card each, kept open across rounds with `task send`, so each harness starts once |
 
-Depth: you → manager (1) → workers (2) fits `TERMCTL_MAX_DEPTH=2`, so workers cannot start tasks. The
+Depth: you → manager (1) → workers (2). Since termctl v0.10.0 a task is a leaf unless its starter grants
+it `--sub-depth`, so start the manager with `--sub-depth 1` and leave the workers leaves. The
 manager owns the workers, which keeps them inside the 6-tasks-per-owner limit. agy members need the
 `command(harness-ops)` rule in agy's settings; check it before using agy roles (`roster.md`). The manager runs
 harness-ops itself, so this applies to it.
@@ -28,7 +29,7 @@ harness-ops itself, so this applies to it.
 2. Copy `worker-brief.md` into the folder and fill in what all workers share (inputs, schema). Fill
    `manager-brief.md` as `manager.md` with the paths, the worker harness and the `fast` command from
    `roster.md`. Use absolute paths everywhere.
-3. Start the manager: `harness-ops task new <harness> --command "<other-family command>" --title
+3. Start the manager: `harness-ops task new <harness> --sub-depth 1 --command "<other-family command>" --title
    swarm-<topic> --cwd <dir> --brief-file <run folder>/manager.md`. End your turn.
 4. **Each round:** the manager's `task done` brings `report-round-<N>.md`: one row per card, with a
    verdict `followed`, `drifted: <how>` or `failed`. Spot-check one draft against its card. When your

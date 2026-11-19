@@ -29,7 +29,12 @@ harness-ops swap <a> <b>               # trade the places of two panes
 harness-ops arrange [<tab>] --layout even|rows|columns|tiled|main-left|main-top [--main <pane>]
 harness-ops whoami
 harness-ops task new <harness> --title T (--brief "..." | --brief-file F) --cwd D [--reuse <target>] [--command CMD] [--max N] [--timeout S]
-harness-ops task ls [--all] | task show <id> | task send <id> "<text>"
+                 [--sub-depth K] [--tree-max M] [--defer [--wait-ack S]]   # K levels it may start below it (default 0: a leaf)
+harness-ops task ls [--all] [--tree] | task show <id> | task send <id> "<text>"
+harness-ops task progress <id> --summary "<one line>" [--notify]   # a report that does not end the round
+harness-ops task adopt <task-id|pane> [--force]   # take over a running task or a session someone started
+harness-ops task close --tree [--force] <id>      # a task and every task below it
+harness-ops ack <id> ["<note>"]                   # the one reply to a deferred task or message
 harness-ops task wait <id> | task wait --any [--timeout 600]
 harness-ops task done <id> --status ok|failed|blocked --summary "<one line>"   # the worker reports; its session stays open
 harness-ops task accept <id> [--close] # the lead's verdict: only this makes a task done
@@ -40,7 +45,7 @@ harness-ops task review <id> --blind --harness claude --model <m> [--brief-file 
 harness-ops task close [--force] <id>  # refused until the task is accepted
 harness-ops note <what> ["<text>" | --file F]   # text, --file F (before or after <what>; v0.6.0 takes it only before) or stdin: file a brief or plan in your project's journal folder; prints its path
 harness-ops log [--project .] [--task <id>] [--pane <target>] [--since 2h] [-n 50]   # the journal: every message, spawn, answer and task event
-harness-ops resume <id> | resume .   # after a restart or compaction: a task's brief, reports and messages in full, or your project's open tasks, notes and last entries
+harness-ops resume <id> | resume . [--tree]   # after a restart or compaction: a task's brief, reports and messages in full, or your project's open tasks, notes and last entries
 ```
 
 `<harness>` is `claude`, `omp`, `agy`, `opencode`, `codex`, `gemini`, `aider`, `pi` or `generic`. To pick a
@@ -112,7 +117,27 @@ Procedures are in files next to this one, each under its original heading. Read 
   to you, and it stops when done.
 - **`task new`:** only when the job needs its own visible harness session: a different harness or
   model, work Sam should be able to watch or take over, or a long job that must outlive your turn.
-- At most 6 tasks run per owner, nested 2 deep.
+- At most 6 tasks run per owner; a whole tree runs at most 12 (`--tree-max`), at most 4 levels deep
+  (`TERMCTL_MAX_DEPTH`). A task is a **leaf** unless you start it with `--sub-depth K`: a lead that
+  will start its own workers needs `--sub-depth 1`, a lead of leads `--sub-depth 2`. Its brief ends with
+  a role card that says what it may start.
+- **Lead of leads.** You hear only from your direct tasks, plus two alerts from below: a dialog left
+  unanswered more than 3 minutes anywhere under your tasks, and a sub-lead that ended with tasks still
+  running (`task close --tree --force <id>` cleans that up). `task ls --tree` and `resume . --tree`
+  show the whole tree. Report progress up with `task progress <id> --summary ... [--notify]`, not with
+  `task done` (that ends your round) or a plain send.
+- **Take over a running lead.** `task adopt <task-id|pane>` makes you its owner without /clear: its
+  dialogs, results and stall alerts come to you, and its own workers stay under it. A session someone
+  started by hand gets a task record and one message telling it to report with `task done`. Refused
+  while the old owner's pane lives, unless `--force`; ask Sam before you force it.
+- **Deferred task (fire and forget).** `task new --defer`: the worker runs `harness-ops ack <id>` once
+  (recorded, nothing typed to you), does the job, and runs `task done`; you get no notice of the result.
+  Its pane closes by itself on ok; failed or blocked stay open. Its dialogs are denied, never approved,
+  and after 2 it is blocked, so start it with a permission mode that does not ask (`--command "claude
+  --permission-mode auto ..."`, agy auto mode). Check its result in `task ls --all` or where the brief
+  says. `--wait-ack S` waits for the ack in the same command.
+- **Stalls.** A running worker idle 10 minutes with no `task done` or progress sends you one stall
+  notice: `read` it, then `task send` it or close it.
 - Write the brief as a complete request: the worker has none of your context.
 - After starting, end your turn (the `RE: task` message wakes you) or block on `task wait`.
 - **The lead owns done.** A worker's `task done --status ok` means ready for you. Check the work,
@@ -186,8 +211,10 @@ One message = one complete request. The receiver has none of your context.
 - **Reply how:** the tag already carries your id; ask for "reply with agent-ops", or end with
   `No reply needed` when you want none.
 - **Deferred (fire and forget):** for a job you hand off and want no feedback on (a cleanup, a long
-  build, a doc refresh), end the message with `Deferred: reply ACK once, then no reply.` The receiver
-  sends one `RE: ACK` and never writes to you again about it, not even when it finishes or fails. So
+  build, a doc refresh), use `send --defer <target> "..."` (termctl v0.10.0): it prints a message ID and
+  asks the receiver to run `harness-ops ack <id>` once; nothing is typed back to you. With an older
+  receiver, end the message with `Deferred: reply ACK once, then no reply.`: it sends one `RE: ACK`.
+  Either way it never writes to you again about it, not even when it finishes or fails. So
   put in the message where the result goes (a file, a commit, a note) and what to do on failure (stop,
   or ask Sam directly). Check the result there yourself later; do not ask the receiver.
 - Multi-line or over 800 chars is fine: `send` writes it to a file in your project's journal folder,
@@ -212,7 +239,8 @@ One message = one complete request. The receiver has none of your context.
   Do not resend. Do not interrupt to make it read sooner: an interrupt puts a queued message back on
   its input line, unsent.
 
-Then end your turn: the reply arrives in your pane as a new message, like user input. If you must
+Then end your turn: the reply arrives in your pane as a new message, like user input. A second identical `send` to the same pane within 10 minutes is refused (exit 6, termctl v0.10.0):
+the first one went; do not resend. Use `--again` only for a deliberate repeat. If you must
 wait inside a turn, run one `wait-idle <target> --timeout 600`, then `read` once. Never loop.
 
 ## When a message arrives
@@ -242,6 +270,7 @@ Then answer by its kind. Exactly one of these applies:
 | `[agent-ops from <task> ...] task <id> (...) DIALOG <fp>: ...` (you lead that task) | Decide and answer it as in ## Task or subagent: `answer` or `deny`. No `RE:`. |
 | `[agent-ops from <label> ...] pane <pane> (<label>) DIALOG <fp>: ...` (a pane you started: a pair partner, a live-team member) | Act on it now, also in a pair or live team and outside the "act only on `Your turn:`" rule: the member is stalled until you answer. Decide as in ## Task or subagent, then `answer <pane> <n> --expect <fp>` or `deny <pane> --expect <fp>`. No `RE:` and no turn message. A dialog on your own pane stays Sam's. |
 | Ends with `No reply needed` (a crew roster, a notice) | Nothing. |
+| Ends with `[deferred <id>: run harness-ops ack <id> once ...]` | Run `harness-ops ack <id>` once at once, then do the job. Never write to the sender about it: no progress, no result, no question. Put the result where the message says; on a blocker, do what it says (stop, or ask Sam). |
 | Ends with `Deferred: reply ACK once, then no reply.` | Send exactly one `harness-ops send <ID> "RE: ACK"` at once, then do the job. Never write to the sender about it again: no progress, no result, no question. Put the result where the message says; on a blocker, do what it says (stop, or ask Sam). |
 | Starts with `RE:` | Nothing, unless it asks a new question. `RE: task <id>` is a finished task's result. |
 | Anything else | Always answer, even "can't: <why>": `harness-ops send <ID> "RE: <result, or what blocked you>"`. |
