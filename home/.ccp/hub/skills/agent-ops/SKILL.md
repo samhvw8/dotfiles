@@ -185,6 +185,11 @@ One message = one complete request. The receiver has none of your context.
 - **What** to do or answer, **why**, and **done when** (the check that ends it).
 - **Reply how:** the tag already carries your id; ask for "reply with agent-ops", or end with
   `No reply needed` when you want none.
+- **Deferred (fire and forget):** for a job you hand off and want no feedback on (a cleanup, a long
+  build, a doc refresh), end the message with `Deferred: reply ACK once, then no reply.` The receiver
+  sends one `RE: ACK` and never writes to you again about it, not even when it finishes or fails. So
+  put in the message where the result goes (a file, a commit, a note) and what to do on failure (stop,
+  or ask Sam directly). Check the result there yourself later; do not ask the receiver.
 - Multi-line or over 800 chars is fine: `send` writes it to a file in your project's journal folder,
   `~/.local/state/termctl/projects/<project>/`, and sends the path.
 - Write a brief (pair, group, duel, a plan you hand over) with `harness-ops note`, never as a file you
@@ -236,6 +241,7 @@ Then answer by its kind. Exactly one of these applies:
 | `[agent-ops from <task> ...] task <id> (...) DIALOG <fp>: ...` (you lead that task) | Decide and answer it as in ## Task or subagent: `answer` or `deny`. No `RE:`. |
 | `[agent-ops from <label> ...] pane <pane> (<label>) DIALOG <fp>: ...` (a pane you started: a pair partner, a live-team member) | Act on it now, also in a pair or live team and outside the "act only on `Your turn:`" rule: the member is stalled until you answer. Decide as in ## Task or subagent, then `answer <pane> <n> --expect <fp>` or `deny <pane> --expect <fp>`. No `RE:` and no turn message. A dialog on your own pane stays Sam's. |
 | Ends with `No reply needed` (a crew roster, a notice) | Nothing. |
+| Ends with `Deferred: reply ACK once, then no reply.` | Send exactly one `harness-ops send <ID> "RE: ACK"` at once, then do the job. Never write to the sender about it again: no progress, no result, no question. Put the result where the message says; on a blocker, do what it says (stop, or ask Sam). |
 | Starts with `RE:` | Nothing, unless it asks a new question. `RE: task <id>` is a finished task's result. |
 | Anything else | Always answer, even "can't: <why>": `harness-ops send <ID> "RE: <result, or what blocked you>"`. |
 
