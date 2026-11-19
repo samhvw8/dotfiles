@@ -30,7 +30,7 @@ about 89 ms.
 `github:` backend downloads the release binary, so there is no Node launcher
 and no npm `postinstall`.
 
-**Local fork build (this Mac).** The `{left_bar}` / `{left_bar:N}` placeholder
+**Local fork build (this Mac).** The `{elapsed_bar}` / `{elapsed_bar:N}` placeholder
 (a bar of the window time already passed) is not in 2.0.1. It is upstream PR
 [#146](https://github.com/Haleclipse/CCometixLine/pull/146) (branch
 `feat/quota-left-bar` on `samhvw8/CCometixLine`). Until it merges, this Mac runs
@@ -42,7 +42,7 @@ that folder with a `path:` version: `~/.config/mise/config.local.toml`, and
 `~/.dotfiles/mise.local.toml` (inside `~/.dotfiles`, mise reads
 `mise/config.toml` as a project config, which outranks the global local file).
 Other machines keep 2.0.1; 2.0.1 drops an optional `[...]` group that holds
-`{left_bar}`, so the shared config still renders there, without the bar and
+`{elapsed_bar}`, so the shared config still renders there, without the bar and
 the "resets in" text. Remove both `path:` lines to return to the release.
 
 `statusLine` in `home/.ccp/profiles/default/settings.json` runs:
