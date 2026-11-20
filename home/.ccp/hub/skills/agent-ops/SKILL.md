@@ -33,6 +33,10 @@ harness-ops task new <harness> --title T (--brief "..." | --brief-file F) --cwd 
 harness-ops task ls [--all] [--tree] | task show <id> | task send <id> "<text>"
 harness-ops task progress <id> --summary "<one line>" [--notify]   # a report that does not end the round
 harness-ops task adopt <task-id|pane> [--force]   # take over a running task or a session someone started
+harness-ops attach <pane> [--name N] [--about "..."] [--stall 30m] [--sub-depth K] [--notify] [--force]   # lead a session by scope, no task
+harness-ops detach <scope|pane>                    # let a session go; its scope and history stay
+harness-ops report "<one line>" [--notify]         # run by an attached session: report up without a task
+harness-ops scope ls [--all] [--tree] | scope show <name>   # your attached sessions
 harness-ops task close --tree [--force] <id>      # a task and every task below it
 harness-ops ack <id> ["<note>"]                   # the one reply to a deferred task or message
 harness-ops task wait <id> | task wait --any [--timeout 600]
@@ -130,6 +134,18 @@ Procedures are in files next to this one, each under its original heading. Read 
   dialogs, results and stall alerts come to you, and its own workers stay under it. A session someone
   started by hand gets a task record and one message telling it to report with `task done`. Refused
   while the old owner's pane lives, unless `--force`; ask the user before you force it.
+- **Lead a long-running session (a scope, not a task).** A session that works by area or project, not by
+  one brief (a backend session, a repo session), is not a task: it has no brief, no `task done`, no
+  `accept`, and does not count toward the 6-task cap. `attach <pane>` makes you its lead without /clear
+  and without typing anything into it: the note about its lead and scope rides on your first `send` to it,
+  or goes at once with `--notify`; the session itself sees it with `whoami`. Its dialogs reach you (answer
+  with `answer <name>`; `key <name> ...` works too). It reports with `report "..."`, and tasks it starts sit
+  under it, inside the caps you gave (`--sub-depth`, `--tree-max`). It sends you a notice when its pane exits
+  and, with `--stall 30m`, when it idles that long; there is no stall alert by default, since such a
+  session idles on purpose. A lead that has an attached session runs one slow watcher (30 s, nothing
+  written while idle) so a dialog in an idle session is not missed. `detach` frees it; if the pane
+  crashes, `attach <new-pane> --name <name>` rebinds the same scope with its history (`resume <name>`).
+  `attach` does not close panes: only `close --force` can, and it refuses an attached one without it.
 - **Deferred task (fire and forget).** `task new --defer`: the worker runs `harness-ops ack <id>` once
   (recorded, nothing typed to you), does the job, and runs `task done`; you get no notice of the result.
   Its pane closes by itself on ok; failed or blocked stay open. Its dialogs are denied, never approved,
