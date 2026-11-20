@@ -66,7 +66,7 @@ message text.
 To reach Herdr from another terminal, run `harness-ops --backend hc <command>`, or `ls --all` to list
 every backend. A target like `hc:t7` routes by itself. On Herdr, `spawn` is refused until the Herdr app
 has been opened; a new agent opens as a tab in your Herdr space, or from outside Herdr in its folder's
-space. An agent on another machine is `hc:box2/t7`: `ls`, `read`, `wait-idle` and `send` work there.
+space. An agent on another machine is `hc:<host>/<terminal>` (for example `hc:devbox/t7`): `ls`, `read`, `wait-idle` and `send` work there.
 
 If `send` says the text stayed on the input line (exit 5; it was typed and may still arrive, so never
 send it again), or `spawn` or `task new` times out (exit 5, after 120 s), the pane is still open and
