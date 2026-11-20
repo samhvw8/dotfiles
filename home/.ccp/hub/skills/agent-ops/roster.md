@@ -24,10 +24,10 @@ turns the role into a launch command. Pass the harness as the first argument and
   reviewer asks a person before every `harness-ops send` to a session agy did not start. Tested
   2026-11-15: a session-only `--settings` file does not apply `permissions.allow`, and
   `read_file`/`write_file` rules do not open the iTerm2 socket inside the sandbox; only the global
-  rule works. Sam adds it (agy's "always allow ... persist" option writes it); never add it yourself.
-  Without it, use a `claude` or `omp` member for the role and tell Sam.
+  rule works. The user adds it (agy's "always allow ... persist" option writes it); never add it yourself.
+  Without it, use a `claude` or `omp` member for the role and tell the user.
 - **Trusted folders.** agy trusts exact folders only (`trustedWorkspaces` in
-  `~/.gemini/antigravity-cli/settings.json`). `/Users/samhv` is trusted; its subfolders are not.
+  `~/.gemini/antigravity-cli/settings.json`). Your home folder is trusted; its subfolders are not.
   Start agy members with `--cwd ~` and give them absolute paths (board, brief, inputs, outputs).
 
 ## Roster check

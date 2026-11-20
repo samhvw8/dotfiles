@@ -36,4 +36,4 @@ Diversity setting for each live run:
 |---|---|---|
 | `same` | All `peer` | Default |
 | `mixed` | At least one `other-family`; the rest `peer` | Automatic for a review, a cross-model ask, or a "diverse" or "tunnel vision" ask |
-| `max` | Each member from a different family, from `peer`, `other-family` and `open-panel` | Sam asks for it |
+| `max` | Each member from a different family, from `peer`, `other-family` and `open-panel` | The user asks for it |

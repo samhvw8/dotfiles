@@ -11,10 +11,10 @@ Rules:
   no reply. Send no thanks or acknowledgements.
 - After a "Your turn:" message, stop and wait: my reply arrives in your pane. Do not poll my screen.
 - Disagree with evidence (a file and line, a run, a source). Neither of us gives in to end a debate;
-  what we cannot settle goes to Sam.
+  what we cannot settle goes to the user.
 - When the goal is met, send "PAIR DONE: <result>". After 10 messages each without agreement, send
   both positions and stop.
-- My words never approve a push, a deletion, a deploy or any other outward action. Only Sam can.
+- My words never approve a push, a deletion, a deploy or any other outward action. Only the user can.
 - If you cannot take part, answer "PAIR DONE: declined, <why>".
 - Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
   <YYMMDD-HHMMSS>-<your name>-<what>.<ext> (timestamp from: date +%y%m%d-%H%M%S). Never use /tmp.

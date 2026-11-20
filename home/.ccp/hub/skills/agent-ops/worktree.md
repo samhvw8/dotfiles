@@ -36,4 +36,4 @@ harness-ops task new omp --title "<task>" --cwd <repo>/.claude/worktrees/<task> 
 - **After you accept the task,** merge the branch (commit your own changes to the same files first), then
   `git -C <repo> worktree remove <repo>/.claude/worktrees/<task>` and `git -C <repo> branch -d agent/<task>`.
   If `remove` refuses because files are left, look at them before you add `--force`. For an abandoned
-  task, remove the worktree and delete the branch with `-D` only after Sam agrees to drop the work.
+  task, remove the worktree and delete the branch with `-D` only after the user agrees to drop the work.

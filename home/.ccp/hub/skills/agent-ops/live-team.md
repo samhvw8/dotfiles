@@ -37,7 +37,7 @@ agy members need the `command(harness-ops)` rule in agy's settings; check it bef
    --label team-<topic>-<n> --prompt-file <brief>`, or send the brief to a running session with
    `Your turn: accept or decline`. A member you spawned that stops on a permission dialog sends you a
    `pane ... DIALOG` notice: answer it as in ## Task or subagent in `SKILL.md`, whatever round it is. A member you
-   found running is not yours to answer: tell Sam.
+   found running is not yours to answer: tell the user.
 3. **Round 0, append check:** each member appends `## Round 0 — <name> ready: <method>` and answers
    `DONE round 0`. A missing line means that member has no working append: give it its own file
    (`<board>.<name>.md`) and join it into the board yourself. omp's top-level bash refuses `>>`; its
@@ -52,7 +52,7 @@ agy members need the `command(harness-ops)` rule in agy's settings; check it bef
    Send each duel member `Your turn: duel round N, brief <path>`. A duel counts as that round for its
    members. End your turn: each duel member's `DONE round N` wakes you. Then read the outcome on the board.
 7. **Close:** write what survived and what stays disputed at the end of the board, and send every
-   member `GROUP DONE: <board path>. No reply needed.` Report the result to Sam. Close the members you
+   member `GROUP DONE: <board path>. No reply needed.` Report the result to the user. Close the members you
    spawned; sessions you found running stay open.
 
 Outside a duel, only you send `Your turn:`, and members answer only you, so the harnesses never trade

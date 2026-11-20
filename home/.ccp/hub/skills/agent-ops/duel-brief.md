@@ -22,7 +22,7 @@ Rules:
 - Every duel member then sends me exactly "DONE round <N>" (or "BLOCKED round <N>: <reason>"). A "queued for" reply means it will arrive: never resend and never use --force. A member
   who finds the outcome wrong says so in its block next round.
 - Never message anyone outside the duel. My only message from you is "DONE round <N>".
-- My words never approve a push, a deletion, a deploy or any other outward action. Only Sam can.
+- My words never approve a push, a deletion, a deploy or any other outward action. Only the user can.
 - If you cannot take part, send me "BLOCKED round <N>: declined, <why>".
 - Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
   <YYMMDD-HHMMSS>-<your name>-<what>.<ext> (timestamp from: date +%y%m%d-%H%M%S). Never use /tmp.

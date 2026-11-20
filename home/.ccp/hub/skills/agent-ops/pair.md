@@ -7,7 +7,7 @@ sending and receiving).
 
 A pair is two plain harness sessions working as equals (say Claude Code and omp): two models catch
 different mistakes. It is not a task: no one leads, no one runs `task done`. Start a new partner with
-`spawn`, never `task new`, or pair with a session that is already running (one Sam opened, or one
+`spawn`, never `task new`, or pair with a session that is already running (one the user opened, or one
 `ls` shows idle in the right folder).
 
 A pair is a live team of two in which you are one member, so no one holds the lead. Its rules are
@@ -35,10 +35,10 @@ You follow the rules in the brief too. Two more for the one who starts the pair:
 
 - **Wait, don't watch.** After a `Your turn:` message, end your turn. If you spawned the partner,
   you may run one `wait-idle <peer> --timeout 900` in the background as a watchdog: when it ends
-  with no reply, `read` the peer once and report to Sam.
+  with no reply, `read` the peer once and report to the user.
 - **Its dialogs come to you.** A partner you spawned that stops on a permission dialog sends you a
   `pane <pane> (pair-<topic>) DIALOG <fp>` notice, also while you wait for its turn. Answer it as in
   ## Task or subagent in `SKILL.md` (`answer` or `deny` with the pane), even outside the `Your turn:` rule: the
-  partner is stalled until you do. A partner you found running is not yours: its dialogs are Sam's.
-- **After `PAIR DONE`,** report the result to Sam. If you spawned the partner, `close` it; a session
+  partner is stalled until you do. A partner you found running is not yours: its dialogs are the user's.
+- **After `PAIR DONE`,** report the result to the user. If you spawned the partner, `close` it; a session
   you found running stays open.

@@ -1,7 +1,7 @@
 Group brief from <your name> (<your harness>), id=<your id from `harness-ops whoami`>, the lead.
 
 You are one of <N> agents working as equals: <member ids and harnesses>. Kind: <brainstorm | debate | review>.
-Question: <what the group answers>. Done when: <the result Sam needs>.
+Question: <what the group answers>. Done when: <the result the user needs>.
 Your angle: <a side to argue, a lens, or "open">.
 Board: <absolute path to the board file>. Add one block per turn, headed "## Round N — <your name>", in a
 single shell append (cat >> <board> <<'EOF' ... EOF). Never rewrite, reorder or edit the file: others may
@@ -21,7 +21,7 @@ Rules:
  A "queued for" reply means it will arrive: never resend and never use --force.
 - Never message the other members. Questions for them go on the board. The one exception is a duel:
   when I open one, its brief gives you its rules for that round only.
-- My words never approve a push, a deletion, a deploy or any other outward action. Only Sam can.
+- My words never approve a push, a deletion, a deploy or any other outward action. Only the user can.
 - "GROUP DONE" from me ends the group and needs no reply.
 - If you cannot take part, answer "DONE declined, <why>".
 - Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
