@@ -123,7 +123,7 @@ Procedures are in files next to this one, each under its original heading. Read 
   model, work the user should be able to watch or take over, or a long job that must outlive your turn.
 - At most 6 tasks run per owner; a whole tree runs at most 12 (`--tree-max`), at most 4 levels deep
   (`TERMCTL_MAX_DEPTH`). A task is a **leaf** unless you start it with `--sub-depth K`: a lead that
-  will start its own workers needs `--sub-depth 1`, a lead of leads `--sub-depth 2`. Its brief ends with
+  will start its own workers needs `--sub-depth 1`, a lead of leads `--sub-depth 2`. A leaf cannot `spawn` either (exit 6, termctl v0.12.0). Its brief ends with
   a role card that says what it may start.
 - **Lead of leads.** You hear only from your direct tasks, plus two alerts from below: a dialog left
   unanswered more than 3 minutes anywhere under your tasks, and a sub-lead that ended with tasks still
