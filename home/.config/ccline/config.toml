@@ -13,10 +13,10 @@ separator = " | "
 [update]
 check = false
 
-# 1. Who: model + effort, output style, session name; session clock on the right.
+# 1. Who: model + effort, output style, agy mode/state, session name; session clock on the right.
 [[line]]
-left = ["model", "output_style", { metric = "session_name", options = { max_len = 40 } }]
-right = ["duration", "cc_version"]
+left = ["model", "output_style", "agy.mode", "agy.state", { metric = "session_name", options = { max_len = 40 } }]
+right = ["agy.subagents", "agy.tasks", "agy.sandbox", "duration", "cc_version"]
 
 # 2. Where: directory, repo, branch/status, worktree, PR, lines changed.
 [[line]]

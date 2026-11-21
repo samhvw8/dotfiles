@@ -39,6 +39,12 @@
   },
   "showFeedbackSurvey": false,
   "showTips": false,
+  "statusLine": {
+    "command": "CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/shims/ccline",
+    "enabled": true,
+    "padding": 0,
+    "type": "command"
+  },
   "trustedWorkspaces": [
     "/Users/samhv/workspace/apps/menhly",
     "/Users/samhv",
