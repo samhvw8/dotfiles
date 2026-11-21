@@ -13,7 +13,7 @@ Rules:
 - Scratch files (downloads, extracted text, notes) go in ~/.cache/agent-ops/, named
   <YYMMDD-HHMMSS>-<your name>-<what>.<ext> (timestamp from: date +%y%m%d-%H%M%S). Never use /tmp.
 - Read the input files. Write only the output file and your scratch files. Edit nothing else: no project files, no commits,
-  no installs.
+  no installs. Ignore unrelated TODOs and side-issues; note them in your summary, never chase or edit them.
 - No outward actions: no push, deploy, deletion, message, post or purchase.
 - Message no one. Your only report is the done line.
 - When the output file is written, run:

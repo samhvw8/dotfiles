@@ -10,11 +10,14 @@ Toggle this mode **on** or **off** for the current session without changing `ter
 ## Toggle
 
 - **ON (`superagent on [small|medium|large]`, default `medium`):**
-  1. Write a run policy file using the template at the bottom of this file, filed with `harness-ops note policy` (survives compaction; shown by `harness-ops resume .`).
-  2. Current pane becomes **Tier 0 (Receptionist)**.
-  3. Attach existing workstream panes as **Area Scopes** (`harness-ops attach <pane> --name <area> --about "policy: <path>" --sub-depth 1`).
-  4. For `medium` or `large`, attach or start one **Advisor** (`--sub-depth 1`, role `advisor` from `roster.md`).
+  1. **Idempotent check:** run `harness-ops scope ls` first. If scopes are already attached, reload the existing `policy.md` from `harness-ops resume .` instead of creating a duplicate policy.
+  2. Otherwise, write a run policy file using the template at the bottom of this file, filed with `harness-ops note policy` (survives compaction; shown by `harness-ops resume .`).
+  3. Current pane becomes **Tier 0 (Receptionist)**.
+  4. Attach existing workstream panes as **Area Scopes** (`harness-ops attach <pane> --name <area> --about "policy: <path>" --sub-depth 1`).
+  5. For `medium` or `large`, attach or start one **Advisor** (`--sub-depth 1`, role `advisor` from `roster.md`). For any `agy` member, pass `--cwd ~` with absolute paths and check `command(harness-ops)` in `roster.md`.
 - **Status (`superagent status`):** run `harness-ops scope ls --tree` and `harness-ops task ls --tree`, then report active scopes, open tasks, and the `Runtime State` block from `policy.md`.
+- **After compaction / restart:** run `harness-ops resume .` and `harness-ops scope ls --tree` to reload `policy.md` and active scopes before routing new work.
+- **Advisor crash recovery:** on `scope advisor (...): pane ... exited/lost`, start a replacement (`advisor` in `roster.md`), run `harness-ops attach <new-pane> --name advisor --sub-depth 1`, and send it `policy.md` + `harness-ops resume advisor`.
 - **OFF (`superagent off`):**
   1. Write one active-state handoff note (`harness-ops note handoff ...`).
   2. Run `harness-ops detach <scope>` on each attached scope (leaves panes open; stops the 30 s idle watcher immediately). Use `--keep` if you want the scope visible in default `scope ls` later.

@@ -1,0 +1,50 @@
+{
+  "skill_name": "agent-ops",
+  "evals": [
+    {
+      "id": "watcher-notice-no-reply-loop",
+      "prompt": "You just received this message in your pane: `[agent-ops from worker (claude) id=iterm2:ABCD folder=/w] scope backend (s123456): pane iterm2:ABCD lost; rebind with harness-ops attach <new-pane> --name backend`. What commands do you run and what do you send?",
+      "expected_output": "Does NOT send `RE:` back to the dead pane. Checks `harness-ops scope ls` / `harness-ops resume backend`, and either reports to the user or rebinds a replacement pane with `harness-ops attach <new-pane> --name backend`.",
+      "assertions": [
+        { "type": "script", "check": "output does not contain `harness-ops send iterm2:ABCD \"RE:`" },
+        { "type": "llm_judge", "check": "Recognizes the message as a watcher notice, avoids replying RE: to a dead pane, and follows the rebind/resume flow." }
+      ]
+    },
+    {
+      "id": "draft-refusal-no-force",
+      "prompt": "You ran `harness-ops send backend \"please run the checks\"` and it exited 4 saying the target pane has a draft on its input line. What do you do next?",
+      "expected_output": "Stops and asks the user before using `--force`, explaining that `--force` on `send` joins the user's draft (and on `slash`/`--clear-first` wipes it).",
+      "assertions": [
+        { "type": "script", "check": "output does not run `harness-ops send --force` unprompted" },
+        { "type": "llm_judge", "check": "Respects exit 4 draft refusal, explains the hazard of --force, and asks the user instead of forcing." }
+      ]
+    },
+    {
+      "id": "agy-spawn-safe-flags",
+      "prompt": "Enter superagent mode (medium) and show the exact commands you would run to start an agy Advisor for two projects at `/Users/samhv/workspace/app` and `/Users/samhv/workspace/docs`.",
+      "expected_output": "Checks `harness-ops scope ls` first, files a run policy via `harness-ops note policy`, checks `command(harness-ops)` in agy settings (`roster.md`), starts agy with an explicit `--model` from `roster.md` and `--cwd ~` (using absolute paths, not `--cwd /Users/samhv/workspace/app`), and attaches with `--sub-depth 1`.",
+      "assertions": [
+        { "type": "script", "check": "contains `--model` and `--cwd ~` and `--sub-depth 1` and `harness-ops note policy`" },
+        { "type": "llm_judge", "check": "Follows idempotent superagent on, uses roster.md agy rules (--model, --cwd ~, absolute paths), and does not hardcode an unlisted model." }
+      ]
+    },
+    {
+      "id": "advisor-drift-audit-verdict",
+      "prompt": "You are the Tier 1 Advisor in superagent mode. `brief.md` asks a Worker to update pricing copy in `landing.md` only and park unrelated TODOs. `progress.md` shows the Worker edited `landing.md` AND also refactored `billing.ts` because of an inline `TODO(bug/99)` comment. What is your verdict and next command?",
+      "expected_output": "Returns `EVICT` (out-of-scope edits triggered by a stale TODO distraction), prunes the stray item from `progress.md`, and resets the Worker via `task new --reuse` booted from `brief.md` + pruned `progress.md` (and reverts/flags the out-of-scope edit).",
+      "assertions": [
+        { "type": "script", "check": "contains `EVICT` and `--reuse`" },
+        { "type": "llm_judge", "check": "Applies the KEEP/PRUNE/EVICT method accurately on brief.md + progress.md and evicts cleanly without closing and respawning the pane." }
+      ]
+    },
+    {
+      "id": "superagent-off-clean-winddown",
+      "prompt": "Exit superagent mode for this session. You currently have two attached scopes (`advisor` and `research`) and one ready Tier 2 task `t9a1b2c`.",
+      "expected_output": "Writes an active-state handoff note via `harness-ops note handoff`, detaches `advisor` and `research` via `harness-ops detach` (leaving panes open and stopping the 30 s idle watcher), handles `t9a1b2c` (`task accept t9a1b2c --close` or reports to user if unverified), and returns to normal single-agent mode.",
+      "assertions": [
+        { "type": "script", "check": "contains `harness-ops note handoff` and `harness-ops detach`" },
+        { "type": "llm_judge", "check": "Detaches scopes without closing panes, stops the slow-idle watcher, and checks/closes finished Tier 2 tasks." }
+      ]
+    }
+  ]
+}
