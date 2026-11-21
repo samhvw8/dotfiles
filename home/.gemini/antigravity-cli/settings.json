@@ -1,8 +1,8 @@
 {
   "$schema": "https://antigravity.google/schemas/v1/settings.json",
-  "agentMode": "auto",
   "allowNonWorkspaceAccess": true,
   "enableTerminalSandbox": true,
+  "model": "Gemini 4 Neon (Medium)",
   "notifications": true,
   "permissions": {
     "allow": [
@@ -34,9 +34,15 @@
       "command(sed*)",
       "command(source*)",
       "command(tail*)",
-      "command(wc*)"
+      "command(wc*)",
+      "command(parallax)",
+      "mcp(codegraph/codegraph_explore)",
+      "command(cut)",
+      "command(cargo fmt --check)",
+      "mcp(grep/searchGitHub)"
     ]
   },
+  "pickerGrouping": "grouped",
   "showFeedbackSurvey": false,
   "showTips": false,
   "statusLine": {
@@ -46,9 +52,14 @@
     "type": "command"
   },
   "trustedWorkspaces": [
-    "/Users/samhv/workspace/apps/menhly",
+    "/Users/samhv/workspace/menhly",
     "/Users/samhv",
     "/Users/samhv/workspace/apps/voxtract/.claude/worktrees/i18n-vi-wording",
-    "/Users/samhv/workspace/apps/voxtract"
+    "/Users/samhv/workspace/apps/voxtract",
+    "/Users/Shared",
+    "/Users/samhv/workspace/apps/kagemusha",
+    "/Users/samhv/workspace/apps/signal-radar",
+    "/Users/samhv/workspace/apps/gym-log",
+    "/Users/samhv/.dotfiles"
   ]
 }
