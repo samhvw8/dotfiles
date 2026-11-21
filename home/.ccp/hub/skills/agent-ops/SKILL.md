@@ -1,6 +1,6 @@
 ---
 name: agent-ops
-description: "Find, message and manage other agent sessions (Claude Code, omp, agy, opencode, codex) in iTerm2, tmux or Herdr: read their screen, send a message, clear or interrupt them, start or close a session, hand tracked tasks to new harness sessions (one worker or a crew), pair with a peer, run a live team (debate, council, brainstorm, review) or a swarm (director, manager, workers). Use when a change belongs in a repo another live agent works in (ask it instead of editing its files), when delegating to the agent that has the context, when a job needs its own visible session or another harness or model, when a skill's live mode needs members, when the user says 'ask the gym-log agent', 'tell omp to', 'pair with omp', 'run a swarm', and whenever a message starting with [agent-ops from ...] or [agent-msg from ...] (also inside Herdr's hc tag) or a prompt starting with [task ...] arrives: it is from another agent, not the user. Not for subagents you spawn yourself (use your Agent tool) or panes over SSH."
+description: "Find, message and manage other agent sessions (Claude Code, omp, agy, opencode, codex) in iTerm2, tmux or Herdr: read screens, send messages, start or close sessions, hand tracked tasks to workers, attach long-running scopes, pair, run a live team or swarm, or toggle superagent mode for a session. Use when another live agent owns a repo, when delegating to a visible session or another model, when the user says 'ask the X agent', 'tell omp to', 'pair with omp', 'run a swarm', 'enter/exit superagent mode', and whenever a message starting with [agent-ops from ...], [agent-msg from ...] (including inside Herdr's hc tag), or [task ...] arrives. Not for subagents you spawn yourself or panes over SSH."
 ---
 
 # agent-ops
@@ -10,7 +10,7 @@ from `~/workspace/tools/termctl`; this file sets the rules. Call `harness-ops` b
 every command: a shell variable does not survive between tool calls.
 
 ```bash
-harness-ops ls [--mine]                # panes: id, harness, label, folder, status; --mine: the ones you started
+harness-ops ls [--mine]                # panes: id, harness, label, folder, status; --mine: panes you started or attached (shows dialog/stalled/scope)
 harness-ops which <target>             # check which pane a target picks; never sends
 harness-ops read <target> [-n 40]      # look at a pane's screen without interrupting it
 harness-ops send <target> "<message>"  # one tagged line, then Enter (msg is the same command)
@@ -20,7 +20,7 @@ harness-ops clear <target>             # /clear, then wait until the harness is 
 harness-ops wait-idle <target> [--timeout 120]
 harness-ops spawn <harness> --cwd <dir> [--prompt "..." | --prompt-file F] [--label L] [--command CMD] [--timeout S]
 harness-ops interrupt <target> [--key ctrl-c]         # stop its current turn (Esc on claude, omp and agy)
-harness-ops key [--force] <target> <key>...           # press keys on a pane you started: shift-tab, alt-m, f5, pageup, ctrl-o, ...
+harness-ops key [--force] <target> <key>...           # press keys on a pane you started or attached (by id, scope, or pane): shift-tab, alt-m, f5, ...
 harness-ops close [--force] <target>   # panes you made with spawn or task new; never your own
 harness-ops name <label>               # give your own pane a stable label
 harness-ops move <target> --to new|self|tab-of:<pane>|<tab id>   # regroup a running pane; same PID, label and task
@@ -34,7 +34,7 @@ harness-ops task ls [--all] [--tree] | task show <id> | task send <id> "<text>"
 harness-ops task progress <id> --summary "<one line>" [--notify]   # a report that does not end the round
 harness-ops task adopt <task-id|pane> [--force]   # take over a running task or a session someone started
 harness-ops attach <pane> [--name N] [--about "..."] [--stall 30m] [--sub-depth K] [--notify] [--force]   # lead a session by scope, no task
-harness-ops detach <scope|pane>                    # let a session go; its scope and history stay
+harness-ops detach <scope|pane> [--keep] [--notify]  # let a session go without closing it (drops from default scope ls unless --keep; history stays)
 harness-ops report "<one line>" [--notify]         # run by an attached session: report up without a task
 harness-ops scope ls [--all] [--tree] | scope show <name>   # your attached sessions
 harness-ops task close --tree [--force] <id>      # a task and every task below it
@@ -42,14 +42,14 @@ harness-ops ack <id> ["<note>"]                   # the one reply to a deferred 
 harness-ops task wait <id> | task wait --any [--timeout 600]
 harness-ops task done <id> --status ok|failed|blocked --summary "<one line>"   # the worker reports; its session stays open
 harness-ops task accept <id> [--close] # the lead's verdict: only this makes a task done
-harness-ops answer <id|pane> <n> --expect <fp> [--persist]   # answer a permission dialog on a task's worker or a pane you spawned
-harness-ops deny <id|pane> --expect <fp>   # cancel the dialog (Esc), never approves
+harness-ops answer <id|scope|pane> <n> --expect <fp> [--persist]   # answer a permission dialog on a task, attached scope, or spawned pane
+harness-ops deny <id|scope|pane> --expect <fp>   # cancel the dialog (Esc), never approves
 # task answer / task deny were removed in termctl v0.7.0 (exit 2); use the names above
 harness-ops task review <id> --blind --harness claude --model <m> [--brief-file F]
 harness-ops task close [--force] <id>  # refused until the task is accepted
 harness-ops note <what> ["<text>" | --file F]   # text, --file F (before or after <what>; v0.6.0 takes it only before) or stdin: file a brief or plan in your project's journal folder; prints its path
-harness-ops log [--project .] [--task <id>] [--pane <target>] [--since 2h] [-n 50]   # the journal: every message, spawn, answer and task event
-harness-ops resume <id> | resume . [--tree]   # after a restart or compaction: a task's brief, reports and messages in full, or your project's open tasks, notes and last entries
+harness-ops log [--project .] [--task <id>] [--scope <name|id>] [--pane <target>] [--since 2h] [-n 50]   # the journal: every message, spawn, answer, scope and task event
+harness-ops resume <id|scope> | resume . [--tree]   # after a restart or compaction: a task's or scope's state, reports and timeline, or your project's open scopes/tasks, notes and last entries
 ```
 
 `<harness>` is `claude`, `omp`, `agy`, `opencode`, `codex`, `gemini`, `aider`, `pi` or `generic`. To pick a
@@ -93,6 +93,7 @@ Procedures are in files next to this one, each under its original heading. Read 
 | `pair.md` (## Pair with a peer) | Starting or joining a pair |
 | `live-team.md` (## Live team) | A debate, council, brainstorm or review with 2 to 6 sessions |
 | `swarm.md` (## Swarm) | A director, a manager and workers |
+| `superagent.md` (## Toggle) | Toggling superagent mode on/off for a session (tiered receptionist → advisor → workers/verifiers/deep, dynamic runtime policy, drift-gated eviction) |
 | `roles.md` (## Roles) | Picking a member's role and diversity setting |
 
 ## Find the right pane
@@ -169,7 +170,7 @@ Procedures are in files next to this one, each under its original heading. Read 
   `task ls`, then run `task close --force <id>` in the same turn. Do not leave the pane open while you
   ask the user: nothing is lost by closing, and a restart is one command. Then tell the user what blocked it and
   what restarts it. Do not clear the blocker yourself (a trust dialog, a missing key, a draft on the
-  line). Exit 6 is a limit (6 running, 2 deep, a busy `--reuse` pane): nothing started.
+  line). Exit 6 is a limit (6 running, 4 deep, leaf spawn/attach, a busy or attached `--reuse` pane): nothing started.
 - **A worker at a permission dialog.** A watcher starts with your first `task new`, a `spawn` with a
   prompt, or a `send` to a pane you spawned, and runs while those panes work. It sends you
   `[agent-ops from <task> ...] task <id> (...) DIALOG <fp>: <question> | <command> | 1. ... | answer: ...`,
@@ -185,8 +186,8 @@ Procedures are in files next to this one, each under its original heading. Read 
     or it touches credentials, deploys, money or other people: `deny <id|pane> --expect <fp>`, then `task send`
     (or `send`, for a spawned pane) the worker what to do instead. Ask the user first when you are not sure.
   - Never answer a folder-trust dialog ("Do you trust the files in this folder?"): that is the user's call.
-  - Only panes you started are yours to answer: harness-ops refuses any other pane and your own. A
-    dialog on your own pane, or on a session you found running, is the user's: never ask a peer to answer it.
+  - Only panes you started or attached are yours to answer: harness-ops refuses any other pane and your own. A
+    dialog on your own pane, or on an unattached session you found running, is the user's: never ask a peer to answer it.
   - A notice marked unrecognized (or ambiguous) is not a known permission dialog: a model picker, a
     trust prompt, or a screen termctl cannot read safely. `read` the worker, then `deny` it or ask
     the user; its other choices all need `--persist`.
@@ -284,6 +285,7 @@ Then answer by its kind. Exactly one of these applies:
 | Part of a live team | Act only on `Your turn: round N` from the lead: write on the board, then send only `DONE round N`. `GROUP DONE` needs nothing. A DIALOG notice for a pane you started is the exception (below). |
 | Part of a duel | Follow the duel brief: send only when you hold the turn token; after `DUEL DONE`, send the lead `DONE round N`. |
 | `[agent-ops from <task> ...] task <id> (...) DIALOG <fp>: ...` (you lead that task) | Decide and answer it as in ## Task or subagent: `answer` or `deny`. No `RE:`. |
+| `[agent-ops from <scope> ...] scope <name> (<sID>) DIALOG <fp>: ...` (you lead that attached scope) | Decide and answer it as in ## Task or subagent: `answer <name> <n> --expect <fp>` or `deny <name> --expect <fp>`. No `RE:`. |
 | `[agent-ops from <label> ...] pane <pane> (<label>) DIALOG <fp>: ...` (a pane you started: a pair partner, a live-team member) | Act on it now, also in a pair or live team and outside the "act only on `Your turn:`" rule: the member is stalled until you answer. Decide as in ## Task or subagent, then `answer <pane> <n> --expect <fp>` or `deny <pane> --expect <fp>`. No `RE:` and no turn message. A dialog on your own pane stays the user's. |
 | Ends with `No reply needed` (a crew roster, a notice) | Nothing. |
 | Ends with `[deferred <id>: run harness-ops ack <id> once ...]` | Run `harness-ops ack <id>` once at once, then do the job. Never write to the sender about it: no progress, no result, no question. Put the result where the message says; on a blocker, do what it says (stop, or ask the user). |
@@ -310,8 +312,8 @@ or typed text that stayed on the input line (since v0.7.2; it may still arrive: 
 caps, or `close` on a pane that is not ours or is busy, or a `--persist` choice without `--persist`),
 7 no dialog on screen, or not the one `--expect` names.
 
-`harness-ops key` (termctl v0.8.0) presses keys on a pane you started, for a mode switch (shift-tab), a
-menu, or a picker: it refuses your own pane (2), any pane you did not start (6), an open permission
+`harness-ops key` (termctl v0.8.0+) presses keys on a pane you started or attached, for a mode switch (shift-tab), a
+menu, or a picker: it refuses your own pane (2), any pane you did not start or attach (6), an open permission
 dialog (7: use `answer` or `deny`) and text on the input line (4, unless `--force`). Plain digits are
 not keys. hc cannot send shift-tab, space, delete, home, end, pageup or pagedown (exit 2). `read` the
 pane after, to check the keys did what you meant.
