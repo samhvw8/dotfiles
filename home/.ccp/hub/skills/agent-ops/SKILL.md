@@ -55,7 +55,7 @@ harness-ops resume <id|scope> | resume . [--tree]   # after a restart or compact
 model on `spawn` or `task new`, pass the whole command as `--command`; take it from `roster.md` by role
 (## Roles, `roles.md`). A task worker is `builder` when a test or build can check its result, and
 `brain` for review, design, an unknown cause or managing workers.
-**Never start agy without a `--model` from `roster.md`:** its default (Gemini 4 Carbon) thinks for minutes on a one-command task. For any `agy` member, also pass `--cwd ~` with absolute paths and check `command(harness-ops)` in `roster.md` (agy only trusts folders listed in `trustedWorkspaces`). Install: `mise use -g github:samhvw8/termctl` (`mise up github:samhvw8/termctl` after a release). It must run inside a terminal pane, so it knows who
+**Never start agy without a `--model` from `roster.md`:** its default thinking model takes minutes on a one-command task. For any `agy` member, also pass `--cwd ~` with absolute paths and check `command(harness-ops)` in `roster.md` (agy only trusts folders listed in `trustedWorkspaces`). Install: `mise use -g github:samhvw8/termctl` (`mise up github:samhvw8/termctl` after a release). It must run inside a terminal pane, so it knows who
 is sending: the backend comes from `$TMUX`, `$HC_TERMINAL_ID`, `$ITERM_SESSION_ID` or `$REX_SESSION`,
 and `--backend` before the subcommand overrides it. Run it from your own shell tool; a sub-interpreter
 that drops the environment (an omp `eval` kernel) makes `whoami` fail with `cannot tell which pane this

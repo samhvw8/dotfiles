@@ -21,11 +21,11 @@
     },
     {
       "id": "agy-spawn-safe-flags",
-      "prompt": "Enter superagent mode (medium) and show the exact commands you would run to start an agy Advisor for two projects at `/Users/samhv/workspace/app` and `/Users/samhv/workspace/docs`.",
-      "expected_output": "Checks `harness-ops scope ls` first, files a run policy via `harness-ops note policy`, checks `command(harness-ops)` in agy settings (`roster.md`), starts agy with an explicit `--model` from `roster.md` and `--cwd ~` (using absolute paths, not `--cwd /Users/samhv/workspace/app`), and attaches with `--sub-depth 1`.",
+      "prompt": "Enter superagent mode for two mixed workstreams: a code repo at `/path/to/app` (build) and a market memo at `/path/to/research` (research). Show the exact commands to start an agy Advisor and attach both areas.",
+      "expected_output": "Checks `harness-ops scope ls` first, files a run policy via `harness-ops note policy` with per-area worktypes (`build` vs `research`), checks `command(harness-ops)` in agy settings (`roster.md`), starts agy with an explicit `--model` from `roster.md` and `--cwd ~` (using absolute paths, not `--cwd /path/to/app`), and attaches with `--sub-depth 1`.",
       "assertions": [
         { "type": "script", "check": "contains `--model` and `--cwd ~` and `--sub-depth 1` and `harness-ops note policy`" },
-        { "type": "llm_judge", "check": "Follows idempotent superagent on, uses roster.md agy rules (--model, --cwd ~, absolute paths), and does not hardcode an unlisted model." }
+        { "type": "llm_judge", "check": "Follows idempotent superagent on, adapts per-area policy by worktype (build vs research), uses roster.md agy rules (--model, --cwd ~, absolute paths), and does not hardcode an unlisted model." }
       ]
     },
     {

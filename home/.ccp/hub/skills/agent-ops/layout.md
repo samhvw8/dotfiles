@@ -5,8 +5,8 @@ sending and receiving).
 
 ## Where a new agent opens
 
-An agent whose job is unrelated to your current project (another repo or tool, such as fixing termctl while
-you run a speech experiment) opens in its own tab: pass `--where tab`. The user keeps one tab per project.
+An agent whose job is unrelated to your current project (another repo or tool, such as fixing a utility while
+you work on an unrelated project) opens in its own tab: pass `--where tab`. The user keeps one tab per project.
 
 Otherwise leave `--where` out. Its default, `auto`, puts the agent where the user looks for it:
 

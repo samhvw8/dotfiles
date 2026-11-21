@@ -1,7 +1,8 @@
 # agent-ops: superagent mode
 
 Part of the agent-ops skill (`SKILL.md` next to this file has the commands and the rules for
-sending and receiving). Domain-agnostic: works for **research, writing, business, ops, analysis, and coding**.
+sending and receiving). Domain-agnostic: adapts dynamically to **workload** (concurrency, turn
+volume, quota) and **worktype** (build, research, writing, ops, or mixed).
 
 Toggle this mode **on** or **off** for the current session without changing `termctl` or paying always-loaded tokens when off.
 
@@ -9,12 +10,12 @@ Toggle this mode **on** or **off** for the current session without changing `ter
 
 ## Toggle
 
-- **ON (`superagent on [small|medium|large]`, default `medium`):**
+- **ON (`superagent on [context]`):**
   1. **Idempotent check:** run `harness-ops scope ls` first. If scopes are already attached, reload the existing `policy.md` from `harness-ops resume .` instead of creating a duplicate policy.
-  2. Otherwise, write a run policy file using the template at the bottom of this file, filed with `harness-ops note policy` (survives compaction; shown by `harness-ops resume .`).
+  2. Otherwise, shape a run `policy.md` from the template at the bottom — picking active tiers from current **workload** and setting per-area rules from each area's **worktype** — and file it with `harness-ops note policy` (survives compaction; shown by `harness-ops resume .`).
   3. Current pane becomes **Tier 0 (Receptionist)**.
-  4. Attach existing workstream panes as **Area Scopes** (`harness-ops attach <pane> --name <area> --about "policy: <path>" --sub-depth 1`).
-  5. For `medium` or `large`, attach or start one **Advisor** (`--sub-depth 1`, role `advisor` from `roster.md`). For any `agy` member, pass `--cwd ~` with absolute paths and check `command(harness-ops)` in `roster.md`.
+  4. Attach existing workstream panes as **Area Scopes** (`harness-ops attach <pane> --name <area> --about "worktype: <type>; policy: <path>" --sub-depth 1`).
+  5. Attach or start one **Advisor** (`--sub-depth 1`, role `advisor` from `roster.md`) only when workload or uncertainty warrants it (2+ concurrent areas, open design/research, or high-risk delivery). For any `agy` member, pass `--cwd ~` with absolute paths and check `command(harness-ops)` in `roster.md`.
 - **Status (`superagent status`):** run `harness-ops scope ls --tree` and `harness-ops task ls --tree`, then report active scopes, open tasks, and the `Runtime State` block from `policy.md`.
 - **After compaction / restart:** run `harness-ops resume .` and `harness-ops scope ls --tree` to reload `policy.md` and active scopes before routing new work.
 - **Advisor crash recovery:** on `scope advisor (...): pane ... exited/lost`, start a replacement (`advisor` in `roster.md`), run `harness-ops attach <new-pane> --name advisor --sub-depth 1`, and send it `policy.md` + `harness-ops resume advisor`.
@@ -22,6 +23,24 @@ Toggle this mode **on** or **off** for the current session without changing `ter
   1. Write one active-state handoff note (`harness-ops note handoff ...`).
   2. Run `harness-ops detach <scope>` on each attached scope (leaves panes open; stops the 30 s idle watcher immediately). Use `--keep` if you want the scope visible in default `scope ls` later.
   3. Accept/close finished Tier 2 tasks (`task ls`) and return to normal single-agent mode.
+
+---
+
+## Adapt by worktype & workload
+
+One superagent session can supervise **mixed worktypes at the same time**. Set each Area Scope's behavior by its worktype rather than using one rigid recipe:
+
+| Worktype | Active tiers | Handoff shape | Worker cache & eviction | External check / verifier |
+|---|---|---|---|---|
+| **Build** (code, data, infra) | Receptionist + Area Scope + Worker + Verifier (+ Advisor on design/review) | `brief.md` + `progress.md` for >1-turn tasks | Keep Worker warm across fix rounds (`task send`); Advisor audits `progress.md` for drift; short Verifier (`--reuse` per diff slice) | Tests, builds, linters, schema validators |
+| **Research / Analysis** | Receptionist + Area Scope + Advisor + Workers | `brief.md` + `progress.md` (questions, sources checked, gaps) | Evict Workers per sub-question (`--reuse`); keep Advisor warm for cross-source synthesis | Source/fact verification, rubric or primary-source check |
+| **Writing / Strategy** | Receptionist + Area Scope + Advisor (+ Worker for drafts) | `brief.md` (audience, tone, constraints) + draft file | Keep drafter warm across revision rounds; Advisor reviews against brief; skip `deep` unless high-stakes positioning | Rubric check, factual check, user sign-off before external send |
+| **Ops / Triage / Queue** | Receptionist + Area Scopes (+ fast leaf Workers) | Short `brief.md` only (skip `progress.md` for 1-turn checks) | Short-lived Workers; **skip persistent Advisor** unless a root cause is unclear | Live status/log check; user approval before any mutating or external action |
+
+**Scale dynamically with workload (edit `## Runtime State` mid-run):**
+- **Low load / routine:** detach Advisor (`detach advisor`) so Area Scopes run Workers directly.
+- **High load / high risk:** attach persistent Advisor (`--sub-depth 1`) and require `progress.md` drift audits before final delivery.
+- **Quota or latency pressure:** set a role override in `## Runtime State` (takes effect on the next `task new` without restarting existing scopes).
 
 ---
 
@@ -33,9 +52,9 @@ Toggle this mode **on** or **off** for the current session without changing `ter
 |---|---|---|---|---|
 | 0 | `receptionist` (current pane) | root | Current pane | Intake, routing, `ls`/`scope ls`/`read`, attaching Area Scopes, `answer`/`deny` on safe in-brief prompts, spawning Workers for clear briefs. |
 | 1 | `advisor` (reviewer & drift auditor) | `1` | `attach` (long-running scope) | Planning, specs, quality review, auditing `progress.md` for drift (`KEEP`/`PRUNE`/`EVICT`), spawning `deep` when genuinely blocked. Read-only unless brief grants edits. |
-| 1 | Area Scope (workstream lead) | `1` | `attach <pane> --name <area> --sub-depth 1` | Owns one ongoing area (project, research track, client stream, ops queue); spawns Tier 2 Workers/Verifiers; reports milestones via `harness-ops report`. |
-| 2 | Worker (`builder` or `fast`) | `0` (leaf) | `task new` | Execute inside `brief.md`'s scope fence (gather, draft, analyze, build, or run procedures); maintain `progress.md`; report via `task done`. |
-| 2 | Verifier (`fast` or `builder`) | `0` (leaf) | `task new` / `--reuse` | Run external checks (source/fact checks, rubrics, calculations, schema checks, or tests) on the named slice; report pass/fail with raw output. |
+| 1 | Area Scope (workstream lead) | `1` | `attach <pane> --name <area> --sub-depth 1` | Owns one ongoing area; spawns Tier 2 Workers/Verifiers per its worktype; reports milestones via `harness-ops report`. |
+| 2 | Worker (`builder` or `fast`) | `0` (leaf) | `task new` | Execute inside `brief.md`'s scope fence; maintain `progress.md` when required; report via `task done`. |
+| 2 | Verifier (`fast` or `builder`) | `0` (leaf) | `task new` / `--reuse` | Run external checks on the named slice; report pass/fail with raw output. |
 | 2 | `deep` (Advisor-only) | `0` (leaf) | `task new` | Resolve one narrowed deadlock, high-stakes trade-off, or second-family audit. Closed right after verdict. |
 
 **Escalation rules (and why):**
@@ -45,30 +64,12 @@ Toggle this mode **on** or **off** for the current session without changing `ter
 
 ---
 
-## Two-file handoff (`brief.md` + `progress.md`)
+## Two-file handoff & drift-gated eviction
 
-Use both files for any task running >1 turn or crossing compaction/eviction (skip `progress.md` for 1-turn tasks):
+Use `brief.md` + `progress.md` for multi-turn work (skip `progress.md` for 1-turn tasks):
 
 - **`brief.md`** (`harness-ops note` + `--brief-file`): stable for the round — goal, scope fence (what not to touch or chase), inputs, and external acceptance check. Include: *"Park unrelated notes, old TODOs, superseded docs, and side-questions under `Parked` in `progress.md`; never chase or act on them."*
-- **`progress.md`** (`~/.cache/agent-ops/<YYMMDD-HHMMSS>-<task>-progress.md`): live active state pruned in place by the Worker:
-  - `Active TODOs` (only items tracing to `brief.md`)
-  - `Current state` (deliverables updated, sources/facts checked, check results)
-  - `Blockers & Parked` (recorded, never acted on unprompted)
-- **Prune in place, never append forever:** resolved items and stale notes left in warm prompt caches trigger unprompted detours (+77% tokens, +105% wait time).
-
----
-
-## Lifecycle, cache & drift-gated eviction
-
-Keep prompt caches warm while context is clean; evict when `advisor` detects drift or the task slice shifts.
-
-| Tier / Role | Lifespan | Cache & eviction rule | `termctl` action |
-|---|---|---|---|
-| **Tier 0 — Receptionist** | Very long (hours/days) | Never close on a single task. When context grows heavy, flush active state to `note` / `Runtime State` (drop settled items) and compact. | `harness-ops note` + `/compact` |
-| **Tier 1 — Advisor & Area Scopes** | Long (whole milestone / area) | Stay attached across plan → execute → verify so domain context stays cached. Checkpoint active decisions and compact or `/clear` only between milestones. | `attach`; `detach` when milestone ends |
-| **Tier 2 — Worker** | **Task-dependent** (longer on multi-step work; short on one-offs) | Keep warm across revision rounds (`task send`) to reuse loaded files/sources. Evict only on `advisor` `EVICT` verdict or when switching to an unrelated task. | `task send` (warm); `task new --reuse` (evict / next task) |
-| **Tier 2 — Verifier** | Very short (per check slice) | Reuse warm pane (`task send`) for fail → fix → recheck loops on the **same** slice; `/clear` (`task new --reuse`) when the slice changes so stale assumptions cannot hide a miss. | `task send` (same slice); `task new --reuse` (new slice); `task accept --close` when pass |
-| **Tier 2 — `deep`** | Short / surgical (1–2 rounds) | Feed only narrowed problem, `progress.md`, and failed attempts. Close immediately after verdict so expensive models never idle. | `task accept --close` |
+- **`progress.md`** (`~/.cache/agent-ops/<YYMMDD-HHMMSS>-<task>-progress.md`): live active state pruned in place by the Worker (`Active TODOs`, `Current state`, `Blockers & Parked`). **Prune, never append forever:** resolved items and stale notes left in warm prompt caches trigger unprompted detours (+77% tokens, +105% wait time).
 
 **Advisor drift-audit method (before keeping a multi-step Worker warm across rounds):**
 Read `brief.md` and `progress.md` directly (zero interruption to the Worker). Check every `Active TODO` and touched deliverable against `brief.md`'s goal and scope fence, then return one verdict:
@@ -85,12 +86,12 @@ File this with `harness-ops note policy` on `superagent on`. Keep static pointer
 
 ```markdown
 # Run Policy
-Rules: follow agent-ops `superagent.md` (two-file handoff, drift-gated eviction, Advisor-only `deep` escalation).
+Rules: follow agent-ops `superagent.md` (worktype-adapted handoff, drift-gated eviction, Advisor-only `deep` escalation).
 
 ## Runtime State
-- Mode: medium   # small (no advisor) | medium (advisor + 1–3 scopes) | large (4+ scopes, advisor audits progress.md before final delivery)
-- Active scopes: <names>
-- Active domains: <e.g., research, writing, business, ops, coding>
-- Tree limit (--tree-max): 12 · Per-lead cap: 6
-- Model overrides (optional, overrides roster.md on next task new): none
+- Advisor: active | off
+- Areas:
+  - <area-name>: worktype=<build|research|writing|ops> · eviction=<drift-gated|per-slice|1-turn> · verifier=<tests|sources|rubric|none>
+- Cap overrides (optional; default termctl caps apply): none
+- Role command overrides (optional; overrides roster.md on next task new): none
 ```
