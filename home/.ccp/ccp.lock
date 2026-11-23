@@ -20,7 +20,7 @@ commit = 'b655645608aeb68cf17a8632927e646b2e52a221'
 commit = '2b86d9c07b97d4bed7de23583e1bd1e58dd2baae'
 
 [sources.'samhvw8/claude-code-profile']
-commit = '7f8a0f84362722af3beed7ecf6229db68936d873'
+commit = 'b398d7038394e3ad839e4e4243d3486050e1b86a'
 
 [sources.'samhvw8/thinking-skills']
 commit = '807e3026fab2b2240d5eb81ed7304c81bad92aac'
