@@ -97,34 +97,6 @@ herdr = "latest"
 [bootstrap.packages]
 "brew-cask:herdr-app" = { os = "macos" }  # self-updates; the app offers herdr-core on first launch
 "brew-cask:google-chrome" = { os = "macos" }  # self-updates; bsk drives it
-# Open-source desktop apps (cask tokens checked 2026-11-23). gitbutler is
-# FSL (MIT after two years) and tailscale-app wraps the BSD core in a closed UI.
-# CuaDriver comes from `mise run cua:install`, not a cask.
-"brew-cask:altserver" = { os = "macos" }
-"brew-cask:background-music" = { os = "macos" }
-"brew-cask:clash-verge-rev" = { os = "macos" }
-"brew-cask:dbx" = { os = "macos" }
-"brew-cask:finetune" = { os = "macos" }
-"brew-cask:firefox@developer-edition" = { os = "macos" }
-"brew-cask:godot" = { os = "macos" }
-"brew-cask:godot-mono" = { os = "macos" }
-"brew-cask:gpg-suite-no-mail" = { os = "macos" }
-"brew-cask:obs" = { os = "macos" }
-"brew-cask:pdfcraft" = { os = "macos" }
-"brew-cask:photocraft" = { os = "macos" }
-"brew-cask:wordcraft" = { os = "macos" }
-"brew-cask:podman-desktop" = { os = "macos" }
-"brew-cask:raven-reader" = { os = "macos" }
-"brew-cask:readest" = { os = "macos" }
-"brew-cask:recordly" = { os = "macos" }
-"brew-cask:rivet" = { os = "macos" }
-"brew-cask:rustdesk" = { os = "macos" }
-"brew-cask:siyuan" = { os = "macos" }
-"brew-cask:telegram-desktop" = { os = "macos" }
-"brew-cask:tor-browser" = { os = "macos" }
-"brew-cask:zerotier-one" = { os = "macos" }
-"brew-cask:gitbutler" = { os = "macos" }
-"brew-cask:tailscale-app" = { os = "macos" }
 "apt:python3-pip" = "latest"
 "apt:gnupg" = "latest"
 "apt:ca-certificates" = "latest"

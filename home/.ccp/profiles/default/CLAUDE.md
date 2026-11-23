@@ -121,5 +121,9 @@ over to `lead-researcher` when the decision is big.
   `mise use -g`, skills via `ccp install … --link .`, then `mise run dot:check`.
   Commit and push dotfiles (`mise run dot:push`) without asking; this standing
   approval covers `~/.dotfiles` only.
+- **Dotfiles stay lean; they are shared.** Only what every machine needs goes in
+  them. An app one Mac uses goes in that machine's
+  `~/.config/mise/config.local.toml`. Before installing from an inventory ("all
+  the apps I use"), check each one's last use and propose a list first.
 - **Rules** in `rules/` load every session; keep them small, put detail in skills.
   Propose edits when a convention changes; prefer deleting a stale rule.

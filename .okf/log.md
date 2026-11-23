@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-23
+* **Removal**: the 25 open-source desktop app casks added earlier today. The dotfiles are shared and kept lean, so a GUI app that one Mac uses goes in that machine's `~/.config/mise/config.local.toml`, not here. Sam's call. Runs: 25 fewer casks on each full bootstrap.
 * **Update**: `mise/config.toml` (full install) installs Google Chrome (`brew-cask:google-chrome`, closed source, self-updates). `bsk` (browser-skill) drives a logged-in Chrome, so a new Mac needs it. Runs: one more cask on each full bootstrap.
 * **Update**: `setup.sh`: when `mise bootstrap` fails, `report_bootstrap_failure` lists the tools still missing (`mise ls --missing`), says that the post-tools steps did not run, and gives the fix and the re-run command. Before, it printed only "fix the reported step", and on a new Mac the failing tool's line was hundreds of lines up. It still exits 1. [Troubleshooting](/workflows/troubleshooting.md) has the row. Checked with a stub `mise` that reports one missing tool and one that reports none. Runs: one `mise ls --missing` only when bootstrap fails.
 * **Fix**: `pipx:samhvw8/mediasift` installs with `uvx_args = "--python 3.14"`. On a new Mac, uv picked the global Python 3.15, and `onnxruntime` 1.32.0 has wheels only up to cp314, so `mise install` failed and stopped `mise bootstrap`. The old Mac had been installed before 3.15 became the default. Drop the pin once onnxruntime ships cp315 wheels. Runs: nothing new.
