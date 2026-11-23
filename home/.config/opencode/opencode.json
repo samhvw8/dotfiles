@@ -10,9 +10,7 @@
     "rea": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "rea-agents@6.0.0",
+        "{env:HOME}/.local/share/mise/shims/rea-agents",
         "mcp"
       ],
       "enabled": true

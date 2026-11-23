@@ -16,7 +16,7 @@ sources:
 
 | Path | Owner |
 |------|-------|
-| `opencode.json` | This repository — the model, the `instructions` list (hub rules, the overlay, the output style) and the `rea` MCP server. It holds no secrets |
+| `opencode.json` | This repository — the model, the `instructions` list (hub rules, the overlay, the output style) and the `rea` MCP server, run from its mise shim (`npm:rea-agents`). It holds no secrets |
 | `opencode-overlay.md` | This repository — what differs from Claude Code: the `task` tool, the tool table, skills and OKF. It names only what `opencode.json` configures |
 | `plugins/surgical-changes.ts` | This repository — opencode 2 port of the Claude Code `surgical-changes` hook (`tool.hook("execute.after")`, no imports) |
 | `skills/playwriter/` | This repository |

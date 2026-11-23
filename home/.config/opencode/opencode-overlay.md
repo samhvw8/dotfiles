@@ -28,7 +28,7 @@ The Tools table in `CLAUDE.md` is written for Claude Code and `omp`. Here:
 | GitHub | `gh` through `bash` |
 | MCP | `rea` only. opencode names MCP tools `<server>_<tool>`; there is no `ToolSearch` |
 
-The session model is set in `opencode.json`. Model IDs carry a provider prefix.
+Model IDs carry a provider prefix. Trust the IDs the harness shows.
 
 ## Skills
 Loaded from `~/.claude/skills/`, `~/.agents/skills/` and
