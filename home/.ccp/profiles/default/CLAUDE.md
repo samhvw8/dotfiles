@@ -64,6 +64,10 @@ even when it works.
 - Surface added to save a cost I don't actually pay is a maintenance increase.
   Check the real meter first.
 - Shared services own mechanism; callers own policy.
+- Never write into a file another program owns and rewrites (its state, cache or
+  internal format). Feed it through an input it reads (a flag, a config file, a
+  setting) and detect drift read-only. Better UX never pays for that coupling:
+  it breaks silently when the other program changes.
 - A plan that adds anything ends with **Runs:** what it adds, or "nothing new". If
   my request adds it, say so once, then do what I decide.
 
