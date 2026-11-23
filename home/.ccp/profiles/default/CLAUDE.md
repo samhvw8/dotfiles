@@ -10,12 +10,9 @@ CLAUDE.md, then this file. Two exceptions: attribution (below), and
 
 ## Working style
 
-- **Orchestrator and verifier.** Delegate parallel or context-heavy slices to
-  agents equipped with the right tools and skills (or batch, chain, and filter
-  multi-step tool/MCP work inside `omp`'s `eval` with `workpool` and `agent()`).
-  Subagent output and code edits are claims, not proof: verify every change and
-  result yourself with a test, a real run, an `eval` check, `browser`, or `cua`
-  before calling it done.
+- **Orchestrator and verifier** (`rules/delegation-protocol.md`). Subagent output and
+  code edits are claims, not proof: verify every change and result yourself with a
+  test, a real run, an `eval` check, `browser`, or `cua` before calling it done.
 - **Surface uncertainty.** Several readings → name them. Unstated assumption →
   state it. Unclear → ask, don't fill. Low confidence → say so.
 - **A question is not an instruction.** Answer it, then stop.
@@ -33,15 +30,14 @@ CLAUDE.md, then this file. Two exceptions: attribution (below), and
 Testing and research are the default. Skipping either one is a decision you must
 state, not a shortcut you take quietly.
 
-- **Test:** prove every change works with a test or a real run before calling it
-  done. A bug gets a failing test first.
+- **Test:** prove every change works with a test or a real run before calling it done.
 - **Research:** before you pick an approach, library, API or version you are not
   sure is current, check it. Read local first (code, config, git history), then
   web and GitHub.
 - **Skipping:** allowed only with a reason. Put it in the reply, in this form:
   `Not tested: <why> — risk: <what could break>` or
   `Not researched: <why> — risk: <what could be wrong>`.
-- Build effort or time is never a valid reason to skip.
+  Build effort or time is never a valid reason.
 
 ## No attribution
 
@@ -78,20 +74,21 @@ Don't just agree. Name the mechanism that caused it, then end with
 
 ## Tools
 
+Routing detail is in `rules/eval-and-tools.md` and `rules/codegraph.md`.
+
 | Tool | Use |
 |------|-----|
-| `eval` (`omp` Code Mode) | Default in `omp` when chaining, batching, or filtering 2+ MCP or tool calls (`await tool.mcp__<server>_<tool>(args)`, `await tool.<name>(args)`, `read`, `write`, `browser`, `judge`, `judge_batch`, `workpool`, `agent`). Parse and trim intermediate results in code to save turns and context; never call top-level `write("xd://...", ...)` for MCP |
-| Parallax & Web (`web_search`, `read`) | Default for anything on the web: in `omp`, both `omp`'s built-in `web_search` / `read` (URLs) and the Parallax CLI (`parallax call <tool>` via the `parallax-cli` skill, for social, Reddit, X, bot-protected `fetch_page`/`batch_fetch`, trends, feeds) are first-class; in Claude Code, prefer Parallax MCP (`mcp__claude_ai_Parallax__*`) over `WebSearch`/`WebFetch`. Pass `focus` on list-shaped Parallax calls |
-| codegraph MCP | Default for any question about code. See `rules/codegraph.md` |
-| `bsk` (`browser-skill`), `browser` (`omp`), `cua` | Logged-in Chrome work via `bsk` (or `omp`'s `browser` relay in `eval`); native macOS GUI automation via `cua` (`mcp__cua_computer_use_*`). Load `browser-skill` or `cua-driver` first. Do web-console steps (dashboards, settings, sign-ups) yourself; don't hand me steps you can do. Update `bsk`: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
+| `eval` (`omp`) | Default for 2+ chained tool or MCP calls |
+| Parallax | Default for anything on the web. In Claude Code, prefer the Parallax MCP over `WebSearch`/`WebFetch` |
+| codegraph | Default for any question about code |
+| `bsk`, `browser` (`omp`), `cua` | Logged-in Chrome and native macOS GUI. Load `browser-skill` or `cua-driver` first. Do web-console steps (dashboards, settings, sign-ups) yourself; don't hand me steps you can do. Update `bsk`: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
-| Concat MCP | Video editing (Concat projects, timelines, exports). Not loaded by default. When a task needs it and `mcp__concat__*` tools are missing, add it to the current project yourself: `claude mcp add concat -s local -- /Applications/Concat.app/Contents/MacOS/concat --mcp`, then ask me to run `/mcp` or restart so the tools load. Never add it at user scope |
+| Concat MCP | Video editing; not loaded by default. When `mcp__concat__*` tools are missing, run `claude mcp add concat -s local -- /Applications/Concat.app/Contents/MacOS/concat --mcp`, then ask me to run `/mcp`. Never add it at user scope |
 
-In agy (Antigravity CLI): call MCP tools (codegraph, cua) through `call_mcp_tool`; use Parallax through its CLI (`parallax-cli` skill) and prefer it over `search_web`; delegate with `invoke_subagent`.
+In agy: call MCP tools through `call_mcp_tool`, use Parallax through its CLI (`parallax-cli` skill) over `search_web`, and delegate with `invoke_subagent`.
 
 Never put a year in a search query unless I ask for a date range. Searches cover
-the web and social (Parallax `social_search`: Reddit, X, HN, forums) by default;
-say so when you skip social.
+the web and social (Parallax `social_search`) by default; say so when you skip social.
 
 **Research:** real research goes through `lead-researcher` (never spawn `gatherer`
 directly; languages EN + ZH + ZH-TW by default). A single fact is one search. A light
@@ -106,18 +103,16 @@ over to `lead-researcher` when the decision is big.
   else `~/.cache/<harness>/tmp/`. In an agent-ops team, use `~/.cache/agent-ops/` (its brief says how).
 - **Heavy compute** (detectors, renders, benchmarks, model runs): check `ssh me.ubuntu.home nvidia-smi`
   first. When the server is up and its GPU (RTX 3060) is idle, run the job there, not on this Mac.
-- **Long jobs on an SSH Linux server** run in a named tmux session (`tmux new-session -d -s <job> "./run.sh 2>&1 |
-  tee run.log; exec bash"`) that prints a `DONE` line at the end, so I can `tmux attach -t <job>`. Tell me the session
-  name. Wait on the `DONE` line, never on the SSH session. Conventions: `~/workspace/infra/.okf/servers/me-ubuntu-home.md`.
+- **Long jobs on an SSH Linux server** run in a named tmux session that tees a log and prints a
+  `DONE` line at the end. Tell me the session name. Wait on the `DONE` line, never on the SSH
+  session. Command and conventions: `~/workspace/infra/.okf/servers/me-ubuntu-home.md`.
 - **mise** replaces asdf, nvm, pyenv, direnv and make; config in `mise.toml`.
   Install CLI tools and MCP servers globally with `mise use -g` (`npm:`, `pipx:`,
   `github:` backends), never `npx`/`uvx` in a config. An MCP command points at
   the shim: `~/.local/share/mise/shims/<bin>`.
-- **ccp:** `~/.claude` holds symlinks into `~/.dotfiles/home/.ccp/` (`hub/` =
-  rules, skills, agents, hooks, styles; `profiles/default/` = this file, settings).
-  Edit the real file (`readlink -f`). It's git — review with `git diff`.
-  omp, opencode and agy mirror the profile: after changing hub items, run
-  `ccp omp sync && ccp opencode sync && ccp agy sync`.
+- **ccp:** `~/.claude` holds symlinks into `~/.dotfiles/home/.ccp/` (`hub/` and
+  `profiles/default/`). Edit the real file (`readlink -f`); it's git. After changing
+  hub items, run `ccp omp sync && ccp opencode sync && ccp agy sync`.
 - **An install is done when it's in dotfiles:** tools and MCP servers via
   `mise use -g`, skills via `ccp install … --link .`, then `mise run dot:check`.
   Commit and push dotfiles (`mise run dot:push`) without asking; this standing
