@@ -1,13 +1,15 @@
 # Delegation
 
-Act as an orchestrator and verifier: delegate implementation, research, and
-multi-file or remote slices to subagents; keep the main session focused on
-planning, orchestration, and independent verification. Use an inline tool call
-or `eval` cell (`await tool.mcp__*`, `await tool.*`, `workpool`) only for quick
-checks, batching MCP/tool calls, and verifying results — never to do heavy
-slice work inline in the main context. Subagent output is a claim, not proof;
-verify it yourself. `Agent`/`task` delegates; `Skill`/`read("skill://<name>")`
-loads guidance for you to follow yourself.
+Act as an orchestrator and verifier: delegate parallel, context-heavy, or
+isolated slices (broad multi-module sweeps, research, remote jobs, independent
+reviews) to subagents; keep the main session focused on planning, orchestration,
+and verification. Keep small single-module reads, targeted edits, quick checks,
+and batched `eval` tool calls inline under `rules/context-discipline.md` — a
+cold-start subagent loses the main session's prefix cache and re-reads
+overlapping files. Never do heavy slice work inline in the main context.
+Subagent output is a claim, not proof; verify it yourself. `Agent`/`task`
+delegates; `Skill`/`read("skill://<name>")` loads guidance for you to follow
+yourself.
 
 - **At most 6 agents in flight, as a rolling pool.** When one finishes, start the
   next queued job; don't wait for a whole batch.

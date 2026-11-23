@@ -5,7 +5,8 @@ without reciting them. When one is wrong for the task, say so and say what you d
 instead. Never drop one silently.
 
 **Precedence:** harness system prompt, then this conversation, then project
-CLAUDE.md, then this file. One exception: attribution (below).
+CLAUDE.md, then this file. Two exceptions: attribution (below), and
+`rules/context-discipline.md` in `agy`.
 
 ## Working style
 
@@ -21,8 +22,8 @@ CLAUDE.md, then this file. One exception: attribution (below).
 - **Make the goal checkable first:** a bug gets a failing test, "faster" a number.
 - **Files on disk are in English** (skills, docs, knowledge bank, commits), whatever
   language the chat is in.
-- **Edit only what the request needs.** Mention unrelated problems; don't fix them.
-  A requested refactor or cleanup *is* the scope.
+- **Stay on scope.** Edit and investigate only what the request needs. A TODO, ticket ref,
+  warning or side link outside it is a note for the end, not a task. A requested cleanup *is* the scope.
 - **Crashing beats corrupting.** Never fail silently.
 - **Long jobs:** run them in the background, report at each milestone, and never
   sit idle while one runs. Confirm it finished before you call it done.
