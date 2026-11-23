@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-23
+* **Update**: `mise/config.toml` (full install) installs 25 more open-source desktop apps as `brew-cask:` entries, taken from the apps in use on the old Mac: altserver, background-music, clash-verge-rev, dbx, finetune, firefox@developer-edition, godot, godot-mono, gpg-suite-no-mail, obs, pdfcraft, photocraft, wordcraft, podman-desktop, raven-reader (repo archived in 2023), readest, recordly, rivet, rustdesk, siyuan, telegram-desktop, tor-browser, zerotier-one, plus gitbutler (FSL, MIT after two years) and tailscale-app (BSD core, closed Mac UI). Every token was checked with `brew info --cask`; none is deprecated. CuaDriver stays on `mise run cua:install`. Not cask-installable and left out: uBlock Origin Lite and WireGuard (Mac App Store only), Concat, ThermalForge, Insomnia (krishhgg) and Hiddify (GitHub DMGs). Classification: `~/workspace/research/261123-mac-apps/classification.md`. Runs: 25 more casks on each full bootstrap; four are pkg casks (background-music, gpg-suite-no-mail, zerotier-one, tailscale-app) that need sudo with a terminal.
+
 ## 2026-11-19
 * **Update**: [ccline](/tools/ccline.md): the placeholder is now `{elapsed_bar}` (was `{left_bar}`), because it fills with the time passed while `{left}` means time remaining. PR #146 has a second commit with the rename and a test that compares the default quota templates against literals (a Sourcery review finding). Runs: nothing new.
 * **Update**: [ccline](/tools/ccline.md): opened upstream PR Haleclipse/CCometixLine#146 for `{left_bar}` (rebased on upstream `master`, with README and README.zh docs). The local build now comes from that PR commit; it replaces the `path:` versions only when the PR is merged and released. Runs: nothing new.
