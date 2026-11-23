@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode-go/glm-5.3",
+  "instructions": [
+    "{env:HOME}/.claude/rules/*.md",
+    "{env:HOME}/.config/opencode/opencode-overlay.md",
+    "{env:HOME}/.config/opencode/output-style.md"
+  ],
+  "mcp": {
+    "rea": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "rea-agents@6.0.0",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  }
+}

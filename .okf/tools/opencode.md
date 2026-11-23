@@ -5,7 +5,7 @@ description: "Which parts of ~/.config/opencode live in this repository, which c
 resource: https://github.com/samhvw8/dotfiles/tree/main/home/.config/opencode
 tags: [opencode, ccp, agents]
 status: stable
-generated: { by: claude-code/claude-opus-5-5, at: 2026-10-02T13:20:00Z }
+generated: { by: claude-code/claude-fable-5-2, at: 2026-11-23T07:30:00Z }
 sources:
   - id: ccp-opencode
     resource: https://github.com/samhvw8/claude-code-profile/blob/main/.okf/features/opencode.md
@@ -16,17 +16,25 @@ sources:
 
 | Path | Owner |
 |------|-------|
-| `opencode.json`, `opencode-overlay.md` | This repository |
+| `opencode.json` | This repository — the model, the `instructions` list (hub rules, the overlay, the output style) and the `rea` MCP server. It holds no secrets |
+| `opencode-overlay.md` | This repository — what differs from Claude Code: the `task` tool, the tool table, skills and OKF. It names only what `opencode.json` configures |
 | `plugins/surgical-changes.ts` | This repository — opencode 2 port of the Claude Code `surgical-changes` hook (`tool.hook("execute.after")`, no imports) |
-| `plugins/append-system.ts`, `system-append.md` | This repository — the plugin appends `system-append.md` to the system prompt through the session `context` hook, reading the file on every request (currently a dummy codeword block) |
 | `skills/playwriter/` | This repository |
 | `agent/architect.md`, `debug.md`, `research.md`, `review.md` | This repository — opencode-only primary modes |
 | `agent/go-expert.md`, `cloudflare-workers-expert.md`, `mcp-server-engineer.md`, `run-cost-auditor.md` | This repository — opencode-only subagents |
 | Other `agent/*.md`, `command/*.md` | ccp: converted copies of the active profile's agents and commands, written by `ccp opencode sync`[^ccp-opencode] — do not edit or store them here |
+| `output-style.md` | ccp: the active output style's body, written by `ccp opencode sync` |
+| `plugins/herdr-agent-state.js`, `herdr-tui-session.js`, `tui.jsonc` | Machine-local: written by herdr's agent-state installer |
 | `service.json`, `node_modules/`, `package*.json`, `bun.lock` | Machine-local, not stored: a service password and opencode-managed dependencies |
 
 opencode reads `~/.claude/CLAUDE.md` and `~/.claude/skills/` (the active ccp profile) itself, and
 `opencode.json` takes rules from `{env:HOME}/.claude/rules/*.md`, so none of those need copying.
+From 2026-10-02 to 2026-11-23 `opencode.json` was missing from this repository and the live file
+had no `instructions` list, so opencode ran without the hub rules, the overlay and the output
+style. Check with `opencode debug config`: the `instructions` list must be there. The codegraph
+and Parallax MCP servers are not configured, because each session would start its own copy;
+the overlay points to the `codegraph` and `parallax` CLIs instead. If opencode replaces the link
+with a plain file, `mise dot status` shows it: copy the file back into `home/` and re-link it.
 Paths in `opencode.json` use `{env:HOME}`, so the same file works on macOS and Linux. The default
 models come from OpenCode Go (`opencode-go/…`), which needs the Go API key connected once per
 machine with `/connect`. The default model is `opencode-go/glm-5.3`; `opencode-go/deepseek-v4.1-flash`
