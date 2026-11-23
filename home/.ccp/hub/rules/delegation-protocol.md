@@ -60,7 +60,8 @@ named here.
    independent slices go to their own sessions; only the conclusion comes back.
 
 Reuse through the harness's follow-up channel: `SendMessage` to a finished subagent in
-Claude Code, `task send` in `agent-ops` (`task new --reuse` clears the pane: it keeps
-the process, not the context), a named `task` item in `omp`. Cache
+Claude Code, `task send` in `agent-ops`, a named `task` item in `omp`. In `agent-ops`,
+`task new --reuse <pane>` is for an unrelated task on an idle open worker: it clears
+the pane, so it keeps the process, not the context. Cache
 lifetime differs by harness and model; when you do not know it, treat an idle session
 as cold.

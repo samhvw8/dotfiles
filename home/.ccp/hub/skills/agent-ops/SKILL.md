@@ -118,6 +118,10 @@ Procedures are in files next to this one, each under its original heading. Read 
   to you, and it stops when done.
 - **`task new`:** only when the job needs its own visible harness session: a different harness or
   model, work the user should be able to watch or take over, or a long job that must outlive your turn.
+- **Pick by what the worker must keep.** `task send <id>` continues the worker's context: use it for
+  fixes and follow-ups on the same work. `task new --reuse <pane>` gives an idle open pane an unrelated
+  task: it sends `/clear` first, so the process and the pane stay and the context goes. Plain
+  `task new` opens a new pane.
 - At most 6 tasks run per owner; a whole tree runs at most 12 (`--tree-max`), at most 4 levels deep
   (`TERMCTL_MAX_DEPTH`). A task is a **leaf** unless you start it with `--sub-depth K`: a lead that
   will start its own workers needs `--sub-depth 1`, a lead of leads `--sub-depth 2`. A leaf cannot `spawn` either (exit 6). Its brief ends with
