@@ -13,7 +13,7 @@
         "{env:HOME}/.local/share/mise/shims/rea-agents",
         "mcp"
       ],
-      "enabled": true
+      "enabled": false
     }
   }
 }

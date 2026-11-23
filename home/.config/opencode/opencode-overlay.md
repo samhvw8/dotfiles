@@ -26,7 +26,7 @@ The Tools table in `CLAUDE.md` is written for Claude Code and `omp`. Here:
 | Code questions | `codegraph explore "<names or question>"` through `bash` (`rules/codegraph.md`, "No MCP tool") |
 | Web and social | `parallax call <tool> '<json>'` through `bash` (load the `parallax-cli` skill); `webfetch` for a plain page |
 | GitHub | `gh` through `bash` |
-| MCP | `rea` only. opencode names MCP tools `<server>_<tool>`; there is no `ToolSearch` |
+| MCP | None by default. `rea` is defined in `opencode.json` but off; ask the user to enable it for reverse-engineering work. opencode names MCP tools `<server>_<tool>`; there is no `ToolSearch` |
 
 Model IDs carry a provider prefix. Trust the IDs the harness shows.
 
