@@ -240,8 +240,8 @@ One message = one complete request. The receiver has none of your context.
   `<YYMMDD-HHMMSS>-<name>-<what>.<ext>`, never `/tmp`: agy asks a person before it reads `/private/tmp`.
   Every brief template carries this rule; keep it when you fill one in.
 - The text is typed into the target's input box. If the input line holds a draft, `send` and `slash`
-  refuse with exit 4 and send nothing. Ask the user before you use `--force`: on `send` it joins the
-  draft, on `slash` and `--clear-first` it wipes the draft.
+  refuse with exit 4 and send nothing. Ask the user before you use `--force`: it wipes the draft with
+  ctrl-u, then sends (`send`, `task send`, `slash`, `--clear-first`; termctl v0.12.1+).
 - To reset another agent, use `send --clear-first` or `clear`. Never type `/clear` into a message: a
   slash command only works alone on the line.
 - A busy agent queues the message and handles it after its turn; `send` then prints `queued for`.
