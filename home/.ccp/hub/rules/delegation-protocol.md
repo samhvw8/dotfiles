@@ -40,3 +40,26 @@ yourself.
 - **Research:** read local first (code, config, git history) so you know the terms. Still start broad.
   Then search web and GitHub in parallel, say which approach you picked and why, and
   surface conflicts. Skip it for a known-cause bug or a mechanical change.
+
+## Same session or new session
+
+A session's context is an asset while it is warm and relevant, and a cost on every
+turn after that. Decide with three questions, in order. They also cover jobs not
+named here.
+
+1. **Must the result be independent?** A verdict on work (a review, a grade, a second
+   opinion) goes to a new session that gets the requirements and the files, not the
+   author's reasoning. A check a script can judge (tests, a build, a validator) is not
+   a verdict: run it in the session that did the work.
+2. **Does the session's context still pay?** Reuse the session when the next job needs
+   what it already holds (the same files, the same decisions) and it is still warm:
+   fixes after a review and follow-ups on the same work go back to their author. Start
+   a new one when the job is unrelated or the session sat idle past its cache lifetime,
+   because the old history is then paid in full on each turn and helps nothing.
+3. **Would the work flood or block this session?** Broad sweeps, research and parallel
+   independent slices go to their own sessions; only the conclusion comes back.
+
+Reuse through the harness's follow-up channel: `SendMessage` to a finished subagent in
+Claude Code, `task send` in `agent-ops`, a named `task` item in `omp`. Cache
+lifetime differs by harness and model; when you do not know it, treat an idle session
+as cold.
