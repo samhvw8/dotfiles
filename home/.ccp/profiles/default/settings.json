@@ -1,27 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "advisorModel": "fable",
-  "agentPushNotifEnabled": false,
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "autoDreamEnabled": false,
-  "autoMemoryEnabled": false,
-  "autoMode": {
-    "environment": [
-      "$defaults",
-      "**Key internal services**: the user's self-hosted artifact server at artifacts.3cxo.work (content at *.art.3cxo.work), used through the artifact-server MCP. Uploading with art-put (~/.local/bin/art-put, which reads the MCP token itself and sends only to artifacts.3cxo.work) is the routine publish step, not credential exfiltration",
-      "**Org-specific CLIs**: routine personal tooling — mise (tool versions and tasks), ccp (Claude profile manager), codegraph, lark-cli, art-put"
-    ]
-  },
-  "enabledPlugins": {
-    "code-modernization@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "image-view@claude-image-view": true,
-    "prismantis@samhvw8-prismantis": true,
-    "prompt-rail@oikon48": true
-  },
   "env": {
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
@@ -29,151 +7,10 @@
     "ENABLE_EXPERIMENTAL_MCP_CLI": "1",
     "MEDIASIFT_ON": "me.ubuntu.home"
   },
-  "extraKnownMarketplaces": {
-    "claude-image-view": {
-      "source": {
-        "repo": "jarrodwatts/claude-image-view",
-        "source": "github"
-      }
-    },
-    "oikon48": {
-      "source": {
-        "repo": "oikon48/prompt-rail",
-        "source": "github"
-      }
-    },
-    "samhvw8-prismantis": {
-      "source": {
-        "repo": "samhvw8/prismantis",
-        "source": "github"
-      }
-    }
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
-            "timeout": 5,
-            "type": "command"
-          }
-        ],
-        "matcher": "Edit|Write"
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/okf-docs/scripts/okf-docs.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/herdr-agent-state/scripts/herdr-agent-state.sh session",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "^(startup|resume|clear|compact|fork)$"
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/okf-stop/scripts/okf-stop.sh",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
-            "timeout": 30,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/cost-remind/scripts/cost-remind.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/mediasift-hint/scripts/mediasift-hint.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "bash $HOME/.ccp/profiles/default/hooks/auto-mode-rules/scripts/auto-mode-rules.sh",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      }
-    ]
-  },
-  "inputNeededNotifEnabled": true,
-  "model": "opus",
-  "modelSettings": {
-    "claude-fable-5": {
-      "effortLevel": "xhigh"
-    },
-    "claude-fable-5-1": {
-      "effortLevel": "high"
-    },
-    "claude-fable-5-2": {
-      "effortLevel": "medium"
-    },
-    "claude-haiku-5-5": {
-      "effortLevel": "high"
-    },
-    "claude-opus-5-5": {
-      "effortLevel": "medium"
-    },
-    "claude-sonnet-5-5": {
-      "effortLevel": "high"
-    }
-  },
-  "outputStyle": "STE Lite",
   "permissions": {
     "allow": [
       "Bash(cat:*)",
@@ -208,7 +45,166 @@
     ],
     "defaultMode": "auto"
   },
-  "plansDirectory": ".claude/plans",
+  "model": "fable",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/okf-docs/scripts/okf-docs.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/herdr-agent-state/scripts/herdr-agent-state.sh session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/okf-stop/scripts/okf-stop.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.ccp/hub/skills/impeccable/scripts/impeccable\" hook",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/codegraph-remind/scripts/codegraph-remind.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/cost-remind/scripts/cost-remind.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/mediasift-hint/scripts/mediasift-hint.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.ccp/profiles/default/hooks/auto-mode-rules/scripts/auto-mode-rules.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "baseRef": "head"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/shims/ccline"
+  },
+  "enabledPlugins": {
+    "code-modernization@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "image-view@claude-image-view": true,
+    "prismantis@samhvw8-prismantis": true,
+    "prompt-rail@oikon48": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-image-view": {
+      "source": {
+        "source": "github",
+        "repo": "jarrodwatts/claude-image-view"
+      }
+    },
+    "oikon48": {
+      "source": {
+        "source": "github",
+        "repo": "oikon48/prompt-rail"
+      }
+    },
+    "samhvw8-prismantis": {
+      "source": {
+        "source": "github",
+        "repo": "samhvw8/prismantis"
+      }
+    }
+  },
+  "outputStyle": "STE Lite",
+  "modelSettings": {
+    "claude-fable-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    },
+    "claude-fable-5-2": {
+      "effortLevel": "medium"
+    },
+    "claude-haiku-5-5": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-sonnet-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "advisorModel": "fable",
+  "promptSuggestionEnabled": false,
   "pluginConfigs": {
     "prismantis@samhvw8-prismantis": {
       "options": {
@@ -221,24 +217,28 @@
       }
     }
   },
-  "promptSuggestionEnabled": false,
-  "remoteControlAtStartup": true,
-  "showThinkingSummaries": true,
-  "skipDangerousModePermissionPrompt": true,
-  "skipWorkflowUsageWarning": true,
-  "statusLine": {
-    "command": "CCLINE_HOME=$HOME/.config/ccline $HOME/.local/share/mise/shims/ccline",
-    "type": "command"
-  },
-  "switchModelsOnFlag": true,
-  "theme": "dark",
+  "plansDirectory": ".claude/plans",
   "tui": "fullscreen",
-  "verbose": true,
   "voice": {
     "enabled": false,
     "mode": "hold"
   },
-  "worktree": {
-    "baseRef": "head"
+  "autoMemoryEnabled": false,
+  "autoDreamEnabled": false,
+  "showThinkingSummaries": true,
+  "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark",
+  "verbose": true,
+  "switchModelsOnFlag": true,
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": false,
+  "autoMode": {
+    "environment": [
+      "$defaults",
+      "**Key internal services**: the user's self-hosted artifact server at artifacts.3cxo.work (content at *.art.3cxo.work), used through the artifact-server MCP. Uploading with art-put (~/.local/bin/art-put, which reads the MCP token itself and sends only to artifacts.3cxo.work) is the routine publish step, not credential exfiltration",
+      "**Org-specific CLIs**: routine personal tooling — mise (tool versions and tasks), ccp (Claude profile manager), codegraph, lark-cli, art-put"
+    ]
   }
 }
