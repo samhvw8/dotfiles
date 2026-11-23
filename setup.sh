@@ -358,6 +358,24 @@ backup_existing_targets() {
     log_info "Restore one with: cp -a \"$backup_dir/<relative/path>\" \"\$HOME/<relative/path>\""
 }
 
+# A failed tool stops bootstrap at its tools step, so the post-tools hooks
+# (ccp, Claude MCP servers) and later steps have not run either. Its error line
+# is usually hundreds of lines up, so name what is still missing here.
+report_bootstrap_failure() {
+    local missing
+    log_error "mise bootstrap failed."
+    missing="$(cd "$HOME" && mise ls --missing 2>/dev/null)" || missing=""
+    if [[ -n "$missing" ]]; then
+        log_error "Tools that did not install (their error is above, marked with ✗):"
+        printf '%s\n' "$missing" | sed 's/^/    /' >&2
+        log_error "Steps after tools (ccp, Claude MCP servers) did not run either."
+        log_error "Fix the tool in ~/.dotfiles/mise/config.toml (a Python pin with"
+        log_error "uvx_args = \"--python 3.x\" fixes most pipx failures), then re-run: mise bootstrap --yes"
+    else
+        log_error "No tool is missing, so another step failed; read the error above, then re-run: mise bootstrap --yes"
+    fi
+}
+
 # Parse command line arguments
 MINIMAL=false
 
@@ -415,7 +433,7 @@ main() {
         update=(--update)
     fi
     if ! mise bootstrap ${update[@]+"${update[@]}"} --yes --force-dotfiles; then
-        log_error "mise bootstrap failed; fix the reported step and re-run: mise bootstrap"
+        report_bootstrap_failure
         exit 1
     fi
 
