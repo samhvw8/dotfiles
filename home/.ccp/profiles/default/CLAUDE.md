@@ -107,7 +107,7 @@ over to `lead-researcher` when the decision is big.
   first. When the server is up and its GPU (RTX 3060) is idle, run the job there, not on this Mac.
 - **Long jobs on an SSH Linux server** run in a named tmux session (`tmux new-session -d -s <job> "./run.sh 2>&1 |
   tee run.log; exec bash"`) that prints a `DONE` line at the end, so I can `tmux attach -t <job>`. Tell me the session
-  name. Wait on the `DONE` line, never on the SSH session. Conventions: `infra/.okf/servers/me-ubuntu-home.md`.
+  name. Wait on the `DONE` line, never on the SSH session. Conventions: `~/workspace/infra/.okf/servers/me-ubuntu-home.md`.
 - **mise** replaces asdf, nvm, pyenv, direnv and make; config in `mise.toml`.
   Install CLI tools and MCP servers globally with `mise use -g` (`npm:`, `pipx:`,
   `github:` backends), never `npx`/`uvx` in a config. An MCP command points at

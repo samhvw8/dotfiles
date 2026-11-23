@@ -1,7 +1,8 @@
 # Own tools first
 
 Before you build a pipeline or write a helper script, check whether
-`~/workspace/tools/` already does the job: read its `AGENTS.md`, then its `.okf/`.
+`~/workspace/tools/` already has a tool for the job (one folder per tool): read that
+tool's `AGENTS.md`, then its `.okf/`.
 Use the tool, and fix or extend it there instead of working around it.
 
 | Job | Tool |

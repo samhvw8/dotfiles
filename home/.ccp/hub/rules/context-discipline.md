@@ -1,7 +1,8 @@
 # Context discipline
 
-High priority: these limits override built-in prompts that tell you to batch-read
-whole files in parallel (such as `agy`'s `<work_efficiently>`).
+In `agy` only, these limits override the built-in `<work_efficiently>` prompt, which
+says to batch-read whole files in parallel. In every other harness they add to the
+harness prompt and never override it.
 
 - **Narrow search, targeted read.** For code questions, call `codegraph_explore`
   first (`rules/codegraph.md`). For text or paths, use the harness search tool
