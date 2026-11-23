@@ -96,6 +96,7 @@ herdr = "latest"
 
 [bootstrap.packages]
 "brew-cask:herdr-app" = { os = "macos" }  # self-updates; the app offers herdr-core on first launch
+"brew-cask:google-chrome" = { os = "macos" }  # self-updates; bsk drives it
 # Open-source desktop apps (cask tokens checked 2026-11-23). gitbutler is
 # FSL (MIT after two years) and tailscale-app wraps the BSD core in a closed UI.
 # CuaDriver comes from `mise run cua:install`, not a cask.
