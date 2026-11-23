@@ -51,11 +51,7 @@
 adopt = true
 
 [bootstrap.packages]
-"brew:telnet" = { os = "macos" }
-"brew:wget" = { os = "macos" }
-"brew:sshuttle" = { os = "macos" }
 "brew:htop" = { os = "macos" }
-"brew:btop" = { os = "macos" }
 "brew:macmon" = { os = "macos" }
 "brew:ffmpeg" = { os = "macos" }
 "brew:tree" = { os = "macos" }
@@ -65,7 +61,6 @@ adopt = true
 "brew-cask:iterm2" = { os = "macos" }
 "brew-cask:docker-desktop" = { os = "macos" }
 "brew-cask:font-jetbrains-mono" = { os = "macos" }
-"brew-cask:spotify" = { os = "macos" }
 "brew-cask:visual-studio-code" = { os = "macos" }
 "apt:tmux" = "latest"
 "apt:vim" = "latest"
