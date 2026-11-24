@@ -66,4 +66,5 @@ mise dot status            # link state
 mise bootstrap --dry-run   # preview the whole machine setup
 ```
 
-Commit and push only when asked.
+Commit and push without asking, with `mise run dot:push`. This is the standing approval in
+the global instructions (`home/.ccp/profiles/default/CLAUDE.md`); it covers this repository only.
