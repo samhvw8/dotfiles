@@ -26,28 +26,32 @@ about 89 ms.
 
 # Install (mise)
 
-`mise/config.toml` pins `"github:Haleclipse/CCometixLine" = "2.0.1"`. The
-`github:` backend downloads the release binary, so there is no Node launcher
-and no npm `postinstall`.
+The shared `mise/config.toml` does not install ccline. Each machine sets it in
+its git-ignored `~/.config/mise/config.local.toml`:
 
-**Local fork build (this Mac).** The `{elapsed_bar}` / `{elapsed_bar:N}` placeholder
-(a bar of the window time already passed) is not in 2.0.1. It is upstream PR
-[#146](https://github.com/Haleclipse/CCometixLine/pull/146) (branch
-`feat/quota-left-bar` on `samhvw8/CCometixLine`). Until it merges, this Mac runs
-branch `samhv/reset-bar` of the clone at `~/workspace/oss/CCometixLine`: the PR
-commit plus a `mise.toml`. After the merge and a release, bump the pin and
-remove the `path:` lines. Its
-`mise run install` builds `dist/ccline`. The git-ignored
-`~/.config/mise/config.local.toml` points mise at that folder with a `path:`
-version. Inside `~/.dotfiles`, mise would also load `mise/config.toml` as a
-project config, which outranks that file and brings back 2.0.1 (agy then shows
-"ccline needs Claude Code 2.1.153 or newer"). `home/.zprofile` exports
-`MISE_IGNORED_CONFIG_PATHS=$HOME/.dotfiles/mise` to stop that; mise reads this
-setting only from the environment, not from a config file. It replaced a
-git-ignored `~/.dotfiles/mise.local.toml`, which was easy to lose.
-Other machines keep 2.0.1; 2.0.1 drops an optional `[...]` group that holds
-`{elapsed_bar}`, so the shared config still renders there, without the bar and
-the "resets in" text. Remove the `path:` line to return to the release.
+- **Release:** `"github:Haleclipse/CCometixLine" = "2.0.1"`. The `github:`
+  backend downloads the release binary, so there is no Node launcher and no
+  npm `postinstall`. 2.0.1 does not support Antigravity CLI (agy): it reads
+  agy's version as a Claude Code version and prints "ccline needs Claude Code
+  2.1.153 or newer".
+- **Fork build (this Mac):** `"github:Haleclipse/CCometixLine" =
+  "path:~/workspace/oss/CCometixLine/dist"`. Branch `samhv/reset-bar` of the
+  clone at `~/workspace/oss/CCometixLine` adds the `{elapsed_bar}` /
+  `{elapsed_bar:N}` placeholder (upstream PR
+  [#146](https://github.com/Haleclipse/CCometixLine/pull/146), branch
+  `feat/quota-left-bar` on `samhvw8/CCometixLine`) and agy support. Its
+  `mise run install` builds `dist/ccline`.
+
+Why not in the shared config: inside `~/.dotfiles`, mise also loads
+`mise/config.toml` as a project config, which outranks
+`config.local.toml`. A shared pin there replaced the fork build with 2.0.1 in
+every session started in `~/.dotfiles`, and agy showed the version message.
+The release drops an optional `[...]` group that holds `{elapsed_bar}`, so
+the shared ccline config still renders there, without the bar and the
+"resets in" text.
+
+A machine without either line has no `ccline`, and the status line stays
+empty.
 
 `statusLine` in `home/.ccp/profiles/default/settings.json` runs:
 
