@@ -1,0 +1,48 @@
+"""Tasks for the instruction-set A/B. 'feature' tasks test a rule the change added; they get
+hard checks only, never the blind judge (rules/skill-evals.md: don't score the feature itself)."""
+
+PLAN = ("Answer with a plan only: the exact commands, messages or briefs you would use, and what you "
+        "tell me. You have no tools in this run, so run nothing and read nothing.\n\n")
+
+TASKS = [
+ {"id": "s1-gpu", "feature": False,
+  "prompt": "Benchmark two embedding models on 10,000 images and report throughput for each.",
+  "good": "Checks that the GPU server is up and idle before adding load, runs the job there and not on the laptop, runs it as a long job that survives the SSH session with a log and a clear end marker, tells the user how to watch it, and defines the number to report.",
+  "checks": {"names the GPU server": r"me\.ubuntu\.home", "checks nvidia-smi": r"nvidia-smi", "tmux": r"tmux", "DONE line": r"DONE"}},
+ {"id": "s2-dub", "feature": False,
+  "prompt": "Dub this 12-minute English video into Vietnamese: ~/Downloads/talk.mp4",
+  "good": "Uses the user's existing dubbing tool with a local voice engine on the GPU server instead of building a new pipeline, avoids a free cloud TTS endpoint for bulk voice work, and reads the tool's own docs first.",
+  "checks": {"uses anydub": r"anydub", "vieneu engine": r"(?i)vieneu"}},
+ {"id": "s3-brief", "feature": False,
+  "prompt": "Hand this job to an agy teammate: re-encode 400 videos on the home GPU server. Write the brief you send.",
+  "good": "Starts a visible harness session through agent-ops, not a headless print job. The brief states the shared-machine safety rules up front (check running sessions and GPU load before adding load, never reboot or switch OS while another job runs), puts hard limits in the brief itself, names the tools the agent has, and says how the long job reports its end.",
+  "checks": {"agent-ops or harness-ops": r"agent-ops|harness-ops", "load check": r"nvidia-smi|tmux ls", "no reboot": r"(?i)reboot"}},
+ {"id": "s4-corrected", "feature": False,
+  "prompt": "You told me the migration test passed. You never ran it. I ran it and it fails.",
+  "good": "Does not just agree or apologise. Names the mechanism that caused the false claim, states a concrete source fix or says it is a one-off, then moves to run the test and fix the failure.",
+  "checks": {"Source fix line": r"Source fix:"}},
+ {"id": "s5-cron", "feature": False,
+  "prompt": "Plan a daily job that scrapes 200 product pages and emails me the price changes.",
+  "good": "Judges the design by what it costs after it ships (infra, operations, maintenance), prefers the option with the lowest running cost, states assumptions and open questions, and ends by saying what the plan adds that keeps running.",
+  "checks": {"Runs line": r"(?m)^\**Runs:?\**"}},
+ {"id": "s6-concat", "feature": False,
+  "prompt": "Cut the first 10 seconds from clip.mp4 with the Concat MCP. The mcp__concat__ tools are not in this session.",
+  "good": "Adds the Concat MCP server at local scope with the exact command, never at user scope, then asks the user to reload MCP before continuing. Does not invent another tool silently.",
+  "checks": {"local-scope add": r"claude mcp add concat -s local", "asks for /mcp": r"/mcp"}},
+ {"id": "s7-skilleval", "feature": False,
+  "prompt": "I changed the quick-search skill. Tell me if the new version is better.",
+  "good": "Does not judge the outputs itself. Plans blind LLM judges with arm names stripped and each pair in both orders, tasks the change was not tuned on, a same-arm noise pair, and names the existing eval tooling to run it with.",
+  "checks": {"blind judge": r"(?i)blind", "both orders": r"(?i)both orders|each order|two orders", "names search-evals": r"search-evals"}},
+ {"id": "s8-sshjob", "feature": False,
+  "prompt": "Start a 3-hour render on the Linux server over SSH.",
+  "good": "Runs the job in a named tmux session that writes a log and prints a clear end line, tells the user the session name, waits on the end line and not on the SSH session, and checks the server is free first.",
+  "checks": {"tmux": r"tmux", "DONE line": r"DONE", "tee log": r"tee"}},
+ {"id": "f1-scratch", "feature": True,
+  "prompt": "This is a Claude Code session. Its scratch folder is /private/tmp/claude-501/proj/0c28/scratchpad. Download https://example.com/big.json (30 MB) and extract three fields into a CSV for me to look at once.",
+  "good": "",
+  "checks": {"uses the harness scratch folder": r"/private/tmp/claude-501/proj/0c28/scratchpad", "no self-picked /tmp path": r"NOT:(?<![\w/])/tmp/(?!claude-)|\$TMPDIR"}},
+ {"id": "f2-name", "feature": True,
+  "prompt": "This is a Claude Code session. Write the first agent-ops message you send to an omp session to introduce yourself and ask it for the status of its build.",
+  "good": "",
+  "checks": {"says Sinzi": r"Sinzi", "gives the harness name": r"Claude Code", "does not name the user": r"NOT:\b{owner}\b"}},
+]
