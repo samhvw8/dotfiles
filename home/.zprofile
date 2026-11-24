@@ -12,6 +12,12 @@ if [[ $(uname) == "Darwin" ]]; then
     fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
 fi
 
+# Inside ~/.dotfiles, mise would also load mise/config.toml as a project config,
+# which outranks ~/.config/mise/config.local.toml and undoes machine-local tool
+# overrides (such as the ccline fork build). Load it only as the global config.
+# mise reads this setting only from the environment, not from a config file.
+export MISE_IGNORED_CONFIG_PATHS="$HOME/.dotfiles/mise"
+
 if [ -f "$HOME/.local/bin/mise" ]; then
     eval "$($HOME/.local/bin/mise activate zsh --shims)"
 fi

@@ -37,13 +37,17 @@ and no npm `postinstall`.
 branch `samhv/reset-bar` of the clone at `~/workspace/oss/CCometixLine`: the PR
 commit plus a `mise.toml`. After the merge and a release, bump the pin and
 remove the `path:` lines. Its
-`mise run install` builds `dist/ccline`. Two git-ignored files point mise at
-that folder with a `path:` version: `~/.config/mise/config.local.toml`, and
-`~/.dotfiles/mise.local.toml` (inside `~/.dotfiles`, mise reads
-`mise/config.toml` as a project config, which outranks the global local file).
+`mise run install` builds `dist/ccline`. The git-ignored
+`~/.config/mise/config.local.toml` points mise at that folder with a `path:`
+version. Inside `~/.dotfiles`, mise would also load `mise/config.toml` as a
+project config, which outranks that file and brings back 2.0.1 (agy then shows
+"ccline needs Claude Code 2.1.153 or newer"). `home/.zprofile` exports
+`MISE_IGNORED_CONFIG_PATHS=$HOME/.dotfiles/mise` to stop that; mise reads this
+setting only from the environment, not from a config file. It replaced a
+git-ignored `~/.dotfiles/mise.local.toml`, which was easy to lose.
 Other machines keep 2.0.1; 2.0.1 drops an optional `[...]` group that holds
 `{elapsed_bar}`, so the shared config still renders there, without the bar and
-the "resets in" text. Remove both `path:` lines to return to the release.
+the "resets in" text. Remove the `path:` line to return to the release.
 
 `statusLine` in `home/.ccp/profiles/default/settings.json` runs:
 
