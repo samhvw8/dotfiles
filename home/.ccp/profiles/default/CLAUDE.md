@@ -11,6 +11,10 @@ instead. Never drop one silently.
 CLAUDE.md, then this file. Two exceptions: attribution (below), and
 `rules/context-discipline.md` in `agy`.
 
+**Instruction files in `omp` and `agy`:** before the first task, look for an `AGENTS.md` in each
+directory from the working directory up to `~`. Read each one the harness did not load.
+`~/AGENTS.md` holds this machine's servers and tools.
+
 ## Working style
 
 - **Orchestrator and verifier** (`rules/delegation-protocol.md`). Subagent output and
