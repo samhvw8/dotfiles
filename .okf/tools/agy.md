@@ -71,5 +71,11 @@ After `mise bootstrap` links these files and `ccp bootstrap` runs, run `ccp agy 
 then on ccp keeps agy current. Re-create the `local-secrets` plugin by hand, or ask an agent to copy
 the `artifact-server` entry from `~/.claude.json`.
 
+On a new Mac, `.claude.json` is never copied (it holds the login), so it also lacks the user-scope
+MCP servers, including `artifact-server`, which `art-put` reads its token from. Copy each missing entry
+with `claude mcp add-json -s user <name> '<json>'`, once for `~/.claude.json` and once per profile with
+`CLAUDE_CONFIG_DIR=~/.ccp/profiles/<name>`. Then log in to the OAuth servers (`notion`, `nexus`,
+`sam-atlassian`) with `/mcp`, because their tokens live in each Mac's keychain.
+
 [^ccp-agy]: ccp agy integration docs.
 [^agy-docs]: Antigravity customization discovery docs.
