@@ -2,6 +2,7 @@
 
 ## 2026-11-24
 * **Fix**: the temp-file rule in the profile `CLAUDE.md` contradicted Claude Code, whose scratch folder is under `/private/tmp/claude-501/`. The rule now says the harness's scratch folder wins even under `/tmp`, and forbids only a path the agent picks itself in the system temp folder. That keeps the 2026-11-16 cause covered (an agent saved to `/tmp/cram.txt`). Runs: nothing new.
+* **Fix**: hub rule `writing-tone.md` linked to `surgical-changes.md`, which does not exist, and described `documentation.md` as a `docs/` house style. The dead link is removed and the description now says OKF bundle. Runs: nothing new.
 
 ## 2026-11-23
 * **Update**: when to use `harness-ops task new --reuse`, in two places. `delegation-protocol.md` says it is for an unrelated task on an idle open worker, because it clears the pane. The `agent-ops` skill gets one bullet, "Pick by what the worker must keep": `task send` keeps the context, `task new --reuse` keeps the process and the pane only, plain `task new` opens a new pane. Source: termctl 0.12.0 `internal/harness/tasks.go`; not run on a live pane. Runs: 60 bytes more in every session; 380 bytes when the skill loads.

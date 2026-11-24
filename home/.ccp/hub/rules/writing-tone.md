@@ -37,5 +37,4 @@ the target, not messy.
 
 ## Related
 
-- [surgical-changes.md](surgical-changes.md) — scope discipline
-- [documentation.md](documentation.md) — house style for `docs/` trees
+- [documentation.md](documentation.md) — project docs live in an OKF bundle
