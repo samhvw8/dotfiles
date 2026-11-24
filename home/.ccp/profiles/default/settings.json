@@ -45,7 +45,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "fable",
+  "model": "opus",
   "hooks": {
     "PostToolUse": [
       {
@@ -203,7 +203,6 @@
       "effortLevel": "high"
     }
   },
-  "advisorModel": "fable",
   "promptSuggestionEnabled": false,
   "pluginConfigs": {
     "prismantis@samhvw8-prismantis": {
