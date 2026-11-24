@@ -44,7 +44,7 @@ says "review", give Read it for me first and the Insight review after.
 Idea requests go elsewhere. "What's the idea", "what can I borrow", "find the gems",
 "read this with me": use `co-read` (brief or deep mode). This skill stays the trust and
 evidence tool. The idea skills call it as a verification service when a claim is about
-to become load-bearing for Sam's work, most of all in a domain Sam delegates and cannot
+to become load-bearing for the user's work, most of all in a domain the user delegates and cannot
 judge.
 
 All four rest on the same steps and one claim ledger. Build the ledger every time;

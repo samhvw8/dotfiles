@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: "Sam's git conventions: split staged changes into atomic single-responsibility commits, conventional-commit messages, branch naming, and history cleanup without interactive commands. Use when committing (especially many files), writing commit messages, naming branches, preparing a PR, or squashing/rewriting history."
+description: "The user's git conventions: split staged changes into atomic single-responsibility commits, conventional-commit messages, branch naming, and history cleanup without interactive commands. Use when committing (especially many files), writing commit messages, naming branches, preparing a PR, or squashing/rewriting history."
 ---
 
 # Git Workflow & Best Practices

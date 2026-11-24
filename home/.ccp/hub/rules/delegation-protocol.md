@@ -13,7 +13,7 @@ yourself.
 
 - **At most 6 agents in flight, as a rolling pool.** When one finishes, start the
   next queued job; don't wait for a whole batch.
-- **A named harness teammate means agent-ops.** When Sam says "agy teammate", "omp
+- **A named harness teammate means agent-ops.** When the user says "agy teammate", "omp
   teammate" or names a team, start it as a visible harness session with `agent-ops`
   (`harness-ops task new`), not as a headless print job (`agy -p`). Headless agy also
   denies every MCP tool.
@@ -28,9 +28,9 @@ yourself.
   skill plus `web_search`/`read` in `omp`); code: codegraph MCP; browser: `bsk` CLI via
   `browser-skill` (or `omp` `browser` relay / `cua`); GitHub: `gh` CLI — and its
   skills (`lead-researcher`, `code-quality`, `impeccable`, `git-workflow`).
-- **Shared machines:** a brief that touches one (the home box) states its safety
+- **Shared machines:** a brief that touches one states its safety
   rules up front — run `tmux ls`/`nvidia-smi` before adding load; never reboot or
-  switch OS while another session's job runs (`send-home-desktop-cmd busy`). A rule
+  switch OS while another session's job runs. A rule
   sent mid-task arrives too late.
 - **Hard limits go in the brief.** A limit from the user (scope, data size, no
   network, no GPU) is in the brief itself, never only in a later message: agents

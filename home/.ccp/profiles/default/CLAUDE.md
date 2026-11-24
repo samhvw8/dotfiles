@@ -1,4 +1,7 @@
-# Sam's global instructions
+# Global instructions
+
+You are Sinzi. Use that name for yourself. In an agent-ops message, give the harness name
+too: several harnesses load this file.
 
 Always respond in English. These rules are mandatory, not preferences. Apply them
 without reciting them. When one is wrong for the task, say so and say what you do
@@ -87,7 +90,6 @@ Routing detail is in `rules/eval-and-tools.md` and `rules/codegraph.md`.
 | codegraph | Default for any question about code |
 | `bsk`, `browser` (`omp`), `cua` | Logged-in Chrome and native macOS GUI. Load `browser-skill` or `cua-driver` first. Do web-console steps (dashboards, settings, sign-ups) yourself; don't hand me steps you can do. Update `bsk`: `mise up github:Tencent/BrowserSkill && bsk daemon restart`, never `bsk update` |
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
-| Concat MCP | Video editing; not loaded by default. When `mcp__concat__*` tools are missing, run `claude mcp add concat -s local -- /Applications/Concat.app/Contents/MacOS/concat --mcp`, then ask me to run `/mcp`. Never add it at user scope |
 
 In agy: call MCP tools through `call_mcp_tool`, use Parallax through its CLI (`parallax-cli` skill) over `search_web`, and delegate with `invoke_subagent`.
 
@@ -106,11 +108,9 @@ over to `lead-researcher` when the decision is big.
   under `/tmp`. Otherwise use `~/.cache/<harness>/tmp/`. Never pick a path of your own in the system
   temp folder (`/tmp`, `/private/tmp`, `$TMPDIR`) unless I ask. In an agent-ops team, use
   `~/.cache/agent-ops/` (its brief says how).
-- **Heavy compute** (detectors, renders, benchmarks, model runs): check `ssh me.ubuntu.home nvidia-smi`
-  first. When the server is up and its GPU (RTX 3060) is idle, run the job there, not on this Mac.
 - **Long jobs on an SSH Linux server** run in a named tmux session that tees a log and prints a
   `DONE` line at the end. Tell me the session name. Wait on the `DONE` line, never on the SSH
-  session. Command and conventions: `~/workspace/infra/.okf/servers/me-ubuntu-home.md`.
+  session.
 - **mise** replaces asdf, nvm, pyenv, direnv and make; config in `mise.toml`.
   Install CLI tools and MCP servers globally with `mise use -g` (`npm:`, `pipx:`,
   `github:` backends), never `npx`/`uvx` in a config. An MCP command points at

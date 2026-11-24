@@ -39,7 +39,7 @@ Format: `[topic]` — everything else (agents, languages, depth) is decided by t
 | **Iterations** | Brain decides — stop when saturated | No preset count |
 | **Depth** | Brain decides — shallow for simple, deep for complex | Saturation curve, not a mode setting |
 | **Venue** | Inline (brain = main agent) or workflow (brain = opus sub-agent) | Brain picks based on expected complexity |
-| **Objective** | Decision: find the best option, confirm or refute claims | **Ideas**: when the caller is `idea-scout`, or Sam asks for ideas, gems or what can be reused rather than which option is best ([Ideas objective](references/ideas-objective.md)) |
+| **Objective** | Decision: find the best option, confirm or refute claims | **Ideas**: when the caller is `idea-scout`, or the user asks for ideas, gems or what can be reused rather than which option is best ([Ideas objective](references/ideas-objective.md)) |
 
 **The brain (forager) decides everything.** No modes, no preset agent counts, no fixed iterations. The only default is the language set: EN + ZH + ZH-TW when nothing is specified. It is a set to choose from per sub-question, not a multiplier applied to every sub-question.
 

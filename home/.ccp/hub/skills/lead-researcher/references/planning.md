@@ -82,7 +82,7 @@ Single-fact lookups ("what's the latest stable React", "is Y deprecated") are no
 | Researchable, and live steering would help (exploratory, multi-step) | Ask one yes/no: *"Run as **live Team Research** — 2–3 gatherers and a verifier work in visible sessions while I steer them round by round and you watch and redirect? Or run it normally?"* |
 | Otherwise | Inline or Workflow venue, as the brain picks |
 
-Yes → Team venue (still do Phase 1 planning first). Run it from the main session, so Sam sees the sessions and the lead steers them. Transport: harness-ops sessions through the `agent-ops` skill; in `omp`, named `task` items with `write agent://<id>`.
+Yes → Team venue (still do Phase 1 planning first). Run it from the main session, so the user sees the sessions and the lead steers them. Transport: harness-ops sessions through the `agent-ops` skill; in `omp`, named `task` items with `write agent://<id>`.
 
 ### Phase 1: Confirm Research Plan with User
 

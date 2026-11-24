@@ -1,6 +1,6 @@
 # Writing Tone
 
-**Scope:** text a human reads as if Sam wrote it — Upwork proposals, client
+**Scope:** text a human reads as if the user wrote it — Upwork proposals, client
 emails, DMs, PR descriptions, landing copy, README intros. Not code comments,
 not internal docs, not these rule files.
 
@@ -28,7 +28,7 @@ low-effort to the person receiving it.
 | Contractions | `isn't`, `I'd`, `you're` |
 | One concrete detail early | A filename, a number, a line reference. Specificity can't be faked |
 | Say the uncertain part | `worth checking` beats false confidence |
-| Sam's actual vocabulary | If he wouldn't say it aloud, cut it |
+| The user's actual vocabulary | If they wouldn't say it aloud, cut it |
 
 ## Don't overcorrect
 

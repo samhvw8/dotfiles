@@ -10,9 +10,9 @@ The forager loop (REASON → EXPAND → CHECK) is the **brain**. The venue decid
 |-------|----------------------|---------------------|
 | Inline (simple, focused) | the main agent, inline | same main agent |
 | Workflow (complex, multi-domain) | an opus sub-agent per iteration (main asleep) | main agent, GOAL-CHECK after |
-| **Team (live)** | **the lead (main session)**, between gatherer rounds | **the lead; Sam watches the panes and redirects through the lead** |
+| **Team (live)** | **the lead (main session)**, between gatherer rounds | **the lead; the user watches the panes and redirects through the lead** |
 
-There is no separate steering-lead session. A task worker reports only to the session that started it, and a session in the middle would hide the gatherers from the lead and from Sam. The lead keeps its context small: it reads each round's short summary and opens a report only for a flagged finding.
+There is no separate steering-lead session. A task worker reports only to the session that started it, and a session in the middle would hide the gatherers from the lead and from the user. The lead keeps its context small: it reads each round's short summary and opens a report only for a flagged finding.
 
 ## The org chart
 
@@ -40,7 +40,7 @@ Use the team venue when you want to steer live and findings must cross-check as 
 ## Prerequisites
 
 - `harness-ops` on `PATH`; load the `agent-ops` skill before the first `task new`. Without it, use Direct or Workflow.
-- **Main session only.** Sam must see the panes, and the lead must steer each round. Spawn depth is capped at 2: gatherers and the verifier are depth 1, and their slices are plain subagents, not sessions.
+- **Main session only.** The user must see the panes, and the lead must steer each round. Spawn depth is capped at 2: gatherers and the verifier are depth 1, and their slices are plain subagents, not sessions.
 - At most 6 tasks per owner: 3 gatherers + 1 verifier + 1 gap gatherer fits.
 - In `omp`, the transport is named `task` items with `write agent://<id>` instead; the rounds, ledger and roles stay the same.
 
@@ -57,7 +57,7 @@ Use the team venue when you want to steer live and findings must cross-check as 
 6. **Exit.** When hypotheses settle, new-info-per-token collapses, or coverage is met, send every gatherer `stop and finish the report` and wait for each final `task done`.
 7. **Synthesize + GOAL-CHECK.** Merge into the cited report (Phase 5 format) and score it against the original goal. Then `harness-ops task accept <id> --close` for every task, and run `task ls` to confirm nothing is left open.
 
-Follow the agent-ops rules for a task that fails to start or stops answering: `read` it once, `task close --force <id>`, tell Sam before you start a replacement.
+Follow the agent-ops rules for a task that fails to start or stops answering: `read` it once, `task close --force <id>`, tell the user before you start a replacement.
 
 ## Task briefs (templates)
 
