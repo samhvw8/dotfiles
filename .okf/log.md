@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-25
+* **Removal**: `brew-cask:docker-desktop` from `mise/conf.d/dotfiles.toml`, Sam's call (the 2026-11-23 entry left it open). The new Mac got Docker Desktop 4.99 from its first `mise bootstrap` and never started it; it is uninstalled there. A machine that needs Docker adds the cask to its own `~/.config/mise/config.local.toml`. Runs: one cask (about 2 GB) less on each macOS bootstrap.
+
 ## 2026-11-24
 * **Fix**: machine facts moved to `~/CLAUDE.local.md` earlier today, and only Claude Code loads that file, so `omp` and `agy` lost the GPU server, the Concat command and the own-tools table. Each machine now has `~/AGENTS.md` as a link to `~/CLAUDE.local.md` (made by hand; neither file is in this repository). The global instructions tell `omp` and `agy` to read every `AGENTS.md` from the working directory up to `~` that the harness did not load.
 * **Fix**: `AGENTS.md` said "Commit and push only when asked", and the global instructions say to push dotfiles without asking. The project file wins by precedence, so the standing approval never applied in the one repository it names. `AGENTS.md` now states the standing approval.

@@ -59,7 +59,6 @@ adopt = true
 "brew-cask:macfuse" = { os = "macos" }
 "brew-cask:calibre" = { os = "macos" }
 "brew-cask:iterm2" = { os = "macos" }
-"brew-cask:docker-desktop" = { os = "macos" }
 "brew-cask:font-jetbrains-mono" = { os = "macos" }
 "brew-cask:visual-studio-code" = { os = "macos" }
 "apt:tmux" = "latest"
