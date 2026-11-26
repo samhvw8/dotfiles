@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-26
+* **Update**: the `default` profile has the ccp account rule `account = 'default'` in `home/.ccp/profiles/default/profile.toml` (ccp v0.62.0, `ccp account use default`). The personal login moved into the account `~/.ccp/accounts/default` (`ccp migrate --accounts`), so plain `claude` needs the shim `~/.ccp/bin/claude` first on PATH; on this Mac that is `_.path = ["{{env.HOME}}/.ccp/bin"]` in the machine-local `~/.config/mise/config.local.toml`. A machine without that account or PATH entry runs plain `claude` unchanged. Checked: a new login shell resolves `claude` to the shim and `claude auth status` reports `configDirectory` `~/.ccp/accounts/default`. Runs: one `ccp run` per `claude` start.
+
 ## 2026-11-25
 * **Removal**: `brew-cask:docker-desktop` from `mise/conf.d/dotfiles.toml`, Sam's call (the 2026-11-23 entry left it open). The new Mac got Docker Desktop 4.99 from its first `mise bootstrap` and never started it; it is uninstalled there. A machine that needs Docker adds the cask to its own `~/.config/mise/config.local.toml`. Runs: one cask (about 2 GB) less on each macOS bootstrap.
 
