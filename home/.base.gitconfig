@@ -27,6 +27,13 @@
 	rebase = false
 [credential]
 	helper = cache
+# GitHub: gh resolved on PATH, so a folder's mise gh wrapper (a work account) applies there.
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
 [color]
 	ui = true
 # [color "diff-highlight"]
