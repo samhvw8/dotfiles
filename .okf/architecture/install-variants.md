@@ -30,6 +30,7 @@ otherwise it links `mise/config.toml`.[^setup] Both load the shared
 | Tools | 48 tools incl. fzf, fd, bat, atuin, claude, ccp | jq, ripgrep, yq, node, python, uv[^minimal] |
 | `~/.zshrc` | `home/.zshrc` | `home/.zshrc_minimal` |
 | Extra apt packages | build-essential, python3-pip, gnupg, terminator, zip, … | none |
+| macOS casks | macfuse, calibre, iterm2, font-jetbrains-mono, visual-studio-code, google-chrome, herdr-app | none (brew CLI packages such as htop and ffmpeg install on both) |
 | tpm repo | yes | no |
 | post-tools hooks | `~/.claude` via ccp, Claude MCP servers, Linux font[^full] | none |
 

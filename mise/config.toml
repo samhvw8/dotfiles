@@ -99,6 +99,13 @@ herdr = "latest"
 [bootstrap.packages]
 "brew-cask:herdr-app" = { os = "macos" }  # self-updates; the app offers herdr-core on first launch
 "brew-cask:google-chrome" = { os = "macos" }  # self-updates; bsk drives it
+# Desktop apps for full installs only: a minimal install adds no casks, so it
+# never shares /opt/homebrew/Caskroom with a Homebrew someone installs later.
+"brew-cask:macfuse" = { os = "macos" }
+"brew-cask:calibre" = { os = "macos" }
+"brew-cask:iterm2" = { os = "macos" }
+"brew-cask:font-jetbrains-mono" = { os = "macos" }
+"brew-cask:visual-studio-code" = { os = "macos" }
 "apt:python3-pip" = "latest"
 "apt:gnupg" = "latest"
 "apt:ca-certificates" = "latest"

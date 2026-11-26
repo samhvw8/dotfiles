@@ -56,11 +56,6 @@ adopt = true
 "brew:ffmpeg" = { os = "macos" }
 "brew:tree" = { os = "macos" }
 "brew:sshpass" = { os = "macos" }
-"brew-cask:macfuse" = { os = "macos" }
-"brew-cask:calibre" = { os = "macos" }
-"brew-cask:iterm2" = { os = "macos" }
-"brew-cask:font-jetbrains-mono" = { os = "macos" }
-"brew-cask:visual-studio-code" = { os = "macos" }
 "apt:tmux" = "latest"
 "apt:vim" = "latest"
 "apt:git" = "latest"
