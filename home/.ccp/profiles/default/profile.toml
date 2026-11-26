@@ -1,6 +1,7 @@
 version = 3
 name = 'default'
 settings-template = 'base'
+account = 'default'
 created = 2026-02-02T22:25:02.966428+07:00
 
 [hub]
