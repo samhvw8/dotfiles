@@ -2,6 +2,7 @@ version = 3
 name = 'growtrics'
 description = 'Second Claude account, cloned from default'
 settings-template = 'base'
+account = 'auto:growtrics'
 created = 2026-11-17T10:23:34.264627+07:00
 
 [hub]
