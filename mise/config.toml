@@ -76,6 +76,9 @@ rclone = "latest"
 "http:parallax" = { version = "2026.11.12", url = 'https://dl.3cxo.work/parallax/{{ version }}/parallax-{{ version }}-{{ os() }}-{{ arch() }}.zip' }
 "aqua:ast-grep/ast-grep" = "latest"
 lima = "latest"
+podman = { version = "latest", os = ["macos"] }  # podman-remote; its VM runs on vfkit + gvproxy below (helper_binaries_dir in ~/.config/containers/containers.conf, per Mac)
+"github:containers/gvisor-tap-vsock" = { version = "latest", os = ["macos"] }  # gvproxy, podman machine networking
+"github:crc-org/vfkit" = { version = "latest", os = ["macos"] }  # applehv VM runner for podman machine
 "pipx:osxphotos" = { version = "latest", uvx_args = "--python 3.12" }
 "pipx:edge-tts" = "7.3.1"
 "npm:@larksuiteoapi/lark-mcp" = "latest"
