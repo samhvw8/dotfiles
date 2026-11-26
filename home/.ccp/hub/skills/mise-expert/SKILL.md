@@ -187,6 +187,35 @@ Added between 2026.9.15 and 2026.10.11. Check `min_version` before using one in 
 - `[monorepo.path_aliases]` gives deep config roots short names (`mise run //123:build`).
 </recent_features>
 
+## Pointing another program at a mise tool
+
+When another program needs a fixed path to a mise-installed binary (an IDE interpreter, podman's
+`helper_binaries_dir`, a launchd plist, an editor LSP path), use the tool's `global` link:
+
+```text
+~/.local/share/mise/installs/<tool-dir>/global   # e.g. github-crc-org-vfkit/global
+```
+
+| Path | Moves when | Use it? |
+|---|---|---|
+| `.../<tool>/global` | the version in the global config changes (you bump it, or `mise upgrade --global` moves a `latest` entry) | Yes |
+| `.../<tool>/latest` | any newer version is installed, even one no config asked for | No |
+| `.../<tool>/1.2.3` | never; breaks when that version is uninstalled | No |
+| `~/.local/share/mise/shims/<bin>` | per call, by the caller's working directory (a project `mise.toml` can pick another version) and only with mise able to run | Only for interactive shells and MCP `command` entries |
+
+- `ls -la ~/.local/share/mise/installs/<tool-dir>/` shows the links. The directory name is the
+  backend id with `:` and `/` turned into `-` (`github:crc-org/vfkit` -> `github-crc-org-vfkit`).
+- For a pinned, deliberate bump, pin the version in the global config (`vfkit = "0.6.4"`); a
+  `"latest"` entry still moves on `mise upgrade`.
+- A macOS-only tool in a shared global config gets `os = ["macos"]` (`["linux"]` the other way),
+  so other machines skip it instead of failing.
+
+**Project `[env]` leaks into commands you run elsewhere.** A shell started inside a project whose
+`mise.toml` sets `GIT_AUTHOR_*`, `GH_TOKEN` or similar keeps them after `cd` to another repo when
+the commands run in a non-interactive shell (agents, scripts). Check `git log -1 --format='%an <%ae>'`
+before pushing from another repo, and run such commands with the variables unset
+(`env -u GIT_AUTHOR_NAME -u GIT_AUTHOR_EMAIL -u GIT_COMMITTER_NAME -u GIT_COMMITTER_EMAIL -u GH_TOKEN ...`).
+
 ## Operational Guidelines
 
 ### Task Configuration Principles
