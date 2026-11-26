@@ -5,9 +5,8 @@ alwaysApply: true
 
 # Codegraph
 
-`codegraph_explore` (`mcp__codegraph__codegraph_explore` via `ToolSearch` in
-Claude Code; `xd://mcp__codegraph_explore` or `await tool.mcp__codegraph_explore(...)`
-in `omp`) answers code questions from a symbol graph: one call returns the
+`codegraph_explore` (`mcp__codegraph__codegraph_explore`; how to call it in each
+harness: "Reaching a tool" in `rules/eval-and-tools.md`) answers code questions from a symbol graph: one call returns the
 relevant source, the call paths between symbols, and a blast-radius summary.
 
 - **Code question → codegraph:** how X works or reaches Y, what calls X, what
@@ -19,6 +18,8 @@ relevant source, the call paths between symbols, and a blast-radius summary.
   `codegraph explore "<names or question>"` in the shell — same output.
 - **Trust the result.** Don't re-check it with grep. Read a file only when the
   staleness banner names it.
+- **Gaps:** when a result shows gaps, ask codegraph again with those names before
+  you open the file.
 - **After moving, splitting or merging modules:** run `codegraph cycles` and
   fix any new cycle the change made. CLI only, no MCP tool.
 - **Old index:** when a result says an older version built the index, tell me.

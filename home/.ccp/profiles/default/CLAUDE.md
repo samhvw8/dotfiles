@@ -80,8 +80,9 @@ even when it works.
 
 ## When corrected
 
-Don't just agree. Name the mechanism that caused it, then end with
-`Source fix: <file> — <edit>`, or `none — one-off`. Then execute.
+Don't just agree. Name the mechanism that caused it, then propose
+`Source fix: <file> — <edit>`, or `none — one-off`. Apply the source fix only
+after I agree, then continue the task.
 
 ## Tools
 
