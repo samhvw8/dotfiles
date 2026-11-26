@@ -1,6 +1,7 @@
 # Update Log
 
 ## 2026-11-26
+* **Update**: captured the live `default` profile settings (`ccp profile capture default`): `model` is `opus`, the Opus 5.5 effort is `medium`, and `advisorModel` is gone, as Claude Code had set them. Runs: nothing new.
 * **Update**: the `prismantis` mod comes from upstream again: marketplace `prismantis` (`NahumLitvin/prismantis`, plugin `prismantis@prismantis`, 0.51.0) replaces the `samhvw8-prismantis` fork in `home/.ccp/profiles/default/settings-fragment.json`. Upstream 0.51.0 merged the fork's only change, the Code Mode script card (#590). The theme stays `dracula`. Runs: nothing new; one fork less to keep in sync.
 * **Update**: `home/.config/starship.toml` (Dracula Pro palette, λ prompt, Nerd Font symbols) is now in the dotfiles and linked on every machine; it lived only on one Mac before, so other machines got the default starship prompt. The symbols need a Nerd Font: FiraCode Nerd Font on macOS. Runs: nothing new.
 * **Update**: the macOS casks macfuse, calibre, iterm2, font-jetbrains-mono and visual-studio-code moved from `mise/conf.d/dotfiles.toml` to `mise/config.toml`, so a minimal install adds no desktop apps. Cause: a minimal setup on another Mac installed them unasked; there, a later `brew install --cask iterm2` failed with `mv: cannot overwrite non-directory` on the link mise had put in `Caskroom/iterm2/<ver>/iTerm.app`, and Homebrew's rollback deleted mise's record of it (`mise bootstrap` adopted it again). Runs: 5 fewer casks on each minimal macOS bootstrap; full installs unchanged.

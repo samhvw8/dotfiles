@@ -1,5 +1,4 @@
 {
-  "advisorModel": "fable",
   "autoMode": {
     "environment": [
       "$defaults",
@@ -37,7 +36,7 @@
     }
   },
   "inputNeededNotifEnabled": true,
-  "model": "fable",
+  "model": "opus",
   "modelSettings": {
     "claude-fable-5": {
       "effortLevel": "xhigh"
@@ -52,7 +51,7 @@
       "effortLevel": "high"
     },
     "claude-opus-5-5": {
-      "effortLevel": "high"
+      "effortLevel": "medium"
     },
     "claude-sonnet-5-5": {
       "effortLevel": "high"
