@@ -32,7 +32,7 @@ provider = 'git'
 url = 'https://github.com/cathrynlavery/diagram-design.git'
 path = 'sources/cathrynlavery--diagram-design'
 ref = 'main'
-installed = ['skills/diagram-design']
+installed = ['skills/diagram-design', 'commands/export-diagram.md', 'commands/import-drawio.md', 'commands/import-excalidraw.md', 'commands/import-mermaid.md', 'commands/import-plantuml.md', 'commands/profile.md']
 
 [sources.'elayadesign/ai-design-skills']
 registry = 'github'
