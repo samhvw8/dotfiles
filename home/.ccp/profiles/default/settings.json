@@ -159,8 +159,9 @@
     "code-modernization@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "image-view@claude-image-view": true,
-    "prismantis@samhvw8-prismantis": true,
-    "prompt-rail@oikon48": true
+    "prismantis@prismantis": true,
+    "prompt-rail@oikon48": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-image-view": {
@@ -175,10 +176,10 @@
         "repo": "oikon48/prompt-rail"
       }
     },
-    "samhvw8-prismantis": {
+    "prismantis": {
       "source": {
         "source": "github",
-        "repo": "samhvw8/prismantis"
+        "repo": "NahumLitvin/prismantis"
       }
     }
   },
@@ -205,7 +206,7 @@
   },
   "promptSuggestionEnabled": false,
   "pluginConfigs": {
-    "prismantis@samhvw8-prismantis": {
+    "prismantis@prismantis": {
       "options": {
         "theme": "dracula"
       }
