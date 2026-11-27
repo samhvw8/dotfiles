@@ -1,0 +1,4 @@
+# Folders where harness-ops --accept-trust may answer Claude Code's folder-trust prompt.
+# One absolute pattern per line; * matches one path element; a match covers every folder below it.
+# Written at the user's request on 2026-11-27.
+~/workspace
