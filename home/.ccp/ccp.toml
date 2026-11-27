@@ -26,6 +26,14 @@ path = 'sources/anthropics--skills'
 ref = 'main'
 installed = ['skills/frontend-design']
 
+[sources.'cathrynlavery/diagram-design']
+registry = 'github'
+provider = 'git'
+url = 'https://github.com/cathrynlavery/diagram-design.git'
+path = 'sources/cathrynlavery--diagram-design'
+ref = 'main'
+installed = ['skills/diagram-design']
+
 [sources.'elayadesign/ai-design-skills']
 registry = 'github'
 provider = 'git'

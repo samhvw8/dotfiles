@@ -10,6 +10,9 @@ commit = 'e8d1148a80d5a281d4247cffe320add3df017928'
 [sources.'anthropics/skills']
 commit = '1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064'
 
+[sources.'cathrynlavery/diagram-design']
+commit = '795eec47fd376e5dda0b9e056a49520060cd2f13'
+
 [sources.'elayadesign/ai-design-skills']
 commit = '456d9e0d3e2d84c748bb143c6ca3d90c45e16213'
 
