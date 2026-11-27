@@ -72,8 +72,11 @@ If `send` says the text stayed on the input line (exit 5; it was typed and may s
 send it again), or `spawn` or `task new` times out (exit 5, after 120 s), the pane is still open and
 the prompt may not have gone. `read` it before anything else: the
 harness may have refused the line (omp with no API key for its model), or Claude Code may be at its
-folder-trust dialog in a folder it has never opened. Never answer that dialog yourself (trusting a
-folder is a permission change): ask the user, or start the agent in a repo or worktree Claude Code trusts.
+folder-trust dialog in a folder it has never opened. Never answer that dialog with `key` or `answer`
+(trusting a folder is a permission change). When the folder is under a root in the user's
+`~/.config/termctl/trust-roots`, pass `--accept-trust` to `spawn` or `task new`: harness-ops then answers it,
+and exits 6 with no key pressed outside the roots. Never write or edit that file: it is the user's grant.
+Otherwise ask the user, or start the agent in a repo or worktree Claude Code trusts.
 A startup prompt ends the wait after about 2 s (exit 5, "waits on a prompt at
 startup (trust this folder)"). Ask the user to answer it in that pane, then hand the task over with
 `task new ... --reuse <pane>`.
@@ -185,7 +188,8 @@ Procedures are in files next to this one, each under its original heading. Read 
   - Outside the brief, destructive (`rm` outside its scratch folder, `git push`, `reset --hard`),
     or it touches credentials, deploys, money or other people: `deny <id|pane> --expect <fp>`, then `task send`
     (or `send`, for a spawned pane) the worker what to do instead. Ask the user first when you are not sure.
-  - Never answer a folder-trust dialog ("Do you trust the files in this folder?"): that is the user's call.
+  - Never answer a folder-trust dialog ("Do you trust the files in this folder?") by hand: that is the user's
+    call. Only `--accept-trust` at start answers one, under the user's trust roots.
   - Only panes you started or attached are yours to answer: harness-ops refuses any other pane and your own. A
     dialog on your own pane, or on an unattached session you found running, is the user's: never ask a peer to answer it.
   - A notice marked unrecognized (or ambiguous) is not a known permission dialog: a model picker, a

@@ -51,7 +51,7 @@ One superagent session can supervise **mixed worktypes at the same time**. Set e
 
 | Tier | Role (`roles.md`) | `--sub-depth` | Mechanism | Safe autonomous actions (no user approval needed) |
 |---|---|---|---|---|
-| 0 | `receptionist` (current pane) | root | Current pane | Intake, routing, `ls`/`scope ls`/`read`, attaching Area Scopes, `answer`/`deny` on safe in-brief prompts, spawning Workers for clear briefs. |
+| 0 | `receptionist` (current pane) | root | Current pane | Intake, routing, `ls`/`scope ls`/`read`, attaching Area Scopes, `answer`/`deny` on safe in-brief prompts, spawning Workers for clear briefs, `--accept-trust` on every `spawn`/`task new` (harness-ops trusts only folders under the user's `~/.config/termctl/trust-roots`). |
 | 1 | `advisor` (reviewer & drift auditor) | `1` | `attach` (long-running scope) | Planning, specs, quality review, auditing `progress.md` for drift (`KEEP`/`PRUNE`/`EVICT`), spawning `deep` when genuinely blocked. Read-only unless brief grants edits. |
 | 1 | Area Scope (workstream lead) | `1` | `attach <pane> --name <area> --sub-depth 1` | Owns one ongoing area; spawns Tier 2 Workers/Verifiers per its worktype; reports milestones via `harness-ops report`. |
 | 2 | Worker (`builder` or `fast`) | `0` (leaf) | `task new` | Execute inside `brief.md`'s scope fence; maintain `progress.md` when required; report via `task done`. |
@@ -61,7 +61,7 @@ One superagent session can supervise **mixed worktypes at the same time**. Set e
 **Escalation rules (and why):**
 - **Receptionist never spawns `deep` directly:** a cheap router cannot reliably separate a real deadlock from an underspecified brief, and `deep` models cost 10–20× per turn. Route to `advisor` first.
 - **Escalate to `advisor`** when direction/strategy is open, the cause or answer is unclear, work needs review before shipping or sending externally, or a Worker fails its external check twice (include the failed attempts).
-- **Escalate to the user** only for irreversible or external actions (sending emails/messages to people, publishing, spending money, deleting data, deploys, credentials, folder-trust prompts) or unstated priority/value calls.
+- **Escalate to the user** only for irreversible or external actions (sending emails/messages to people, publishing, spending money, deleting data, deploys, credentials, folder-trust prompts outside the user's trust roots) or unstated priority/value calls.
 
 ---
 

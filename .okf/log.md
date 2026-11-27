@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-27
+* **Update** (uncommitted, waits for the termctl release that adds `--accept-trust`): hub skill `agent-ops`: a lead may pass `--accept-trust` to `spawn` and `task new`, so harness-ops answers Claude Code's folder-trust prompt when the folder is under a root in Sam's `~/.config/termctl/trust-roots`, and exits 6 outside them. Agents still never answer a trust prompt by hand and never edit that file. `superagent.md` makes Tier 0 pass the flag on every start; a trust prompt outside the roots still goes to Sam. Runs: nothing new (Sam writes the roots file).
+
 ## 2026-11-26
 * **Update**: captured the live `default` profile settings (`ccp profile capture default`): `model` is `opus`, the Opus 5.5 effort is `medium`, and `advisorModel` is gone, as Claude Code had set them. Runs: nothing new.
 * **Update**: the `prismantis` mod comes from upstream again: marketplace `prismantis` (`NahumLitvin/prismantis`, plugin `prismantis@prismantis`, 0.51.0) replaces the `samhvw8-prismantis` fork in `home/.ccp/profiles/default/settings-fragment.json`. Upstream 0.51.0 merged the fork's only change, the Code Mode script card (#590). The theme stays `dracula`. Runs: nothing new; one fork less to keep in sync.
