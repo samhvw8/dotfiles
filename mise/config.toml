@@ -98,7 +98,7 @@ tree-sitter = "latest"
 "~/.gemini/antigravity-cli" = { source = "~/.dotfiles/home/.gemini/antigravity-cli", mode = "symlink-each", manifest = "git" }
 
 [bootstrap.packages]
-"brew-cask:herdr-app" = { os = "macos" }  # self-updates; the app offers herdr-core on first launch
+"brew-cask:herdr-app" = { os = "macos" }  # self-updates; herdr-core: `mise run herdr-core:install`
 "brew-cask:google-chrome" = { os = "macos" }  # self-updates; bsk drives it
 # Desktop apps for full installs only: a minimal install adds no casks, so it
 # never shares /opt/homebrew/Caskroom with a Homebrew someone installs later.
@@ -134,3 +134,9 @@ post-tools = [
 description = "Install or upgrade cua-driver with its own installer and register its MCP server"
 alias = "cua:update"
 run = "bash $HOME/.dotfiles/mise/scripts/cua-driver.sh"
+
+# herdr-core (hc) is not a [tools] entry; mise/scripts/herdr-core.sh explains why.
+[tasks."herdr-core:install"]
+description = "Install or upgrade herdr-core (hc) with its own installer; running terminals keep running"
+alias = "herdr-core:update"
+run = "bash $HOME/.dotfiles/mise/scripts/herdr-core.sh"
