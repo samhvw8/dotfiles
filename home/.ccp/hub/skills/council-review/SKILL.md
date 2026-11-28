@@ -28,7 +28,7 @@ command, how to run the tests). Don't pass this session's conclusions or design
 rationale: a reviewer who reads them grades the reasoning instead of the code. Give
 each a different lens that fits the work: correctness and edge cases, security and
 data handling, design and maintainability, performance, and for UI, what a user sees
-(screenshots with `bsk`). Ask each for findings as: file:line, what fails and the
+(screenshots with `bsk`). Tell each reviewer it is a subagent: it writes its findings and returns, and never runs `harness-ops` (a reviewer inside an agent-ops task sees the task id and could close the lead's task). Ask each for findings as: file:line, what fails and the
 concrete input that makes it fail, severity, and confidence. Run them in parallel.
 
 ## 3. Verdict

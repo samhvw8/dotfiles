@@ -121,6 +121,8 @@ Procedures are in files next to this one, each under its original heading. Read 
   to you, and it stops when done.
 - **`task new`:** only when the job needs its own visible harness session: a different harness or
   model, work the user should be able to watch or take over, or a long job that must outlive your turn.
+- **A lead is a lead.** When the user asks for a *lead*, pass `--sub-depth 1` (a lead of leads: 2), then check `role: lead` in `task show <id>` before you report it started. Without the flag the task is a leaf: it shows as WORKER and cannot start workers.
+- **Reuse the lead the work already has.** Before you start a session for a ticket or a piece of work, run `ls --mine` and `task ls --all`. If that work's lead is still open, `task send` it the next round instead: it already holds the files and the decisions.
 - **Pick by what the worker must keep.** `task send <id>` continues the worker's context: use it for
   fixes and follow-ups on the same work. `task new --reuse <pane>` gives an idle open pane an unrelated
   task: it sends `/clear` first, so the process and the pane stay and the context goes. Plain
@@ -208,7 +210,8 @@ Procedures are in files next to this one, each under its original heading. Read 
   gone but its tab is open. `read` the worker once. If it is stuck (out of context, crashed), `task close --force <id>`, tell its crew who is gone, and report to the user before you
   start a replacement.
 - **Close what you start.** An open harness keeps its tab, memory and MCP servers running, and the user
-  should not have to clean up after you. Close each accepted task with `task accept <id> --close`, and
+  should not have to clean up after you. Close each accepted task with `task accept <id> --close`, then run
+  `ls --mine`: `--close` leaves a pane the task took over with `--reuse` open, so `close` any pane still listed. Close
   each `spawn` session with `close <target>` once its job is done. Before you report your own work
   finished, run `ls --mine` and `task ls`, and close or hand over anything still open, including
   worktrees and their branches.
