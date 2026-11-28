@@ -134,8 +134,9 @@ template: `memory.md`.
 - **`task new`:** only when the job needs its own visible harness session: a different harness or
   model, work the user should be able to watch or take over, or a long job that must outlive your turn.
 - **A lead is a lead.** When the user asks for a *lead*, pass `--sub-depth 1` (a lead of leads: 2), then check `role: lead` in `task show <id>` before you report it started. Without the flag the task is a leaf: it shows as WORKER and cannot start workers.
-- **Pick by what the worker must keep.** `task send <id>` continues the worker's context: use it for
-  fixes and follow-ups on the same work. `task new --reuse <pane>` gives an idle open pane an unrelated
+- **Pick by what the worker must keep.** `task send <id>` continues the worker's context and opens a
+  new round: use it for fixes and follow-ups on the same work. A notice that needs no reply (a crew
+  roster, a teammate gone) goes with plain `send <id>`. `task new --reuse <pane>` gives an idle open pane an unrelated
   task: it sends `/clear` first, so the process and the pane stay and the context goes. Plain
   `task new` opens a new pane.
 - At most 6 tasks run per owner; a whole tree runs at most 12 (`--tree-max`), at most 4 levels deep
