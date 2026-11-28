@@ -11,7 +11,7 @@ test runs behind it: `roster-evidence.md` (read it only for a roster check).
 | `peer` | `claude` | None: leave `--command` out (the lead's model). If the lead runs another harness, use that harness. | — |
 | `other-family` | `agy` | `agy --model gemini-4-hydrogen-medium` (`-high` for a debate opponent) | `omp --model opencode-go/glm-5.3` |
 | `fast` | `agy` | `agy --model gemini-3.8-flash-medium` | `claude --model haiku`, `agy --model gemini-4-hydrogen-low`, then `omp --model opencode-go/glm-5.3-flash` |
-| `builder` | `agy` | `agy --model gemini-4-neon-medium` | `claude --model opus`. Floor (never lower): `claude --model sonnet` or `agy --model gemini-4-hydrogen-medium`. No Haiku, Flash or omp flash models. |
+| `builder` | `claude` or `agy` | Two defaults, equal: `claude --model opus` and `agy --model gemini-4-neon-medium`. Use the one whose quota has room; split parallel builders across both. | Floor (never lower): `claude --model sonnet` or `agy --model gemini-4-hydrogen-medium`. No Haiku, Flash or omp flash models. |
 | `brain` | `claude` | `claude --model opus --effort high` | `agy --model gemini-4-neon-high` (other quota). For a second family, use `other-family` |
 | `advisor` | `claude` | `claude --model opus --effort medium` | `agy --model gemini-4-neon-medium` |
 | `deep` | `claude` | `claude --model fable --effort low` (`--effort medium` for the hardest calls) | `agy --model gemini-4-carbon-low` (or `-medium`) |
