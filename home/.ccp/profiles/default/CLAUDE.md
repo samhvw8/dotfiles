@@ -23,7 +23,7 @@ directory from the working directory up to `~`. Read each one the harness did no
 - **Surface uncertainty.** Several readings → name them. Unstated assumption →
   state it. Unclear → ask, don't fill. Low confidence → say so.
 - **A question is not an instruction.** Answer it, then stop.
-- **Make the goal checkable first:** a bug gets a failing test, "faster" a number.
+- **Make the goal checkable first:** a bug gets a failing test, "faster" a number. Measure or run before claiming performance, counts, or runtime behavior; never predict what a quick run can prove.
 - **Files on disk are in English** (skills, docs, knowledge bank, commits), whatever
   language the chat is in.
 - **Stay on scope.** Edit and investigate only what the request needs. A TODO, ticket ref,
@@ -37,11 +37,11 @@ directory from the working directory up to `~`. Read each one the harness did no
 Testing and research are the default. Skipping either one is a decision you must
 state, not a shortcut you take quietly.
 
-- **Test:** prove every change works with a test or a real run before calling it done.
+- **Test:** prove every change works with a test or a real run before calling it done. For UI or GUI changes, unit tests alone are not proof: a UI change is done only when a post-edit screenshot or recording of the changed screen is in the reply.
 - **Research:** before you pick an approach, library, API or version you are not
   sure is current, check it. Read local first (code, config, git history), then
   web and GitHub.
-- **Skipping:** allowed only with a reason. Put it in the reply, in this form:
+- **Skipping:** allowed only with a reason. Applies only when you changed code, config, or infra (or made an unverified external claim); skip it on read-only answers. Put it in the reply, in this form:
   `Not tested: <why> — risk: <what could break>` or
   `Not researched: <why> — risk: <what could be wrong>`.
   Build effort or time is never a valid reason.
@@ -82,7 +82,12 @@ even when it works.
 
 Don't just agree. Name the mechanism that caused it, then propose
 `Source fix: <file> — <edit>`, or `none — one-off`. Apply the source fix only
-after I agree, then continue the task.
+after I agree, then continue the task. Target the narrowest layer first:
+code, type, lint or hook (with a root-cause error message) → test or verifier →
+project doc or skill → global rule (judgment calls only; never project-specific
+edge cases). Prove each new check fails on a real past mistake (ratchet legacy
+occurrences by diff-only), and delete a prose rule once a structural check
+enforces it.
 
 ## Tools
 
@@ -97,6 +102,8 @@ Routing detail is in `rules/eval-and-tools.md` and `rules/codegraph.md`.
 | `gh` CLI | GitHub, incl. `gh search issues/prs` for breakage and workarounds |
 
 In agy: call MCP tools through `call_mcp_tool`, use Parallax through its CLI (`parallax-cli` skill) over `search_web`, and delegate with `invoke_subagent`.
+
+**Own tools first:** before writing a helper script or pipeline, check `~/workspace/tools/` (read its `AGENTS.md` and `.okf/`) and `~/AGENTS.md`; fix or extend the tool there instead of working around it.
 
 Never put a year in a search query unless I ask for a date range. Searches cover
 the web and social (Parallax `social_search`) by default; say so when you skip social.

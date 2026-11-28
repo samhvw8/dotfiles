@@ -1,7 +1,8 @@
 {
   "hooks": {
-    "UserPromptSubmit": [
+    "PreToolUse": [
       {
+        "matcher": "Grep|Bash",
         "hooks": [
           {
             "type": "command",

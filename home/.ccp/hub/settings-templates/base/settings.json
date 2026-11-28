@@ -43,6 +43,12 @@
       "mcp__codegraph",
       "Bash(codegraph:*)"
     ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh release:*)",
+      "Bash(git tag:*)"
+    ],
     "defaultMode": "plan"
   },
   "plansDirectory": ".claude/plans",

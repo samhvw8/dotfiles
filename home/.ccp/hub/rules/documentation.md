@@ -17,5 +17,5 @@ check its results (benchmarks, measurements) before running a new one.
   never work around it silently.
 - Extending existing code does not exempt it: code written against a decision
   (a quick MVP) gets flagged, not extended.
-- In the reply, name the decisions you checked, or write
-  `Not checked: <why> — risk: <what could conflict>`.
+- When the repo has a bundle with `decisions/`, name the decisions you checked in
+  the reply, or write `Not checked: <why> — risk: <what could conflict>`.

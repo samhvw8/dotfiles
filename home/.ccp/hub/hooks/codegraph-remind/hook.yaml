@@ -1,5 +1,6 @@
 name: codegraph-remind
-type: UserPromptSubmit
+type: PreToolUse
+matcher: "Grep|Bash"
 timeout: 5
 command: codegraph-remind.sh
 interpreter: bash

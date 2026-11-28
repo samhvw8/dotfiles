@@ -19,19 +19,15 @@ yourself.
   denies every MCP tool.
 - **Subagent by default.** Start a live member only when you can name the second
   message you'll send it (debate, council, multi-round hand-off, a reviewer you'll
-  consult again). Live members are harness-ops sessions (`agent-ops` skill, "Live
-  team"); in `omp`, pass `name` on `task` items and message peers via
-  `write agent://<id>` (`agent://all` to broadcast). Start them together, send each
-  the roster, close them when done.
-- **Long-term leads for recurring work.** Work that comes back to the same area (a repo, a product
-  area, a research line) goes to an `agent-ops` lead attached as a scope and reused, not to a new
-  agent each time. Each keeps its own agent note. Before you start any lead, run `harness-ops resume .`
-  and `scope ls --all`, and reuse a match (`agent-ops` `memory.md`).
-- **Equip the agent.** It doesn't know what's installed. Name its tools — web:
-  Parallax MCP (`mcp__claude_ai_Parallax__*` via `ToolSearch` in Claude Code; `parallax call` via the `parallax-cli`
-  skill plus `web_search`/`read` in `omp`); code: codegraph MCP; browser: `bsk` CLI via
-  `browser-skill` (or `omp` `browser` relay / `cua`); GitHub: `gh` CLI — and its
-  skills (`lead-researcher`, `code-quality`, `impeccable`, `git-workflow`).
+  consult again). Start live teams via `agent-ops` (`live-team.md`) or `omp` named
+  tasks; start them together, share the roster, and close them when done.
+- **Long-term leads for recurring work.** Recurring work by area (repo, product,
+  research line) goes to a reused `agent-ops` lead attached as a scope with an agent
+  note — check `agent-ops` `## Memory first` (`resume .`, `scope ls --all`, `task ls --all`)
+  before starting a new lead.
+- **Equip the agent.** It does not know what is installed. Name the relevant tools
+  from `CLAUDE.md` (`## Tools`) and the skills it should load (`lead-researcher`,
+  `code-quality`, `impeccable`, `git-workflow`, etc.).
 - **Shared machines:** a brief that touches one states its safety
   rules up front — run `tmux ls`/`nvidia-smi` before adding load; never reboot or
   switch OS while another session's job runs. A rule
@@ -41,9 +37,6 @@ yourself.
   read messages only between long tool calls.
 - **An unexplained kill means stop.** An agent whose job is killed without an
   explanation stops and asks; it never restarts the job on its own.
-- **Research:** read local first (code, config, git history) so you know the terms. Still start broad.
-  Then search web and GitHub in parallel, say which approach you picked and why, and
-  surface conflicts. Skip it for a known-cause bug or a mechanical change.
 
 ## Same session or new session
 
@@ -63,9 +56,6 @@ named here.
 3. **Would the work flood or block this session?** Broad sweeps, research and parallel
    independent slices go to their own sessions; only the conclusion comes back.
 
-Reuse through the harness's follow-up channel: `SendMessage` to a finished subagent in
-Claude Code, `task send` in `agent-ops`, a named `task` item in `omp`. In `agent-ops`,
-`task new --reuse <pane>` is for an unrelated task on an idle open worker: it clears
-the pane, so it keeps the process, not the context. Cache
-lifetime differs by harness and model; when you do not know it, treat an idle session
-as cold.
+Reuse through the harness's follow-up channel (`SendMessage` in Claude Code, `task send`
+in `agent-ops`, named `task` in `omp`). When unsure of cache lifetime, treat an idle
+session as cold.

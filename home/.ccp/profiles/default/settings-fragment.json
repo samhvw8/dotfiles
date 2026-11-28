@@ -10,7 +10,8 @@
     "code-modernization@claude-plugins-official": true,
     "image-view@claude-image-view": true,
     "prismantis@prismantis": true,
-    "prompt-rail@oikon48": true
+    "prompt-rail@oikon48": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "env": {
     "MEDIASIFT_ON": "me.ubuntu.home"

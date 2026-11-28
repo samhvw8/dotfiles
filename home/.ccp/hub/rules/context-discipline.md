@@ -5,7 +5,7 @@ says to batch-read whole files in parallel. In every other harness they add to t
 harness prompt and never override it.
 
 - **Narrow search, targeted read.** For code questions, call `codegraph_explore`
-  first (`rules/codegraph.md`). For text or paths, use the harness search tool
+  first (`rules/codegraph.md`; in `agy`, use `call_mcp_tool` with `ServerName: "codegraph"`, `ToolName: "codegraph_explore"`). For text or paths only, use the harness search tool
   (`Grep`/`Glob` in Claude Code, `grep`/`glob` in opencode, `grep`/`find` in
   `omp`) or `rg -l` / `rg -n` in `agy`. Read only files on the direct call or
   edit path. Do not speculatively batch-read unconfirmed files (max 3 per turn).

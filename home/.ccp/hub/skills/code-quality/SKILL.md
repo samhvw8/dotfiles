@@ -66,11 +66,14 @@ Claim a result only after running the command that proves it in this session and
 
 **Gate:** IDENTIFY → RUN → READ → VERIFY → THEN claim
 
-**Review findings** (yours or a subagent's) need four more checks before you report them:
+**Review findings** (yours or a subagent's) need five more checks before you report them:
 1. **Guard:** Name the guard you searched for on the same path, and say why it does not stop the bug.
 2. **Intent:** Search `.okf/` and other project docs for the behavior. Documented as intended → a policy question, not a bug.
 3. **Origin:** Before you blame a commit, run `git log -S` or `git show <sha>^:<file>`. Do not infer old behavior from a commit message.
 4. **Lines:** Cite line numbers you read from the file, not from an agent summary.
+5. **Run-proven & ledger:** For bug findings, include the exact command and actual vs. expected output that proves it. When fixing from a review or audit, account for every finding in a ledger (fixed + verified, or explicitly deferred with reason).
+
+**Independent UI verdict:** For UI or stateful changes, name the discriminating state (correct vs. broken) and send the requirement plus a post-edit screenshot or recording to a fresh subagent (without the author's reasoning) to answer one binary question: *"Does the evidence visibly show the discriminating state?"* Treat uncertain as fail.
 
 ---
 

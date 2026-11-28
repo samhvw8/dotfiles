@@ -1,0 +1,5 @@
+name: verify-stop
+type: Stop
+timeout: 10
+command: verify-stop.sh
+interpreter: bash
