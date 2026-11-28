@@ -86,6 +86,7 @@ podman = { version = "latest", os = ["macos"] }  # podman-remote; its VM runs on
 herdr = "latest"
 "github:bendlang/bend" = "2.0.40"
 "npm:firebase-tools" = "latest"
+tree-sitter = "latest"
 
 # Full install. Shared dotfiles and bootstrap entries are in conf.d/dotfiles.toml.
 [dotfiles]
