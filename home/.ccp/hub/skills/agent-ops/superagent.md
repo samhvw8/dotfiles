@@ -15,11 +15,11 @@ Toggle this mode **on** or **off** for the current session without changing `ter
   2. Otherwise, shape a run `policy.md` from the template at the bottom — picking active tiers from current **workload** and setting per-area rules from each area's **worktype** — and file it with `harness-ops note policy` (survives compaction; shown by `harness-ops resume .`).
   3. Create the overview file `superagent-note.md` (see "Overview note" below) and put its path in `policy.md`'s `Overview:` line, so `harness-ops resume .` leads back to it.
   4. Current pane becomes **Tier 0 (Receptionist)**.
-  5. Attach existing workstream panes as **Area Scopes** (`harness-ops attach <pane> --name <area> --about "worktype: <type>; policy: <path>" --sub-depth 1`).
+  5. Attach existing workstream panes as **Area Scopes** (`harness-ops attach <pane> --name <area> --about "note: <agent note path>; worktype: <type>; policy: <path>" --sub-depth 1`). Each Area Scope and the Advisor is a long-term agent with its own agent note (`memory.md`). Before you start one, check `scope ls --all` and `~/.local/state/agent-ops/agents/<project>/`: reuse the area's existing name and note instead of a new one.
   6. Attach or start one **Advisor** (`--sub-depth 1`, role `advisor` from `roster.md`) only when workload or uncertainty warrants it (2+ concurrent areas, open design/research, or high-risk delivery). For any `agy` member, pass `--cwd ~` with absolute paths and check `command(harness-ops)` in `roster.md`.
 - **Status (`superagent status`):** run `harness-ops scope ls --tree` and `harness-ops task ls --tree`, then report active scopes, open tasks, the `Runtime State` block from `policy.md`, and the `Waiting on Sam` list from `superagent-note.md`.
 - **After compaction / restart:** run `harness-ops resume .` and `harness-ops scope ls --tree` to reload `policy.md` and active scopes, then read `superagent-note.md` (path in `policy.md`) before routing new work. Check each lead's `Last heard` against `harness-ops log --scope <name> --since <that time>` and update the note.
-- **Advisor crash recovery:** on `scope advisor (...): pane ... exited/lost`, start a replacement (`advisor` in `roster.md`), run `harness-ops attach <new-pane> --name advisor --sub-depth 1`, and send it `policy.md` + `harness-ops resume advisor`.
+- **Advisor crash recovery:** on `scope advisor (...): pane ... exited/lost`, start a replacement (`advisor` in `roster.md`), run `harness-ops attach <new-pane> --name advisor --about "note: <advisor note path>" --sub-depth 1`, and send it its agent note, `policy.md` and `harness-ops resume advisor`. Rebind a crashed Area Scope the same way, by its old name.
 - **OFF (`superagent off`):**
   1. Write one active-state handoff note (`harness-ops note handoff --file <superagent-note.md>`): the overview is the handoff.
   2. Run `harness-ops detach <scope>` on each attached scope (leaves panes open; stops the 30 s idle watcher immediately). Use `--keep` if you want the scope visible in default `scope ls` later.
@@ -73,7 +73,7 @@ Compaction drops what you knew about each lead. The journal keeps every event, b
 - **One writer:** only the superagent (Tier 0) edits it. Leads report through `harness-ops report`; you copy what matters into the note.
 - **Edit in place, prune hard.** It is a snapshot, not a log. Replace a lead's section when its state changes; delete a lead's section when its scope is detached and accepted. Keep it under about 80 lines. History lives in the journal (`harness-ops log`), never here.
 - **Update it** after every lead report, every decision you make on Sam's behalf, every escalation to Sam and his answer, and before you end a turn with work in flight.
-- **Differs from the others:** `policy.md` = rules of the run (static); journal = every event (append-only); `progress.md` = one worker's TODOs; `superagent-note.md` = the current picture across all leads.
+- **Differs from the others:** `policy.md` = rules of the run (static); journal = every event (append-only); `progress.md` = one worker's TODOs; `superagent-note.md` = the current picture across all leads; an agent note (`memory.md`) = what one lead knows, kept by that lead.
 
 ```markdown
 # Superagent overview — <project>
@@ -85,6 +85,7 @@ Updated: <local time> · Policy: <policy.md path>
 ## Leads
 ### <area> — <scope name> · pane <target> · <harness/model>
 - Goal: <one line>
+- Note: <agent note path>
 - Status: working | idle | blocked | done-unaccepted
 - Last heard: <time> — <last report, one line>
 - Waiting on: Sam | advisor | worker <task id> | nothing

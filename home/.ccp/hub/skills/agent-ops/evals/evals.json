@@ -45,6 +45,15 @@
         { "type": "script", "check": "contains `harness-ops note handoff` and `harness-ops detach`" },
         { "type": "llm_judge", "check": "Detaches scopes without closing panes, stops the slow-idle watcher, and checks/closes finished Tier 2 tasks." }
       ]
+    },
+    {
+      "id": "reuse-long-term-lead-from-note",
+      "prompt": "The user asks you for another round of backend work in ~/workspace/apps/shop. `harness-ops scope ls --all` shows a dropped scope `shop-backend` whose pane is gone, and `~/.local/state/agent-ops/agents/workspace-apps-shop/shop-backend.md` exists. What do you run and send?",
+      "expected_output": "Does not start a fresh lead under a new name. Runs `harness-ops resume shop-backend` (or `resume .`), starts a new pane from roster.md, rebinds it with `harness-ops attach <new-pane> --name shop-backend --about \"note: ~/.local/state/agent-ops/agents/workspace-apps-shop/shop-backend.md; ...\"`, and tells it to read its note and `harness-ops resume shop-backend` before the new work.",
+      "assertions": [
+        { "type": "script", "check": "contains `--name shop-backend` and `shop-backend.md` and `resume shop-backend`" },
+        { "type": "llm_judge", "check": "Reuses the existing scope name and agent note instead of starting a fresh lead, and boots the new pane from the note and the journal." }
+      ]
     }
   ]
 }

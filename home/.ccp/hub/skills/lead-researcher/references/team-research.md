@@ -40,6 +40,7 @@ Use the team venue when you want to steer live and findings must cross-check as 
 ## Prerequisites
 
 - `harness-ops` on `PATH`; load the `agent-ops` skill before the first `task new`. Without it, use Direct or Workflow.
+- After compaction or a restart, run `harness-ops resume .` and `task ls` before you steer again: the journal holds every round. A research line that continues across sessions gets a long-term lead with an agent note (`agent-ops` `memory.md`).
 - **Main session only.** The user must see the panes, and the lead must steer each round. Spawn depth is capped at 2: gatherers and the verifier are depth 1, and their slices are plain subagents, not sessions.
 - At most 6 tasks per owner: 3 gatherers + 1 verifier + 1 gap gatherer fits.
 - In `omp`, the transport is named `task` items with `write agent://<id>` instead; the rounds, ledger and roles stay the same.

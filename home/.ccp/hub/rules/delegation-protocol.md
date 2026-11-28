@@ -23,6 +23,10 @@ yourself.
   team"); in `omp`, pass `name` on `task` items and message peers via
   `write agent://<id>` (`agent://all` to broadcast). Start them together, send each
   the roster, close them when done.
+- **Long-term leads for recurring work.** Work that comes back to the same area (a repo, a product
+  area, a research line) goes to an `agent-ops` lead attached as a scope and reused, not to a new
+  agent each time. Each keeps its own agent note. Before you start any lead, run `harness-ops resume .`
+  and `scope ls --all`, and reuse a match (`agent-ops` `memory.md`).
 - **Equip the agent.** It doesn't know what's installed. Name its tools — web:
   Parallax MCP (`mcp__claude_ai_Parallax__*` via `ToolSearch` in Claude Code; `parallax call` via the `parallax-cli`
   skill plus `web_search`/`read` in `omp`); code: codegraph MCP; browser: `bsk` CLI via
