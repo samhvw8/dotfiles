@@ -92,17 +92,20 @@ Procedures are in files next to this one, each under its original heading. Read 
 | `pair.md` (## Pair with a peer) | Starting or joining a pair |
 | `live-team.md` (## Live team) | A debate, council, brainstorm or review with 2 to 6 sessions |
 | `swarm.md` (## Swarm) | A director, a manager and workers |
-| `superagent.md` (## Toggle) | Toggling superagent mode on/off for a session (tiered receptionist → advisor → workers/verifiers/deep, dynamic runtime policy, drift-gated eviction) |
+| `superagent.md` (## Toggle) | Toggling superagent mode on or off, or its status |
 | `roles.md` (## Roles) | Picking a member's role and diversity setting |
-| `memory.md` (## Start from memory) | Session start, after compaction or `/clear`, before you start, reuse or rebind a lead, and when you are a long-term agent with a note |
+| `memory.md` (## Reuse before you start) | Before you start, reuse or rebind a lead, and when you are a long-term agent with a note |
 
 ## Memory first
 
-The journal (`harness-ops log`, `resume`, `note`) keeps every event; an **agent note** keeps what one
-long-term agent knows (`~/.local/state/agent-ops/agents/<project>/<name>.md`, edited in place by that
-agent). At session start, after compaction, and before you start any lead, run `harness-ops resume .`
-and `scope ls --all`, and reuse the agent that already holds the area. Recurring work by area goes to
-a long-term lead attached as a scope, with a note. Steps and the note template: `memory.md`.
+The journal (`harness-ops log`, `resume`, `note`) keeps every event. An **agent note**
+(`~/.local/state/agent-ops/agents/<project>/<name>.md`) keeps what one long-term agent knows; that
+agent edits it in place. At session start, after compaction, and before you start a session for any
+work, run `harness-ops resume .`, `scope ls --all` and `task ls --all`. If the work's lead is open,
+`task send` (or `send <scope>`) it the next round: it holds the files and the decisions. If its pane is
+gone but its scope or note exists, rebind a new pane to the same name and boot it from the note.
+Recurring work by area goes to a long-term lead attached as a scope, with a note. Steps and the note
+template: `memory.md`.
 
 ## Find the right pane
 
@@ -131,7 +134,6 @@ a long-term lead attached as a scope, with a note. Steps and the note template: 
 - **`task new`:** only when the job needs its own visible harness session: a different harness or
   model, work the user should be able to watch or take over, or a long job that must outlive your turn.
 - **A lead is a lead.** When the user asks for a *lead*, pass `--sub-depth 1` (a lead of leads: 2), then check `role: lead` in `task show <id>` before you report it started. Without the flag the task is a leaf: it shows as WORKER and cannot start workers.
-- **Reuse the lead the work already has.** Before you start a session for a ticket or a piece of work, run `resume .`, `scope ls --all` and `task ls --all`. If that work's lead is still open, `task send` (or `send <scope>`) it the next round instead: it already holds the files and the decisions. If its pane is gone but its scope or agent note exists, rebind a new pane to the same name and boot it from the note (`memory.md`, ## Reuse before you start).
 - **Pick by what the worker must keep.** `task send <id>` continues the worker's context: use it for
   fixes and follow-ups on the same work. `task new --reuse <pane>` gives an idle open pane an unrelated
   task: it sends `/clear` first, so the process and the pane stay and the context goes. Plain
@@ -149,18 +151,15 @@ a long-term lead attached as a scope, with a note. Steps and the note template: 
   dialogs, results and stall alerts come to you, and its own workers stay under it. A session someone
   started by hand gets a task record and one message telling it to report with `task done`. Refused
   while the old owner's pane lives, unless `--force`; ask the user before you force it.
-- **Lead a long-running session (a scope, not a task).** A session that works by area or project, not by
-  one brief (a backend session, a repo session), is not a task: it has no brief, no `task done`, no
-  `accept`, and does not count toward the 6-task cap. `attach <pane>` makes you its lead without /clear
-  and without typing anything into it: the note about its lead and scope rides on your first `send` to it,
-  or goes at once with `--notify`; the session itself sees it with `whoami`. Its dialogs reach you (answer
-  with `answer <name>`; `key <name> ...` works too). It reports with `report "..."`, and tasks it starts sit
-  under it, inside the caps you gave (`--sub-depth`, `--tree-max`). It sends you a notice when its pane exits
-  and, with `--stall 30m`, when it idles that long; there is no stall alert by default, since such a
-  session idles on purpose. A lead that has an attached session runs one slow watcher (30 s, nothing
-  written while idle) so a dialog in an idle session is not missed. `detach` frees it; if the pane
-  crashes, `attach <new-pane> --name <name>` rebinds the same scope with its history (`resume <name>`).
-  `attach` does not close panes: only `close --force` can, and it refuses an attached one without it.
+- **Lead a long-running session (a scope, not a task).** A session that works by area, not by one brief
+  (a backend session, a repo session), is a scope: no brief, no `task done`, no `accept`, and it does
+  not count toward the 6-task cap. `attach <pane>` makes you its lead without /clear and types nothing:
+  the lead note rides on your first `send`, or goes at once with `--notify`. Its dialogs reach you
+  (`answer <name>`, `key <name> ...`). It reports with `report "..."`; tasks it starts sit under it,
+  inside the caps you gave (`--sub-depth`, `--tree-max`). You get a notice when its pane exits, and with
+  `--stall 30m` when it idles that long (no stall alert by default: it idles on purpose). `detach` frees
+  it. If the pane crashes, `attach <new-pane> --name <name>` rebinds the same scope and its history.
+  Only `close --force` closes an attached pane.
 - **Deferred task (fire and forget).** `task new --defer`: the worker runs `harness-ops ack <id>` once
   (recorded, nothing typed to you), does the job, and runs `task done`; you get no notice of the result.
   Its pane closes by itself on ok; failed or blocked stay open. Its dialogs are denied, never approved,
@@ -245,9 +244,8 @@ One message = one complete request. The receiver has none of your context.
   `No reply needed` when you want none.
 - **Deferred (fire and forget):** for a job you hand off and want no feedback on (a cleanup, a long
   build, a doc refresh), use `send --defer <target> "..."`: it prints a message ID and
-  asks the receiver to run `harness-ops ack <id>` once; nothing is typed back to you. With an older
-  receiver, end the message with `Deferred: reply ACK once, then no reply.`: it sends one `RE: ACK`.
-  Either way it never writes to you again about it, not even when it finishes or fails. So
+  asks the receiver to run `harness-ops ack <id>` once; nothing is typed back to you. The receiver
+  never writes to you again about it, not even when it finishes or fails. So
   put in the message where the result goes (a file, a commit, a note) and what to do on failure (stop,
   or ask the user directly). Check the result there yourself later; do not ask the receiver.
 - Multi-line or over 800 chars is fine: `send` writes it to a file in your project's journal folder,
@@ -306,9 +304,7 @@ Then answer by its kind. Exactly one of these applies:
 | `PROGRESS ...`, `... looks stalled`, `ESCALATION ...`, or `scope <name> (<sID>): pane <pane> exited/lost` (watcher / status notices) | Act on the notice (`read`, `task close --tree --force`, or `attach <new-pane> --name <name>`). **Never** reply `RE:` to the notice. |
 | Ends with `[attached: scope <name>, lead <owner>; report with harness-ops report]` | You are supervised under `<owner>` as scope `<name>`. Do the work and report milestones with `harness-ops report "<one line>" [--notify]` (reply `RE:` only if the message asks a direct question). If the lead names your agent note, read it first and keep it as `memory.md` says (## Keep the note). |
 | Ends with `No reply needed` (a crew roster, a notice) | Nothing. |
-| Ends with `[deferred <id>: run harness-ops ack <id> once ...]` | Run `harness-ops ack <id>` once at once, then do the job. Never write to the sender about it: no progress, no result, no question. Put the result where the message says; on a blocker, do what it says (stop, or ask the user). |
-| (any deferred message or task) | **You are not under the sender.** A deferred job is handed off, not supervised: the sender is not your lead, gives you no further say, and is not someone you consult. Decide its timing, method and rollout yourself, by the user's rules and your own project's; ask the user, not the sender, when you need a decision. The sender's live work matters only as a fact about shared state (for example, its sessions use the same registry), never as an approval you wait for. |
-| Ends with `Deferred: reply ACK once, then no reply.` | Send exactly one `harness-ops send <ID> "RE: ACK"` at once, then do the job. Never write to the sender about it again: no progress, no result, no question. Put the result where the message says; on a blocker, do what it says (stop, or ask the user). |
+| A message or task that ends with `[deferred <id>: run harness-ops ack <id> once ...]` (or, from an older sender, `Deferred: reply ACK once, then no reply.`) | Acknowledge once, at once: `harness-ops ack <id>` (the older form: one `harness-ops send <ID> "RE: ACK"`). Then do the job and never write to the sender about it: no progress, no result, no question. Put the result where the message says; on a blocker, do what it says (stop, or ask the user). **You are not under the sender:** it is not your lead and not someone you consult. Decide timing, method and rollout yourself, by the user's rules; ask the user when you need a decision. The sender's live work is only a fact about shared state, never an approval you wait for. |
 | Starts with `RE:` | Nothing, unless it asks a new question. `RE: task <id>` is a finished task's result. |
 | Anything else | Always answer, even "can't: <why>": `harness-ops send <ID> "RE: <result, or what blocked you>"`. |
 

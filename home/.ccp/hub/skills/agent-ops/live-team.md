@@ -27,8 +27,8 @@ Pick the shape by size:
 | 3 | Your turns; open a duel when two members disagree on one point |
 | 4–6 | Your turns and the board only. No duels: too many messages to follow |
 
-Pick each member's role and the diversity setting (## Roles, `roles.md`), and its launch command from `roster.md`.
-agy members need the `command(harness-ops)` rule in agy's settings; check it before using agy roles (`roster.md`).
+Pick each member's role and the diversity setting (`roles.md`), and its launch command from `roster.md`
+(agy members: ## agy members there).
 
 1. Fill in `group-brief.md` (next to this file) and file it with `harness-ops note group-<topic>`, which
    prints its path. Create the board `~/.cache/agent-ops/group-<topic>-board.md` with one heading per member. Write every path

@@ -18,9 +18,8 @@ a live team instead.
 
 Depth: you → manager (1) → workers (2). Since termctl v0.10.0 a task is a leaf unless its starter grants
 it `--sub-depth`, so start the manager with `--sub-depth 1` and leave the workers leaves. The
-manager owns the workers, which keeps them inside the 6-tasks-per-owner limit. agy members need the
-`command(harness-ops)` rule in agy's settings; check it before using agy roles (`roster.md`). The manager runs
-harness-ops itself, so this applies to it.
+manager owns the workers, which keeps them inside the 6-tasks-per-owner limit. An agy manager runs
+harness-ops itself, so `roster.md` ## agy members applies to it.
 
 1. Make a run folder `~/.cache/agent-ops/swarm-<topic>/`. Write `cards-round-1.md`: one card per
    worker (id, direction, what to produce, limits). Make the directions differ in kind, not variants
