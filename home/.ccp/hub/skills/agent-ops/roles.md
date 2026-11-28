@@ -17,7 +17,7 @@ and a `--command` value, and it is the only file that names models. When a model
 | `fast` | The fastest model that passes the brief check: swarm workers |
 | `builder` | Cheap and fast: build and iterate on a task whose result a test or build can check |
 | `brain` | The strongest model at high effort: review, managing workers, hard tasks |
-| `receptionist` | Cheap, fast always-on router for superagent Tier 0: intake, routing, status checks (`superagent.md`) |
+| `receptionist` | Superagent Tier 0: the session that runs superagent mode, never spawned. Intake, routing, status checks (`superagent.md`) |
 | `advisor` | Strong medium-effort model for superagent Tier 1: planning, review, drift audits, spawning `deep` (`superagent.md`) |
 | `deep` | Heavy reasoning model for superagent Tier 2: deadlocks, high-stakes trade-offs, spawned by `advisor` only (`superagent.md`) |
 | `open-panel` | Open-weight models, one per member: extra diversity |

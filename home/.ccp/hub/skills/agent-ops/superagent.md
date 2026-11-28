@@ -51,7 +51,7 @@ One superagent session can supervise **mixed worktypes at the same time**. Set e
 
 | Tier | Role (`roles.md`) | `--sub-depth` | Mechanism | Safe autonomous actions (no user approval needed) |
 |---|---|---|---|---|
-| 0 | `receptionist` (current pane) | root | Current pane | Intake, routing, `ls`/`scope ls`/`read`, attaching Area Scopes, `answer`/`deny` on safe in-brief prompts, spawning Workers for clear briefs, `--accept-trust` on every `spawn`/`task new` (harness-ops trusts only folders under the user's `~/.config/termctl/trust-roots`). |
+| 0 | `receptionist` (current pane, in whatever harness runs superagent mode; never spawned) | root | Current pane | Intake, routing, `ls`/`scope ls`/`read`, attaching Area Scopes, `answer`/`deny` on safe in-brief prompts, spawning Workers for clear briefs, `--accept-trust` on every `spawn`/`task new` (harness-ops trusts only folders under the user's `~/.config/termctl/trust-roots`). |
 | 1 | `advisor` (reviewer & drift auditor) | `1` | `attach` (long-running scope) | Planning, specs, quality review, auditing `progress.md` for drift (`KEEP`/`PRUNE`/`EVICT`), spawning `deep` when genuinely blocked. Read-only unless brief grants edits. |
 | 1 | Area Scope (workstream lead) | `1` | `attach <pane> --name <area> --sub-depth 1` | Owns one ongoing area; spawns Tier 2 Workers/Verifiers per its worktype; reports milestones via `harness-ops report`. |
 | 2 | Worker (`builder` or `fast`) | `0` (leaf) | `task new` | Execute inside `brief.md`'s scope fence; maintain `progress.md` when required; report via `task done`. |
