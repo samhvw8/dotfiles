@@ -15,7 +15,7 @@ and a `--command` value, and it is the only file that names models. When a model
 | `peer` | The lead's own model: the default live member |
 | `other-family` | A strong model from another family: swarm manager, debate opponent, blind reviewer |
 | `fast` | The fastest model that passes the brief check: swarm workers |
-| `builder` | Cheap and fast: build and iterate on a task whose result a test or build can check |
+| `builder` | Build and iterate on a task whose result a test or build can check. At least Sonnet or Hydrogen level (`roster.md`) |
 | `brain` | The strongest model at high effort: review, managing workers, hard tasks |
 | `receptionist` | Superagent tier 0: the session that runs superagent mode, never launched (`superagent.md`) |
 | `advisor` | Strong medium-effort model for superagent Tier 1: planning, review, drift audits, spawning `deep` (`superagent.md`) |
